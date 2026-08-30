@@ -1,0 +1,22 @@
+[
+  {"id":"paddle","title":"Paddle Court","year":1972,"era":"1970s","genre":"Ball & paddle","hint":"W/S left · arrows right · first to 11"},
+  {"id":"bricks","title":"Brick Yard","year":1976,"era":"1970s","genre":"Breakout","hint":"Mouse or ← → · click / Space serve"},
+  {"id":"night","title":"Night Road","year":1976,"era":"1970s","genre":"Driving","hint":"← → steer · last as long as you can"},
+  {"id":"armor","title":"Armor Duel","year":1974,"era":"1970s","genre":"Tank","hint":"WASD + F fire · arrows + / fire"},
+  {"id":"rows","title":"Lunar Rows","year":1978,"era":"1980s","genre":"Fixed shooter","hint":"← → move · Space fire · bunkers"},
+  {"id":"rocks","title":"Drift Rocks","year":1979,"era":"1980s","genre":"Vector","hint":"← → rotate · up thrust · Space fire"},
+  {"id":"hopper","title":"Garden Hopper","year":1981,"era":"1980s","genre":"Cross the road","hint":"↑ hop · don't get hit"},
+  {"id":"bugs","title":"Bug Sweep","year":1981,"era":"1980s","genre":"Garden shooter","hint":"← → · Space spray"},
+  {"id":"manor","title":"Dot Manor","year":1980,"era":"1980s","genre":"Maze","hint":"arrows · eat dots · avoid the hunters"},
+  {"id":"swarm","title":"Sky Swarm","year":1981,"era":"1980s","genre":"Gallery shooter","hint":"← → · Space · dual ship after capture"},
+  {"id":"rig","title":"Barrel Rig","year":1981,"era":"1980s","genre":"Climb","hint":"← → · up ladder · Z jump barrels"},
+  {"id":"grid","title":"Missile Grid","year":1980,"era":"1980s","genre":"Defense","hint":"click / tap to burst · save the cities"},
+  {"id":"stack","title":"Stack Well","year":1985,"era":"1980s","genre":"Falling blocks","hint":"← → · up rotate · down drop"},
+  {"id":"foam","title":"Foam Kid","year":1986,"era":"1980s","genre":"Platform bubble","hint":"← → · Z jump · Space foam"},
+  {"id":"stripe","title":"Stripe Run","year":1991,"era":"1990s","genre":"Speed platform","hint":"auto-run · Z jump"},
+  {"id":"ring","title":"Ring Fighter","year":1991,"era":"1990s","genre":"Versus","hint":"← → move · J punch · K kick · L block"},
+  {"id":"dual","title":"Twin Storm","year":2005,"era":"2000s","genre":"Twin-stick","hint":"WASD move · mouse aim · click fire"},
+  {"id":"beat","title":"Beat Tap","year":2005,"era":"2000s","genre":"Rhythm","hint":"D F J K · hit when the note lands"},
+  {"id":"volt","title":"Volt Dash","year":2013,"era":"2010s","genre":"Endless run","hint":"Space / tap jump"},
+  {"id":"hex","title":"Hex Pulse","year":2015,"era":"2010s","genre":"Survival","hint":"← → rotate · last through the pulse"}
+]
