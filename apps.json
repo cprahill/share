@@ -2,5 +2,9 @@
   "apps": [
     "mars"
   ],
-  "updated": "2026-08-30T17:18:38Z"
+  "updated": "2026-08-30T18:06:50Z",
+  "mars": {
+    "build": "84",
+    "entry": "mars/raid.html"
+  }
 }
