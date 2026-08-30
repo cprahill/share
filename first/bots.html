@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Grok Bot — copy</title>
+  <style>
+    :root {
+      --bg: #07080a; --ink: #e8ece6; --mute: #8b9388; --line: #2a3128;
+      --go: #c8f4e8; --steel: #9aa394; --panel: #10140f; --tap: 44px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.4 "Avenir Next", system-ui, sans-serif; }
+    header {
+      position: sticky; top: 0; z-index: 6;
+      background: #0b0e0c; border-bottom: 1px solid var(--line);
+      padding: .85rem 1rem calc(.85rem + env(safe-area-inset-top));
+    }
+    .kicker { font: 700 11px/1 ui-monospace, monospace; letter-spacing: .28em; text-transform: uppercase; color: var(--steel); }
+    h1 { margin: .3rem 0 0; font-size: 1.45rem; letter-spacing: -.03em; }
+    .lede { color: var(--mute); margin: .35rem 0 0; font-size: .92rem; }
+    .toc { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .7rem; }
+    .toc a {
+      color: #0b1016; background: var(--go); text-decoration: none;
+      font: 700 11px/var(--tap) ui-monospace, monospace;
+      letter-spacing: .06em; text-transform: uppercase;
+      padding: 0 .7rem; border-radius: 8px; min-height: var(--tap);
+      display: inline-flex; align-items: center;
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: .6rem 1rem 6rem; }
+    section { margin: 1.4rem 0 0; }
+    section h2 {
+      margin: 0 0 .55rem; font-size: .8rem; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--go);
+      display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+    }
+    article {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+      padding: .85rem .9rem 1rem; margin: 0 0 .7rem;
+    }
+    article.god { border-color: var(--go); }
+    .name { margin: 0; font-size: 1.2rem; }
+    .title { margin: .2rem 0 0; color: var(--go); font-size: .95rem; }
+    .desc { margin: .5rem 0 0; }
+    .acts { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-top: .75rem; }
+    button {
+      appearance: none; cursor: pointer; border-radius: 10px;
+      border: 1px solid var(--line); background: #0b0e0c; color: var(--ink);
+      font: 700 12px/1 "Avenir Next", system-ui, sans-serif;
+      letter-spacing: .08em; text-transform: uppercase;
+      min-height: var(--tap); padding: .55rem .5rem;
+    }
+    button.all, section h2 button {
+      background: var(--go); color: #0b1016; border-color: var(--go);
+    }
+    section h2 button { min-height: 40px; padding: 0 .75rem; flex: 0 0 auto; }
+    .toast {
+      position: fixed; left: 50%; bottom: calc(1rem + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      background: var(--go); color: #0b1016;
+      padding: .65rem 1rem; border-radius: 999px;
+      font: 700 12px/1 ui-monospace, monospace;
+      letter-spacing: .12em; text-transform: uppercase;
+      display: none; z-index: 9; white-space: nowrap;
+    }
+    .toast.on { display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="kicker">grok bot · 23 seats</p>
+    <h1>Tap to copy</h1>
+    <p class="lede">Category copies every bot in that lane. Bot copies Name, Title, Description. Grok first, then Elon. Git wire: <a href="/handoff/" style="color:#c8f4e8">/handoff/</a> — one dest at a time.</p>
+    <nav class="toc" id="toc"></nav>
+  </header>
+  <main id="list"></main>
+  <div class="toast" id="toast">copied</div>
+  <script>
+    const toast = (t) => {
+      const el = document.getElementById("toast");
+      el.textContent = t;
+      el.className = "toast on";
+      clearTimeout(el._h);
+      el._h = setTimeout(() => { el.className = "toast"; }, 1100);
+    };
+    const block = (b) => `Name: ${b.name}\nTitle: ${b.title}\n\n${b.description}`;
+    const copy = async (text, label) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("copied " + label);
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); toast("copied " + label); }
+        catch { toast("copy failed — long-press"); }
+        ta.remove();
+      }
+    };
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    fetch("bots.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        const cats = data.categories || [];
+        const bots = data.bots || [];
+        const byCat = {};
+        cats.forEach((c) => { byCat[c.id] = []; });
+        bots.forEach((b, i) => {
+          b._i = i;
+          (byCat[b.category] || (byCat[b.category] = [])).push(b);
+        });
+        document.getElementById("toc").innerHTML = cats.map((c) =>
+          `<a href="#cat-${c.id}">${esc(c.label)}</a>`
+        ).join("");
+        const list = document.getElementById("list");
+        list.innerHTML = cats.map((c) => {
+          const rows = byCat[c.id] || [];
+          const catBlock = rows.map(block).join("\n\n————\n\n");
+          const cards = rows.map((b) => {
+            const god = b.name === "Grok" ? " god" : "";
+            return `<article class="${god.trim()}" data-i="${b._i}">
+              <p class="name">${esc(b.name)}</p>
+              <p class="title">${esc(b.title)}</p>
+              <p class="desc">${esc(b.description)}</p>
+              <div class="acts">
+                <button type="button" data-f="name">Name</button>
+                <button type="button" data-f="title">Title</button>
+                <button type="button" data-f="description">Description</button>
+                <button type="button" class="all" data-f="all">Copy this bot</button>
+              </div>
+            </article>`;
+          }).join("");
+          return `<section id="cat-${c.id}" data-cat="${c.id}">
+            <h2>${esc(c.label)} <button type="button" data-catcopy="${c.id}">Copy ${esc(c.label)}</button></h2>
+            ${cards}
+          </section>`;
+        }).join("");
+
+        list.onclick = (e) => {
+          const catBtn = e.target.closest("[data-catcopy]");
+          if (catBtn) {
+            const id = catBtn.getAttribute("data-catcopy");
+            const rows = byCat[id] || [];
+            const label = (cats.find((c) => c.id === id) || {}).label || id;
+            const text = rows.map(block).join("\n\n————\n\n");
+            copy(text, label);
+            return;
+          }
+          const btn = e.target.closest("button[data-f]");
+          if (!btn) return;
+          const b = bots[+btn.closest("article").dataset.i];
+          const f = btn.dataset.f;
+          if (f === "all") copy(block(b), b.name);
+          else copy(b[f], f);
+        };
+      });
+  </script>
+</body>
+</html>

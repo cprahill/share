@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/first/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FIRST — King core</title>
+  <style>
+    :root {
+      --paper: #0c0b09;
+      --ink: #ece6d8;
+      --mute: #9a9284;
+      --brass: #c4a46a;
+      --line: #2a2720;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--paper); color: var(--ink); }
+    body {
+      min-height: 100vh;
+      font: 16px/1.45 "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    }
+    .rail {
+      max-width: 44rem;
+      margin: 0 auto;
+      padding: 2.4rem 1.4rem 4rem;
+      border-left: 3px solid var(--brass);
+    }
+    .mark {
+      margin: 0;
+      font: 0.72rem/1 ui-monospace, "SF Mono", Menlo, monospace;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--brass);
+    }
+    h1 {
+      margin: 0.35rem 0 0;
+      font-size: clamp(4.2rem, 18vw, 7.4rem);
+      font-weight: 400;
+      letter-spacing: -0.07em;
+      line-height: 0.78;
+    }
+    .lede {
+      margin: 0.85rem 0 0;
+      max-width: 22rem;
+      color: var(--mute);
+    }
+    .roster { margin: 2.6rem 0 0; }
+    .roster h2 {
+      margin: 0 0 0.15rem;
+      font: 0.68rem/1 ui-monospace, "SF Mono", Menlo, monospace;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--brass);
+    }
+    .roster p {
+      margin: 0 0 0.9rem;
+      color: var(--mute);
+      font-size: 0.95rem;
+    }
+    ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+    }
+    li a {
+      display: grid;
+      grid-template-columns: 9.2rem 1fr;
+      gap: 0.9rem;
+      padding: 0.82rem 0.1rem 0.78rem;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+    }
+    li a:hover .call { color: var(--ink); }
+    li a:hover { background: linear-gradient(90deg, rgba(196,164,106,0.07), transparent 70%); }
+    .call {
+      font: 0.78rem/1.3 ui-monospace, "SF Mono", Menlo, monospace;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--brass);
+      padding-top: 0.12rem;
+    }
+    .line { margin: 0; }
+    .belt { margin-top: 2.1rem; }
+    .belt ol { border-top-color: var(--brass); }
+    .belt .row {
+      display: grid;
+      grid-template-columns: 9.2rem 1fr;
+      gap: 0.9rem;
+      padding: 0.82rem 0.1rem 0.78rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .gaps ol { border-top-style: dashed; border-top-color: var(--line); }
+    .gaps .row { border-bottom-style: dashed; }
+    .gaps .call,
+    .gaps .line { color: var(--mute); }
+    .empty {
+      display: inline-block;
+      margin-left: 0.55rem;
+      font: 0.62rem/1 ui-monospace, "SF Mono", Menlo, monospace;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mute);
+      border: 1px solid var(--line);
+      padding: 0.2em 0.48em;
+      vertical-align: 0.14em;
+    }
+    .clock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 1.4rem;
+      margin: 2.2rem 0 0;
+      padding-top: 1rem;
+      border-top: 1px solid var(--brass);
+      font: 0.72rem/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .clock b { color: inherit; font-weight: 650; }
+    .clock span { padding-bottom: 0.12rem; border-bottom: 1px solid transparent; }
+    .clock .face {
+      color: var(--brass);
+      margin-right: 0.2rem;
+      padding-right: 1.35rem;
+      border-right: 1px solid var(--line);
+      border-bottom: 0;
+      text-transform: none;
+      letter-spacing: 0.12em;
+    }
+    .clock .now { color: var(--brass); border-bottom-color: var(--brass); }
+    .docs {
+      margin: 1.6rem 0 0;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      font: 0.78rem/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+    }
+    .docs .desk {
+      display: inline-block;
+      color: var(--brass);
+      margin-right: 0.85rem;
+      padding-right: 1.35rem;
+      border-right: 1px solid var(--line);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      vertical-align: baseline;
+    }
+    .docs a { color: var(--brass); text-decoration: none; }
+    .docs a:hover { color: var(--ink); }
+    @media (max-width: 560px) {
+      li a,
+      .belt .row { grid-template-columns: 1fr; gap: 0.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="rail">
+    <p class="mark">project-first</p>
+    <h1>First</h1>
+    <p class="lede">King core. Tribal, tools, and nightly compounding live here.</p>
+
+    <section class="roster">
+      <h2>Standing dests</h2>
+      <p>Live board. Naming a dest only switches. No spend from this page.</p>
+      <ol>
+        <li>
+          <a href="./">
+            <span class="call">first</span>
+            <p class="line">King core. Nightly lessons. Tribal lives here.</p>
+          </a>
+        </li>
+        <li>
+          <a href="../baja/">
+            <span class="call">baja</span>
+            <p class="line">3D-printed cyber RC. project-uav still lands here.</p>
+          </a>
+        </li>
+        <li>
+          <a href="../portal/">
+            <span class="call">portal</span>
+            <p class="line">Interdimensional Cable. Flip channel. Freebird feeds this TV.</p>
+          </a>
+        </li>
+        <li>
+          <a href="../retro/">
+            <span class="call">retro</span>
+            <p class="line">Decades arcade. Look first. Play later.</p>
+          </a>
+        </li>
+        <li>
+          <a href="../stranger/">
+            <span class="call">stranger</span>
+            <p class="line">Original film dest. Visuals only.</p>
+          </a>
+        </li>
+        <li>
+          <a href="../../lindsay/kitchen/public/">
+            <span class="call">kitchen</span>
+            <p class="line">Lindsay. Live on :8765.</p>
+          </a>
+        </li>
+        <li>
+          <a href="/">
+            <span class="call">factory</span>
+            <p class="line">The Mini line. Cannot be deleted.</p>
+          </a>
+        </li>
+      </ol>
+    </section>
+
+    <section class="roster belt">
+      <h2>Tools</h2>
+      <p>Kit on the Mini. Not dests. Dests call these. No spend.</p>
+      <ol>
+        <li>
+          <span class="row">
+            <span class="call">imagine</span>
+            <p class="line">New timestamped stills. Adult artistic in. Porn out. 400 → Blender.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">blender</span>
+            <p class="line">Controlled mesh. Kit live. Dests call it.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">walk</span>
+            <p class="line">Playable dest this week. king-play on the dest.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">capture</span>
+            <p class="line">Photos to mesh. king-capture.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">mail</span>
+            <p class="line">Queue then flush as his Gmail.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">voice</span>
+            <p class="line">FaceTime. Text call me.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">unreal</span>
+            <p class="line">Real-time 3D. UE 5.8. king-unreal.</p>
+          </span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="roster belt gaps">
+      <h2>Gaps <span class="empty">missing</span></h2>
+      <p>Empty slots. Labeled missing, not promised. No spend.</p>
+      <ol>
+        <li>
+          <span class="row">
+            <span class="call">calendar</span>
+            <p class="line">Write the calendar. Reading it is not the job.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">shopping</span>
+            <p class="line">Orders. A list is not shopping.</p>
+          </span>
+        </li>
+        <li>
+          <span class="row">
+            <span class="call">wallet</span>
+            <p class="line">Pay from this desk. Confirm still gates money.</p>
+          </span>
+        </li>
+      </ol>
+    </section>
+
+    <p class="clock" id="clock">
+      <span class="face" aria-live="polite"><b id="face">--:--</b></span>
+      <span data-h="09"><b>09</b> first</span>
+      <span data-h="10"><b>10</b> freebird</span>
+      <span data-h="11"><b>11</b> baja</span>
+      <span data-h="12"><b>12</b> kitchen</span>
+      <span data-h="13"><b>13</b> portal</span>
+      <span data-h="14"><b>14</b> retro</span>
+      <span data-h="15"><b>15</b> stranger</span>
+      <span data-h="16"><b>16</b> baja</span>
+      <span data-h="17"><b>17</b> first nightly</span>
+      <span data-h="19"><b>19</b> passdown</span>
+    </p>
+    <p class="docs"><span class="desk">desk</span><a href="TRIBAL.md">TRIBAL.md</a> · <a href="TOOLS.md">TOOLS.md</a> · <a href="NIGHTLY.md">NIGHTLY.md</a> · <a href="NEXT.md">NEXT.md</a> · <a href="org.html">org</a> · <a href="bots.html">bots</a></p>
+  </div>
+  <script>
+    (function () {
+      var clock = document.getElementById("clock");
+      var face = document.getElementById("face");
+      if (!clock || !face) return;
+      function pad(n) {
+        n = String(parseInt(n, 10));
+        return n.length < 2 ? "0" + n : n;
+      }
+      function chicago() {
+        var hh = "00", mm = "00";
+        new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Chicago",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23"
+        }).formatToParts(new Date()).forEach(function (p) {
+          if (p.type === "hour") hh = p.value;
+          if (p.type === "minute") mm = p.value;
+        });
+        return { hh: pad(hh), mm: pad(mm) };
+      }
+      function mark() {
+        var t = chicago();
+        face.textContent = t.hh + ":" + t.mm;
+        Array.prototype.forEach.call(clock.querySelectorAll("[data-h]"), function (el) {
+          el.classList.toggle("now", el.getAttribute("data-h") === t.hh);
+        });
+      }
+      mark();
+      setInterval(mark, 30000);
+    })();
+  </script>
+</body>
+</html>
