@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>Grok Bot</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0c0a14; color: #efeaf8; font: 15px/1.4 "Avenir Next", system-ui, sans-serif; overflow: hidden; }
+    #wrap { display: grid; place-items: center; height: 100%; }
+    canvas { image-rendering: pixelated; image-rendering: crisp-edges; background: #000; box-shadow: 0 24px 80px #000a; }
+    #ui { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; gap: .7rem; align-items: center; padding: .55rem .9rem; font: 700 11px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    #ui a { text-decoration: none; background: #c4b4ff; color: #140e22; padding: .35rem .6rem; border-radius: 6px; }
+    #title, #pause { position: fixed; inset: 0; display: grid; place-items: center; z-index: 4; background: #0c0a14f2; text-align: center; }
+    #pause { display: none; }
+    h1 { font-size: 2.4rem; letter-spacing: -.04em; margin: 0 0 .4rem; }
+    .sub { color: #9b94ae; margin: 0 0 1.4rem; }
+    button { appearance: none; cursor: pointer; margin: .25rem; border: 1px solid #3a3450; background: #1a1630; color: #efeaf8; font: 700 13px/2.2 "Avenir Next", system-ui, sans-serif; padding: 0 1.1rem; border-radius: 8px; }
+    button:hover, button.on { background: #c4b4ff; color: #140e22; border-color: #c4b4ff; }
+    .hint { color: #6e6880; font-size: .85rem; margin-top: 1.2rem; }
+  </style>
+</head>
+<body>
+  <div id="ui"><a href="../../">Hall</a><span>Grok Bot</span><span id="hud"></span></div>
+  <div id="wrap"><canvas id="c"></canvas></div>
+  <div id="title">
+    <div>
+      <p class="sub" style="letter-spacing:.28em;text-transform:uppercase;font-size:.72rem">Super NES · one stage</p>
+      <h1>Grok Bot</h1>
+      <p class="sub">Run right. Jump the holes. Shoot the drones. Walk into the gate.</p>
+      <div>
+        <button data-d="easy">Easy</button>
+        <button data-d="normal" class="on">Normal</button>
+        <button data-d="hard">Hard</button>
+      </div>
+      <p class="hint">← → move · Z / Space jump · X / J shoot</p>
+    </div>
+  </div>
+  <div id="pause"><div><h1 id="end">Clear</h1><p class="sub" id="endsub"></p><button id="again">Title</button></div></div>
+  <script>
+    const VW = 256, VH = 224, T = 16;
+    /* Continuous floor. Two short holes (2 tiles) with a mid platform over the second. Gate on the floor. */
+    const MAP = [
+      "................................................................",
+      "................................................................",
+      ".................................................##.............",
+      "................................................e...............",
+      "..............................................####..............",
+      "................................................................",
+      "........................e.......................................",
+      "......................####......................................",
+      "................................................................",
+      "..............e......................e.................e........",
+      "P.............................................................G.",
+      "##############..################..##############################",
+      "##############..################..##############################",
+      "################################################################",
+    ];
+    const W = MAP[0].length, Hm = MAP.length;
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d", { alpha: false });
+    const off = document.createElement("canvas");
+    off.width = VW; off.height = VH;
+    const g = off.getContext("2d", { alpha: false });
+    ctx.imageSmoothingEnabled = false; g.imageSmoothingEnabled = false;
+
+    const art = { hero: new Image(), jump: new Image(), hop: new Image(), ground: new Image() };
+    art.hero.src = "art/hero.jpg";
+    art.jump.src = "art/hero-jump.jpg";
+    art.hop.src = "art/hopper.jpg";
+    art.ground.src = "art/ground.jpg";
+
+    function keyed(img) {
+      if (!img.complete || !img.naturalWidth) return null;
+      if (img._k) return img._k;
+      const c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const x = c.getContext("2d");
+      x.drawImage(img, 0, 0);
+      const d = x.getImageData(0, 0, c.width, c.height);
+      for (let i = 0; i < d.data.length; i += 4) {
+        const r = d.data[i], gr = d.data[i + 1], b = d.data[i + 2];
+        if (r > 170 && b > 140 && gr < 130) d.data[i + 3] = 0;
+      }
+      x.putImageData(d, 0, 0);
+      img._k = c;
+      return c;
+    }
+
+    const keys = Object.create(null);
+    addEventListener("keydown", (e) => { keys[e.code] = 1; if (["Space", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault(); });
+    addEventListener("keyup", (e) => { keys[e.code] = 0; });
+
+    const DIFF = {
+      easy: { hp: 8, dmg: 1, esp: 0.6 },
+      normal: { hp: 5, dmg: 1, esp: 1 },
+      hard: { hp: 3, dmg: 2, esp: 1.3 },
+    };
+    let diff = "normal", S, scale = 3;
+
+    function tile(tx, ty) {
+      if (ty < 0 || tx < 0 || tx >= W || ty >= Hm) return "#";
+      return MAP[ty][tx];
+    }
+    function solid(tx, ty) { const c = tile(tx, ty); return c === "#"; }
+
+    function boot(d) {
+      diff = d || diff;
+      const D = DIFF[diff];
+      const enemies = [];
+      let gx = (W - 3) * T, gy = 10 * T, px = 24, py = 10 * T;
+      for (let y = 0; y < Hm; y++) for (let x = 0; x < W; x++) {
+        const c = MAP[y][x];
+        if (c === "P") { px = x * T + 2; py = y * T; }
+        if (c === "G") { gx = x * T; gy = y * T; }
+        if (c === "e") enemies.push({ x: x * T + 8, y: y * T, vx: 28 * D.esp * (x % 2 ? 1 : -1), vy: 0, hp: 2 });
+      }
+      S = {
+        p: { x: px, y: py, vx: 0, vy: 0, w: 12, h: 16, on: 0, coy: 0, buf: 0, dir: 1, i: 0, hp: D.hp },
+        shots: [], enemies, cam: 0, t: 0, dead: 0, win: 0, fire: 0, gx, gy, max: D.hp, D,
+      };
+      document.getElementById("title").style.display = "none";
+      document.getElementById("pause").style.display = "none";
+    }
+
+    function aabb(a, b) {
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+    function move(ent, dt) {
+      ent.x += ent.vx * dt;
+      let x0 = Math.floor(ent.x / T), x1 = Math.floor((ent.x + ent.w - 0.1) / T);
+      let y0 = Math.floor((ent.y + 2) / T), y1 = Math.floor((ent.y + ent.h - 2) / T);
+      if (ent.vx > 0) { for (let ty = y0; ty <= y1; ty++) if (solid(x1, ty)) { ent.x = x1 * T - ent.w; ent.vx = 0; } }
+      else if (ent.vx < 0) { for (let ty = y0; ty <= y1; ty++) if (solid(x0, ty)) { ent.x = (x0 + 1) * T; ent.vx = 0; } }
+      ent.y += ent.vy * dt;
+      x0 = Math.floor((ent.x + 2) / T); x1 = Math.floor((ent.x + ent.w - 2) / T);
+      y0 = Math.floor(ent.y / T); y1 = Math.floor((ent.y + ent.h - 0.1) / T);
+      ent.on = 0;
+      if (ent.vy > 0) {
+        for (let tx = x0; tx <= x1; tx++) if (solid(tx, y1)) { ent.y = y1 * T - ent.h; ent.vy = 0; ent.on = 1; }
+      } else if (ent.vy < 0) {
+        for (let tx = x0; tx <= x1; tx++) if (solid(tx, y0)) { ent.y = (y0 + 1) * T; ent.vy = 0; }
+      }
+    }
+
+    function hurt(n) {
+      if (S.p.i > 0 || S.dead || S.win) return;
+      S.p.hp -= n; S.p.i = 0.85;
+      if (S.p.hp <= 0) end("Down", "The gate is still to the right.");
+    }
+    function end(t, s) {
+      S.dead = t === "Down" ? 1 : S.dead;
+      S.win = t !== "Down" ? 1 : S.win;
+      document.getElementById("end").textContent = t;
+      document.getElementById("endsub").textContent = s;
+      document.getElementById("pause").style.display = "grid";
+    }
+
+    function tick(dt) {
+      if (!S || S.dead || S.win) return;
+      S.t += dt;
+      const p = S.p;
+      const left = keys.ArrowLeft || keys.KeyA;
+      const right = keys.ArrowRight || keys.KeyD;
+      const jump = keys.Space || keys.KeyZ || keys.KeyK;
+      const shoot = keys.KeyX || keys.KeyJ;
+      p.vx = (right - left) * 130;
+      if (right) p.dir = 1; if (left) p.dir = -1;
+      if (jump) p.buf = 0.14; else p.buf = Math.max(0, p.buf - dt);
+      if (p.on) p.coy = 0.12; else p.coy = Math.max(0, p.coy - dt);
+      if (p.buf > 0 && p.coy > 0) { p.vy = -285; p.on = 0; p.coy = 0; p.buf = 0; }
+      p.vy = Math.min(320, p.vy + 640 * dt);
+      move(p, dt);
+      p.i = Math.max(0, p.i - dt);
+      S.fire = Math.max(0, S.fire - dt);
+      if (shoot && S.fire <= 0) {
+        S.shots.push({ x: p.x + (p.dir > 0 ? p.w : -6), y: p.y + 7, vx: p.dir * 240, life: 1 });
+        S.fire = 0.18;
+      }
+      for (const s of S.shots) { s.x += s.vx * dt; s.life -= dt; }
+      S.shots = S.shots.filter((s) => s.life > 0);
+      for (const e of S.enemies) {
+        if (e.hp <= 0) continue;
+        e.vy = Math.min(260, e.vy + 700 * dt);
+        const dummy = { x: e.x - 8, y: e.y, w: 16, h: 12, vx: e.vx, vy: e.vy };
+        move(dummy, dt);
+        e.x = dummy.x + 8; e.y = dummy.y; e.vy = dummy.vy;
+        if (dummy.vx === 0) e.vx *= -1;
+        if (aabb({ x: p.x, y: p.y, w: p.w, h: p.h }, { x: e.x - 10, y: e.y, w: 20, h: 12 })) hurt(S.D.dmg);
+        for (const s of S.shots) {
+          if (Math.abs(s.x - e.x) < 12 && Math.abs(s.y - (e.y + 6)) < 10) { e.hp--; s.life = 0; }
+        }
+      }
+      S.enemies = S.enemies.filter((e) => e.hp > 0);
+      if (p.x + p.w > S.gx && p.x < S.gx + 16 && p.y + p.h > S.gy) end("Stage clear", "Walked the factory. One gate.");
+      if (p.y > Hm * T + 8) { p.hp = 0; hurt(99); }
+      S.cam += (p.x - 90 - S.cam) * Math.min(1, 7 * dt);
+      S.cam = Math.max(0, Math.min(W * T - VW, S.cam));
+      document.getElementById("hud").textContent = "HP " + "●".repeat(Math.max(0, p.hp)) + "  " + diff;
+    }
+
+    function spr(img, dx, dy, dw, dh, flip) {
+      const k = keyed(img);
+      if (!k) return;
+      g.save();
+      if (flip) { g.translate(dx + dw, dy); g.scale(-1, 1); dx = 0; dy = 0; }
+      g.drawImage(k, dx, dy, dw, dh);
+      g.restore();
+    }
+
+    function draw() {
+      if (!S) return;
+      const cam = S.cam | 0;
+      g.fillStyle = "#1a1440"; g.fillRect(0, 0, VW, VH);
+      g.fillStyle = "#2a1c58";
+      for (let i = 0; i < 12; i++) g.fillRect(((i * 41 - cam * 0.25) % (VW + 30)) | 0, 12 + (i * 11) % 60, 22, 5);
+      const x0 = Math.max(0, (cam / T) | 0), x1 = Math.min(W, x0 + 18);
+      const tileImg = art.ground.complete ? art.ground : null;
+      for (let ty = 0; ty < Hm; ty++) for (let tx = x0; tx < x1; tx++) {
+        if (MAP[ty][tx] !== "#") continue;
+        const x = tx * T - cam, y = ty * T;
+        if (tileImg) {
+          const sx = (tx % 8) * (tileImg.width / 8);
+          g.drawImage(tileImg, sx, tileImg.height * 0.22, tileImg.width / 8, tileImg.height * 0.45, x, y, T, T);
+        } else {
+          g.fillStyle = "#3a3a52"; g.fillRect(x, y, T, T);
+        }
+      }
+      for (const e of S.enemies) spr(art.hop, e.x - cam - 14, e.y - 8, 28, 22, e.vx > 0);
+      g.fillStyle = "#efeaf8";
+      for (const s of S.shots) g.fillRect((s.x - cam) | 0, s.y | 0, 6, 3);
+      const p = S.p;
+      if (!(p.i > 0 && (S.t * 18 | 0) % 2 === 0)) {
+        const img = (!p.on || Math.abs(p.vy) > 20) ? art.jump : art.hero;
+        spr(img, p.x - cam - 6, p.y - 10, 24, 28, p.dir < 0);
+      }
+      const gx = S.gx - cam;
+      g.fillStyle = "#c4b4ff"; g.fillRect(gx + 2, S.gy - 10, 12, 26);
+      g.fillStyle = "#efeaf8"; g.fillRect(gx + 4, S.gy - 8, 8, 8);
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(off, 0, 0);
+    }
+
+    function fit() {
+      scale = Math.max(2, Math.floor(Math.min(innerWidth / VW, (innerHeight - 8) / VH)));
+      cvs.width = VW * scale; cvs.height = VH * scale;
+      cvs.style.width = cvs.width + "px"; cvs.style.height = cvs.height + "px";
+    }
+    addEventListener("resize", fit); fit();
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt); draw(); requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    document.querySelectorAll("#title button").forEach((b) => {
+      b.onclick = () => {
+        document.querySelectorAll("#title button").forEach((x) => x.classList.toggle("on", x === b));
+        boot(b.dataset.d);
+      };
+    });
+    document.getElementById("again").onclick = () => {
+      document.getElementById("pause").style.display = "none";
+      document.getElementById("title").style.display = "grid";
+    };
+  </script>
+</body>
+</html>

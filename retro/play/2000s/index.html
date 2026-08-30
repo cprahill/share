@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok Wars — 2000s</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <style>
+    .over { position:fixed; inset:0; display:none; place-items:center; background:#02050acc; z-index:10; text-align:center; }
+    .over.on { display:grid; }
+    button { appearance:none; cursor:pointer; background:#39ff14; color:#031; border:0; font:700 12px/2.4 ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; padding:0 1rem; }
+    .hud { position:fixed; left:1rem; bottom:1rem; z-index:8; font:700 13px/1.4 ui-monospace,monospace; color:#39ff14; text-shadow:0 0 8px #39ff14; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">2000s</span>
+    <span class="name">Grok Wars</span>
+    <span class="hint">WASD move · mouse aim · click or space fire</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="hud">SCORE <span id="sc">0</span>  ×<span id="m">1</span>  LIVES <span id="lv">3</span></div>
+  <div class="over" id="over"><div><h2>GRID COLLAPSE</h2><p id="end"></p><button type="button" id="again">CONTINUE?</button></div></div>
+  <script>
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    const keys = Object.create(null);
+    const mouse = { x: 0, y: 0, down: false };
+    addEventListener("keydown", (e) => { keys[e.code] = true; });
+    addEventListener("keyup", (e) => { keys[e.code] = false; });
+    cvs.addEventListener("pointermove", (e) => { const r = cvs.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; });
+    cvs.addEventListener("pointerdown", () => { mouse.down = true; });
+    addEventListener("pointerup", () => { mouse.down = false; });
+    let W, H, dpr;
+    function resize() {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cvs.width = W * dpr; cvs.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    addEventListener("resize", resize); resize();
+
+    let S;
+    function boot() {
+      S = { p:{x:W/2,y:H/2,a:0}, bullets:[], en:[], fx:[], score:0, mult:1, lives:3, t:0, fire:0, spawn:0, dead:false, inv:0 };
+      document.getElementById("over").className = "over";
+    }
+    boot();
+    function tick(dt) {
+      if (S.dead) return;
+      S.t += dt; S.inv = Math.max(0, S.inv - dt);
+      let vx=0,vy=0;
+      if (keys.KeyA||keys.ArrowLeft) vx-=1;
+      if (keys.KeyD||keys.ArrowRight) vx+=1;
+      if (keys.KeyW||keys.ArrowUp) vy-=1;
+      if (keys.KeyS||keys.ArrowDown) vy+=1;
+      const m = Math.hypot(vx,vy)||1;
+      S.p.x += (vx/m)*280*dt; S.p.y += (vy/m)*280*dt;
+      S.p.x = Math.max(20, Math.min(W-20, S.p.x));
+      S.p.y = Math.max(40, Math.min(H-20, S.p.y));
+      S.p.a = Math.atan2(mouse.y - S.p.y, mouse.x - S.p.x);
+      S.fire -= dt;
+      if ((mouse.down || keys.Space) && S.fire<=0) {
+        S.bullets.push({ x:S.p.x, y:S.p.y, vx:Math.cos(S.p.a)*640, vy:Math.sin(S.p.a)*640, life:0.7 });
+        S.fire = 0.09;
+      }
+      for (const b of S.bullets) { b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt; }
+      S.spawn -= dt;
+      if (S.spawn<=0) {
+        const n = 2 + (S.t/8|0);
+        for (let i=0;i<n;i++) {
+          const edge = Math.random()*4|0;
+          const e = { x:0,y:0, kind: Math.random()<0.2?2:Math.random()<0.5?1:0, r:8 };
+          if (edge===0) { e.x=Math.random()*W; e.y=-20; }
+          if (edge===1) { e.x=Math.random()*W; e.y=H+20; }
+          if (edge===2) { e.x=-20; e.y=Math.random()*H; }
+          if (edge===3) { e.x=W+20; e.y=Math.random()*H; }
+          S.en.push(e);
+        }
+        S.spawn = Math.max(0.28, 1.0 - S.t*0.015);
+      }
+      for (const e of S.en) {
+        const a = Math.atan2(S.p.y-e.y, S.p.x-e.x);
+        const sp = e.kind===2?160:e.kind===1?90:120;
+        e.x += Math.cos(a)*sp*dt; e.y += Math.sin(a)*sp*dt;
+        if (S.inv<=0 && (e.x-S.p.x)**2+(e.y-S.p.y)**2 < (e.r+10)**2) {
+          S.lives--; S.inv=1.4; S.mult=1; boom(S.p.x,S.p.y,30);
+          if (S.lives<=0) { S.dead=true; document.getElementById("end").textContent=S.score+" pts"; document.getElementById("over").className="over on"; }
+        }
+      }
+      for (const b of S.bullets) {
+        for (const e of S.en) {
+          if (e.dead) continue;
+          if ((b.x-e.x)**2+(b.y-e.y)**2 < (e.r+5)**2) {
+            e.dead=true; b.life=0; boom(e.x,e.y,12);
+            S.score += 50*S.mult; S.mult = Math.min(10, S.mult+0.2);
+          }
+        }
+      }
+      S.bullets = S.bullets.filter(b=>b.life>0);
+      S.en = S.en.filter(e=>!e.dead);
+      for (const f of S.fx) { f.x+=f.vx*dt; f.y+=f.vy*dt; f.life-=dt; }
+      S.fx = S.fx.filter(f=>f.life>0);
+      document.getElementById("sc").textContent = S.score|0;
+      document.getElementById("m").textContent = S.mult.toFixed(1);
+      document.getElementById("lv").textContent = S.lives;
+    }
+    function boom(x,y,n) {
+      for (let i=0;i<n;i++) {
+        const a=Math.random()*6.28, s=80+Math.random()*220;
+        S.fx.push({ x,y, vx:Math.cos(a)*s, vy:Math.sin(a)*s, life:0.4+Math.random()*0.3, c: Math.random()<0.5?"#39ff14":"#f0c040" });
+      }
+    }
+    function draw() {
+      ctx.fillStyle="#02050a"; ctx.fillRect(0,0,W,H);
+      ctx.save();
+      const warp = Math.min(1, S.en.length/40)*8;
+      ctx.strokeStyle="#0a2a18"; ctx.lineWidth=1;
+      for (let x=0;x<W;x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+warp*(x/W-0.5),H); ctx.stroke(); }
+      for (let y=0;y<H;y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y+warp*(y/H-0.5)); ctx.stroke(); }
+      ctx.restore();
+      ctx.globalCompositeOperation="lighter";
+      for (const f of S.fx) { ctx.fillStyle=f.c; ctx.globalAlpha=Math.max(0,f.life*2); ctx.fillRect(f.x,f.y,3,3); }
+      ctx.globalAlpha=1;
+      ctx.fillStyle="#39ff14";
+      for (const b of S.bullets) { ctx.fillRect(b.x-2,b.y-2,4,4); }
+      for (const e of S.en) {
+        ctx.save(); ctx.translate(e.x,e.y);
+        ctx.fillStyle = e.kind===2?"#ff2bd6":e.kind===1?"#3ef0ff":"#ff5a4a";
+        ctx.beginPath();
+        if (e.kind===1) { ctx.arc(0,0,e.r,0,7); }
+        else if (e.kind===2) { ctx.moveTo(0,-e.r); ctx.lineTo(e.r,e.r); ctx.lineTo(-e.r,e.r); }
+        else { ctx.rotate(S.t*2); ctx.rect(-e.r,-e.r,e.r*2,e.r*2); }
+        ctx.fill(); ctx.restore();
+      }
+      ctx.save(); ctx.translate(S.p.x,S.p.y); ctx.rotate(S.p.a);
+      ctx.globalAlpha = S.inv>0 && (S.t*20|0)%2 ? 0.3 : 1;
+      ctx.fillStyle="#f0c040";
+      ctx.beginPath(); ctx.moveTo(14,0); ctx.lineTo(-10,-9); ctx.lineTo(-6,0); ctx.lineTo(-10,9); ctx.closePath(); ctx.fill();
+      ctx.restore();
+      ctx.globalCompositeOperation="source-over";
+    }
+    let last=performance.now();
+    function loop(now){ const dt=Math.min(0.033,(now-last)/1000); last=now; tick(dt); draw(); requestAnimationFrame(loop); }
+    requestAnimationFrame(loop);
+    document.getElementById("again").onclick=boot;
+  </script>
+</body>
+</html>

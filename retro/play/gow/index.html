@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok of War</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0a0604; color: #f3ece4; font: 15px/1.4 "Avenir Next", system-ui, sans-serif; overflow: hidden; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #ui { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; gap: .7rem; align-items: center; padding: .55rem .9rem; font: 700 11px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    #ui a { text-decoration: none; background: #e8a060; color: #140804; padding: .35rem .6rem; border-radius: 6px; }
+    #bars { position: fixed; left: 0; right: 0; top: 2.6rem; z-index: 3; display: none; gap: 1rem; padding: 0 1.2rem; }
+    #bars.on { display: flex; }
+    .bar { flex: 1; }
+    .bar span { font: 700 10px/1 ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: #cbb; }
+    .bar i, .bar b { display: block; height: 10px; border-radius: 4px; margin-top: 4px; }
+    .bar i { background: #e8a060; width: 100%; }
+    .bar b { background: #8a2020; width: 100%; }
+    #super { position: fixed; left: 50%; bottom: 1.1rem; transform: translateX(-50%); z-index: 3; width: min(16rem, 50vw); display: none; }
+    #super.on { display: block; }
+    #super i { display: block; height: 6px; background: #7ec8ff; width: 0; border-radius: 4px; }
+    #title, #pause { position: fixed; inset: 0; display: grid; place-items: center; z-index: 4; background: #0a0604ee; text-align: center; }
+    #pause { display: none; }
+    h1 { font-size: 2.4rem; letter-spacing: -.04em; margin: 0 0 .35rem; }
+    .sub { color: #a89888; margin: 0 0 1.2rem; }
+    button { appearance: none; cursor: pointer; margin: .25rem; border: 1px solid #4a3020; background: #1a100c; color: #f3ece4; font: 700 13px/2.2 "Avenir Next", system-ui, sans-serif; padding: 0 1.1rem; border-radius: 8px; }
+    button:hover, button.on { background: #e8a060; color: #140804; border-color: #e8a060; }
+    .hint { color: #6a5a4a; font-size: .85rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="ui"><a href="../../">Hall</a><span>Grok of War</span><span id="hud"></span></div>
+  <div id="bars"><div class="bar"><span>You</span><i id="hp"></i></div><div class="bar"><span>Brute</span><b id="ehp"></b></div></div>
+  <div id="super"><i id="sp"></i></div>
+  <canvas id="c"></canvas>
+  <div id="title">
+    <div>
+      <p class="sub" style="letter-spacing:.28em;text-transform:uppercase;font-size:.72rem">One ring</p>
+      <h1>Grok of War</h1>
+      <p class="sub">Walk. Punch. Hold for heavy. Block. Super when the bar fills.</p>
+      <div>
+        <button data-d="easy">Easy</button>
+        <button data-d="normal" class="on">Normal</button>
+        <button data-d="hard">Hard</button>
+      </div>
+      <p class="hint">A / D walk · J punch · hold K heavy · L / Shift block · Space dodge · U super</p>
+    </div>
+  </div>
+  <div id="pause"><div><h1 id="end">Fallen</h1><p class="sub" id="endsub"></p><button id="again">Title</button></div></div>
+  <script>
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    const arena = new Image(), you = new Image(), brute = new Image();
+    arena.src = "art/arena.jpg"; you.src = "art/warrior.jpg"; brute.src = "art/brute.jpg";
+    const keyed = new WeakMap();
+    function key(img) {
+      if (!img.complete || !img.naturalWidth) return img;
+      if (keyed.has(img)) return keyed.get(img);
+      const c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const x = c.getContext("2d"); x.drawImage(img, 0, 0);
+      const d = x.getImageData(0, 0, c.width, c.height);
+      for (let i = 0; i < d.data.length; i += 4) {
+        if (d.data[i] > 160 && d.data[i + 2] > 120 && d.data[i + 1] < 140) d.data[i + 3] = 0;
+      }
+      x.putImageData(d, 0, 0); keyed.set(img, c); return c;
+    }
+    let W, H, dpr;
+    function fit() {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cvs.width = W * dpr; cvs.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    addEventListener("resize", fit); fit();
+    const keys = Object.create(null);
+    addEventListener("keydown", (e) => { keys[e.code] = 1; if (e.code === "Space") e.preventDefault(); });
+    addEventListener("keyup", (e) => { keys[e.code] = 0; });
+
+    const DIFF = {
+      easy: { hp: 120, ehp: 80, edmg: 7, spd: 70 },
+      normal: { hp: 100, ehp: 110, edmg: 12, spd: 95 },
+      hard: { hp: 80, ehp: 150, edmg: 18, spd: 120 },
+    };
+    let S, diff = "normal", shake = 0, freeze = 0, holdK = 0;
+
+    function boot(d) {
+      diff = d || diff;
+      const D = DIFF[diff];
+      S = {
+        p: { x: W * 0.32, hp: D.hp, max: D.hp, super: 0, i: 0, atk: 0, block: 0, dodge: 0, dir: 1, heavy: 0 },
+        e: { x: W * 0.68, hp: D.ehp, max: D.ehp, i: 0, atk: 0, t: 0 },
+        t: 0, D, dead: 0, win: 0,
+      };
+      document.getElementById("title").style.display = "none";
+      document.getElementById("pause").style.display = "none";
+      document.getElementById("bars").className = "on";
+      document.getElementById("bars").id = "bars";
+      document.getElementById("bars").classList.add("on");
+      document.getElementById("super").classList.add("on");
+    }
+    function hitE(n) {
+      if (S.e.i > 0) return;
+      S.e.hp -= n; S.e.i = 0.18; S.e.x += 18; shake = 10; freeze = 0.05;
+      S.p.super = Math.min(100, S.p.super + n * 0.8);
+      if (S.e.hp <= 0) {
+        S.win = 1;
+        document.getElementById("end").textContent = "The brute falls";
+        document.getElementById("endsub").textContent = "One ring. That's the slice.";
+        document.getElementById("pause").style.display = "grid";
+      }
+    }
+    function hitP(n) {
+      if (S.p.i > 0 || S.p.dodge > 0) return;
+      if (S.p.block > 0) n *= 0.25;
+      S.p.hp -= n; S.p.i = 0.45; S.p.x -= 14; shake = 14;
+      if (S.p.hp <= 0) {
+        S.dead = 1;
+        document.getElementById("end").textContent = "Fallen";
+        document.getElementById("endsub").textContent = "Block more. Super when the bar is full.";
+        document.getElementById("pause").style.display = "grid";
+      }
+    }
+    function tick(dt) {
+      if (!S || S.dead || S.win) return;
+      if (freeze > 0) { freeze -= dt; return; }
+      S.t += dt; shake = Math.max(0, shake - dt * 20);
+      const p = S.p, e = S.e, D = S.D;
+      p.i = Math.max(0, p.i - dt); e.i = Math.max(0, e.i - dt);
+      p.atk = Math.max(0, p.atk - dt); p.dodge = Math.max(0, p.dodge - dt);
+      p.block = (keys.ShiftLeft || keys.KeyL) ? 1 : 0;
+      if (keys.KeyK) holdK += dt; else holdK = 0;
+      let vx = 0;
+      if (keys.KeyA || keys.ArrowLeft) vx -= 1;
+      if (keys.KeyD || keys.ArrowRight) vx += 1;
+      if (p.atk <= 0 && p.dodge <= 0 && !p.block) p.x += vx * 240 * dt;
+      if (p.x < e.x) p.dir = 1; else p.dir = -1;
+      const dist = Math.abs(e.x - p.x);
+      if ((keys.Space) && p.dodge <= 0) { p.dodge = 0.34; p.x += p.dir * 70; keys.Space = 0; }
+      if (keys.KeyJ && p.atk <= 0 && !p.block) {
+        p.atk = 0.28; keys.KeyJ = 0;
+        if (dist < 130) hitE(12);
+      }
+      if (!keys.KeyK && holdK > 0.22 && p.atk <= 0 && !p.block) {
+        p.atk = 0.5; p.heavy = 1;
+        if (dist < 150) hitE(26);
+        holdK = 0;
+      }
+      if ((keys.KeyU) && p.super >= 100 && p.atk <= 0) {
+        p.super = 0; p.atk = 0.7;
+        if (dist < 200) hitE(48);
+        keys.KeyU = 0; shake = 22;
+      }
+      p.x = Math.max(W * 0.18, Math.min(e.x - 70, p.x));
+      e.t += dt;
+      const want = p.x + 110;
+      if (Math.abs(e.x - want) > 8) e.x += Math.sign(want - e.x) * D.spd * dt;
+      e.x = Math.min(W * 0.84, Math.max(p.x + 70, e.x));
+      if (e.t > 1.15 && e.atk <= 0 && dist < 140 && p.dodge <= 0) {
+        e.atk = 0.55; e.t = 0; hitP(D.edmg);
+      }
+      e.atk = Math.max(0, e.atk - dt);
+      document.getElementById("hp").style.width = Math.max(0, 100 * p.hp / p.max) + "%";
+      document.getElementById("ehp").style.width = Math.max(0, 100 * e.hp / e.max) + "%";
+      document.getElementById("sp").style.width = p.super + "%";
+      document.getElementById("hud").textContent = diff;
+    }
+    function draw() {
+      ctx.save();
+      ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+      if (arena.complete) ctx.drawImage(arena, 0, 0, W, H);
+      else { ctx.fillStyle = "#120c0a"; ctx.fillRect(0, 0, W, H); }
+      ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H * 0.07); ctx.fillRect(0, H * 0.93, W, H * 0.07);
+      if (S) {
+        const gnd = H * 0.86;
+        const yw = key(you), bw = key(brute);
+        const ph = H * 0.52, pw = ph * 0.72;
+        ctx.save();
+        if (S.p.i > 0 && (S.t * 18 | 0) % 2 === 0) ctx.globalAlpha = 0.4;
+        ctx.drawImage(yw, S.p.x - pw * 0.45, gnd - ph, pw, ph);
+        ctx.restore();
+        ctx.save();
+        ctx.translate(S.e.x, gnd);
+        ctx.scale(-1, 1);
+        if (S.e.i > 0) ctx.filter = "brightness(1.8)";
+        ctx.drawImage(bw, -pw * 0.55, -ph * 1.05, pw * 1.15, ph * 1.05);
+        ctx.restore();
+        if (S.p.atk > 0) {
+          ctx.strokeStyle = "#e8a060"; ctx.lineWidth = 5; ctx.globalAlpha = 0.7;
+          ctx.beginPath(); ctx.arc(S.p.x + 40, gnd - ph * 0.45, 36, -0.8, 0.9); ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+      ctx.restore();
+    }
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt); draw(); requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    document.querySelectorAll("#title button").forEach((b) => {
+      b.onclick = () => {
+        document.querySelectorAll("#title button").forEach((x) => x.classList.toggle("on", x === b));
+        document.getElementById("bars").classList.add("on");
+        document.getElementById("super").classList.add("on");
+        boot(b.dataset.d);
+      };
+    });
+    document.getElementById("again").onclick = () => {
+      document.getElementById("pause").style.display = "none";
+      document.getElementById("bars").classList.remove("on");
+      document.getElementById("super").classList.remove("on");
+      document.getElementById("title").style.display = "grid";
+    };
+  </script>
+</body>
+</html>

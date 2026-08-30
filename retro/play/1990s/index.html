@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok Pop — 1990s</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <style>
+    body { background: #1a1450; }
+    .over { position: fixed; inset: 0; top: 48px; display: none; place-items: center; background: #120838cc; z-index: 10; text-align: center; color: #fff; }
+    .over.on { display: grid; }
+    button { appearance: none; cursor: pointer; background: #f0c040; color: #1a1450; border: 4px solid #fff; font: 700 12px/2.2 ui-monospace, monospace; padding: 0 1rem; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">1990s</span>
+    <span class="name">Grok Pop</span>
+    <span class="hint">← → walk · up/Z jump · Space blow bubble · pop trapped foes</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="over" id="over"><div><h2 id="end">CLEAR</h2><p id="sc"></p><button type="button" id="again">Again</button></div></div>
+  <script>
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    const T = 16;
+    const MAP = [
+      "........................",
+      "........................",
+      "..e..............e......",
+      "XXXX....XXXXXX....XXXX..",
+      "........................",
+      "......e........e........",
+      "..XXXXXX......XXXXXX....",
+      "........................",
+      ".e..................e...",
+      "XXXX....XXXXXX....XXXX..",
+      "........................",
+      "............e...........",
+      "XXXXXXXXXXXXXXXXXXXXXXXX",
+    ];
+    const ROWS = MAP.length, COLS = MAP[0].length;
+    const PAL = ["#f0c040", "#ff4d9a", "#3ef0ff", "#7cff4a"];
+    const keys = Object.create(null);
+    addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+      if (e.code === "Space" || e.code === "ArrowUp") e.preventDefault();
+    });
+    addEventListener("keyup", (e) => { keys[e.code] = false; });
+    let tap = 0, tapJump = false, tapBubble = false;
+    cvs.addEventListener("pointerdown", (e) => {
+      const r = cvs.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      if (y > 0.72) tapBubble = true;
+      else if (y < 0.28) tapJump = true;
+      else tap = x < 0.5 ? -1 : 1;
+    });
+    addEventListener("pointerup", () => { tap = 0; tapJump = false; tapBubble = false; });
+
+    let scale = 2, ox = 0, oy = 40;
+    function resize() {
+      const W = COLS * T, H = ROWS * T;
+      scale = Math.max(2, Math.floor(Math.min(innerWidth / W, (innerHeight - 48) / H)));
+      cvs.width = W * scale; cvs.height = H * scale;
+      cvs.style.width = cvs.width + "px";
+      cvs.style.height = cvs.height + "px";
+      cvs.style.display = "block";
+      cvs.style.margin = "48px auto 0";
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+    }
+    addEventListener("resize", resize); resize();
+
+    function solid(cx, cy) {
+      const c = Math.floor(cx / T), r = Math.floor(cy / T);
+      if (r < 0 || r >= ROWS) return r >= ROWS;
+      const col = ((c % COLS) + COLS) % COLS;
+      return MAP[r][col] === "X";
+    }
+
+    let P, foes, bubbles, score, won, lost, cool, t;
+    function boot() {
+      P = { x: 40, y: ROWS * T - 28, vx: 0, vy: 0, face: 1, on: false, coy: 0 };
+      foes = [];
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+        if (MAP[r][c] === "e") foes.push({ x: c * T + 8, y: r * T, vx: 30 * (c % 2 ? 1 : -1), trapped: 0, dead: false, col: Math.random() * PAL.length | 0 });
+      }
+      bubbles = []; score = 0; won = false; lost = false; cool = 0; t = 0;
+      document.getElementById("over").className = "over";
+    }
+    boot();
+
+    function finish(title) {
+      won = title.indexOf("CLEAR") >= 0; lost = !won;
+      document.getElementById("end").textContent = title;
+      document.getElementById("sc").textContent = score + " pts";
+      document.getElementById("over").className = "over on";
+    }
+
+    function tick(dt) {
+      if (won || lost) return;
+      t += dt; cool = Math.max(0, cool - dt);
+      const left = keys.ArrowLeft || keys.KeyA || tap < 0;
+      const right = keys.ArrowRight || keys.KeyD || tap > 0;
+      P.vx = (right ? 1 : 0) - (left ? 1 : 0);
+      if (P.vx) P.face = P.vx;
+      P.x += P.vx * 70 * dt;
+      if (P.x < 0) P.x += COLS * T;
+      if (P.x >= COLS * T) P.x -= COLS * T;
+      P.vy += 420 * dt;
+      const jump = keys.ArrowUp || keys.KeyZ || keys.KeyW || tapJump;
+      if (jump && (P.on || P.coy > 0)) { P.vy = -168; P.on = false; P.coy = 0; tapJump = false; }
+      P.y += P.vy * dt;
+      P.on = false;
+      if (P.vy >= 0 && solid(P.x, P.y + 12)) { P.y = Math.floor((P.y + 12) / T) * T - 12; P.vy = 0; P.on = true; P.coy = 0.1; }
+      else P.coy = Math.max(0, P.coy - dt);
+      if (P.y > ROWS * T + 20) { P.x = 40; P.y = ROWS * T - 28; P.vy = 0; }
+
+      if ((keys.Space || tapBubble) && cool <= 0) {
+        keys.Space = false; tapBubble = false; cool = 0.28;
+        bubbles.push({ x: P.x + P.face * 10, y: P.y, vx: P.face * 90, life: 3.2, trap: null });
+      }
+      for (const b of bubbles) {
+        b.x += b.vx * dt;
+        b.vx *= Math.pow(0.12, dt);
+        if (b.trap) { b.y -= 22 * dt; b.life -= dt * 0.35; }
+        else { b.y -= 8 * dt; b.life -= dt; }
+        if (b.x < 0) b.x += COLS * T;
+        if (b.x >= COLS * T) b.x -= COLS * T;
+        if (!b.trap) {
+          for (const f of foes) {
+            if (f.dead || f.trapped) continue;
+            if (Math.hypot(f.x - b.x, f.y - b.y) < 12) { b.trap = f; f.trapped = 1; b.life = 4; }
+          }
+        }
+        if (b.trap && Math.hypot(P.x - b.x, P.y - b.y) < 12) {
+          b.life = 0; b.trap.dead = true; score += 200;
+        }
+      }
+      bubbles = bubbles.filter((b) => b.life > 0 && b.y > -8);
+      for (const f of foes) {
+        if (f.dead || f.trapped) continue;
+        f.x += f.vx * dt;
+        if (solid(f.x + Math.sign(f.vx) * 6, f.y + 8) || !solid(f.x + Math.sign(f.vx) * 8, f.y + 14)) f.vx *= -1;
+        if (f.x < 0) f.x += COLS * T;
+        if (f.x >= COLS * T) f.x -= COLS * T;
+        if (Math.hypot(f.x - P.x, f.y - P.y) < 10) finish("POPPED");
+      }
+      if (foes.every((f) => f.dead)) finish("STAGE CLEAR");
+    }
+
+    function pix(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x | 0, y | 0, w, h); }
+    function draw() {
+      ctx.fillStyle = "#1a1450"; ctx.fillRect(0, 0, COLS * T, ROWS * T);
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+        if (MAP[r][c] !== "X") continue;
+        pix(c * T, r * T, T, T, "#3a2a78");
+        pix(c * T, r * T, T, 2, "#f0c040");
+      }
+      for (const b of bubbles) {
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.trap ? 9 : 7, 0, 7);
+        ctx.fillStyle = b.trap ? PAL[b.trap.col] + "cc" : "rgba(180,220,255,.55)";
+        ctx.fill();
+        ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.stroke();
+        if (b.trap) pix(b.x - 3, b.y - 2, 6, 4, "#1a1450");
+      }
+      for (const f of foes) {
+        if (f.dead || f.trapped) continue;
+        pix(f.x - 5, f.y, 10, 12, PAL[f.col]);
+        pix(f.x - 3, f.y + 2, 2, 2, "#1a1450"); pix(f.x + 1, f.y + 2, 2, 2, "#1a1450");
+      }
+      pix(P.x - 5, P.y, 10, 12, "#f0c040");
+      pix(P.x + (P.face > 0 ? 1 : -3), P.y + 2, 2, 2, "#1a1450");
+      pix(P.x - 4, P.y + 12, 3, 2, "#ff4d9a"); pix(P.x + 1, P.y + 12, 3, 2, "#ff4d9a");
+      ctx.fillStyle = "#fff"; ctx.font = "700 8px ui-monospace";
+      ctx.fillText(score + "  ·  left " + foes.filter((f) => !f.dead).length, 4, 10);
+    }
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt); draw(); requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    document.getElementById("again").onclick = boot;
+  </script>
+</body>
+</html>

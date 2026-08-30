@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Volt Dash</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <style>
+    body { background: #07080c; }
+    canvas { image-rendering: auto; }
+    .over { position: fixed; inset: 0; top: 48px; display: none; place-items: center; background: #07080ccc; z-index: 10; text-align: center; }
+    .over.on { display: grid; }
+    button { appearance: none; cursor: pointer; background: #3ef0c8; color: #041210; border: 0; border-radius: 8px; font: 700 12px/2.4 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; padding: 0 1rem; }
+    .hud { position: fixed; left: 1rem; bottom: 1rem; z-index: 8; font: 700 13px/1.4 ui-monospace, monospace; color: #3ef0c8; pointer-events: none; text-shadow: 0 1px 3px #000; }
+    .pads { position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 20; display: flex; gap: .65rem; }
+    .pads button {
+      min-width: 5.6rem; height: 3.5rem; border-radius: 12px;
+      font: 700 13px/1.1 ui-monospace, monospace; letter-spacing: .14em;
+      box-shadow: 0 8px 24px #0008;
+    }
+    .pads .slide { background: #e8c470; color: #1a1208; }
+    .call { position: fixed; left: 50%; top: 28%; transform: translateX(-50%); z-index: 8; pointer-events: none;
+      font: 800 22px/1 ui-monospace, monospace; letter-spacing: .2em; color: #3ef0c8; text-shadow: 0 2px 10px #000; opacity: 0; transition: opacity .15s; }
+    .call.on { opacity: 1; }
+    .call.gold { color: #e8c470; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">Dash</span>
+    <span class="name">Volt Dash</span>
+    <span class="hint">Space / click jump · Down / Slide duck the gold beam</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="call" id="call"></div>
+  <div class="hud">M <span id="m">0</span> · BEST <span id="b">0</span> · VOLT <span id="v">0</span></div>
+  <div class="pads">
+    <button type="button" class="slide" id="btnSlide">Slide</button>
+    <button type="button" id="btnJump">Jump</button>
+  </div>
+  <div class="over" id="over"><div><h2>RAIL CUT</h2><p id="sc"></p><button type="button" id="again">Again</button></div></div>
+  <script src="../kit.js"></script>
+  <script>
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    const sfx = () => (window.RetroKit && RetroKit.sfx) || {};
+    const keys = Object.create(null);
+    const hold = { jump: false, slide: false };
+    addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+      if (e.code === "Space" || e.code === "ArrowDown" || e.code === "ArrowUp") e.preventDefault();
+    });
+    addEventListener("keyup", (e) => { keys[e.code] = false; });
+    cvs.addEventListener("pointerdown", (e) => {
+      if (e.button === 0) hold.jump = true;
+    });
+    addEventListener("pointerup", () => { hold.jump = false; hold.slide = false; });
+    function bindHold(el, which) {
+      el.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation(); hold[which] = true; el.setPointerCapture(e.pointerId); });
+      el.addEventListener("pointerup", (e) => { hold[which] = false; });
+      el.addEventListener("pointercancel", () => { hold[which] = false; });
+    }
+    bindHold(document.getElementById("btnJump"), "jump");
+    bindHold(document.getElementById("btnSlide"), "slide");
+
+    let W, H, dpr;
+    function resize() {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cvs.width = W * dpr; cvs.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+    }
+    addEventListener("resize", resize); resize();
+
+    const art = { bg: null, run: null, jump: null, idle: null, crate: null, beam: null };
+    function loadImg(url, key) { const i = new Image(); i.onload = () => { art[key] = i; }; i.src = url; }
+    const bgImg = new Image(); bgImg.onload = () => { art.bg = bgImg; }; bgImg.src = "art/bg.jpg";
+    loadImg("art/run.png", "run");
+    loadImg("art/jump.png", "jump");
+    loadImg("art/idle.png", "idle");
+    loadImg("art/crate.png", "crate");
+    loadImg("art/beam.png", "beam");
+
+    const PX = 118, PW = 28, STAND_H = 52, SLIDE_H = 22;
+    const JUMP_V = -680, GRAV = 2050;
+    const BOOK = ["crate", "beam", "gap", "crate", "beam", "saw", "gap", "crate"];
+
+    let best = +localStorage.voltDash || 0;
+    let S;
+    function gnd() { return H * 0.68; }
+    function boot() {
+      S = {
+        x: 0, y: 0, vy: 0, on: true, slide: false, t: 0, spd: 250, dead: false,
+        obs: [], volts: [], sparks: [], voltsN: 0, next: 700, lesson: 0, coy: 0, buf: 0
+      };
+      document.getElementById("over").className = "over";
+    }
+    function place(kind, at) {
+      if (kind === "crate") S.obs.push({ x: at, w: 48, h: 42, y: 0, kind: "crate" });
+      else if (kind === "saw") S.obs.push({ x: at, w: 40, h: 38, y: 0, kind: "saw", spin: 0 });
+      else if (kind === "beam") S.obs.push({ x: at, w: 96, h: 24, y: 24, kind: "beam" });
+      else if (kind === "gap") S.obs.push({ x: at, w: 74, h: 0, y: 0, kind: "gap" });
+      if (kind === "crate" || kind === "gap") S.volts.push({ x: at + 24, y: 78, live: true });
+      if (kind === "beam") S.volts.push({ x: at + 48, y: 14, live: true });
+    }
+    function spawnAhead() {
+      const wait = S.spd * (0.95 + Math.random() * 0.28);
+      const at = S.next;
+      if (S.lesson === 0) { place("crate", at); S.lesson++; S.next = at + S.spd * 1.35; }
+      else if (S.lesson === 1) { place("beam", at); S.lesson++; S.next = at + S.spd * 1.35; }
+      else if (S.lesson === 2) { place("gap", at); S.lesson++; S.next = at + S.spd * 1.2; }
+      else {
+        const kind = BOOK[(Math.random() * BOOK.length) | 0];
+        place(kind, at);
+        S.next = at + wait;
+      }
+    }
+    boot();
+
+    function wantJump() { return keys.Space || keys.ArrowUp || keys.KeyW || hold.jump; }
+    function wantSlide() { return keys.ArrowDown || keys.KeyS || hold.slide; }
+
+    function tick(dt) {
+      if (S.dead) return;
+      S.t += dt;
+      S.spd = 250 + Math.min(380, S.t * 9);
+      S.x += S.spd * dt;
+      if (wantJump()) S.buf = 0.1; else S.buf = Math.max(0, S.buf - dt);
+      S.slide = wantSlide() && S.on;
+      if (S.on) S.coy = 0.09; else S.coy = Math.max(0, S.coy - dt);
+      if (S.buf > 0 && S.coy > 0 && !S.slide) {
+        S.vy = JUMP_V; S.on = false; S.coy = 0; S.buf = 0; hold.jump = false; keys.Space = false;
+        (sfx().jump || (() => {}))();
+      }
+      S.vy += GRAV * dt;
+      S.y += S.vy * dt;
+      if (S.y >= 0) { S.y = 0; S.vy = 0; S.on = true; }
+      if (S.next < S.x + W + 40) spawnAhead();
+      S.obs = S.obs.filter((o) => o.x > S.x - 120);
+
+      const G = gnd();
+      const ph = S.slide ? SLIDE_H : STAND_H;
+      const pTop = G - ph - S.y, pBot = G - S.y, pL = PX, pR = PX + PW;
+      let call = "", gold = false;
+      for (const o of S.obs) {
+        if (o.kind === "saw") o.spin += dt * 7;
+        const oL = o.x - S.x + PX, oR = oL + o.w;
+        const soon = oL > pR && oL < pR + S.spd * 1.05;
+        if (soon && (o.kind === "crate" || o.kind === "saw" || o.kind === "gap")) call = "JUMP";
+        if (soon && o.kind === "beam") { call = "SLIDE"; gold = true; }
+        if (o.kind === "gap") {
+          if (S.on && S.y <= 1 && pR > oL + 8 && pL < oR - 8) die();
+          continue;
+        }
+        const oBot = G - o.y, oTop = oBot - o.h;
+        if (pR > oL && pL < oR && pBot > oTop && pTop < oBot) die();
+      }
+      const el = document.getElementById("call");
+      el.textContent = call;
+      el.className = "call" + (call ? " on" : "") + (gold ? " gold" : "");
+
+      for (const v of S.volts) {
+        if (!v.live) continue;
+        const vx = v.x - S.x + PX, vy = G - v.y - S.y;
+        if (vx > pL - 10 && vx < pR + 10 && vy > pTop - 10 && vy < pBot + 10) {
+          v.live = false; S.voltsN++; (sfx().pickup || (() => {}))();
+        }
+      }
+      S.volts = S.volts.filter((v) => v.x > S.x - 40);
+      if (Math.random() < 0.45) S.sparks.push({ x: S.x + 70, y: Math.random() * 18, life: 0.3 });
+      for (const p of S.sparks) p.life -= dt;
+      S.sparks = S.sparks.filter((p) => p.life > 0);
+      document.getElementById("m").textContent = (S.x / 40 | 0);
+      document.getElementById("b").textContent = (best / 40 | 0);
+      document.getElementById("v").textContent = S.voltsN;
+    }
+    function die() {
+      if (S.dead) return;
+      S.dead = true;
+      best = Math.max(best, S.x);
+      localStorage.voltDash = best;
+      (sfx().die || (() => {}))();
+      document.getElementById("sc").textContent = (S.x / 40 | 0) + " m  ·  " + S.voltsN + " volts  ·  best " + (best / 40 | 0) + " m";
+      document.getElementById("over").className = "over on";
+      document.getElementById("call").className = "call";
+    }
+    function drawSpr(spr, x, y, w, h) {
+      if (!spr) return false;
+      ctx.drawImage(spr, x, y, w, h);
+      return true;
+    }
+    function draw() {
+      const G = gnd();
+      ctx.fillStyle = "#07080c"; ctx.fillRect(0, 0, W, H);
+      if (art.bg) {
+        const ir = art.bg.naturalWidth / art.bg.naturalHeight, wr = W / H;
+        let dw, dh, dx, dy;
+        if (wr > ir) { dw = W; dh = W / ir; dx = 0; dy = (H - dh) / 2; }
+        else { dh = H; dw = H * ir; dx = (W - dw) / 2; dy = 0; }
+        ctx.globalAlpha = 0.92;
+        ctx.drawImage(art.bg, dx - (S.x * 0.08 % 12), dy, dw, dh);
+        ctx.globalAlpha = 1;
+      }
+      ctx.fillStyle = "#0c1016ee";
+      ctx.fillRect(0, G, W, H - G);
+      ctx.fillStyle = "#3ef0c8"; ctx.fillRect(0, G, W, 3);
+      ctx.fillStyle = "#c45c2833";
+      ctx.fillRect(0, G + 18, W, 10);
+      for (const o of S.obs) {
+        const ox = o.x - S.x + PX;
+        if (o.kind === "gap") {
+          ctx.fillStyle = "#050608"; ctx.fillRect(ox, G - 2, o.w, 64);
+          ctx.fillStyle = "#c45c28"; ctx.fillRect(ox, G + 22, o.w, 8);
+          continue;
+        }
+        if (o.kind === "saw") {
+          ctx.save();
+          ctx.translate(ox + o.w / 2, G - o.h / 2);
+          ctx.rotate(o.spin);
+          ctx.fillStyle = "#ff5a4a";
+          ctx.beginPath();
+          for (let i = 0; i < 8; i++) {
+            const a = i / 8 * Math.PI * 2;
+            ctx.lineTo(Math.cos(a) * 18, Math.sin(a) * 18);
+            ctx.lineTo(Math.cos(a + 0.22) * 8, Math.sin(a + 0.22) * 8);
+          }
+          ctx.fill();
+          ctx.restore();
+          continue;
+        }
+        if (o.kind === "beam") {
+          if (!drawSpr(art.beam, ox, G - o.h - o.y, o.w, o.h + 8)) {
+            ctx.fillStyle = "#e8c470"; ctx.fillRect(ox, G - o.h - o.y, o.w, o.h);
+          }
+          continue;
+        }
+        if (!drawSpr(art.crate, ox - 4, G - o.h - 6, o.w + 8, o.h + 6)) {
+          ctx.fillStyle = "#3a3430"; ctx.fillRect(ox, G - o.h, o.w, o.h);
+        }
+      }
+      for (const v of S.volts) {
+        if (!v.live) continue;
+        ctx.fillStyle = "#3ef0c8";
+        ctx.beginPath(); ctx.arc(v.x - S.x + PX, G - v.y, 5, 0, 7); ctx.fill();
+        ctx.globalAlpha = 0.3; ctx.beginPath(); ctx.arc(v.x - S.x + PX, G - v.y, 9, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      }
+      const ph = S.slide ? SLIDE_H : STAND_H;
+      const py = G - ph - S.y;
+      const pose = !S.on ? art.jump : S.slide ? art.idle : art.run;
+      const sprH = S.slide ? 44 : 64;
+      const sprW = sprH * ((pose && pose.naturalWidth) ? pose.naturalWidth / pose.naturalHeight : 0.85);
+      if (!drawSpr(pose, PX - 8, py + ph - sprH, sprW, sprH)) {
+        ctx.fillStyle = "#1a2230"; ctx.fillRect(PX, py, PW, ph);
+        ctx.fillStyle = "#3ef0c8"; ctx.fillRect(PX + 6, py + 8, 16, 4);
+      }
+      for (const p of S.sparks) {
+        ctx.globalAlpha = p.life * 2;
+        ctx.fillStyle = "#3ef0c8";
+        ctx.fillRect(p.x - S.x + 90, G - 6 - p.y, 2, 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt); draw(); requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    document.getElementById("again").onclick = boot;
+  </script>
+</body>
+</html>

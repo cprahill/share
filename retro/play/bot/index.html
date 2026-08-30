@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok Bot</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <style>
+    body { background: #070b14; }
+    .over { position: fixed; inset: 0; top: 48px; display: none; place-items: center; background: #070b14d8; z-index: 10; text-align: center; color: #e8ece6; }
+    .over.on { display: grid; }
+    button { appearance: none; cursor: pointer; background: #3ef0c8; color: #041210; border: 0; border-radius: 8px; font: 700 12px/2.4 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; padding: 0 1.1rem; }
+    .how { max-width: 28rem; margin: 0 auto 1rem; text-align: left; color: #a8b4c0; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">2D</span>
+    <span class="name">Grok Bot</span>
+    <span class="hint">← → run · Z/up jump · down duck/slide · Space charge shot</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="over on" id="over">
+    <div>
+      <h2 id="end">Grok Bot</h2>
+      <p class="how">Visor-bot with a body and a gold cannon. Run the factory, climb, slide the crawl, charge a fat shot for the brute.</p>
+      <p id="sc"></p>
+      <button type="button" id="again">Play</button>
+    </div>
+  </div>
+  <script src="../kit.js"></script>
+  <script>
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    const T = 16, PW = 10, STAND_H = 20, DUCK_H = 12;
+    const JUMP_V = -335, GRAV = 980, RUN = 118, MAXFALL = 380;
+    const sfx = () => (window.RetroKit && RetroKit.sfx) || {};
+
+    function build() {
+      const COLS = 230, ROWS = 20;
+      const g = Array.from({ length: ROWS }, () => Array(COLS).fill("."));
+      const put = (x, y, t) => { if (x >= 0 && x < COLS && y >= 0 && y < ROWS) g[y][x] = t; };
+      const rect = (x, y, w, h, t) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(x + i, y + j, t); };
+      const floor = (x, w) => rect(x, 18, w, 2, "X");
+      const plat = (x, y, w) => rect(x, y, w, 1, "=");
+      const spikes = (x, w) => { for (let i = 0; i < w; i++) put(x + i, 17, "^"); };
+      const lad = (x, y0, y1) => { for (let y = y0; y <= y1; y++) put(x, y, "#"); };
+      rect(0, 0, COLS, 1, "X");
+      floor(0, 42);
+      spikes(42, 5);
+      plat(43, 15, 3);
+      floor(47, 25);
+      plat(58, 15, 6);
+      plat(66, 13, 4);
+      floor(72, 30);
+      lad(80, 8, 17);
+      plat(81, 8, 10);
+      plat(86, 12, 4);
+      floor(102, 18);
+      rect(106, 15, 10, 2, "X");
+      floor(120, 22);
+      plat(128, 15, 4);
+      plat(134, 13, 5);
+      spikes(142, 6);
+      plat(143, 15, 3);
+      plat(148, 13, 3);
+      floor(148, 18);
+      plat(158, 15, 5);
+      lad(164, 10, 17);
+      plat(165, 10, 8);
+      floor(166, 64);
+      rect(198, 8, 1, 8, "X");
+      rect(226, 8, 4, 10, "X");
+      const foes = [
+        { kind: "walk", tx: 18, ty: 18 },
+        { kind: "walk", tx: 32, ty: 18 },
+        { kind: "fly", tx: 54, ty: 11 },
+        { kind: "turret", tx: 61, ty: 15, face: -1 },
+        { kind: "walk", tx: 74, ty: 18 },
+        { kind: "fly", tx: 88, ty: 5 },
+        { kind: "jump", tx: 96, ty: 18 },
+        { kind: "turret", tx: 122, ty: 18, face: -1 },
+        { kind: "walk", tx: 124, ty: 18 },
+        { kind: "fly", tx: 136, ty: 9 },
+        { kind: "jump", tx: 154, ty: 18 },
+        { kind: "turret", tx: 160, ty: 15, face: -1 },
+        { kind: "walk", tx: 174, ty: 18 },
+        { kind: "fly", tx: 182, ty: 12 },
+        { kind: "jump", tx: 190, ty: 18 }
+      ];
+      const items = [
+        { tx: 24, ty: 17 },
+        { tx: 67, ty: 10 },
+        { tx: 89, ty: 7 },
+        { tx: 118, ty: 17 },
+        { tx: 168, ty: 9 }
+      ];
+      const checks = [{ tx: 76, ty: 18 }, { tx: 152, ty: 18 }, { tx: 196, ty: 18 }];
+      return { map: g.map((r) => r.join("")), COLS, ROWS, foes, items, checks, boss: { tx: 212, ty: 18 } };
+    }
+
+    const STAGE = build();
+    const MAP = STAGE.map, COLS = STAGE.COLS, ROWS = STAGE.ROWS;
+
+    function tile(tx, ty) {
+      if (ty < 0) return ".";
+      if (ty >= ROWS) return "X";
+      if (tx < 0 || tx >= COLS) return "X";
+      return MAP[ty][tx];
+    }
+    function hits(x, y, w, h, pred) {
+      const x0 = Math.floor(x / T), x1 = Math.floor((x + w - 0.001) / T);
+      const y0 = Math.floor(y / T), y1 = Math.floor((y + h - 0.001) / T);
+      for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+        const ch = tile(tx, ty);
+        if (pred(ch, tx, ty)) return { tx, ty, ch };
+      }
+      return null;
+    }
+
+    const keys = Object.create(null);
+    addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+      if (e.code === "Space" || e.code === "ArrowUp" || e.code === "ArrowDown") e.preventDefault();
+    });
+    addEventListener("keyup", (e) => { keys[e.code] = false; });
+    let tap = 0, tapJump = false, tapShot = false;
+    cvs.addEventListener("pointerdown", (e) => {
+      const r = cvs.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      if (y > 0.78) tapShot = true;
+      else if (y < 0.28) tapJump = true;
+      else tap = x < 0.45 ? -1 : 1;
+    });
+    addEventListener("pointerup", () => { tap = 0; tapJump = false; tapShot = false; });
+
+    let W, H, dpr, scale;
+    function resize() {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cvs.width = W * dpr; cvs.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      scale = Math.max(2.5, Math.min(4, (H - 48) / (14 * T)));
+    }
+    addEventListener("resize", resize); resize();
+
+    let idleSpr = null, runSpr = null, jumpSpr = null;
+    function loadCrop(url, done) {
+      if (!window.RetroKit) return;
+      RetroKit.loadKeyed(url, (c) => {
+        const x = c.getContext("2d");
+        const d = x.getImageData(0, 0, c.width, c.height);
+        let minX = c.width, minY = c.height, maxX = 0, maxY = 0;
+        for (let i = 0; i < d.data.length; i += 4) {
+          if (d.data[i + 3] < 12) continue;
+          const p = (i / 4) | 0, px = p % c.width, py = (p / c.width) | 0;
+          if (px < minX) minX = px; if (py < minY) minY = py;
+          if (px > maxX) maxX = px; if (py > maxY) maxY = py;
+        }
+        if (maxX < minX) { done(c); return; }
+        const w = maxX - minX + 1, h = maxY - minY + 1;
+        const o = document.createElement("canvas");
+        o.width = w; o.height = h;
+        o.getContext("2d").drawImage(c, minX, minY, w, h, 0, 0, w, h);
+        done(o);
+      });
+    }
+    loadCrop("art/idle.jpg", (c) => { idleSpr = c; });
+    loadCrop("art/run.jpg", (c) => { runSpr = c; });
+    loadCrop("art/jump.jpg", (c) => { jumpSpr = c; });
+
+    let P, pshots, eshots, foes, items, boss, camx, camy, lives, charge, cool, playing, won, shake, parts, spawn, chargedSfx;
+
+    function spark(x, y, n, col) {
+      for (let i = 0; i < n; i++) {
+        parts.push({ x, y, vx: (Math.random() - 0.5) * 90, vy: (Math.random() - 0.8) * 80, life: 0.25 + Math.random() * 0.3, col: col || "#3ef0c8" });
+      }
+    }
+    function spawnFoes() {
+      return STAGE.foes.map((f) => ({
+        kind: f.kind, x: f.tx * T + 8, y: f.kind === "fly" ? f.ty * T : f.ty * T - 12,
+        vx: (f.face || -1) * (f.kind === "walk" ? 28 : 0), hp: f.kind === "turret" ? 3 : 2,
+        t: Math.random(), flash: 0, base: f.ty * T, face: f.face || -1, live: true
+      }));
+    }
+    function boot() {
+      spawn = { x: 4 * T + 8, y: 18 * T - STAND_H };
+      P = { x: spawn.x, y: spawn.y, vx: 0, vy: 0, face: 1, on: false, coy: 0, buf: 0, inv: 0, h: STAND_H, duck: false, slide: 0, climb: false, jumpCut: false, hp: 3 };
+      pshots = []; eshots = []; parts = [];
+      foes = spawnFoes();
+      items = STAGE.items.map((it) => ({ x: it.tx * T + 8, y: it.ty * T + 8, live: true }));
+      boss = { x: STAGE.boss.tx * T, y: 18 * T - 28, vx: -36, hp: 20, max: 20, t: 0, live: true, flash: 0, mode: "pace" };
+      camx = 0; camy = 0; lives = 3; charge = 0; cool = 0; playing = true; won = false; shake = 0; chargedSfx = false;
+      document.getElementById("over").className = "over";
+    }
+
+    function respawn() {
+      P.x = spawn.x; P.y = spawn.y; P.vx = 0; P.vy = 0; P.hp = 3; P.inv = 1.4; P.climb = false; P.slide = 0;
+    }
+    function hurt(src) {
+      if (P.inv > 0 || !playing) return;
+      P.hp--; P.inv = 1.15; shake = 0.22;
+      P.vx = (src && src.x > P.x ? -1 : 1) * -90; P.vy = -110;
+      (sfx().hit || (() => {}))();
+      if (P.hp <= 0) {
+        lives--;
+        (sfx().die || (() => {}))();
+        if (lives < 0) {
+          playing = false;
+          document.getElementById("end").textContent = "FACTORY HOLD";
+          document.getElementById("sc").textContent = "The visor went dark.";
+          document.getElementById("over").className = "over on";
+        } else respawn();
+      }
+    }
+
+    function tick(dt) {
+      if (!playing) return;
+      cool = Math.max(0, cool - dt); P.inv = Math.max(0, P.inv - dt); shake = Math.max(0, shake - dt);
+      for (const p of parts) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 220 * dt; p.life -= dt; }
+      parts = parts.filter((p) => p.life > 0);
+
+      const left = keys.ArrowLeft || keys.KeyA || tap < 0;
+      const right = keys.ArrowRight || keys.KeyD || tap > 0;
+      const jumpHeld = keys.ArrowUp || keys.KeyZ || keys.KeyW || tapJump;
+      const down = keys.ArrowDown || keys.KeyS;
+      const fireHeld = keys.Space || keys.KeyX || tapShot;
+      if (jumpHeld) P.buf = 0.12; else P.buf = Math.max(0, P.buf - dt);
+
+      const onLad = hits(P.x - 3, P.y + 2, 6, P.h - 4, (c) => c === "#");
+      if (onLad && (jumpHeld || down)) P.climb = true;
+      if (P.climb && !onLad) P.climb = false;
+
+      if (P.on && down && (left || right) && P.slide <= 0) {
+        P.slide = 0.34; P.vx = P.face * 190; (sfx().slide || (() => {}))();
+      }
+      P.slide = Math.max(0, P.slide - dt);
+      let wantDuck = (down && P.on) || P.slide > 0;
+      if (!wantDuck && hits(P.x - PW / 2, P.y - (STAND_H - P.h), PW, STAND_H, (c) => c === "X")) wantDuck = true;
+      const feet = P.y + P.h;
+      P.duck = wantDuck; P.h = P.duck ? DUCK_H : STAND_H;
+      if (P.on) P.y = feet - P.h;
+
+      if (P.climb) {
+        P.vx = 0; P.vy = 0;
+        if (jumpHeld && !down) P.y -= 78 * dt;
+        if (down) P.y += 86 * dt;
+        P.on = true; P.coy = 0.1;
+      } else {
+        if (P.slide <= 0) P.vx = ((right ? 1 : 0) - (left ? 1 : 0)) * (P.duck ? 70 : RUN);
+        if (P.vx) P.face = Math.sign(P.vx);
+        P.x += P.vx * dt;
+        const hx = hits(P.x - PW / 2, P.y + 1, PW, P.h - 2, (c) => c === "X");
+        if (hx) {
+          P.x = P.vx > 0 ? hx.tx * T - PW / 2 : (hx.tx + 1) * T + PW / 2;
+          P.vx = 0;
+        }
+        P.vy += GRAV * dt;
+        if (P.vy > MAXFALL) P.vy = MAXFALL;
+        if (!jumpHeld && !P.jumpCut && P.vy < 0) { P.vy *= 0.45; P.jumpCut = true; }
+        const prevFeet = P.y + P.h;
+        P.y += P.vy * dt;
+        P.on = false;
+        if (P.vy >= 0) {
+          const hs = hits(P.x - PW / 2, P.y, PW, P.h, (c) => c === "X");
+          if (hs) { P.y = hs.ty * T - P.h; P.vy = 0; P.on = true; P.jumpCut = false; }
+          const hp = hits(P.x - PW / 2, P.y, PW, P.h, (c) => c === "=");
+          if (hp) {
+            const top = hp.ty * T;
+            if (prevFeet <= top + 3) { P.y = top - P.h; P.vy = 0; P.on = true; P.jumpCut = false; }
+          }
+        } else {
+          const hs = hits(P.x - PW / 2, P.y, PW, P.h, (c) => c === "X");
+          if (hs) { P.y = (hs.ty + 1) * T; P.vy = 0; }
+        }
+      }
+      if (P.on) P.coy = 0.1; else P.coy = Math.max(0, P.coy - dt);
+      if (P.buf > 0 && P.coy > 0 && !P.duck) {
+        P.vy = JUMP_V; P.on = false; P.coy = 0; P.buf = 0; P.climb = false; P.jumpCut = false; tapJump = false;
+        (sfx().jump || (() => {}))();
+      }
+
+      if (P.y > ROWS * T + 8) {
+        P.inv = 0; P.hp = 1; hurt();
+      } else if (P.inv <= 0 && hits(P.x - 3, P.y + P.h - 4, 6, 4, (c) => c === "^")) {
+        hurt();
+      }
+      for (const ck of STAGE.checks) {
+        if (Math.abs(P.x - (ck.tx * T + 8)) < 12 && Math.abs((P.y + P.h) - ck.ty * T) < 18) {
+          spawn = { x: ck.tx * T + 8, y: ck.ty * T - STAND_H };
+        }
+      }
+
+      if (fireHeld) {
+        charge = Math.min(1, charge + dt);
+        if (charge > 0.55 && !chargedSfx) { chargedSfx = true; (sfx().charge || (() => {}))(); }
+      }
+      if (!fireHeld && charge > 0 && cool <= 0) {
+        const big = charge > 0.55;
+        const live = pshots.filter((s) => !s.big).length;
+        if (big || live < 3) {
+          pshots.push({ x: P.x + P.face * 12, y: P.y + (P.duck ? 6 : 8), vx: P.face * (big ? 280 : 230), dmg: big ? 4 : 1, r: big ? 5.5 : 2.4, big });
+          (sfx().shoot || (() => {}))();
+          cool = big ? 0.28 : 0.12;
+        }
+        charge = 0; chargedSfx = false;
+      }
+      if (!fireHeld) { charge = 0; chargedSfx = false; }
+      for (const s of pshots) s.x += s.vx * dt;
+      pshots = pshots.filter((s) => s.x > camx - 30 && s.x < camx + W / scale + 30);
+
+      for (const f of foes) {
+        if (!f.live) continue;
+        f.flash = Math.max(0, f.flash - dt); f.t += dt;
+        if (f.kind === "walk") {
+          f.x += f.vx * dt;
+          if (hits(f.x + Math.sign(f.vx) * 6, f.y + 4, 2, 6, (c) => c === "X") ||
+              !hits(f.x + Math.sign(f.vx) * 8, f.y + 14, 2, 4, (c) => c === "X" || c === "=")) f.vx *= -1;
+        } else if (f.kind === "fly") {
+          f.y = f.base + Math.sin(f.t * 2.2) * 12;
+          f.x += Math.sin(f.t * 0.9) * 18 * dt;
+        } else if (f.kind === "jump") {
+          if (!f.air) {
+            if (Math.abs(P.x - f.x) < 90 && f.t > 0.9) { f.vy = -210; f.air = true; f.t = 0; }
+          } else {
+            f.vy = (f.vy || 0) + GRAV * dt; f.y += f.vy * dt;
+            if (f.y >= 18 * T - 12) { f.y = 18 * T - 12; f.vy = 0; f.air = false; }
+          }
+        } else if (f.kind === "turret") {
+          f.face = P.x < f.x ? -1 : 1;
+          if (f.t > 1.7) {
+            f.t = 0;
+            eshots.push({ x: f.x + f.face * 8, y: f.y + 4, vx: f.face * 120, r: 3 });
+          }
+        }
+        if (P.inv <= 0 && Math.abs(f.x - P.x) < 11 && Math.abs(f.y - (P.y + P.h / 2)) < 12) hurt(f);
+        for (const s of pshots) {
+          if (Math.hypot(s.x - f.x, s.y - (f.y + 4)) < 9 + s.r) {
+            f.hp -= s.dmg; f.flash = 0.12; s.x = -9999; spark(f.x, f.y, 5, "#e8c470");
+            if (f.hp <= 0) { f.live = false; (sfx().hit || (() => {}))(); spark(f.x, f.y, 10, "#3ef0c8"); }
+          }
+        }
+      }
+      for (const s of eshots) s.x += s.vx * dt;
+      eshots = eshots.filter((s) => s.x > camx - 20 && s.x < camx + W / scale + 20);
+      for (const s of eshots) {
+        if (P.inv <= 0 && Math.hypot(s.x - P.x, s.y - (P.y + 8)) < 9) { hurt(); s.x = -9999; }
+      }
+      for (const it of items) {
+        if (!it.live) continue;
+        if (Math.hypot(it.x - P.x, it.y - (P.y + 8)) < 12) {
+          it.live = false; P.hp = Math.min(3, P.hp + 1); (sfx().pickup || (() => {}))();
+        }
+      }
+
+      if (boss.live) {
+        boss.t += dt; boss.flash = Math.max(0, boss.flash - dt);
+        const arenaL = 200 * T, arenaR = 224 * T;
+        if (P.x > arenaL - 8) {
+          boss.x += boss.vx * dt;
+          if (boss.x < arenaL + 16 || boss.x > arenaR - 16) boss.vx *= -1;
+          if (boss.hp > 10) {
+            if (boss.t > 1.5) {
+              boss.t = 0;
+              eshots.push({ x: boss.x, y: boss.y + 10, vx: Math.sign(P.x - boss.x) * 150, r: 4.5 });
+            }
+          } else if (boss.hp > 5) {
+            if (boss.t > 1.15) {
+              boss.t = 0;
+              boss.vy = -240; boss.air = true;
+              eshots.push({ x: boss.x, y: boss.y + 10, vx: Math.sign(P.x - boss.x) * 170, r: 4.5 });
+            }
+          } else if (boss.t > 0.7) {
+            boss.t = 0;
+            eshots.push({ x: boss.x - 8, y: boss.y + 8, vx: -180, r: 4 });
+            eshots.push({ x: boss.x + 8, y: boss.y + 8, vx: 180, r: 4 });
+          }
+          if (boss.air) {
+            boss.vy = (boss.vy || 0) + GRAV * dt; boss.y += boss.vy * dt;
+            if (boss.y >= 18 * T - 28) { boss.y = 18 * T - 28; boss.air = false; shake = 0.28; spark(boss.x, boss.y + 24, 14, "#ff5a4a"); }
+          }
+        }
+        if (P.inv <= 0 && Math.abs(boss.x - P.x) < 16 && Math.abs(boss.y + 10 - (P.y + 8)) < 16) hurt(boss);
+        for (const s of pshots) {
+          if (Math.hypot(s.x - boss.x, s.y - (boss.y + 10)) < 16) {
+            boss.hp -= s.dmg; boss.flash = 0.1; s.x = -9999; spark(boss.x, boss.y + 8, 6, "#fff");
+            if (boss.hp <= 0) {
+              boss.live = false; won = true; playing = false; shake = 0.5;
+              (sfx().win || (() => {}))();
+              document.getElementById("end").textContent = "FACTORY CLEAR";
+              document.getElementById("sc").textContent = "The brute dropped. Visor still lit.";
+              document.getElementById("over").className = "over on";
+            }
+          }
+        }
+      }
+
+      const viewW = W / scale, viewH = (H - 48) / scale;
+      let targetX = P.x - viewW * 0.38;
+      let minX = 0, maxX = COLS * T - viewW;
+      if (P.x > 200 * T) { minX = 198 * T; maxX = Math.max(minX, 230 * T - viewW); }
+      camx += (Math.max(minX, Math.min(maxX, targetX)) - camx) * Math.min(1, 7 * dt);
+      camy += ((P.y - viewH * 0.55) - camy) * Math.min(1, 7 * dt);
+      camy = Math.max(0, Math.min(camy, ROWS * T - viewH));
+    }
+
+    function drawBot(x, yBottom, face, pose) {
+      const spr = pose === "jump" ? jumpSpr : pose === "run" ? runSpr : idleSpr;
+      const h = (P.duck ? 16 : 24);
+      ctx.save();
+      ctx.translate(x, yBottom);
+      ctx.scale(face, P.duck ? 0.78 : 1);
+      if (spr) {
+        const w = h * (spr.width / spr.height);
+        ctx.drawImage(spr, -w * 0.42, -h, w, h);
+      } else {
+        ctx.fillStyle = "#1a2230";
+        ctx.fillRect(-6, -16, 12, 10);
+        ctx.beginPath(); ctx.arc(0, -20, 6, 0, 7); ctx.fill();
+        ctx.fillStyle = "#3ef0c8"; ctx.fillRect(-4, -22, 8, 3);
+        ctx.fillStyle = "#c45c28"; ctx.fillRect(-3, -13, 6, 5);
+        ctx.fillStyle = "#e8c470"; ctx.fillRect(5, -15, 10, 5);
+        ctx.fillStyle = "#2a3340"; ctx.fillRect(-5, -6, 4, 6); ctx.fillRect(1, -6, 4, 6);
+      }
+      if (charge > 0.18) {
+        ctx.strokeStyle = charge > 0.55 ? "#fff6c8" : "#3ef0c8";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.arc(12, -14, 3 + charge * 5, 0, 7); ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.fillStyle = "#070b14"; ctx.fillRect(0, 0, W, H);
+      if (!P) return;
+      const sx = (Math.random() - 0.5) * shake * 10;
+      const sy = (Math.random() - 0.5) * shake * 10;
+      ctx.save();
+      ctx.translate(0, 48);
+      ctx.scale(scale, scale);
+      ctx.translate(-camx + sx / scale, -camy + sy / scale);
+      for (let i = 0; i < 14; i++) {
+        const bx = ((i * 90 - camx * 0.25) % (W / scale + 90));
+        ctx.fillStyle = i % 2 ? "#0c1220" : "#0a101c";
+        ctx.fillRect(camx + bx - 20, 20, 48, 180);
+      }
+      ctx.strokeStyle = "#3ef0c814"; ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(camx - 20, 40); ctx.lineTo(camx + W / scale + 20, 70);
+      ctx.stroke();
+      const x0 = Math.floor(camx / T) - 1, x1 = x0 + Math.ceil(W / scale / T) + 3;
+      const y0 = Math.max(0, Math.floor(camy / T) - 1), y1 = Math.min(ROWS, y0 + Math.ceil((H - 48) / scale / T) + 3);
+      for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+        const t = tile(x, y);
+        const px = x * T, py = y * T;
+        if (t === "X") {
+          ctx.fillStyle = "#243044"; ctx.fillRect(px, py, T, T);
+          ctx.fillStyle = "#3ef0c828"; ctx.fillRect(px, py, T, 2);
+          ctx.fillStyle = "#1a2433"; ctx.fillRect(px + 11, py + 11, 2, 2);
+        } else if (t === "=") {
+          ctx.fillStyle = "#3a4860"; ctx.fillRect(px, py, T, 5);
+          ctx.fillStyle = "#e8c47055"; ctx.fillRect(px, py, T, 1);
+        } else if (t === "#") {
+          ctx.fillStyle = "#c45c28"; ctx.fillRect(px + 6, py, 3, T);
+          ctx.fillRect(px + 2, py + 4, 12, 2);
+        } else if (t === "^") {
+          ctx.fillStyle = "#ff5a4a";
+          ctx.beginPath(); ctx.moveTo(px, py + T); ctx.lineTo(px + 8, py + 3); ctx.lineTo(px + T, py + T); ctx.fill();
+        }
+      }
+      for (const ck of STAGE.checks) {
+        const on = Math.abs(spawn.x - (ck.tx * T + 8)) < 4;
+        ctx.fillStyle = on ? "#3ef0c8" : "#3ef0c844";
+        ctx.fillRect(ck.tx * T + 2, ck.ty * T - 4, 12, 4);
+      }
+      for (const it of items) {
+        if (!it.live) continue;
+        ctx.fillStyle = "#c45c28";
+        ctx.beginPath();
+        ctx.moveTo(it.x, it.y + 4); ctx.lineTo(it.x - 5, it.y - 1); ctx.lineTo(it.x, it.y - 5); ctx.lineTo(it.x + 5, it.y - 1);
+        ctx.closePath(); ctx.fill();
+      }
+      for (const f of foes) {
+        if (!f.live) continue;
+        if (f.flash > 0) ctx.globalAlpha = 0.45;
+        if (f.kind === "fly") {
+          ctx.fillStyle = "#ff7a3a"; ctx.fillRect(f.x - 7, f.y, 14, 8);
+          ctx.fillStyle = "#0b1020"; ctx.fillRect(f.x - 3, f.y + 2, 2, 2); ctx.fillRect(f.x + 2, f.y + 2, 2, 2);
+        } else if (f.kind === "turret") {
+          ctx.fillStyle = "#6a5840"; ctx.fillRect(f.x - 7, f.y, 14, 12);
+          ctx.fillStyle = "#e8c470"; ctx.fillRect(f.x + (f.face > 0 ? 4 : -10), f.y + 3, 8, 4);
+        } else if (f.kind === "jump") {
+          ctx.fillStyle = "#b07cff"; ctx.fillRect(f.x - 7, f.y, 14, 12);
+          ctx.fillStyle = "#fff"; ctx.fillRect(f.x - 3, f.y + 3, 2, 2);
+        } else {
+          ctx.fillStyle = "#7cff4a"; ctx.fillRect(f.x - 7, f.y, 14, 12);
+          ctx.fillStyle = "#0b1020"; ctx.fillRect(f.x - 3, f.y + 3, 2, 2); ctx.fillRect(f.x + 2, f.y + 3, 2, 2);
+        }
+        ctx.globalAlpha = 1;
+      }
+      if (boss.live) {
+        ctx.globalAlpha = boss.flash > 0 ? 0.5 : 1;
+        ctx.fillStyle = "#2a2030"; ctx.fillRect(boss.x - 16, boss.y, 32, 28);
+        ctx.fillStyle = "#ff5a4a"; ctx.fillRect(boss.x - 9, boss.y + 6, 18, 4);
+        ctx.fillStyle = "#e8c470"; ctx.fillRect(boss.x - 16, boss.y + 14, 10, 6);
+        ctx.globalAlpha = 1;
+      }
+      for (const s of eshots) {
+        ctx.fillStyle = "#ff5a4a"; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill();
+      }
+      for (const s of pshots) {
+        ctx.fillStyle = s.big ? "#fff6c8" : "#3ef0c8";
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill();
+      }
+      for (const p of parts) {
+        ctx.globalAlpha = Math.max(0, p.life * 3);
+        ctx.fillStyle = p.col; ctx.fillRect(p.x, p.y, 2, 2);
+      }
+      ctx.globalAlpha = 1;
+      if (P.inv <= 0 || (performance.now() / 80 | 0) % 2) {
+        const pose = !P.on && !P.climb ? "jump" : Math.abs(P.vx) > 20 && P.on ? "run" : "idle";
+        drawBot(P.x, P.y + P.h, P.face, pose);
+      }
+      ctx.restore();
+      ctx.fillStyle = "#8b9388"; ctx.font = "700 12px ui-monospace";
+      const hearts = "♥".repeat(Math.max(0, P.hp)) + "♡".repeat(Math.max(0, 3 - P.hp));
+      ctx.fillText(hearts + "   lives " + Math.max(0, lives) + (charge > 0.55 ? "   CHARGE" : ""), 16, H - 18);
+      if (boss.live && P.x > 196 * T) {
+        ctx.fillStyle = "#2a2030"; ctx.fillRect(W / 2 - 80, 58, 160, 8);
+        ctx.fillStyle = "#ff5a4a"; ctx.fillRect(W / 2 - 80, 58, 160 * Math.max(0, boss.hp / boss.max), 8);
+      }
+    }
+
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt); draw(); requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    document.getElementById("again").onclick = boot;
+  </script>
+</body>
+</html>

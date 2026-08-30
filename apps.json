@@ -1,10 +1,16 @@
 {
   "apps": [
-    "mars"
+    "mars",
+    "retro"
   ],
+<<<<<<< HEAD
   "updated": "2026-08-30T18:06:50Z",
   "mars": {
     "build": "84",
     "entry": "mars/raid.html"
   }
 }
+=======
+  "updated": "2026-08-30T18:10:40Z"
+}
+>>>>>>> 549e5a3 (share retro)

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok Signal — 2020s</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <style>
+    .hud {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 8;
+      padding: .6rem 1rem 1rem; pointer-events: none;
+      background: linear-gradient(transparent, #07080ae8);
+      font: 700 12px/1.3 ui-monospace, monospace;
+    }
+    .hp { height: 8px; background: #1a1e18; border-radius: 99px; overflow: hidden; margin: .4rem 0; }
+    .hp i { display: block; height: 100%; background: #f0c040; width: 100%; }
+    .over {
+      position: fixed; inset: 0; display: none; place-items: center;
+      background: #07080acc; z-index: 10; text-align: center;
+    }
+    .over.on { display: grid; }
+    .over button {
+      margin-top: 1rem; appearance: none; cursor: pointer;
+      background: #c8f4e8; color: #0b1016; border: 0; border-radius: 8px;
+      font: 700 12px/2.4 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase;
+      padding: 0 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">2020s</span>
+    <span class="name">Grok Signal</span>
+    <span class="hint">WASD / stick · auto-fire · survive the feed</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="hud">
+    <div>TIME <span id="t">0</span>s · KILLS <span id="k">0</span> · LV <span id="l">1</span></div>
+    <div class="hp"><i id="hp"></i></div>
+  </div>
+  <div class="over" id="over">
+    <div>
+      <h2 id="end">Signal lost</h2>
+      <p id="score"></p>
+      <button type="button" id="again">Insert coin</button>
+    </div>
+  </div>
+  <script>
+    const cvs = document.getElementById("c");
+    const ctx = cvs.getContext("2d");
+    const keys = Object.create(null);
+    const stick = { x: 0, y: 0, down: false };
+    addEventListener("keydown", (e) => { keys[e.code] = true; if (e.code.startsWith("Key") || e.code.startsWith("Arrow")) e.preventDefault(); });
+    addEventListener("keyup", (e) => { keys[e.code] = false; });
+    const setStick = (e) => {
+      const r = cvs.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const t = e.touches ? e.touches[0] : e;
+      stick.x = t.clientX - cx; stick.y = t.clientY - cy;
+      const m = Math.hypot(stick.x, stick.y) || 1;
+      stick.x /= m; stick.y /= m;
+    };
+    cvs.addEventListener("pointerdown", (e) => { stick.down = true; setStick(e); });
+    addEventListener("pointermove", (e) => { if (stick.down) setStick(e); });
+    addEventListener("pointerup", () => { stick.down = false; });
+
+    let W, H, dpr;
+    function resize() {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cvs.width = W * dpr; cvs.height = H * dpr;
+      cvs.style.width = W + "px"; cvs.style.height = H + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    addEventListener("resize", resize); resize();
+
+    const GOLD = "#f0c040", INK = "#e8ece6", RED = "#ff5a4a", CY = "#5ee0ff";
+    let S;
+    function boot() {
+      S = {
+        t: 0, hp: 100, xp: 0, lv: 1, kills: 0, dead: false, win: false,
+        p: { x: 0, y: 0, r: 14 },
+        cam: { x: 0, y: 0 },
+        bullets: [], enemies: [], gems: [], fx: [],
+        fire: 0, spawn: 0,
+      };
+      document.getElementById("over").className = "over";
+    }
+    boot();
+
+    function aim() {
+      let x = 0, y = 0;
+      if (keys.KeyA || keys.ArrowLeft) x -= 1;
+      if (keys.KeyD || keys.ArrowRight) x += 1;
+      if (keys.KeyW || keys.ArrowUp) y -= 1;
+      if (keys.KeyS || keys.ArrowDown) y += 1;
+      if (stick.down) { x = stick.x; y = stick.y; }
+      const m = Math.hypot(x, y);
+      return m ? { x: x / m, y: y / m } : { x: 0, y: 0 };
+    }
+
+    function nearest(from) {
+      let best = null, d = 1e9;
+      for (const e of S.enemies) {
+        const k = (e.x - from.x) ** 2 + (e.y - from.y) ** 2;
+        if (k < d) { d = k; best = e; }
+      }
+      return best;
+    }
+
+    function tick(dt) {
+      if (S.dead || S.win) return;
+      S.t += dt;
+      if (S.t >= 90) { S.win = true; end("Feed survived"); return; }
+      const v = aim();
+      const spd = 210;
+      S.p.x += v.x * spd * dt;
+      S.p.y += v.y * spd * dt;
+      S.cam.x += (S.p.x - S.cam.x) * Math.min(1, 8 * dt);
+      S.cam.y += (S.p.y - S.cam.y) * Math.min(1, 8 * dt);
+
+      S.fire -= dt;
+      const n = nearest(S.p);
+      if (n && S.fire <= 0) {
+        const a = Math.atan2(n.y - S.p.y, n.x - S.p.x);
+        const extra = S.lv >= 3 ? 1 : 0;
+        for (let i = -extra; i <= extra; i++) {
+          const ang = a + i * 0.18;
+          S.bullets.push({ x: S.p.x, y: S.p.y, vx: Math.cos(ang) * 520, vy: Math.sin(ang) * 520, life: 0.9 });
+        }
+        S.fire = Math.max(0.12, 0.28 - S.lv * 0.02);
+      }
+      for (const b of S.bullets) { b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt; }
+
+      S.spawn -= dt;
+      if (S.spawn <= 0) {
+        const count = 1 + Math.floor(S.t / 12);
+        for (let i = 0; i < count; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const d = 420 + Math.random() * 180;
+          S.enemies.push({
+            x: S.p.x + Math.cos(a) * d,
+            y: S.p.y + Math.sin(a) * d,
+            r: 9 + Math.random() * 5,
+            hp: 1 + Math.floor(S.t / 25),
+            kind: Math.random() < 0.15 ? 1 : 0,
+          });
+        }
+        S.spawn = Math.max(0.35, 1.1 - S.t * 0.008);
+      }
+      const esp = 70 + S.t * 1.4;
+      for (const e of S.enemies) {
+        const a = Math.atan2(S.p.y - e.y, S.p.x - e.x);
+        e.x += Math.cos(a) * esp * dt;
+        e.y += Math.sin(a) * esp * dt;
+        if ((e.x - S.p.x) ** 2 + (e.y - S.p.y) ** 2 < (e.r + S.p.r) ** 2) {
+          S.hp -= (e.kind ? 18 : 10) * dt * 8;
+        }
+      }
+      for (const b of S.bullets) {
+        for (const e of S.enemies) {
+          if (e.hp <= 0) continue;
+          if ((b.x - e.x) ** 2 + (b.y - e.y) ** 2 < (e.r + 6) ** 2) {
+            e.hp -= 1; b.life = 0;
+            S.fx.push({ x: e.x, y: e.y, life: 0.25, r: e.r });
+            if (e.hp <= 0) {
+              S.kills++;
+              S.gems.push({ x: e.x, y: e.y, v: 8 + S.lv });
+            }
+          }
+        }
+      }
+      S.bullets = S.bullets.filter((b) => b.life > 0);
+      S.enemies = S.enemies.filter((e) => e.hp > 0);
+      for (const g of S.gems) {
+        const dx = S.p.x - g.x, dy = S.p.y - g.y, d = Math.hypot(dx, dy) || 1;
+        if (d < 140) { g.x += (dx / d) * 320 * dt; g.y += (dy / d) * 320 * dt; }
+        if (d < 18) { S.xp += g.v; g.v = 0; }
+      }
+      S.gems = S.gems.filter((g) => g.v > 0);
+      while (S.xp >= 40 + S.lv * 18) { S.xp -= 40 + S.lv * 18; S.lv++; S.hp = Math.min(100, S.hp + 18); }
+      for (const f of S.fx) f.life -= dt;
+      S.fx = S.fx.filter((f) => f.life > 0);
+      if (S.hp <= 0) { S.hp = 0; S.dead = true; end("Signal lost"); }
+      document.getElementById("t").textContent = S.t.toFixed(0);
+      document.getElementById("k").textContent = S.kills;
+      document.getElementById("l").textContent = S.lv;
+      document.getElementById("hp").style.width = S.hp + "%";
+    }
+
+    function end(title) {
+      document.getElementById("end").textContent = title;
+      document.getElementById("score").textContent = S.kills + " kills · " + S.t.toFixed(0) + "s · LV " + S.lv;
+      document.getElementById("over").className = "over on";
+    }
+
+    function draw() {
+      ctx.fillStyle = "#08090c";
+      ctx.fillRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(W / 2 - S.cam.x, H / 2 + 28 - S.cam.y);
+      ctx.strokeStyle = "#14181c";
+      ctx.lineWidth = 1;
+      const gs = 48;
+      const x0 = Math.floor((S.cam.x - W) / gs) * gs;
+      const y0 = Math.floor((S.cam.y - H) / gs) * gs;
+      for (let x = x0; x < S.cam.x + W; x += gs) {
+        ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, S.cam.y + H); ctx.stroke();
+      }
+      for (let y = y0; y < S.cam.y + H; y += gs) {
+        ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(S.cam.x + W, y); ctx.stroke();
+      }
+      for (const g of S.gems) {
+        ctx.fillStyle = CY;
+        ctx.beginPath(); ctx.arc(g.x, g.y, 4, 0, 7); ctx.fill();
+      }
+      for (const e of S.enemies) {
+        ctx.save(); ctx.translate(e.x, e.y);
+        ctx.fillStyle = e.kind ? "#ff7a3a" : "#c44";
+        ctx.beginPath();
+        if (e.kind) {
+          ctx.moveTo(0, -e.r); ctx.lineTo(e.r, e.r); ctx.lineTo(-e.r, e.r);
+        } else {
+          ctx.rect(-e.r, -e.r, e.r * 2, e.r * 2);
+        }
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.fillStyle = GOLD;
+      for (const b of S.bullets) {
+        ctx.beginPath(); ctx.arc(b.x, b.y, 3.2, 0, 7); ctx.fill();
+      }
+      for (const f of S.fx) {
+        ctx.strokeStyle = "rgba(240,192,64," + (f.life * 4) + ")";
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r + (0.25 - f.life) * 40, 0, 7); ctx.stroke();
+      }
+      ctx.save();
+      ctx.translate(S.p.x, S.p.y);
+      ctx.fillStyle = "#0b0d10";
+      ctx.beginPath(); ctx.arc(0, 0, S.p.r, 0, 7); ctx.fill();
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0, 0, S.p.r - 1, 0, 7); ctx.stroke();
+      ctx.fillStyle = GOLD;
+      ctx.fillRect(-7, -2.5, 14, 5);
+      ctx.restore();
+      ctx.restore();
+      ctx.fillStyle = "rgba(232,236,230,.55)";
+      ctx.font = "600 13px ui-sans-serif";
+      ctx.fillText("Grok Signal  ·  auto-fire truth into the feed", 16, 52);
+    }
+
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000);
+      last = now;
+      tick(dt); draw();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    document.getElementById("again").onclick = boot;
+  </script>
+</body>
+</html>

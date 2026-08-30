@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok 64</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #02040c; color: #dce8f8; font: 15px/1.4 "Avenir Next", system-ui, sans-serif; overflow: hidden; }
+    canvas { display: block; }
+    #ui { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; gap: .7rem; align-items: center; padding: .55rem .9rem; font: 700 11px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    #ui a { text-decoration: none; background: #7ec8ff; color: #041018; padding: .35rem .6rem; border-radius: 6px; }
+    #title, #pause { position: fixed; inset: 0; display: grid; place-items: center; z-index: 4; background: #02040cf2; text-align: center; }
+    #pause { display: none; }
+    h1 { font-size: 2.4rem; letter-spacing: -.04em; margin: 0 0 .35rem; }
+    .sub { color: #8aa0b8; margin: 0 0 1.3rem; }
+    button { appearance: none; cursor: pointer; margin: .25rem; border: 1px solid #234; background: #0a1828; color: #dce8f8; font: 700 13px/2.2 "Avenir Next", system-ui, sans-serif; padding: 0 1.1rem; border-radius: 8px; }
+    button:hover, button.on { background: #7ec8ff; color: #041018; border-color: #7ec8ff; }
+    .hint { color: #5a7088; font-size: .85rem; margin-top: 1.1rem; }
+  </style>
+</head>
+<body>
+  <div id="ui"><a href="../../">Hall</a><span>Grok 64</span><span id="hud"></span></div>
+  <div id="title">
+    <div>
+      <p class="sub" style="letter-spacing:.28em;text-transform:uppercase;font-size:.72rem">N64 · space</p>
+      <h1>Grok 64</h1>
+      <p class="sub">Walk the pads. Jump. Touch the star. You always respawn on the last pad you stood on.</p>
+      <div>
+        <button data-d="easy">Easy</button>
+        <button data-d="normal" class="on">Normal</button>
+        <button data-d="hard">Hard</button>
+      </div>
+      <p class="hint">WASD · Space jump · mouse drag look</p>
+    </div>
+  </div>
+  <div id="pause"><div><h1 id="end">Star</h1><p class="sub" id="endsub"></p><button id="again">Title</button></div></div>
+  <script type="module">
+    import * as THREE from "./vendor/three.module.js";
+
+    const DIFF = {
+      easy: { gap: 1.6, lives: 6, move: 0 },
+      normal: { gap: 2.4, lives: 4, move: 1.1 },
+      hard: { gap: 3.1, lives: 2, move: 1.7 },
+    };
+    let diff = "normal", running = false, win = false, dead = false;
+    let lives = 4, yaw = 0.35, t = 0;
+    const keys = Object.create(null);
+    const vel = new THREE.Vector3();
+    const player = { yv: 0, on: true, last: new THREE.Vector3() };
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x02040c);
+    scene.fog = new THREE.Fog(0x02040c, 18, 42);
+    const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.08, 80);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    scene.add(new THREE.HemisphereLight(0xaad4ff, 0x080810, 0.7));
+    const sun = new THREE.DirectionalLight(0xfff2d0, 1.1);
+    sun.position.set(6, 12, 4); sun.castShadow = true;
+    scene.add(sun);
+
+    const stars = new THREE.Points(
+      new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute(
+        Array.from({ length: 900 }, () => (Math.random() - 0.5) * 80), 3)),
+      new THREE.PointsMaterial({ color: 0xccddff, size: 0.08 })
+    );
+    scene.add(stars);
+
+    const texLoader = new THREE.TextureLoader();
+    const metal = texLoader.load("art/metal.jpg");
+    metal.wrapS = metal.wrapT = THREE.RepeatWrapping;
+    metal.colorSpace = THREE.SRGBColorSpace;
+    const astroTex = texLoader.load("art/astro.jpg");
+    astroTex.colorSpace = THREE.SRGBColorSpace;
+
+    const pads = [];
+    const padGroup = new THREE.Group();
+    scene.add(padGroup);
+    const hero = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.32, 0.7, 6, 12),
+      new THREE.MeshStandardMaterial({ map: astroTex, roughness: 0.55 })
+    );
+    hero.castShadow = true;
+    scene.add(hero);
+    const star = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.42),
+      new THREE.MeshStandardMaterial({ color: 0xffe27a, emissive: 0xaa8800, roughness: 0.3 })
+    );
+    scene.add(star);
+    const arrow = new THREE.Mesh(
+      new THREE.ConeGeometry(0.18, 0.5, 8),
+      new THREE.MeshBasicMaterial({ color: 0x7ec8ff })
+    );
+    scene.add(arrow);
+
+    function makePad(x, y, z, w, d) {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(w, 0.45, d),
+        new THREE.MeshStandardMaterial({ map: metal, roughness: 0.7 })
+      );
+      mesh.position.set(x, y, z);
+      mesh.receiveShadow = true;
+      mesh.castShadow = true;
+      padGroup.add(mesh);
+      const rec = { mesh, x, y, z, w, d, move: 0 };
+      pads.push(rec);
+      return rec;
+    }
+
+    function layout() {
+      pads.length = 0;
+      while (padGroup.children.length) padGroup.remove(padGroup.children[0]);
+      const D = DIFF[diff];
+      const g = D.gap;
+      makePad(0, 0, 0, 6, 6);
+      makePad(5 + g, 0.35, -1, 3.4, 3.4);
+      const m = makePad(10 + g * 2, 0.9, 0, 3.2, 3.2);
+      m.move = D.move;
+      makePad(16 + g * 3, 1.5, 1.2, 4.2, 4.2);
+      star.position.set(16 + g * 3, 2.6, 1.2);
+      hero.position.set(0, 1.1, 0);
+      player.last.set(0, 1.1, 0);
+      vel.set(0, 0, 0); player.yv = 0; player.on = true;
+      lives = D.lives; yaw = 0.4; win = false; dead = false;
+    }
+
+    addEventListener("keydown", (e) => { keys[e.code] = 1; });
+    addEventListener("keyup", (e) => { keys[e.code] = 0; });
+    let dragging = false, mx = 0;
+    renderer.domElement.addEventListener("pointerdown", (e) => { dragging = true; mx = e.clientX; });
+    addEventListener("pointerup", () => { dragging = false; });
+    addEventListener("pointermove", (e) => { if (dragging) yaw -= (e.clientX - mx) * 0.007; mx = e.clientX; });
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    function onPad() {
+      for (const p of pads) {
+        const dx = Math.abs(hero.position.x - p.mesh.position.x);
+        const dz = Math.abs(hero.position.z - p.mesh.position.z);
+        const top = p.mesh.position.y + 0.22;
+        if (dx < p.w / 2 - 0.05 && dz < p.d / 2 - 0.05 && hero.position.y >= top - 0.25 && hero.position.y <= top + 0.55)
+          return p;
+      }
+      return null;
+    }
+
+    function tick(dt) {
+      if (!running || win || dead) return;
+      t += dt;
+      for (const p of pads) {
+        if (p.move) p.mesh.position.z = Math.sin(t * p.move) * 2.4;
+      }
+      const s = Math.sin(yaw), c = Math.cos(yaw);
+      let ix = 0, iz = 0;
+      if (keys.KeyW || keys.ArrowUp) { ix += s; iz += c; }
+      if (keys.KeyS || keys.ArrowDown) { ix -= s; iz -= c; }
+      if (keys.KeyA || keys.ArrowLeft) { ix -= c; iz += s; }
+      if (keys.KeyD || keys.ArrowRight) { ix += c; iz -= s; }
+      const m = Math.hypot(ix, iz) || 1;
+      const spd = 5.8;
+      hero.position.x += (ix / m) * spd * dt;
+      hero.position.z += (iz / m) * spd * dt;
+      if ((keys.Space || keys.KeyK) && player.on) { player.yv = 7.6; player.on = false; keys.Space = 0; }
+      player.yv -= 19 * dt;
+      hero.position.y += player.yv * dt;
+      const pad = onPad();
+      if (pad && player.yv <= 0) {
+        hero.position.y = pad.mesh.position.y + 0.22 + 0.32;
+        player.yv = 0; player.on = true;
+        player.last.copy(hero.position);
+        if (pad.move) hero.position.z += Math.cos(t * pad.move) * 2.4 * pad.move * dt;
+      } else if (!pad) player.on = false;
+      if (hero.position.y < -5) {
+        lives--;
+        hero.position.copy(player.last);
+        player.yv = 0;
+        if (lives <= 0) {
+          dead = true; running = false;
+          document.getElementById("end").textContent = "Void";
+          document.getElementById("endsub").textContent = "You drop back to the last pad until lives run out.";
+          document.getElementById("pause").style.display = "grid";
+        }
+      }
+      if (hero.position.distanceTo(star.position) < 0.95) {
+        win = true; running = false;
+        document.getElementById("end").textContent = "Star";
+        document.getElementById("endsub").textContent = "One station. One shine.";
+        document.getElementById("pause").style.display = "grid";
+      }
+      star.rotation.y += dt * 1.6;
+      const camPos = new THREE.Vector3(
+        hero.position.x - Math.sin(yaw) * 7.2,
+        hero.position.y + 3.1,
+        hero.position.z - Math.cos(yaw) * 7.2
+      );
+      camera.position.lerp(camPos, 1 - Math.pow(0.001, dt));
+      camera.lookAt(hero.position.x, hero.position.y + 0.9, hero.position.z);
+      arrow.position.set(hero.position.x, hero.position.y + 1.8, hero.position.z);
+      arrow.lookAt(star.position);
+      document.getElementById("hud").textContent = "Lives " + lives + "  ·  follow the cone";
+    }
+
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt);
+      renderer.render(scene, camera);
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    function start(d) {
+      diff = d || diff;
+      layout();
+      running = true;
+      document.getElementById("title").style.display = "none";
+      document.getElementById("pause").style.display = "none";
+    }
+    document.querySelectorAll("#title button").forEach((b) => {
+      b.onclick = () => {
+        document.querySelectorAll("#title button").forEach((x) => x.classList.toggle("on", x === b));
+        start(b.dataset.d);
+      };
+    });
+    document.getElementById("again").onclick = () => {
+      document.getElementById("pause").style.display = "none";
+      document.getElementById("title").style.display = "grid";
+    };
+  </script>
+</body>
+</html>

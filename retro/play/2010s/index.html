@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok Hex — 2010s</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <script src="../kit.js"></script>
+  <style>
+    .over { position:fixed; inset:0; display:none; place-items:center; background:#050208cc; z-index:10; text-align:center; }
+    .over.on { display:grid; }
+    button { appearance:none; cursor:pointer; background:#ff3ad6; color:#fff; border:0; border-radius:0; font:700 12px/2.4 ui-monospace,monospace; letter-spacing:.12em; text-transform:uppercase; padding:0 1rem; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">2010s</span>
+    <span class="name">Grok Hex</span>
+    <span class="hint">← → or tap sides · last as long as the pulse</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="over" id="over">
+    <div>
+      <h2>HEXED</h2>
+      <p id="score"></p>
+      <button type="button" id="again">AGAIN</button>
+    </div>
+  </div>
+  <script>
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    const keys = Object.create(null);
+    addEventListener("keydown", (e) => { keys[e.code] = true; e.preventDefault(); });
+    addEventListener("keyup", (e) => { keys[e.code] = false; });
+    let tap = 0;
+    cvs.addEventListener("pointerdown", (e) => {
+      tap = e.clientX < innerWidth / 2 ? -1 : 1;
+    });
+    addEventListener("pointerup", () => { tap = 0; });
+    let W, H, dpr;
+    function resize() {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cvs.width = W * dpr; cvs.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    addEventListener("resize", resize); resize();
+
+    const SIDES = 6;
+    let ang, walls, t, alive, best = +localStorage.grokHex || 0;
+    function boot() {
+      ang = 0; walls = []; t = 0; alive = true;
+      document.getElementById("over").className = "over";
+      spawn();
+    }
+    function spawn() {
+      const open = (Math.random() * SIDES) | 0;
+      const dist = 520 + Math.random() * 80;
+      for (let i = 0; i < SIDES; i++) {
+        if (i === open) continue;
+        walls.push({ side: i, d: dist, w: 26 });
+      }
+    }
+    let spawnT = 0;
+    function tick(dt) {
+      if (alive == null || !alive) return;
+      t += dt;
+      const spin = (keys.ArrowLeft || keys.KeyA || tap < 0 ? -1 : 0) + (keys.ArrowRight || keys.KeyD || tap > 0 ? 1 : 0);
+      ang += spin * 7.2 * dt;
+      const speed = 210 + t * 18;
+      spawnT -= dt;
+      if (spawnT <= 0) { spawn(); spawnT = Math.max(0.42, 0.95 - t * 0.02); }
+      const playerSide = ((Math.floor(((ang % (Math.PI * 2)) + Math.PI * 2) / (Math.PI * 2) * SIDES) % SIDES) + SIDES) % SIDES;
+      for (const w of walls) {
+        w.d -= speed * dt;
+        if (w.d < 58 && w.d + w.w > 42 && w.side === playerSide) {
+          alive = false;
+          best = Math.max(best, t);
+          localStorage.grokHex = best;
+          document.getElementById("score").textContent = t.toFixed(2) + "s  ·  best " + best.toFixed(2) + "s";
+          document.getElementById("over").className = "over on";
+        }
+      }
+      walls = walls.filter((w) => w.d + w.w > 18);
+    }
+    function hexPt(side, r, rot) {
+      const a = rot + (side / SIDES) * Math.PI * 2 - Math.PI / 2;
+      return [Math.cos(a) * r, Math.sin(a) * r];
+    }
+    function draw() {
+      if (t == null || !walls) {
+        ctx.fillStyle = "#050208"; ctx.fillRect(0, 0, W, H); return;
+      }
+      const pulse = 0.5 + 0.5 * Math.sin(t * 8);
+      ctx.fillStyle = "#050208";
+      ctx.fillRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(W / 2, H / 2 + 10);
+      ctx.rotate(-ang);
+      const hue = (t * 40) % 360;
+      ctx.strokeStyle = `hsl(${hue},100%,60%)`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 0; i <= SIDES; i++) {
+        const [x, y] = hexPt(i, 36, 0);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+      ctx.fillStyle = "#f0c040";
+      ctx.beginPath();
+      const [px, py] = hexPt(0, 48, 0);
+      ctx.arc(px, py, 5 + pulse, 0, 7); ctx.fill();
+      for (const w of walls) {
+        ctx.strokeStyle = `hsl(${(hue + w.side * 20) % 360},100%,55%)`;
+        ctx.lineWidth = 8;
+        const a0 = hexPt(w.side, w.d, 0), a1 = hexPt(w.side + 1, w.d, 0);
+        const b0 = hexPt(w.side, w.d + w.w, 0), b1 = hexPt(w.side + 1, w.d + w.w, 0);
+        ctx.beginPath(); ctx.moveTo(a0[0], a0[1]); ctx.lineTo(a1[0], a1[1]); ctx.lineTo(b1[0], b1[1]); ctx.lineTo(b0[0], b0[1]); ctx.closePath(); ctx.stroke();
+      }
+      ctx.restore();
+      ctx.fillStyle = "#ff3ad6";
+      ctx.font = "800 28px ui-monospace,monospace";
+      ctx.fillText(t.toFixed(2), 18, 58);
+    }
+    let last = performance.now();
+    function loop(now) {
+      const dt = Math.min(0.033, (now - last) / 1000); last = now;
+      tick(dt); draw(); requestAnimationFrame(loop);
+    }
+    function arm() { RetroKit.hold({ label: "Grok Hex", onGo: boot }); }
+    arm(); requestAnimationFrame(loop);
+    document.getElementById("again").onclick = arm;
+  </script>
+</body>
+</html>

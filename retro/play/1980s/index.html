@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/share/retro/">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok Raid — 1980s</title>
+  <link rel="stylesheet" href="../shell.css" />
+  <script src="../kit.js"></script>
+  <style>
+    body { background:#000; }
+    .over { position:fixed; inset:0; display:none; place-items:center; background:#000c; z-index:10; text-align:center; color:#9f6; }
+    .over.on { display:grid; }
+    button { appearance:none; cursor:pointer; background:#000; color:#9f6; border:2px solid #9f6; font:700 12px/2.2 ui-monospace, monospace; letter-spacing:.14em; text-transform:uppercase; padding:0 1rem; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="../../">Hall</a>
+    <span class="era">1980s</span>
+    <span class="name">Grok Raid</span>
+    <span class="hint">← → move · Space / tap bottom to fire · three lives</span>
+    <span id="hud">0</span>
+  </div>
+  <canvas id="c"></canvas>
+  <div class="over" id="over"><div><h2 id="end">GAME OVER</h2><p id="sc"></p><button type="button" id="again">Again</button></div></div>
+  <script>
+    const VW = 224, VH = 288;
+    const cvs = document.getElementById("c"), ctx = cvs.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    const keys = Object.create(null);
+    addEventListener("keydown", (e) => { keys[e.code]=true; if (e.code==="Space") e.preventDefault(); });
+    addEventListener("keyup", (e) => { keys[e.code]=false; });
+    let tapFire=false, tapDir=0;
+    cvs.addEventListener("pointerdown", (e) => {
+      const r=cvs.getBoundingClientRect();
+      tapFire = e.clientY > r.top + r.height*0.7;
+      tapDir = e.clientX < r.left+r.width/2 ? -1 : 1;
+      if (tapFire) tapDir=0;
+    });
+    addEventListener("pointerup", () => { tapFire=false; tapDir=0; });
+    let scale=2, ox=0, oy=0;
+    function resize() {
+      const s = Math.floor(Math.min(innerWidth/VW, (innerHeight-8)/VH));
+      scale = Math.max(2, s);
+      cvs.width = VW*scale; cvs.height = VH*scale;
+      cvs.style.width = cvs.width+"px"; cvs.style.height = cvs.height+"px";
+      cvs.style.margin = "40px auto 0"; cvs.style.display="block";
+      ctx.setTransform(scale,0,0,scale,0,0);
+      ctx.imageSmoothingEnabled = false;
+    }
+    addEventListener("resize", resize); resize();
+
+    const shipImg = new Image(); shipImg.src = "art/ship.jpg";
+    const invImg = new Image(); invImg.src = "art/invader.jpg";
+    const boomImg = new Image(); boomImg.src = "art/boom.jpg";
+    let S, running = false;
+    function boot() {
+      const aliens=[];
+      for (let row=0; row<5; row++) for (let col=0; col<8; col++) {
+        aliens.push({ x: 24+col*22, y: 28+row*16, row, alive:true, dive:0, dx:0, dy:0 });
+      }
+      S = { px: VW/2, bullets:[], ab:[], aliens, t:0, dir:1, score:0, dead:false, win:false, fire:0, step:0, lives:3, wave:1, fx:[], inv:0 };
+      document.getElementById("over").className="over";
+      running = true;
+    }
+    boot();
+    function tick(dt) {
+      if (!running || S.dead||S.win) return;
+      S.t += dt; S.fire=Math.max(0,S.fire-dt); S.inv=Math.max(0,(S.inv||0)-dt);
+      const sp = 70;
+      if (keys.ArrowLeft||keys.KeyA||tapDir<0) S.px -= sp*dt;
+      if (keys.ArrowRight||keys.KeyD||tapDir>0) S.px += sp*dt;
+      S.px = Math.max(8, Math.min(VW-8, S.px));
+      if ((keys.Space||tapFire) && S.fire<=0) {
+        S.bullets.push({ x:S.px, y:VH-28 }); S.fire=0.28; keys.Space=false;
+        RetroKit.sfx.shoot();
+      }
+      for (const b of S.bullets) b.y -= 160*dt;
+      S.bullets = S.bullets.filter(b=>b.y>8);
+      S.step += dt;
+      const pace = Math.max(0.12, 0.42 - S.score*0.0004);
+      if (S.step>pace) {
+        S.step=0;
+        let hit=false;
+        for (const a of S.aliens) if (a.alive && !a.dive) { a.x += S.dir*6; if (a.x<12||a.x>VW-12) hit=true; }
+        if (hit) { S.dir*=-1; for (const a of S.aliens) if (a.alive && !a.dive) a.y += 8; }
+      }
+      if (Math.random()<0.012) {
+        const live = S.aliens.filter(a=>a.alive && !a.dive);
+        if (live.length) {
+          const a = live[Math.random()*live.length|0];
+          a.dive=1; a.dx=(S.px-a.x)*0.4; a.dy=70;
+        }
+      }
+      for (const a of S.aliens) {
+        if (!a.alive) continue;
+        if (a.dive) { a.x += (S.px-a.x)*1.2*dt; a.y += 90*dt; if (a.y>VH) { a.alive=false; } }
+        if (Math.random()<0.002) S.ab.push({ x:a.x, y:a.y });
+        if (Math.abs(a.x-S.px)<8 && Math.abs(a.y-(VH-22))<8) die();
+      }
+      for (const b of S.ab) b.y += 90*dt;
+      S.ab = S.ab.filter(b=>{
+        if (Math.abs(b.x-S.px)<6 && Math.abs(b.y-(VH-22))<6) die();
+        return b.y<VH;
+      });
+      for (const b of S.bullets) {
+        for (const a of S.aliens) {
+          if (!a.alive) continue;
+          if (Math.abs(b.x-a.x)<7 && Math.abs(b.y-a.y)<6) {
+            a.alive=false; b.y=-99; S.score += (5-a.row)*20;
+            S.fx.push({ x:a.x, y:a.y, t:0.22 });
+            RetroKit.sfx.hit();
+          }
+        }
+      }
+      S.bullets = S.bullets.filter(b=>b.y>0);
+      if (S.aliens.every(a=>!a.alive)) {
+        S.wave += 1;
+        RetroKit.sfx.win();
+        const aliens=[];
+        for (let row=0; row<5; row++) for (let col=0; col<8; col++) {
+          aliens.push({ x: 24+col*22, y: 20+row*16, row, alive:true, dive:0, dx:0, dy:0 });
+        }
+        S.aliens = aliens; S.dir = 1; S.step = 0;
+      }
+      S.fx = S.fx.filter((f) => { f.t -= dt; return f.t > 0; });
+      const hud = document.getElementById("hud");
+      if (hud) hud.textContent = S.score + " · L" + S.lives + " · W" + S.wave;
+    }
+    function die() {
+      if (S.inv > 0) return;
+      S.lives -= 1;
+      RetroKit.sfx.die();
+      if (S.lives > 0) {
+        S.px = VW/2; S.ab = []; S.inv = 1.2;
+        return;
+      }
+      S.dead=true; finish("The fleet reached the ground. You had lives left to spend — and spent them.");
+    }
+    function finish(t) {
+      running = false;
+      document.getElementById("end").textContent="GAME OVER";
+      document.getElementById("sc").textContent=t+"  ·  "+S.score+" PTS";
+      document.getElementById("over").className="over on";
+    }
+    function pix(x,y,w,h,c) { ctx.fillStyle=c; ctx.fillRect(x|0,y|0,w,h); }
+    function draw() {
+      ctx.fillStyle="#000"; ctx.fillRect(0,0,VW,VH);
+      for (const a of S.aliens) {
+        if (!a.alive) continue;
+        if (invImg.complete && invImg.naturalWidth) ctx.drawImage(invImg, a.x-8, a.y-7, 16, 14);
+        else { const c = a.row===0?"#f0c040":a.row<3?"#f66":"#6cf"; pix(a.x-6,a.y-3,12,6,c); }
+      }
+      for (const f of S.fx) {
+        if (boomImg.complete && boomImg.naturalWidth) ctx.drawImage(boomImg, f.x-10, f.y-10, 20, 20);
+      }
+      if (shipImg.complete && shipImg.naturalWidth) ctx.drawImage(shipImg, S.px-10, VH-30, 20, 18);
+      else { pix(S.px-6, VH-24, 12, 6, "#f0c040"); pix(S.px-2, VH-28, 4, 4, "#fff"); }
+      ctx.fillStyle="#fff";
+      for (const b of S.bullets) pix(b.x-1,b.y-4,2,4,"#fff");
+      ctx.fillStyle="#f66";
+      for (const b of S.ab) pix(b.x-1,b.y,2,3,"#f66");
+      ctx.fillStyle="rgba(0,255,70,.07)";
+      for (let y=0;y<VH;y+=2) ctx.fillRect(0,y,VW,1);
+    }
+    let last=performance.now();
+    function loop(now){ const dt=Math.min(0.033,(now-last)/1000); last=now; tick(dt); draw(); requestAnimationFrame(loop); }
+    requestAnimationFrame(loop);
+    document.getElementById("again").onclick=() => { document.getElementById("over").className="over"; boot(); };
+  </script>
+</body>
+</html>

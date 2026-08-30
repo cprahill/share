@@ -1,0 +1,51 @@
+:root {
+  --void: #07080a;
+  --ink: #e8ece6;
+  --mute: #8b9388;
+  --go: #c8f4e8;
+  --gold: #f0c040;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%;
+  background: var(--void); color: var(--ink);
+  font: 14px/1.35 "Avenir Next", system-ui, sans-serif;
+  overflow: hidden;
+}
+.bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; gap: .7rem;
+  padding: .45rem .8rem;
+  background: #0b0e0ccc; backdrop-filter: blur(8px);
+  border-bottom: 1px solid #2a3128;
+  pointer-events: auto;
+}
+.bar a {
+  color: #0b1016; background: var(--go); text-decoration: none;
+  font: 700 11px/1.8 ui-monospace, monospace;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 0 .65rem; border-radius: 6px;
+}
+.bar .era { color: var(--gold); font: 700 11px/1 ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; }
+.bar .name { font-weight: 700; }
+.bar .hint { margin-left: auto; color: var(--mute); font-size: 12px; }
+canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+.over {
+  top: 48px;
+}
+.hold {
+  display: none !important;
+}
+.hold.on { display: grid; }
+.hold-kicker {
+  margin: 0; font: 700 11px/1 ui-monospace, monospace;
+  letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+}
+.hold h2 { margin: 0.45rem 0 0.35rem; font-size: 1.6rem; }
+.hold-sub { color: var(--mute); margin: 0 0 1rem; }
+.hold-bar {
+  width: min(16rem, 70vw); height: 8px; margin: 0 auto;
+  background: #1a1e18; border-radius: 99px; overflow: hidden;
+}
+.hold-bar i { display: block; height: 100%; width: 0; background: var(--go); }
