@@ -3,9 +3,9 @@
     "mars",
     "retro"
   ],
-  "updated": "2026-08-30T20:24:10Z",
+  "updated": "2026-08-30T20:38:50Z",
   "mars": {
-    "build": "92",
+    "build": "93",
     "entry": "mars/raid.html"
   }
 }

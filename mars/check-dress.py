@@ -7,14 +7,18 @@ import sys
 p = Path(__file__).with_name("game.js")
 t = p.read_text()
 errs = []
-if 'BUILD = "92"' not in t:
-    errs.append("BUILD is not 92")
+if 'BUILD = "93"' not in t:
+    errs.append("BUILD is not 93")
 if "plantCrowd(0.52" in t:
     errs.append("gauntlet crowd plantCrowd(0.52) still present")
-turbos = re.findall(r'addPickup\("TURBO",\s*[\d.]+,\s*(-?[\d.]+)', t)
-for lat in turbos:
-    if abs(float(lat)) > 10:
-        errs.append("TURBO lat %s is off the dirt (HALF_W=14)" % lat)
+if 'addPickup("PAD"' in t or 'addPickup("TURBO"' in t:
+    errs.append("old PAD/TURBO pickups still seeded")
+boosts = re.findall(r'addPickup\("BOOST",\s*[\d.]+,\s*(-?[\d.]+)', t)
+for lat in boosts:
+    if abs(float(lat)) > 6:
+        errs.append("BOOST lat %s is off the racing line" % lat)
+if "function makeBiodome" not in t:
+    errs.append("geodesic biodome missing")
 if "foot * 0.5" not in t:
     errs.append("sitGlb/sitMesh footprint check is not foot * 0.5")
 if "hangar_roundGlass" not in t:
@@ -29,5 +33,5 @@ if errs:
     for e in errs:
         print(" -", e)
     sys.exit(1)
-print("ok turbos", turbos)
-print("ok BUILD 92 dress rules")
+print("ok boosts", boosts)
+print("ok BUILD 93 dress rules")
