@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>RED DUST BAJA BUILD 93</title>
-<link rel="stylesheet" href="hud.css?v=22" />
+<title>CyberBaja: Planetary Tour</title>
+<link rel="stylesheet" href="hud.css?v=31" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -26,16 +26,17 @@
 </head>
 <body>
 <div id="hud">
-<div id="build-chip">BUILD 93</div>
+<div id="build-chip" hidden>BUILD 113</div>
 <div id="diff-chip">MED</div>
 <div id="pilot-chip">ACE</div>
 <div class="glass" id="timer-panel"><span class="label">TIME</span><span id="timer-val">00:00.000</span></div>
 <div id="gate-panel">
-<div class="gate-line">GATE <span id="gate-idx">1/5</span></div>
+<div class="gate-line"><span id="gate-idx">GATE 1/5</span></div>
 <div id="gate-dist">0 m</div>
 </div>
 <div class="glass" id="place-panel"><span class="label">PLACE</span><span id="place-val">2nd</span></div>
 <div class="glass" id="coin-panel"><span class="label">COINS</span><span id="coin-val">0</span></div>
+<ol id="hunt-list"></ol>
 <div id="chevron"></div>
 <div class="glass" id="speed-cluster">
   <div id="boost-tank" aria-hidden="true"><i id="boost-fill"></i></div>
@@ -45,12 +46,19 @@
     <span class="boost-tag">BOOST</span>
   </div>
 </div>
-<div id="hint">v90  NAME + PAINT    THEN PICK A LINE    COINS + TIME = SCORE</div>
+<div id="hint">CYBERBAJA: PLANETARY TOUR</div>
+<div id="viewfinder" aria-hidden="true">
+  <i class="vf-c vf-tl"></i><i class="vf-c vf-tr"></i><i class="vf-c vf-bl"></i><i class="vf-c vf-br"></i>
+  <div id="vf-tag">F  SNAP</div>
+  <button type="button" id="pad-snap" class="pad-hit">SNAP</button>
+</div>
+<div id="snap-flash"></div>
 <div id="count">3</div>
 <div id="finish" class="glass">
   <div class="label" id="finish-label">YOU WIN</div>
   <div class="val" id="finish-time">00:00.000</div>
   <div class="score" id="finish-score">0 PTS   ·   0 COINS</div>
+  <div class="rank" id="finish-rank">1st  ·  GOLD CUP</div>
   <div class="hs-enter">
     <label for="hs-name">NAME</label>
     <input id="hs-name" type="text" maxlength="4" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text" placeholder="ACE" />
@@ -59,12 +67,57 @@
   <ol id="hs-board"></ol>
   <button type="button" id="share-chal" class="pad-hit">SEND CHALLENGE</button>
   <button type="button" id="hs-again" class="pad-hit">RACE AGAIN</button>
+  <button type="button" id="hs-home" class="pad-hit">HOME</button>
   <div class="hint" id="finish-hint">R TO RETRY</div>
 </div>
 <div id="fail-toast" class="glass">CHECKPOINT</div>
+<div id="home">
+  <div class="home-art" aria-hidden="true"></div>
+  <div class="home-shade" aria-hidden="true"></div>
+  <div class="home-panel glass">
+    <div class="boot-kicker">PLANETARY TOUR</div>
+    <div class="home-title">CYBERBAJA</div>
+    <p class="home-tag">MARS  ·  FOUR MODES  ·  SAME CORE</p>
+    <div class="home-modes">
+      <button type="button" class="home-card" data-home="trial">TIME TRIAL<span>CPU · ghosts of the fastest · no coins</span></button>
+      <button type="button" class="home-card" data-home="tour">TOUR<span>coins + time · CPU · phantom racer</span></button>
+      <button type="button" class="home-card" data-home="hunt">EXPLORER<span>open course · photo scavenger</span></button>
+      <button type="button" class="home-card" data-home="free">FREESTYLE<span>jump playground · big air · speed</span></button>
+    </div>
+    <div class="home-foot">
+      <button type="button" class="home-btn" data-home="how">HOW TO</button>
+      <button type="button" class="home-btn" data-home="scores">SCORES</button>
+    </div>
+  </div>
+</div>
+<div id="how" class="glass menu-sheet">
+  <div class="boot-title">HOW TO</div>
+  <ul class="how-list">
+    <li><b>W / GAS</b> throttle · <b>S</b> brake · <b>A D</b> steer</li>
+    <li><b>SPACE</b> boost tank · cyan orbs <b>REFILL</b> · red orbs are a short <b>BOOST</b></li>
+    <li>Race modes: 5 gates a lap, launch on <b>1</b>. Send a challenge to share the board.</li>
+    <li><b>TIME TRIAL</b> no coins, extra boosts. CPU plus ghosts of your best and the top 3.</li>
+    <li><b>TOUR</b> coins + time vs CPU. A phantom of the fastest shared run rolls with you.</li>
+    <li><b>EXPLORER</b> open course scavenger. Full list on the left. <b>F / SNAP</b> in any order.</li>
+    <li><b>FREESTYLE</b> jump playground. Extra kickers, more boosts, big air. No clock.</li>
+    <li>Moon and Earth use this same core later. Paint unlocks at score gates.</li>
+  </ul>
+  <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
+</div>
+<div id="scores" class="glass menu-sheet">
+  <div class="boot-title">SCORES</div>
+  <p class="boot-sub">Shared on this game. Open a challenge link to put a run on the common board.</p>
+  <div class="score-mode">TIME TRIAL</div>
+  <ol id="hs-trial" class="hs-list"></ol>
+  <div class="score-mode">TOUR</div>
+  <ol id="hs-tour" class="hs-list"></ol>
+  <div class="score-mode">EXPLORER</div>
+  <ol id="hs-hunt" class="hs-list"></ol>
+  <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
+</div>
 <div id="boot" class="glass">
-  <div class="boot-kicker">RED DUST BAJA</div>
-  <div class="boot-title">PICK A LINE</div>
+  <div class="boot-kicker">CYBERBAJA</div>
+  <div class="boot-title" id="boot-title">PICK A LINE</div>
   <p class="boot-sub" id="boot-sub">Set your name and paint, then choose a line. Coins plus time make your score.</p>
   <div class="boot-pilot">
     <label for="boot-name">NAME</label>
@@ -72,11 +125,12 @@
   </div>
   <div class="paint-label">PAINT</div>
   <div class="paint-row" id="paint-row"></div>
+  <button type="button" class="home-btn menu-back" data-home="back" id="boot-back">BACK</button>
   <div class="boot-row">
     <button type="button" class="boot-btn" data-diff="easy">EASY<span>no obstacles</span></button>
-    <button type="button" class="boot-btn" data-diff="medium">MED<span>crates · faster rival</span></button>
-    <button type="button" class="boot-btn" data-diff="hard">HARD<span>crates + air sweepers</span></button>
-    <button type="button" class="boot-btn" data-diff="extra">XHARD<span>same volume · faster air</span></button>
+    <button type="button" class="boot-btn" data-diff="medium">MED<span>UFOs · faster rival</span></button>
+    <button type="button" class="boot-btn" data-diff="hard">HARD<span>jump gates · meaner rival</span></button>
+    <button type="button" class="boot-btn" data-diff="extra">XHARD<span>3-layer air · gold paint</span></button>
   </div>
 </div>
 </div>
@@ -92,6 +146,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v93.js"></script>
+<script type="module" src="./game-v113.js"></script>
 </body>
 </html>
