@@ -8,7 +8,8 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>CyberBaja: Planetary Tour</title>
-<link rel="stylesheet" href="hud.css?v=31" />
+<meta name="theme-color" content="#0c0c10" />
+<link rel="stylesheet" href="hud.css?v=32" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -26,7 +27,7 @@
 </head>
 <body>
 <div id="hud">
-<div id="build-chip" hidden>BUILD 125</div>
+<div id="build-chip" hidden>BUILD 126</div>
 <div id="diff-chip">MED</div>
 <div id="pilot-chip">ACE</div>
 <div class="glass" id="timer-panel"><span class="label">TIME</span><span id="timer-val">00:00.000</span></div>
@@ -87,6 +88,7 @@
     <div class="home-foot">
       <button type="button" class="home-btn" data-home="how">HOW TO</button>
       <button type="button" class="home-btn" data-home="scores">SCORES</button>
+      <button type="button" class="home-btn" id="home-fs">FULL SCREEN</button>
     </div>
   </div>
 </div>
@@ -100,6 +102,7 @@
     <li><b>TOUR</b> coins + time vs CPU. A phantom of the fastest shared run rolls with you.</li>
     <li><b>EXPLORER</b> open course scavenger. Full list on the left. <b>F / SNAP</b> in any order.</li>
     <li><b>FREESTYLE</b> jump playground on the ribbon. Kickers, boosts, big air. No clock.</li>
+    <li><b>FULL SCREEN</b> fills the board. On iPhone it fits the visible view (Safari has no page fullscreen).</li>
     <li>Moon and Earth use this same core later. Paint unlocks at score gates.</li>
   </ul>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
@@ -137,6 +140,7 @@
   </div>
 </div>
 </div>
+<button type="button" id="fs-btn" class="pad-hit" aria-label="fullscreen" aria-pressed="false">FULL</button>
 <div id="touch" aria-hidden="true">
   <div id="steer-well" class="glass pad-hit">
     <div id="steer-knob"></div>
@@ -149,6 +153,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v125.js"></script>
+<script type="module" src="./game-v126.js"></script>
 </body>
 </html>

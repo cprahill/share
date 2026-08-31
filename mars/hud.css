@@ -1,13 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,500;0,600;0,700;1,700&display=swap");
-html,body{margin:0;padding:0;height:100%;height:100dvh;overflow:hidden;background:#4A251D;font-family:"IBM Plex Sans","Segoe UI",sans-serif;color:#f4f4f2;user-select:none;touch-action:none;overscroll-behavior:none;-webkit-user-select:none;-webkit-touch-callout:none}
-canvas{display:block;touch-action:none;overscroll-behavior:none}
+html,body{margin:0;padding:0;width:100%;height:100%;height:100svh;height:100dvh;overflow:hidden;background:#4A251D;font-family:"IBM Plex Sans","Segoe UI",sans-serif;color:#f4f4f2;user-select:none;touch-action:none;overscroll-behavior:none;-webkit-user-select:none;-webkit-touch-callout:none;position:fixed;inset:0}
+html.fs-fit,html.fs-fit body{width:100%;height:100%;height:100svh}
+canvas{display:block;touch-action:none;overscroll-behavior:none;position:fixed;inset:0}
 #hud{position:fixed;inset:0;pointer-events:none;z-index:2}
+#fs-btn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:calc(8px + env(safe-area-inset-right,0px));z-index:40;pointer-events:auto;padding:8px 12px;min-width:52px;border:1px solid #ffffff22;border-radius:10px;background:#121214ee;color:#ffee55;font:700 11px/1 "IBM Plex Sans",sans-serif;letter-spacing:.14em;cursor:pointer;touch-action:manipulation}
+#fs-btn:hover,#fs-btn[aria-pressed="true"]{border-color:#ffee5566;background:#2a2418ee}
+html.touch-on #fs-btn{right:calc(8px + env(safe-area-inset-right,0px))}
+@media (orientation:landscape){
+  html.touch-on #fs-btn{right:calc(152px + env(safe-area-inset-right,0px));top:calc(8px + env(safe-area-inset-top,0px))}
+}
 .glass{background:#121214cc;border:1px solid #ffffff14;border-radius:9px}
 #build-chip{display:none!important}
 #timer-panel{position:absolute;top:24px;left:24px;padding:10px 14px;display:flex;align-items:baseline;gap:14px;min-width:196px}
 #timer-panel .label{font-size:11px;font-weight:500;letter-spacing:.08em;opacity:.7}
 #timer-val{margin-left:auto;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
-#gate-panel{position:absolute;top:24px;right:24px;text-align:right;text-shadow:0 1px 8px #4A251Daa}
+#gate-panel{position:absolute;top:24px;right:92px;text-align:right;text-shadow:0 1px 8px #4A251Daa}
 #gate-panel .gate-line{font-size:12px;font-weight:500;letter-spacing:.08em}
 #gate-idx{font-weight:700}
 #gate-dist{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
@@ -23,7 +30,7 @@ canvas{display:block;touch-action:none;overscroll-behavior:none}
 .unit{position:absolute;right:0;top:0;font-size:11px;font-weight:600;letter-spacing:.14em;opacity:.7;color:#ffb080}
 .speed-num{display:block;margin-top:14px;font-size:64px;font-weight:700;font-style:italic;font-variant-numeric:tabular-nums;line-height:.85;letter-spacing:-.03em;color:#fff6ea;text-shadow:0 0 18px #ff6a2244}
 .boost-tag{display:block;margin-top:6px;font-size:10px;font-weight:700;letter-spacing:.16em;color:#e23b32}
-#finish{display:none;position:absolute;left:50%;top:72%;transform:translate(-50%,-50%);padding:18px 28px 16px;text-align:center;min-width:min(340px,86vw);max-width:92vw;z-index:12}
+#finish{display:none;position:absolute;left:50%;top:72%;transform:translate(-50%,-50%);padding:18px 28px 16px;text-align:center;min-width:min(340px,86vw);max-width:92vw;max-height:min(86svh,86dvh);overflow:auto;-webkit-overflow-scrolling:touch;z-index:12}
 #finish.show{display:block}
 #finish .label{font-size:11px;letter-spacing:.14em;opacity:.7}
 #finish .val{font-size:28px;font-weight:700;margin-top:6px;font-variant-numeric:tabular-nums}
@@ -161,18 +168,18 @@ body.mode-hunt #pad-snap{display:block}
 #snap-flash{display:none;position:absolute;inset:0;background:#fff;opacity:.55;z-index:9;pointer-events:none}
 #snap-flash.show{display:block}
 
-#home{display:none;position:absolute;inset:0;z-index:14;pointer-events:auto;overflow:hidden}
+#home{display:none;position:absolute;inset:0;z-index:14;pointer-events:auto;overflow:auto;-webkit-overflow-scrolling:touch}
 #home.show{display:block}
 .home-art{position:absolute;inset:0;background:#4A251D url("./shots/home-hero.jpg") center/cover no-repeat}
 .home-shade{position:absolute;inset:0;background:linear-gradient(90deg,#0c0c10ee 0%,#0c0c1088 42%,#0c0c1000 70%),linear-gradient(180deg,#0c0c1044 0%,transparent 28%,#0c0c10aa 100%)}
-.home-panel{position:absolute;left:clamp(18px,4vw,48px);bottom:clamp(18px,6vh,56px);width:min(520px,92vw);padding:24px 24px 18px;text-align:left;background:#0c0c10cc;border:1px solid #ffee5533;box-shadow:0 0 40px #ff6a2218}
+.home-panel{position:absolute;left:clamp(18px,4vw,48px);bottom:clamp(12px,6vh,56px);width:min(520px,92vw);max-height:calc(100svh - 24px);overflow:auto;-webkit-overflow-scrolling:touch;padding:24px 24px 18px;text-align:left;background:#0c0c10cc;border:1px solid #ffee5533;box-shadow:0 0 40px #ff6a2218}
 .home-title{font-size:40px;font-weight:700;letter-spacing:.08em;color:#ffee55;line-height:1.02;text-shadow:0 0 24px #ffee5544}
 .home-tag{margin:8px 0 18px;font-size:12px;letter-spacing:.18em;opacity:.75;color:#3de8ff}
 .home-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
 .home-card{appearance:none;border:1px solid #ffffff22;background:linear-gradient(180deg,#1c1c24ee,#121218ee);color:#f4f4f2;border-radius:12px;padding:16px 14px 14px;font:700 15px/1 "IBM Plex Sans",sans-serif;letter-spacing:.12em;cursor:pointer;touch-action:manipulation;text-align:left;min-height:88px}
 .home-card span{display:block;margin-top:8px;font-size:11px;font-weight:500;letter-spacing:.03em;opacity:.72;text-transform:none;line-height:1.35}
 .home-card:hover,.home-card:focus{border-color:#ffee55aa;background:linear-gradient(180deg,#2a2418ee,#1a1810ee);color:#ffee55;box-shadow:0 0 18px #ffee5528}
-.home-foot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.home-foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .home-btn{display:block;width:100%;margin:0;padding:12px 14px;appearance:none;border:1px solid #ffffff22;background:#1a1a20ee;color:#f4f4f2;border-radius:10px;font:700 15px/1 "IBM Plex Sans",sans-serif;letter-spacing:.14em;cursor:pointer;touch-action:manipulation;text-align:left}
 .home-btn span{display:block;margin-top:5px;font-size:10px;font-weight:500;letter-spacing:.04em;opacity:.7;text-transform:none}
 .score-mode{margin:12px 0 4px;font-size:11px;letter-spacing:.16em;color:#3de8ff;text-align:left}
@@ -180,7 +187,7 @@ body.mode-hunt #pad-snap{display:block}
 .hs-list li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid #ffffff12;font-size:13px;font-weight:700}
 .hs-list li span{font-weight:500;opacity:.65;font-size:11px}
 .home-btn:hover,.home-btn:focus{border-color:#ffee5566;background:#2a2418ee;color:#ffee55}
-.menu-sheet{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:15;pointer-events:auto;padding:22px 22px 16px;width:min(480px,92vw);text-align:center}
+.menu-sheet{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:15;pointer-events:auto;padding:22px 22px 16px;width:min(480px,92vw);max-height:min(88svh,88dvh);overflow:auto;-webkit-overflow-scrolling:touch;text-align:center}
 .menu-sheet.show{display:block}
 .how-list{list-style:none;margin:12px 0 16px;padding:0;text-align:left;font-size:13px;line-height:1.55;opacity:.9}
 .how-list li{padding:6px 0;border-bottom:1px solid #ffffff12}
@@ -191,7 +198,7 @@ body.mode-hunt #pad-snap{display:block}
 #hs-home{display:block;margin:8px auto 0;padding:10px 16px;font-size:12px;font-weight:700;letter-spacing:.12em}
 #boot-back{margin:0 0 10px;text-align:center}
 body.menu-on #timer-panel,body.menu-on #gate-panel,body.menu-on #place-panel,body.menu-on #coin-panel,body.menu-on #speed-cluster,body.menu-on #chevron,body.menu-on #hint,body.menu-on #touch,body.menu-on #viewfinder,body.menu-on #pad-snap,body.menu-on #snap-flash,body.menu-on #hunt-list{opacity:0;pointer-events:none}
-#boot{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:12;pointer-events:auto;padding:22px 22px 18px;width:min(520px,92vw);text-align:center}
+#boot{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:12;pointer-events:auto;padding:22px 22px 18px;width:min(520px,92vw);max-height:min(92svh,92dvh);overflow:auto;-webkit-overflow-scrolling:touch;text-align:center}
 #boot.show{display:block}
 #boot .boot-kicker{font-size:11px;letter-spacing:.18em;opacity:.65;margin-bottom:6px}
 #boot .boot-title{font-size:28px;font-weight:700;letter-spacing:.08em;color:#ffee55}
@@ -221,4 +228,23 @@ body.menu-on #timer-panel,body.menu-on #gate-panel,body.menu-on #place-panel,bod
   .paint-row{margin:0 0 10px;gap:6px}
   .paint-swatch{width:22px;height:22px}
   .boot-btn{padding:10px 8px;font-size:16px}
+}
+@media (max-height:540px){
+  .home-panel{padding:12px 14px 12px;width:min(640px,94vw);bottom:8px}
+  .home-title{font-size:26px}
+  .home-tag{margin:4px 0 10px;font-size:11px}
+  .home-modes{grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 8px}
+  .home-card{min-height:0;padding:10px 8px 8px;font-size:12px}
+  .home-card span{display:none}
+  .home-foot{gap:6px}
+  .home-btn{padding:8px 10px;font-size:12px}
+  #boot{width:min(92vw,640px);padding:10px 12px}
+  .boot-row{grid-template-columns:repeat(4,1fr);gap:6px}
+  #finish{top:50%;padding:12px 16px}
+  #count{font-size:64px}
+}
+@media (min-width:900px) and (min-height:640px){
+  .home-panel{width:min(560px,40vw);padding:28px 28px 20px}
+  .home-title{font-size:44px}
+  .home-card{min-height:96px;font-size:16px}
 }
