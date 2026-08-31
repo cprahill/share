@@ -4,104 +4,14 @@
     <base href="/share/retro/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Retro — decades arcade</title>
+  <title>retro</title>
   <style>
-    :root {
-      --void: #07040a;
-      --neon: #ff3d8a;
-      --cyan: #3df0ff;
-      --gold: #f0c040;
-      --wood: #6a3a1a;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--void); color: #f4ead8; font: 15px/1.4 "Avenir Next", system-ui, sans-serif; }
-    body { min-height: 100vh; }
-    .hero {
-      position: relative; height: 38vh; min-height: 180px; overflow: hidden;
-      border-bottom: 3px solid var(--neon);
-    }
-    .hero img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; filter: saturate(1.1) contrast(1.05); }
-    .hero::after {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(180deg, #07040a00 20%, #07040ae8 95%);
-      pointer-events: none;
-    }
-    .mark {
-      position: absolute; left: 1.2rem; bottom: 1.1rem; z-index: 2;
-      font: 700 11px/1 ui-monospace, monospace; letter-spacing: .42em; text-transform: uppercase; color: var(--cyan);
-    }
-    h1 {
-      position: absolute; left: 1.2rem; bottom: 1.7rem; z-index: 2; margin: 0;
-      font-size: clamp(2rem, 7vw, 3.6rem); letter-spacing: -.04em; font-weight: 600;
-      text-shadow: 0 0 18px #ff3d8a88;
-    }
-    main { max-width: 72rem; margin: 0 auto; padding: 1.2rem 1rem 4rem; }
-    .lede { color: #b8a898; max-width: 40rem; margin: 0 0 1.4rem; }
-    .era { margin: 1.6rem 0 .7rem; font: 700 11px/1 ui-monospace, monospace; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); }
-    .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
-    a.cab {
-      display: flex; flex-direction: column; justify-content: flex-end;
-      min-height: 168px; padding: .7rem .65rem .6rem;
-      text-decoration: none; color: inherit;
-      background: linear-gradient(180deg, #1a1018 0%, #10080e 55%, #2a1408 56%, #4a2410 100%);
-      border: 2px solid #3a2030; border-radius: 6px 6px 2px 2px;
-      box-shadow: inset 0 12px 0 #0a0608, 0 8px 0 #1a0a06;
-      position: relative; overflow: hidden;
-    }
-    a.cab::before {
-      content: ""; position: absolute; top: 10px; left: 12%; right: 12%; height: 42%;
-      background: #081018; border: 2px solid #223; border-radius: 2px;
-      box-shadow: inset 0 0 12px #3df0ff33, 0 0 8px #ff3d8a44;
-    }
-    a.cab .glass {
-      position: absolute; top: 12px; left: 14%; right: 14%; height: 38%;
-      display: grid; place-items: center; font: 700 13px/1.1 ui-monospace, monospace;
-      color: var(--cyan); letter-spacing: .04em; text-align: center; z-index: 1;
-      text-shadow: 0 0 8px #3df0ff;
-    }
-    a.cab:hover { border-color: var(--cyan); transform: translateY(-2px); }
-    a.cab .year { font: 700 10px/1 ui-monospace, monospace; letter-spacing: .16em; color: var(--gold); }
-    a.cab .title { font-weight: 700; font-size: 1.02rem; margin: .15rem 0 0; }
-    a.cab .genre { color: #9a8070; font-size: .78rem; }
-    footer { margin-top: 2.5rem; color: #6a5a50; font-size: .85rem; }
-    footer a { color: var(--cyan); }
+    html, body { margin: 0; background: #050306; }
+    img { width: 100%; display: block; background: #111; }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <img src="stills/aisle.jpg" alt="" />
-    <p class="mark">Decades arcade</p>
-    <h1>RETRO</h1>
-  </div>
-  <main>
-    <p class="lede">Twenty cabinets. Original-form play — the rules those years ran on, our names, no ROM dumps. Pick a cab.</p>
-    <div id="hall"></div>
-    <footer>Hall · <a href="play/run.html">index</a> · public share copies this dest</footer>
-  </main>
-  <script>
-    fetch("play/cabs.json").then((r) => r.json()).then((cabs) => {
-      const hall = document.getElementById("hall");
-      const eras = [];
-      for (const c of cabs) {
-        if (!eras.includes(c.era)) eras.push(c.era);
-      }
-      for (const era of eras) {
-        const h = document.createElement("div");
-        h.className = "era";
-        h.textContent = era;
-        hall.appendChild(h);
-        const row = document.createElement("div");
-        row.className = "row";
-        for (const c of cabs.filter((x) => x.era === era)) {
-          const a = document.createElement("a");
-          a.className = "cab";
-          a.href = "play/run.html?g=" + encodeURIComponent(c.id);
-          a.innerHTML = '<div class="glass">' + c.year + '</div><span class="year">' + c.year + '</span><span class="title">' + c.title + '</span><span class="genre">' + c.genre + '</span>';
-          row.appendChild(a);
-        }
-        hall.appendChild(row);
-      }
-    });
-  </script>
+  <img src="stills/hero.jpg" alt="" />
+  <img src="stills/aisle.jpg" alt="" />
 </body>
 </html>
