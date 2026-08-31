@@ -3,11 +3,14 @@
 <head>
     <base href="/share/retro/play/">
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Retro</title>
   <link rel="stylesheet" href="shell.css" />
   <style>
+    html, body { height: 100%; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
     #hud { margin-left: auto; font: 700 12px/1 ui-monospace, monospace; color: var(--gold); }
+    .bar .hint { display: none; }
+    @media (min-width: 900px) and (hover: hover) { .bar .hint { display: inline; } }
     .over { position: fixed; inset: 0; top: 48px; display: none; place-items: center; background: #07080ccc; z-index: 10; text-align: center; }
     .over.on { display: grid; }
     button {
@@ -15,8 +18,47 @@
       border: 0; border-radius: 8px; font: 700 12px/2.4 ui-monospace, monospace;
       letter-spacing: .12em; text-transform: uppercase; padding: 0 1rem;
     }
-    html, body { height: 100%; overflow: hidden; }
-    canvas#c { position: fixed; left: 0; right: 0; top: 48px; bottom: 0; width: 100%; height: auto; background: #000; }
+    canvas#c {
+      position: fixed; left: 0; right: 0; top: 48px; bottom: 0;
+      width: 100%; height: auto; background: #000; touch-action: none;
+    }
+    body.has-pad canvas#c { bottom: calc(156px + env(safe-area-inset-bottom, 0px)); }
+    #pad {
+      display: none;
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 8;
+      height: calc(156px + env(safe-area-inset-bottom, 0px));
+      padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: #0a0c10;
+      border-top: 1px solid #2a3128;
+      align-items: center; justify-content: space-between; gap: 12px;
+    }
+    body.has-pad #pad { display: flex; }
+    .dpad { position: relative; width: 132px; height: 132px; flex: 0 0 132px; }
+    .dpad b {
+      position: absolute; width: 44px; height: 44px; border-radius: 8px;
+      background: #1c2420; color: #c8f4e8; display: grid; place-items: center;
+      font: 700 16px/1 ui-monospace, monospace; border: 1px solid #3a4;
+    }
+    .dpad b.on { background: #3df0c8; color: #041; }
+    .dpad .u { left: 44px; top: 0; }
+    .dpad .d { left: 44px; bottom: 0; }
+    .dpad .l { left: 0; top: 44px; }
+    .dpad .r { right: 0; top: 44px; }
+    .btns { display: flex; gap: 14px; align-items: center; padding-right: 6px; }
+    .btns b {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #1c2420; color: #c8f4e8; display: grid; place-items: center;
+      font: 700 13px/1 ui-monospace, monospace; border: 2px solid #3a4;
+    }
+    .btns b.on { background: #3df0c8; color: #041; }
+    #pad.tap { justify-content: center; }
+    #pad.tap .dpad, #pad.tap .btns { display: none; }
+    #pad.tap .tapmsg { display: block; color: #8b9388; font: 700 12px/1.4 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
+    .tapmsg { display: none; }
+    #pad.beat .dpad { display: none; }
+    #pad.beat { justify-content: stretch; }
+    #pad.beat .btns { flex: 1; justify-content: space-between; }
+    #pad.beat .btns b { flex: 1; height: 72px; border-radius: 12px; width: auto; }
   </style>
 </head>
 <body>
@@ -28,6 +70,19 @@
     <span id="hud">0</span>
   </div>
   <canvas id="c"></canvas>
+  <div id="pad">
+    <div class="dpad">
+      <b class="u" data-k="ArrowUp">▲</b>
+      <b class="d" data-k="ArrowDown">▼</b>
+      <b class="l" data-k="ArrowLeft">◀</b>
+      <b class="r" data-k="ArrowRight">▶</b>
+    </div>
+    <div class="tapmsg">tap the screen</div>
+    <div class="btns" id="btns">
+      <b data-k="KeyZ" id="btnB">B</b>
+      <b data-k="Space" id="btnA">A</b>
+    </div>
+  </div>
   <div class="over" id="over"><div><h2 id="end">GAME OVER</h2><p id="sc"></p><button type="button" id="again">Again</button></div></div>
   <script src="kit.js"></script>
   <script src="cabs.js"></script>
@@ -44,6 +99,29 @@
     document.getElementById("era").textContent = cab.era;
     document.getElementById("name").textContent = cab.title;
     document.getElementById("hint").textContent = cab.hint;
+    const coarse = matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches || "ontouchstart" in window;
+    const pad = document.getElementById("pad");
+    if (coarse || innerWidth < 820) document.body.classList.add("has-pad");
+    const tapGames = { grid: 1, bricks: 1 };
+    const beat = id === "beat";
+    if (tapGames[id]) pad.classList.add("tap");
+    if (beat) {
+      pad.classList.add("beat");
+      document.getElementById("btns").innerHTML =
+        '<b data-k="KeyD">D</b><b data-k="KeyF">F</b><b data-k="KeyJ">J</b><b data-k="KeyK">K</b>';
+    }
+    if (id === "ring") {
+      document.getElementById("btnA").setAttribute("data-k", "KeyJ");
+      document.getElementById("btnA").textContent = "HIT";
+      document.getElementById("btnB").setAttribute("data-k", "KeyK");
+      document.getElementById("btnB").textContent = "KICK";
+    }
+    if (id === "stack") {
+      document.getElementById("btnA").setAttribute("data-k", "ArrowUp");
+      document.getElementById("btnA").textContent = "ROT";
+      document.getElementById("btnB").setAttribute("data-k", "ArrowDown");
+      document.getElementById("btnB").textContent = "DROP";
+    }
     const cvs = document.getElementById("c");
     const over = document.getElementById("over");
     const hud = document.getElementById("hud");

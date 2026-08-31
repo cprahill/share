@@ -1,10 +1,10 @@
 /* 20 original-form cabinets. Classic rules, our names. No ROMs. */
 (function (w) {
   const CABS = [
-    { id: "paddle", title: "Paddle Court", year: 1972, era: "1970s", genre: "Ball & paddle", hint: "W/S left · arrows right · first to 11" },
+    { id: "paddle", title: "Paddle Court", year: 1972, era: "1970s", genre: "Ball & paddle", hint: "Drag / d-pad · you are left · CPU right · 11 points" },
     { id: "bricks", title: "Brick Yard", year: 1976, era: "1970s", genre: "Breakout", hint: "Mouse or ← → · click / Space serve" },
     { id: "night", title: "Night Road", year: 1976, era: "1970s", genre: "Driving", hint: "← → steer · last as long as you can" },
-    { id: "armor", title: "Armor Duel", year: 1974, era: "1970s", genre: "Tank", hint: "WASD + F fire · arrows + . fire" },
+    { id: "armor", title: "Armor Duel", year: 1974, era: "1970s", genre: "Tank", hint: "D-pad drive · A fire · CPU is amber" },
     { id: "rows", title: "Lunar Rows", year: 1978, era: "1980s", genre: "Fixed shooter", hint: "← → move · Space fire · bunkers" },
     { id: "rocks", title: "Drift Rocks", year: 1979, era: "1980s", genre: "Vector", hint: "← → rotate · up thrust · Space fire" },
     { id: "hopper", title: "Garden Hopper", year: 1981, era: "1980s", genre: "Cross the road", hint: "↑ hop · don't get hit" },
@@ -29,35 +29,84 @@
     const keys = Object.create(null);
     const pointer = { x: 0, y: 0, down: false, click: false };
     let raf = 0, live = true, last = 0, W = 320, H = 240;
+    const aliases = {
+      ArrowLeft: ["KeyA"],
+      ArrowRight: ["KeyD"],
+      ArrowUp: ["KeyW"],
+      ArrowDown: ["KeyS"],
+      Space: ["KeyZ", "KeyF", "KeyJ"],
+      KeyZ: ["Space"],
+      KeyJ: ["KeyZ", "Space"],
+      KeyK: ["KeyS"],
+      KeyL: ["ShiftLeft"]
+    };
+    function setKey(code, on) {
+      keys[code] = on;
+      (aliases[code] || []).forEach((a) => { keys[a] = on; });
+    }
     function resize() {
       const dpr = Math.min(2, devicePixelRatio || 1);
-      W = innerWidth;
-      H = Math.max(120, innerHeight);
+      const r = cvs.getBoundingClientRect();
+      W = Math.max(160, r.width || innerWidth);
+      H = Math.max(120, r.height || innerHeight * 0.55);
       cvs.width = W * dpr;
       cvs.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = false;
     }
     const kd = (e) => {
-      keys[e.code] = true;
+      setKey(e.code, true);
       if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
     };
-    const ku = (e) => { keys[e.code] = false; };
+    const ku = (e) => { setKey(e.code, false); };
     function pos(e) {
       const r = cvs.getBoundingClientRect();
-      pointer.x = (e.clientX - r.left) * (W / r.width);
-      pointer.y = (e.clientY - r.top) * (H / r.height);
+      const w = r.width || 1, h = r.height || 1;
+      pointer.x = (e.clientX - r.left) * (W / w);
+      pointer.y = (e.clientY - r.top) * (H / h);
     }
-    const pd = (e) => { pos(e); pointer.down = true; pointer.click = true; };
+    const pd = (e) => {
+      pos(e);
+      pointer.down = true;
+      pointer.click = true;
+      try { cvs.setPointerCapture(e.pointerId); } catch (err) { /* */ }
+      e.preventDefault();
+    };
     const pm = (e) => { if (pointer.down || e.buttons) pos(e); };
     const pu = () => { pointer.down = false; };
+    function holdBtn(el, on) {
+      const code = el.getAttribute("data-k");
+      if (!code) return;
+      setKey(code, on);
+      el.classList.toggle("on", on);
+    }
+    const pad = document.getElementById("pad");
+    const btnDown = (e) => {
+      const el = e.target.closest("[data-k]");
+      if (!el) return;
+      holdBtn(el, true);
+      e.preventDefault();
+    };
+    const btnUp = (e) => {
+      if (pad) pad.querySelectorAll("[data-k]").forEach((b) => holdBtn(b, false));
+    };
     addEventListener("keydown", kd);
     addEventListener("keyup", ku);
     addEventListener("resize", resize);
-    cvs.addEventListener("pointerdown", pd);
-    addEventListener("pointermove", pm);
+    addEventListener("orientationchange", resize);
+    cvs.addEventListener("pointerdown", pd, { passive: false });
+    cvs.addEventListener("pointermove", pm, { passive: false });
     addEventListener("pointerup", pu);
+    addEventListener("pointercancel", pu);
+    if (pad) {
+      pad.addEventListener("pointerdown", btnDown, { passive: false });
+      pad.addEventListener("pointerup", btnUp);
+      pad.addEventListener("pointercancel", btnUp);
+      pad.addEventListener("pointerleave", btnUp);
+    }
+    document.body.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
     resize();
+    setTimeout(resize, 200);
     function frame(t) {
       if (!live) return;
       const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
@@ -75,8 +124,9 @@
         removeEventListener("keyup", ku);
         removeEventListener("resize", resize);
         cvs.removeEventListener("pointerdown", pd);
-        removeEventListener("pointermove", pm);
+        cvs.removeEventListener("pointermove", pm);
         removeEventListener("pointerup", pu);
+        if (pad) pad.removeEventListener("pointerdown", btnDown);
       }
     };
   }
@@ -91,13 +141,13 @@
     const { W, H, keys } = io;
     const st = G.paddle.s || (G.paddle.s = { l: 0.4, r: 0.4, x: 0.5, y: 0.5, vx: 0.35, vy: 0.28, ls: 0, rs: 0, dead: false });
     if (st.dead) return;
-    const ph = H * 0.18, pw = 10;
-    if (keys.KeyW) st.l -= dt * 0.9;
-    if (keys.KeyS) st.l += dt * 0.9;
-    if (keys.ArrowUp) st.r -= dt * 0.9;
-    if (keys.ArrowDown) st.r += dt * 0.9;
+    const ph = H * 0.18, pw = 12;
+    if (pointer.down) st.l = pointer.y / H - (ph / H) / 2;
+    if (keys.ArrowUp || keys.KeyW) st.l -= dt * 0.9;
+    if (keys.ArrowDown || keys.KeyS) st.l += dt * 0.9;
     st.l = Math.max(0, Math.min(1 - ph / H, st.l));
-    st.r = Math.max(0, Math.min(1 - ph / H, st.r));
+    const want = st.y - (ph / H) / 2;
+    st.r += (want - st.r) * Math.min(1, dt * 5.5);
     st.x += st.vx * dt;
     st.y += st.vy * dt;
     if (st.y < 0.02 || st.y > 0.98) st.vy *= -1;
@@ -134,7 +184,7 @@
     const s = G.bricks.s;
     if (s.dead) return;
     const pw = Math.min(90, W * 0.18), ph = 12;
-    if (pointer.x) s.px = pointer.x / W;
+    if (pointer.down) s.px = pointer.x / W;
     if (keys.ArrowLeft || keys.KeyA) s.px -= dt * 1.2;
     if (keys.ArrowRight || keys.KeyD) s.px += dt * 1.2;
     s.px = Math.max(pw / 2 / W, Math.min(1 - pw / 2 / W, s.px));
@@ -261,8 +311,10 @@
         api.sfx.shoot && api.sfx.shoot();
       }
     }
-    drive(s.a, keys.KeyW, keys.KeyS, keys.KeyA, keys.KeyD, keys.KeyF);
-    drive(s.b, keys.ArrowUp, keys.ArrowDown, keys.ArrowLeft, keys.ArrowRight, keys.Period);
+    drive(s.a, keys.KeyW || keys.ArrowUp, keys.KeyS || keys.ArrowDown, keys.KeyA || keys.ArrowLeft, keys.KeyD || keys.ArrowRight, keys.KeyF || keys.Space);
+    const aim = Math.atan2(s.a.y - s.b.y, s.a.x - s.b.x);
+    s.b.a += (aim - s.b.a) * dt * 3;
+    drive(s.b, true, false, false, false, Math.random() < dt * 1.6);
     for (const sh of s.shots) {
       sh.x += Math.cos(sh.a) * dt * 0.9;
       sh.y += Math.sin(sh.a) * dt * 0.9;
@@ -916,7 +968,8 @@
     s.x = Math.max(0.05, Math.min(0.95, s.x));
     s.y = Math.max(0.1, Math.min(0.9, s.y));
     s.cd -= dt;
-    const ang = Math.atan2(pointer.y / H - s.y, pointer.x / W - s.x);
+    let ang = Math.atan2(pointer.y / H - s.y, pointer.x / W - s.x);
+    if (!pointer.down && s.en[0]) ang = Math.atan2(s.en[0].y - s.y, s.en[0].x - s.x);
     if ((pointer.down || keys.Space) && s.cd <= 0) {
       s.cd = 0.08; s.sh.push({ x: s.x, y: s.y, a: ang }); api.sfx.shoot && api.sfx.shoot();
     }
