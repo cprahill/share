@@ -15,7 +15,8 @@
       border: 0; border-radius: 8px; font: 700 12px/2.4 ui-monospace, monospace;
       letter-spacing: .12em; text-transform: uppercase; padding: 0 1rem;
     }
-    canvas#c { width: 100%; height: 100%; }
+    html, body { height: 100%; overflow: hidden; }
+    canvas#c { position: fixed; left: 0; right: 0; top: 48px; bottom: 0; width: 100%; height: auto; background: #000; }
   </style>
 </head>
 <body>
@@ -33,7 +34,12 @@
   <script>
     const params = new URLSearchParams(location.search);
     const id = params.get("g") || "paddle";
-    const cab = (window.RETRO_CABS || []).find((c) => c.id === id) || window.RETRO_CABS[0];
+    const list = window.RETRO_CABS || [];
+    const cab = list.find((c) => c.id === id) || list[0];
+    if (!cab) {
+      document.body.innerHTML = "<p style='padding:2rem'>Games failed to load.</p>";
+      throw new Error("no cabs");
+    }
     document.title = cab.title;
     document.getElementById("era").textContent = cab.era;
     document.getElementById("name").textContent = cab.title;
