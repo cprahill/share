@@ -23,6 +23,16 @@
       width: 100%; height: auto; background: #000; touch-action: none;
     }
     body.has-pad canvas#c { bottom: calc(156px + env(safe-area-inset-bottom, 0px)); }
+    @media (orientation: landscape) {
+      body.has-pad canvas#c {
+        top: 36px;
+        left: 118px;
+        right: 128px;
+        bottom: 0;
+      }
+      .bar { height: 36px; padding: .25rem .6rem; }
+      .bar .name { font-size: 13px; }
+    }
     #pad {
       display: none;
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 8;
@@ -31,6 +41,29 @@
       background: #0a0c10;
       border-top: 1px solid #2a3128;
       align-items: center; justify-content: space-between; gap: 12px;
+    }
+    @media (orientation: landscape) {
+      body.has-pad #pad {
+        height: auto; inset: 36px 0 0 0; background: transparent;
+        border: 0; padding: 0; pointer-events: none;
+      }
+      body.has-pad #pad .dpad {
+        pointer-events: auto; position: absolute; left: 6px; bottom: 8px;
+        width: 108px; height: 108px; flex-basis: 108px;
+      }
+      body.has-pad #pad .dpad b { width: 36px; height: 36px; }
+      body.has-pad #pad .dpad .u { left: 36px; }
+      body.has-pad #pad .dpad .d { left: 36px; }
+      body.has-pad #pad .dpad .l { top: 36px; }
+      body.has-pad #pad .dpad .r { top: 36px; }
+      body.has-pad #pad .btns {
+        pointer-events: auto; position: absolute; right: 8px; bottom: 14px;
+      }
+      body.has-pad #pad .btns b { width: 52px; height: 52px; }
+      body.has-pad #pad.beat { inset: auto 0 0 0; height: 64px; pointer-events: auto; background: #0a0c10; }
+      body.has-pad #pad.beat .btns { position: static; flex: 1; }
+      body.has-pad #pad.beat .btns b { height: 52px; }
+      body.has-pad #pad.tap { justify-content: center; pointer-events: none; }
     }
     body.has-pad #pad { display: flex; }
     .dpad { position: relative; width: 132px; height: 132px; flex: 0 0 132px; }
@@ -134,6 +167,16 @@
         over.classList.add("on");
       }
     };
+    function tryLandscape() {
+      const o = screen.orientation;
+      if (o && o.lock) o.lock("landscape").catch(() => {});
+    }
+    document.body.addEventListener("pointerdown", tryLandscape, { once: true });
+    tryLandscape();
+    addEventListener("resize", () => {
+      /* cabs.js loop also resizes from canvas box */
+    });
+    addEventListener("orientationchange", () => setTimeout(() => window.dispatchEvent(new Event("resize")), 250));
     let handle = window.bootCab(id, cvs, api);
     document.getElementById("again").onclick = () => {
       over.classList.remove("on");
