@@ -1,8 +1,8 @@
 [
-  {"id":"paddle","title":"Paddle Court","year":1972,"era":"1970s","genre":"Ball & paddle","hint":"W/S left · arrows right · first to 11"},
+  {"id":"paddle","title":"Paddle Court","year":1972,"era":"1970s","genre":"Ball & paddle","hint":"Drag / d-pad · you are left · CPU right · 11 points"},
   {"id":"bricks","title":"Brick Yard","year":1976,"era":"1970s","genre":"Breakout","hint":"Mouse or ← → · click / Space serve"},
   {"id":"night","title":"Night Road","year":1976,"era":"1970s","genre":"Driving","hint":"← → steer · last as long as you can"},
-  {"id":"armor","title":"Armor Duel","year":1974,"era":"1970s","genre":"Tank","hint":"WASD + F fire · arrows + / fire"},
+  {"id":"armor","title":"Armor Duel","year":1974,"era":"1970s","genre":"Tank","hint":"D-pad drive · A fire · CPU is amber"},
   {"id":"rows","title":"Lunar Rows","year":1978,"era":"1980s","genre":"Fixed shooter","hint":"← → move · Space fire · bunkers"},
   {"id":"rocks","title":"Drift Rocks","year":1979,"era":"1980s","genre":"Vector","hint":"← → rotate · up thrust · Space fire"},
   {"id":"hopper","title":"Garden Hopper","year":1981,"era":"1980s","genre":"Cross the road","hint":"↑ hop · don't get hit"},
