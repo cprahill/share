@@ -1,7 +1,7 @@
-# BUILD 137 — grok bot (SoT playable/game-v137.js)
+# BUILD 138 — grok bot (SoT playable/game-v138.js)
 
-HTML → game-v137.js. Frozen Mars path/sit/pad/HALF_W.
+HTML → game-v138.js. Frozen Mars path/sit/pad/HALF_W.
 
-1. localStorage `rdb-board-v2`: { mars, moon, earth } × { trial, tour, hunt, free }. Top 3.
-2. 4-letter tags. Same name keeps best. Auto-save on finish.
-3. SCORES sheet shows current planet + four modes.
+1. Whoops coins = jumpProfile + 1.7, not flightArc. Dirt coins skip whoops.
+2. Moon gravMul 0.90. flightArc peak 1.72 + extra lift. Star earlier, lower offset, bigger hitR/Y.
+3. Drone hitR extra 1.35, amp 0.68, y +3.65.
