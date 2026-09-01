@@ -170,17 +170,25 @@ body.mode-hunt #pad-snap{display:block}
 
 #home{display:none;position:absolute;inset:0;z-index:14;pointer-events:auto;overflow:auto;-webkit-overflow-scrolling:touch}
 #home.show{display:block}
-.home-art{position:absolute;inset:0;background:#4A251D url("./shots/home-hero.jpg") center/cover no-repeat}
-.home-shade{position:absolute;inset:0;background:linear-gradient(90deg,#0c0c10ee 0%,#0c0c1088 42%,#0c0c1000 70%),linear-gradient(180deg,#0c0c1044 0%,transparent 28%,#0c0c10aa 100%)}
-.home-panel{position:absolute;left:clamp(18px,4vw,48px);bottom:clamp(12px,6vh,56px);width:min(520px,92vw);max-height:calc(100svh - 24px);overflow:auto;-webkit-overflow-scrolling:touch;padding:24px 24px 18px;text-align:left;background:#0c0c10cc;border:1px solid #ffee5533;box-shadow:0 0 40px #ff6a2218}
-.home-title{font-size:40px;font-weight:700;letter-spacing:.08em;color:#ffee55;line-height:1.02;text-shadow:0 0 24px #ffee5544}
-.home-tag{margin:8px 0 18px;font-size:12px;letter-spacing:.18em;opacity:.75;color:#3de8ff}
-.home-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
-.home-card{appearance:none;border:1px solid #ffffff22;background:linear-gradient(180deg,#1c1c24ee,#121218ee);color:#f4f4f2;border-radius:12px;padding:16px 14px 14px;font:700 15px/1 "IBM Plex Sans",sans-serif;letter-spacing:.12em;cursor:pointer;touch-action:manipulation;text-align:left;min-height:88px}
-.home-card span{display:block;margin-top:8px;font-size:11px;font-weight:500;letter-spacing:.03em;opacity:.72;text-transform:none;line-height:1.35}
+.home-art{position:absolute;inset:0;background:#4A251D url("./shots/home-hero.jpg") 72% 50%/cover no-repeat}
+.home-shade{position:absolute;inset:0;background:linear-gradient(90deg,#0c0c10f2 0%,#0c0c10c4 28%,#0c0c1066 48%,#0c0c1000 68%),linear-gradient(180deg,#0c0c1040 0%,transparent 24%,#0c0c10aa 100%)}
+.home-panel{position:absolute;left:clamp(16px,3.5vw,40px);bottom:clamp(14px,5vh,48px);width:min(428px,90vw);max-height:calc(100svh - 28px);overflow:auto;-webkit-overflow-scrolling:touch;padding:26px 24px 18px;text-align:left;background:#0c0c10d4;border:1px solid #ffee5530;box-shadow:0 12px 48px #00000066,0 0 40px #ff6a2210;backdrop-filter:blur(8px)}
+.home-brand{margin:0 0 16px}
+.home-panel .boot-kicker{font-size:10px;letter-spacing:.22em;opacity:.7;margin:0 0 8px;color:#f4f4f2}
+.home-title{font-size:40px;font-weight:700;letter-spacing:.07em;color:#ffee55;line-height:.95;text-shadow:0 0 24px #ffee5544}
+.home-tag{margin:10px 0 0;font-size:11px;letter-spacing:.18em;opacity:.78;color:#3de8ff}
+.planet-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:0 0 16px}
+.planet-chip{appearance:none;margin:0;padding:9px 0;border:1px solid #ffffff20;background:#121218aa;color:#c4c8cc;border-radius:8px;font:700 11px/1 "IBM Plex Sans",sans-serif;letter-spacing:.16em;cursor:pointer;touch-action:manipulation;text-align:center}
+.planet-chip:hover,.planet-chip:focus{border-color:#ffee5566;color:#ffee55}
+.planet-chip.on{color:#0c0c10;background:#ffee55;border-color:#ffee55;box-shadow:0 0 16px #ffee5544}
+.home-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+.home-card{appearance:none;border:1px solid #ffffff1c;background:linear-gradient(180deg,#1c1c24ee,#121218ee);color:#f4f4f2;border-radius:12px;padding:14px 12px 12px;font:700 13px/1 "IBM Plex Sans",sans-serif;letter-spacing:.12em;cursor:pointer;touch-action:manipulation;text-align:left;min-height:76px}
+.home-card span{display:block;margin-top:7px;font-size:11px;font-weight:500;letter-spacing:.02em;opacity:.68;text-transform:none;line-height:1.35;color:#f4f4f2}
 .home-card:hover,.home-card:focus{border-color:#ffee55aa;background:linear-gradient(180deg,#2a2418ee,#1a1810ee);color:#ffee55;box-shadow:0 0 18px #ffee5528}
-.home-foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.home-card:hover span,.home-card:focus span{color:#ffee55;opacity:.8}
+.home-foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .home-btn{display:block;width:100%;margin:0;padding:12px 14px;appearance:none;border:1px solid #ffffff22;background:#1a1a20ee;color:#f4f4f2;border-radius:10px;font:700 15px/1 "IBM Plex Sans",sans-serif;letter-spacing:.14em;cursor:pointer;touch-action:manipulation;text-align:left}
+.home-foot .home-btn{padding:10px 8px;font-size:11px;text-align:center;border-radius:8px;background:#141418cc;color:#d0d4d8;border-color:#ffffff18}
 .home-btn span{display:block;margin-top:5px;font-size:10px;font-weight:500;letter-spacing:.04em;opacity:.7;text-transform:none}
 .score-mode{margin:12px 0 4px;font-size:11px;letter-spacing:.16em;color:#3de8ff;text-align:left}
 .hs-list{list-style:none;margin:0 0 8px;padding:0;text-align:left;min-height:24px}
@@ -230,21 +238,24 @@ body.menu-on #timer-panel,body.menu-on #gate-panel,body.menu-on #place-panel,bod
   .boot-btn{padding:10px 8px;font-size:16px}
 }
 @media (max-height:540px){
-  .home-panel{padding:12px 14px 12px;width:min(640px,94vw);bottom:8px}
-  .home-title{font-size:26px}
-  .home-tag{margin:4px 0 10px;font-size:11px}
-  .home-modes{grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 8px}
-  .home-card{min-height:0;padding:10px 8px 8px;font-size:12px}
-  .home-card span{display:none}
+  .home-panel{padding:14px 16px 12px;width:min(520px,92vw);bottom:10px}
+  .home-brand{margin:0 0 10px}
+  .home-title{font-size:28px}
+  .home-tag{margin:6px 0 0;font-size:10px}
+  .planet-row{margin:0 0 10px}
+  .planet-chip{padding:7px 0;font-size:10px}
+  .home-modes{gap:6px;margin:0 0 8px}
+  .home-card{min-height:58px;padding:10px 10px 8px;font-size:12px}
+  .home-card span{margin-top:4px;font-size:10px}
   .home-foot{gap:6px}
-  .home-btn{padding:8px 10px;font-size:12px}
+  .home-btn{padding:8px 6px;font-size:10px}
   #boot{width:min(92vw,640px);padding:10px 12px}
   .boot-row{grid-template-columns:repeat(4,1fr);gap:6px}
   #finish{top:50%;padding:12px 16px}
   #count{font-size:64px}
 }
 @media (min-width:900px) and (min-height:640px){
-  .home-panel{width:min(560px,40vw);padding:28px 28px 20px}
+  .home-panel{width:min(440px,36vw);padding:30px 28px 22px}
   .home-title{font-size:44px}
-  .home-card{min-height:96px;font-size:16px}
+  .home-card{min-height:84px;font-size:14px}
 }

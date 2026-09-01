@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>CyberBaja: Planetary Tour</title>
 <meta name="theme-color" content="#0c0c10" />
-<link rel="stylesheet" href="hud.css?v=32" />
+<link rel="stylesheet" href="hud.css?v=33" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -27,7 +27,7 @@
 </head>
 <body>
 <div id="hud">
-<div id="build-chip" hidden>BUILD 126</div>
+<div id="build-chip" hidden>BUILD 132</div>
 <div id="diff-chip">MED</div>
 <div id="pilot-chip">ACE</div>
 <div class="glass" id="timer-panel"><span class="label">TIME</span><span id="timer-val">00:00.000</span></div>
@@ -76,14 +76,21 @@
   <div class="home-art" aria-hidden="true"></div>
   <div class="home-shade" aria-hidden="true"></div>
   <div class="home-panel glass">
-    <div class="boot-kicker">PLANETARY TOUR</div>
-    <div class="home-title">CYBERBAJA</div>
-    <p class="home-tag">MARS  ·  FOUR MODES  ·  SAME CORE</p>
+    <div class="home-brand">
+      <div class="boot-kicker">PLANETARY TOUR</div>
+      <div class="home-title">CYBERBAJA</div>
+      <p class="home-tag">MARS  ·  FOUR MODES  ·  ONE CORE</p>
+    </div>
+    <div class="planet-row" id="planet-row">
+      <button type="button" class="planet-chip" data-planet="mars">MARS</button>
+      <button type="button" class="planet-chip" data-planet="moon">MOON</button>
+      <button type="button" class="planet-chip" data-planet="earth">EARTH</button>
+    </div>
     <div class="home-modes">
-      <button type="button" class="home-card" data-home="trial">TIME TRIAL<span>CPU · ghosts of the fastest · no coins</span></button>
-      <button type="button" class="home-card" data-home="tour">TOUR<span>coins + time · CPU · phantom racer</span></button>
-      <button type="button" class="home-card" data-home="hunt">EXPLORER<span>open course · photo scavenger</span></button>
-      <button type="button" class="home-card" data-home="free">FREESTYLE<span>jump playground · big air · speed</span></button>
+      <button type="button" class="home-card" data-home="trial">TIME TRIAL<span>CPU · ghosts · no coins</span></button>
+      <button type="button" class="home-card" data-home="tour">TOUR<span>coins · time · CPU</span></button>
+      <button type="button" class="home-card" data-home="hunt">EXPLORER<span>open course · photos</span></button>
+      <button type="button" class="home-card" data-home="free">FREESTYLE<span>90s · sky coins</span></button>
     </div>
     <div class="home-foot">
       <button type="button" class="home-btn" data-home="how">HOW TO</button>
@@ -96,14 +103,15 @@
   <div class="boot-title">HOW TO</div>
   <ul class="how-list">
     <li><b>W / GAS</b> throttle · <b>S</b> brake · <b>A D</b> steer</li>
-    <li><b>SPACE</b> boost tank · cyan orbs <b>REFILL</b> · red orbs are a short <b>BOOST</b></li>
+    <li><b>SPACE</b> unlimited boost. Yellow <b>BOLT</b> is the only course pickup — a long turbo punch.</li>
     <li>Race modes: 5 gates a lap, launch on <b>1</b>. Send a challenge to share the board.</li>
-    <li><b>TIME TRIAL</b> no coins, extra boosts. CPU plus ghosts of your best and the top 3.</li>
+    <li><b>TIME TRIAL</b> no coins. Yellow bolts on the dirt. CPU plus ghosts of your best and the top 3.</li>
     <li><b>TOUR</b> coins + time vs CPU. A phantom of the fastest shared run rolls with you.</li>
     <li><b>EXPLORER</b> open course scavenger. Full list on the left. <b>F / SNAP</b> in any order.</li>
-    <li><b>FREESTYLE</b> jump playground on the ribbon. Kickers, boosts, big air. No clock.</li>
+    <li><b>FREESTYLE</b> timed 90s. Hit ribbon jumps. Grab sky coins. Score = coins.</li>
     <li><b>FULL SCREEN</b> fills the board. On iPhone it fits the visible view (Safari has no page fullscreen).</li>
-    <li>Moon and Earth use this same core later. Paint unlocks at score gates.</li>
+    <li><b>PLANET</b> three original courses: Mars Baja, Moon crater rim, Earth Starbase coast.</li>
+    <li>Paint unlocks at score gates.</li>
   </ul>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
 </div>
@@ -130,13 +138,13 @@
   <div class="paint-row" id="paint-row"></div>
   <button type="button" class="home-btn menu-back" data-home="back" id="boot-back">BACK</button>
   <div class="boot-row" id="boot-diff">
-    <button type="button" class="boot-btn" data-diff="easy">EASY<span>no obstacles</span></button>
-    <button type="button" class="boot-btn" data-diff="medium">MED<span>UFOs · faster rival</span></button>
-    <button type="button" class="boot-btn" data-diff="hard">HARD<span>jump gates · meaner rival</span></button>
-    <button type="button" class="boot-btn" data-diff="extra">XHARD<span>3-layer air · gold paint</span></button>
+    <button type="button" class="boot-btn" data-diff="easy">EASY<span>clear course</span></button>
+    <button type="button" class="boot-btn" data-diff="medium">MED<span>few slow drones</span></button>
+    <button type="button" class="boot-btn" data-diff="hard">HARD<span>two drone types</span></button>
+    <button type="button" class="boot-btn" data-diff="extra">XHARD<span>swarm · fast</span></button>
   </div>
   <div class="boot-row" id="boot-free" style="display:none">
-    <button type="button" class="boot-btn" data-free="track">HIT THE TRACK<span>kickers · boosts · big air</span></button>
+    <button type="button" class="boot-btn" data-free="track">GO<span>timed · ribbon jumps · sky coins</span></button>
   </div>
 </div>
 </div>
@@ -153,6 +161,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v126.js"></script>
+<script type="module" src="./game-v135.js"></script>
 </body>
 </html>
