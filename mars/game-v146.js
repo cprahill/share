@@ -237,7 +237,11 @@ function onPtrDown(e) {
   const finger = e.pointerType === "touch" || e.pointerType === "pen";
   if (finger) document.body.classList.add("touch-on");
   if (waitingDiff || document.body.classList.contains("menu-on")) {
-    const t = e.target && e.target.closest ? e.target : null;
+    let t = e.target && e.target.closest ? e.target : null;
+    if ((!t || t.tagName === "CANVAS") && document.elementsFromPoint) {
+      const stack = document.elementsFromPoint(e.clientX, e.clientY) || [];
+      t = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff]")) || t;
+    }
     if (t && t.closest) {
       const home = t.closest("[data-home]");
       if (home) { pickHomeKey(home.getAttribute("data-home")); if (e.cancelable) e.preventDefault(); return; }
