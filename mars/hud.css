@@ -178,7 +178,7 @@ body.mode-hunt #pad-snap{display:block}
 #snap-flash{display:none;position:absolute;inset:0;background:#fff;opacity:.55;z-index:9;pointer-events:none}
 #snap-flash.show{display:block}
 
-#home{display:none;position:absolute;inset:0;z-index:14;pointer-events:auto;overflow:auto;-webkit-overflow-scrolling:touch}
+#home{display:none;position:absolute;inset:0;z-index:50;pointer-events:none;overflow:auto;-webkit-overflow-scrolling:touch}
 #home.show{display:block}
 .home-art,.home-shade{pointer-events:none}
 .home-art{position:absolute;inset:0;z-index:0;background:#4A251D url("./shots/home-hero.jpg?v=2") 72% 50%/cover no-repeat}
@@ -219,6 +219,10 @@ body.mode-hunt #pad-snap{display:block}
 #hs-home{display:block;margin:8px auto 0;padding:10px 16px;font-size:12px;font-weight:700;letter-spacing:.12em}
 #boot-back{margin:0 0 10px;text-align:center}
 body.menu-on #timer-panel,body.menu-on #gate-panel,body.menu-on #place-panel,body.menu-on #coin-panel,body.menu-on #speed-cluster,body.menu-on #chevron,body.menu-on #hint,body.menu-on #touch,body.menu-on #viewfinder,body.menu-on #pad-snap,body.menu-on #snap-flash,body.menu-on #hunt-list{opacity:0;pointer-events:none}
+body.menu-on #hud,body.menu-on #hud *,body.menu-on #touch,body.menu-on #touch *{pointer-events:none!important}
+body.menu-on #touch{display:none!important}
+canvas{z-index:0}
+#home{z-index:50}
 #boot{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:12;pointer-events:auto;padding:22px 22px 18px;width:min(520px,92vw);max-height:min(86svh,86dvh);overflow:auto;-webkit-overflow-scrolling:touch;text-align:center}
 #boot.show{display:block}
 #boot .boot-kicker{font-size:11px;letter-spacing:.18em;opacity:.65;margin-bottom:6px}
