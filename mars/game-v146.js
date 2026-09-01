@@ -218,11 +218,38 @@ function padRoleFromTarget(t) {
   if (t.closest("#steer-well")) return "steer";
   return null;
 }
+let menuPickAt = 0;
+function pickHomeKey(k) {
+  const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+  if (now - menuPickAt < 400) return;
+  menuPickAt = now;
+  if (k === "raid" || k === "race") { MODE = MODES.raid; showBoot(); }
+  else if (k === "trial") { MODE = MODES.trial; showBoot(); }
+  else if (k === "tour") { MODE = MODES.tour; showBoot(); }
+  else if (k === "hunt") { MODE = MODES.hunt; showBoot(); }
+  else if (k === "free") { MODE = MODES.free; freeKind = "track"; showBoot(); }
+  else if (k === "how") showHow();
+  else if (k === "scores") showScores();
+  else showHome();
+}
 function onPtrDown(e) {
   unlockAudio();
   const finger = e.pointerType === "touch" || e.pointerType === "pen";
   if (finger) document.body.classList.add("touch-on");
-  if (waitingDiff || document.body.classList.contains("menu-on")) return;
+  if (waitingDiff || document.body.classList.contains("menu-on")) {
+    const t = e.target && e.target.closest ? e.target : null;
+    if (t && t.closest) {
+      const home = t.closest("[data-home]");
+      if (home) { pickHomeKey(home.getAttribute("data-home")); if (e.cancelable) e.preventDefault(); return; }
+      const planet = t.closest("[data-planet]");
+      if (planet) { pickPlanet(planet.getAttribute("data-planet")); if (e.cancelable) e.preventDefault(); return; }
+      const free = t.closest("[data-free]");
+      if (free) { pickFree(free.getAttribute("data-free")); if (e.cancelable) e.preventDefault(); return; }
+      const diff = t.closest(".boot-btn[data-diff]");
+      if (diff) { pickDifficulty(diff.getAttribute("data-diff")); if (e.cancelable) e.preventDefault(); return; }
+    }
+    return;
+  }
   if (e.target && e.target.closest && e.target.closest("#home, #how, #scores, #boot, #share-chal, .boot-btn, .home-btn, .home-card, .home-panel, .planet-chip, #hs-name, #hs-save, #hs-board, #finish, #boot-name, #paint-row, #hs-home")) return;
   if (finished) {
     if (ceremony.active && !ceremony.hudShown) {
@@ -4092,16 +4119,11 @@ if (elHsHome) elHsHome.addEventListener("click", (e) => { e.preventDefault(); e.
 document.querySelectorAll("[data-home]").forEach((btn) => {
   btn.addEventListener("click", (e) => {
     e.preventDefault(); e.stopPropagation();
-    const k = btn.getAttribute("data-home");
-    if (k === "raid") { MODE = MODES.raid; showBoot(); }
-    else if (k === "trial") { MODE = MODES.trial; showBoot(); }
-    else if (k === "tour") { MODE = MODES.tour; showBoot(); }
-    else if (k === "hunt") { MODE = MODES.hunt; showBoot(); }
-    else if (k === "free") { MODE = MODES.free; freeKind = "track"; showBoot(); }
-    else if (k === "race") { MODE = MODES.raid; showBoot(); }
-    else if (k === "how") showHow();
-    else if (k === "scores") showScores();
-    else showHome();
+    pickHomeKey(btn.getAttribute("data-home"));
+  });
+  btn.addEventListener("pointerup", (e) => {
+    e.preventDefault(); e.stopPropagation();
+    pickHomeKey(btn.getAttribute("data-home"));
   });
 });
 document.querySelectorAll("[data-free]").forEach((btn) => {

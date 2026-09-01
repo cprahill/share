@@ -220,8 +220,6 @@ body.mode-hunt #pad-snap{display:block}
 #boot-back{margin:0 0 10px;text-align:center}
 body.menu-on #timer-panel,body.menu-on #gate-panel,body.menu-on #place-panel,body.menu-on #coin-panel,body.menu-on #speed-cluster,body.menu-on #chevron,body.menu-on #hint,body.menu-on #touch,body.menu-on #viewfinder,body.menu-on #pad-snap,body.menu-on #snap-flash,body.menu-on #hunt-list{opacity:0;pointer-events:none}
 body.menu-on #hud,body.menu-on #hud *,body.menu-on #touch,body.menu-on #touch *{pointer-events:none!important}
-#home.show,#home[style*='display: block'],#home[style*='display:block']{pointer-events:auto!important}
-.home-card,.home-card *{pointer-events:auto!important;touch-action:manipulation}
 body.menu-on #touch{display:none!important}
 canvas{z-index:0}
 #home{z-index:50}
