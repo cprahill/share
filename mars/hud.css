@@ -302,3 +302,7 @@ html.touch-on #scores,body.touch-on #scores{
   -webkit-overflow-scrolling:touch
 }
 #scores .hs-list,#how .how-list{overflow:visible}
+
+@media (hover: none) and (pointer: coarse){
+  .glass,.home-panel{backdrop-filter:none;-webkit-backdrop-filter:none}
+}
