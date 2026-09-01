@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>ECHO TAX</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+  #wrap{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;box-sizing:border-box}
+  #tube{position:relative;width:min(960px,96vw,calc((100vh - 16px)*4/3));aspect-ratio:4/3;max-height:calc(100vh - 16px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 48px #000;overflow:hidden}
+  #tube::after{content:"";pointer-events:none;position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.14) 2px 3px);mix-blend-mode:multiply}
+  canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.84);text-align:center;gap:10px;padding:16px;z-index:3}
+  #overlay h1{margin:0;color:#b388ff;font-size:clamp(28px,6vw,44px);letter-spacing:.14em;text-shadow:0 0 18px rgba(179,136,255,.5)}
+  #overlay p{margin:0;max-width:32em;line-height:1.4;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500}
+  #overlay .go{color:#ffc14a;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+  #pad{display:none;position:absolute;left:0;right:0;bottom:0;height:28%;z-index:4;pointer-events:none}
+  body.touch #pad{display:block}
+  #pad .stick{pointer-events:auto;position:absolute;left:4%;bottom:10%;width:38%;height:78%;border:1px solid #2a3a44;border-radius:12px;background:rgba(8,12,16,.45)}
+  #pad .btns{pointer-events:auto;position:absolute;right:4%;bottom:14%;display:flex;gap:10px}
+  #pad b{width:58px;height:58px;border-radius:50%;border:2px solid #3a4;background:#1c2420;color:#c8f4e8;display:grid;place-items:center;font:700 12px/1 ui-monospace,monospace}
+  #pad b.on{background:#3df0c8;color:#041}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0" aria-label="Echo Tax playfield"></canvas>
+    <div id="overlay">
+      <h1>ECHO TAX</h1>
+      <p>Every input from your last life plays back as a hostile ghost. Score how little you repeat yourself. Copy a path and the taxman takes the points.</p>
+      <p>WASD / arrows move · Space / Z fire · drag to steer on glass</p>
+      <p id="hiLine"></p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+    <div id="pad">
+      <div class="stick" id="stick"></div>
+      <div class="btns"><b data-act="fire">FIRE</b><b data-act="start">GO</b></div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', HOT = '#ff3d7a', CHROME = '#c8d0e0', VIOLET = '#b388ff', CYAN = '#5ec8ff';
+  const HS = 'retro.echo-tax.hi';
+  const DT = 1000 / 60;
+  let acc = 0, last = performance.now();
+  function isTouch() { return matchMedia('(pointer:coarse)').matches || innerWidth < 780; }
+  document.body.classList.toggle('touch', isTouch());
+  addEventListener('resize', () => document.body.classList.toggle('touch', isTouch()));
+
+  let audioCtx = null;
+  function ensureAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (_) {}
+  }
+  function beep(f, d, t = 'square', g = 0.04) {
+    if (!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator(), gn = audioCtx.createGain();
+      o.type = t; o.frequency.value = f;
+      gn.gain.setValueAtTime(Math.max(0.0008, g), audioCtx.currentTime);
+      gn.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + Math.max(0.02, d));
+      o.connect(gn); gn.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + Math.max(0.02, d) + 0.02);
+    } catch (_) {}
+  }
+  function fireTick() { beep(920, 0.03, 'square', 0.04); }
+  function taxTick() { beep(160, 0.05, 'sawtooth', 0.03); }
+  function freshTick() { beep(740, 0.04, 'sine', 0.03); }
+  function hitTick() { beep(80, 0.16, 'sawtooth', 0.07); }
+
+  function loadHi() { return parseInt(localStorage.getItem(HS) || '0', 10) || 0; }
+  function saveHi(v) {
+    const h = loadHi();
+    if (v > h) { localStorage.setItem(HS, String(v)); return v; }
+    return h;
+  }
+  document.getElementById('hiLine').textContent = 'HIGH ' + loadHi();
+
+  const keys = {};
+  const impulse = {};
+  const pointer = { down: false, x: 320, y: 240 };
+  let stickV = null;
+  let padFire = false;
+  let holdUntil = 0;
+  function canStart() { return performance.now() >= holdUntil; }
+
+  function onKey(e, down) {
+    const c = e.code || '';
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyZ','Enter','KeyA','KeyD','KeyW','KeyS'].includes(c)) e.preventDefault();
+    if (down && !keys[c]) impulse[c] = true;
+    keys[c] = down;
+    if (!down) return;
+    ensureAudio();
+    if ((c === 'Enter' || c === 'Space') && state.phase !== 'play' && canStart()) startGame();
+  }
+  addEventListener('keydown', e => onKey(e, true), true);
+  addEventListener('keyup', e => onKey(e, false), true);
+
+  function worldPos(ev) {
+    const r = canvas.getBoundingClientRect();
+    return { x: (ev.clientX - r.left) * (W / r.width), y: (ev.clientY - r.top) * (H / r.height) };
+  }
+  canvas.addEventListener('pointerdown', ev => {
+    ev.preventDefault(); canvas.focus(); ensureAudio();
+    if (state.phase !== 'play') { if (canStart()) startGame(); return; }
+    pointer.down = true; const p = worldPos(ev); pointer.x = p.x; pointer.y = p.y;
+    try { canvas.setPointerCapture(ev.pointerId); } catch (_) {}
+  });
+  overlay.addEventListener('pointerdown', e => { e.preventDefault(); ensureAudio(); if (canStart()) startGame(); });
+  canvas.addEventListener('pointermove', ev => { if (!pointer.down) return; const p = worldPos(ev); pointer.x = p.x; pointer.y = p.y; });
+  canvas.addEventListener('pointerup', () => { pointer.down = false; });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+  const stick = document.getElementById('stick');
+  stick.addEventListener('pointerdown', ev => {
+    ev.preventDefault(); ev.stopPropagation();
+    try { stick.setPointerCapture(ev.pointerId); } catch (_) {}
+    const r = stick.getBoundingClientRect();
+    stickV = { x: (ev.clientX - r.left) / r.width - 0.5, y: (ev.clientY - r.top) / r.height - 0.5 };
+    ensureAudio();
+    if (state.phase !== 'play' && canStart()) startGame();
+  });
+  stick.addEventListener('pointermove', ev => {
+    if (!stickV) return;
+    const r = stick.getBoundingClientRect();
+    stickV = { x: (ev.clientX - r.left) / r.width - 0.5, y: (ev.clientY - r.top) / r.height - 0.5 };
+  });
+  stick.addEventListener('pointerup', () => { stickV = null; });
+  document.querySelectorAll('#pad [data-act]').forEach(b => {
+    b.addEventListener('pointerdown', ev => {
+      ev.preventDefault(); b.classList.add('on'); ensureAudio();
+      const act = b.getAttribute('data-act');
+      if (act === 'fire') padFire = true;
+      if (act === 'start' && state.phase !== 'play' && canStart()) startGame();
+    });
+    b.addEventListener('pointerup', () => { b.classList.remove('on'); padFire = false; });
+    b.addEventListener('pointercancel', () => { b.classList.remove('on'); padFire = false; });
+  });
+
+  const state = {
+    phase: 'title',
+    p: { x: 320, y: 240, a: 0 },
+    tape: [],
+    ghosts: [],
+    mites: [],
+    bolts: [],
+    gbolts: [],
+    sparks: [],
+    cells: new Set(),
+    score: 0,
+    tax: 0,
+    fresh: 0,
+    lives: 3,
+    inv: 0,
+    t: 0,
+    fireT: 0,
+    spawnT: 0,
+    shake: 0,
+    flash: 0,
+    msg: '',
+    msgT: 0,
+    taxFlash: 0
+  };
+
+  function mask() {
+    let m = 0;
+    if (keys.ArrowLeft || keys.KeyA) m |= 1;
+    if (keys.ArrowRight || keys.KeyD) m |= 2;
+    if (keys.ArrowUp || keys.KeyW) m |= 4;
+    if (keys.ArrowDown || keys.KeyS) m |= 8;
+    if (keys.Space || keys.KeyZ || padFire) m |= 16;
+    return m;
+  }
+
+  function startLife(keepGhosts) {
+    if (keepGhosts && state.tape.length > 8) {
+      state.ghosts.push({ tape: state.tape.slice(), i: 0 });
+    }
+    state.tape = [];
+    const spots = [[200, 180], [440, 300], [220, 320], [400, 160]];
+    const spawn = spots[state.ghosts.length % spots.length];
+    state.p = { x: spawn[0], y: spawn[1], a: -Math.PI / 2 };
+    state.bolts = [];
+    state.gbolts = [];
+    state.inv = 90;
+    state.fireT = 0;
+    state.spawnT = 30;
+    state.msg = state.ghosts.length ? 'GHOST ON THE FLOOR — CHANGE YOUR HANDS' : 'FIRST LIFE IS CLEAN — SPEND IT WISELY';
+    state.msgT = 90;
+  }
+
+  function startGame() {
+    if (!canStart()) return;
+    ensureAudio();
+    state.phase = 'play';
+    state.ghosts = [];
+    state.mites = [];
+    state.sparks = [];
+    state.cells = new Set();
+    state.score = 0;
+    state.tax = 0;
+    state.fresh = 0;
+    state.lives = 3;
+    state.t = 0;
+    overlay.classList.add('hidden');
+    startLife(false);
+    try { canvas.focus(); } catch (_) {}
+    beep(330, 0.08); beep(440, 0.1);
+  }
+
+  function gameOver() {
+    const hi = saveHi(state.score);
+    state.phase = 'dead';
+    holdUntil = performance.now() + 900;
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>AUDITED</h1><p>Fresh ${state.fresh} · Tax ${state.tax} · Score <b>${state.score}</b></p><p>High ${hi}</p><div class="go">PRESS START</div>`;
+  }
+
+  function killPlayer(why) {
+    if (state.inv > 0 || state.phase !== 'play') return;
+    hitTick();
+    state.lives--;
+    state.shake = 10;
+    state.flash = 5;
+    if (state.lives <= 0) {
+      state.inv = 999;
+      gameOver();
+      return;
+    }
+    startLife(true);
+    state.msg = why;
+    state.msgT = 80;
+  }
+
+  function spawnMite() {
+    const edge = (Math.random() * 4) | 0;
+    let x = 40, y = 40;
+    if (edge === 0) { x = Math.random() * W; y = 30; }
+    if (edge === 1) { x = Math.random() * W; y = H - 30; }
+    if (edge === 2) { x = 30; y = Math.random() * H; }
+    if (edge === 3) { x = W - 30; y = Math.random() * H; }
+    state.mites.push({ x, y, hp: 1 });
+  }
+
+  function update() {
+    state.t++;
+    if (state.phase !== 'play') {
+      for (const k of Object.keys(impulse)) delete impulse[k];
+      return;
+    }
+    const p = state.p;
+    let dx = 0, dy = 0;
+    if (keys.ArrowLeft || keys.KeyA) dx -= 1;
+    if (keys.ArrowRight || keys.KeyD) dx += 1;
+    if (keys.ArrowUp || keys.KeyW) dy -= 1;
+    if (keys.ArrowDown || keys.KeyS) dy += 1;
+    if (stickV) { dx += stickV.x * 2; dy += stickV.y * 2; }
+    if (pointer.down) {
+      const ax = pointer.x - p.x, ay = pointer.y - p.y;
+      const len = Math.hypot(ax, ay) || 1;
+      if (len > 8) { dx += ax / len; dy += ay / len; }
+    }
+    const len = Math.hypot(dx, dy);
+    if (len > 0) {
+      dx /= len; dy /= len;
+      p.a = Math.atan2(dy, dx);
+    }
+    p.x = Math.max(18, Math.min(W - 18, p.x + dx * 2.6));
+    p.y = Math.max(40, Math.min(H - 18, p.y + dy * 2.6));
+    if (state.inv > 0) state.inv--;
+
+    const cell = ((p.x / 40) | 0) + ',' + ((p.y / 40) | 0);
+    if (!state.cells.has(cell)) {
+      state.cells.add(cell);
+      state.fresh += 12;
+      state.score += 12;
+      freshTick();
+    }
+
+    const firing = !!(keys.Space || keys.KeyZ || padFire);
+    state.fireT--;
+    if (firing && state.fireT <= 0) {
+      state.fireT = 10;
+      fireTick();
+      state.bolts.push({ x: p.x + Math.cos(p.a) * 12, y: p.y + Math.sin(p.a) * 12, vx: Math.cos(p.a) * 7, vy: Math.sin(p.a) * 7 });
+    }
+
+    const rec = { x: p.x, y: p.y, a: p.a, fire: firing, m: mask() };
+    state.tape.push(rec);
+
+    let taxed = false;
+    for (const g of state.ghosts) {
+      const fr = g.tape[g.i % g.tape.length];
+      g.i++;
+      if (g.i % 10 === 0 && fr.fire) {
+        state.gbolts.push({ x: fr.x, y: fr.y, vx: Math.cos(fr.a) * 6, vy: Math.sin(fr.a) * 6 });
+      }
+      const dist = Math.hypot(p.x - fr.x, p.y - fr.y);
+      const sameHands = (fr.m & 15) !== 0 && (fr.m & 15) === (rec.m & 15);
+      if (dist < 42) {
+        taxed = true;
+        const amt = sameHands ? 3 : 1;
+        state.tax += amt;
+        state.score = Math.max(0, state.score - amt);
+      }
+      if (state.inv <= 0 && dist < 14) killPlayer('Walked into your last life.');
+    }
+    if (taxed) {
+      state.taxFlash = 8;
+      if (state.t % 8 === 0) taxTick();
+    }
+
+    for (const b of state.bolts) {
+      b.x += b.vx; b.y += b.vy;
+      for (const m of state.mites) {
+        if (m.hp > 0 && Math.hypot(b.x - m.x, b.y - m.y) < 12) {
+          m.hp = 0; b.dead = true;
+          state.score += 8; state.fresh += 4;
+          state.sparks.push({ x: m.x, y: m.y, vx: 0, vy: 0, life: 10, color: MINT });
+        }
+      }
+    }
+    state.bolts = state.bolts.filter(b => !b.dead && b.x > -10 && b.x < W + 10 && b.y > -10 && b.y < H + 10);
+    state.mites = state.mites.filter(m => m.hp > 0);
+    for (const m of state.mites) {
+      const a = Math.atan2(p.y - m.y, p.x - m.x);
+      m.x += Math.cos(a) * 1.15;
+      m.y += Math.sin(a) * 1.15;
+      if (state.inv <= 0 && Math.hypot(p.x - m.x, p.y - m.y) < 14) killPlayer('A mite caught you standing still in the tax.');
+    }
+
+    for (const b of state.gbolts) {
+      b.x += b.vx; b.y += b.vy;
+      if (state.inv <= 0 && Math.hypot(p.x - b.x, p.y - b.y) < 10) {
+        b.dead = true;
+        killPlayer('Your old shots came home.');
+      }
+    }
+    state.gbolts = state.gbolts.filter(b => !b.dead && b.x > -10 && b.x < W + 10);
+
+    state.spawnT--;
+    if (state.spawnT <= 0) {
+      spawnMite();
+      state.spawnT = Math.max(28, 70 - state.ghosts.length * 10);
+    }
+    state.sparks = state.sparks.filter(s => { s.life--; return s.life > 0; });
+    if (state.shake > 0) state.shake--;
+    if (state.flash > 0) state.flash--;
+    if (state.msgT > 0) state.msgT--;
+    if (state.taxFlash > 0) state.taxFlash--;
+    for (const k of Object.keys(impulse)) delete impulse[k];
+  }
+
+  function ship(x, y, a, col, ghost) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(a);
+    ctx.globalAlpha = ghost ? 0.55 : 1;
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(12, 0); ctx.lineTo(-8, 7); ctx.lineTo(-4, 0); ctx.lineTo(-8, -7);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake) ctx.translate((Math.random() - 0.5) * state.shake, (Math.random() - 0.5) * state.shake);
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(179,136,255,0.05)';
+    for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 40); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 40; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    if (state.taxFlash) {
+      ctx.fillStyle = 'rgba(255,61,122,0.08)';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    ctx.fillStyle = VIOLET;
+    ctx.font = '16px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('ECHO TAX', 14, 24);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = CHROME;
+    ctx.fillText('SCR ' + state.score + '  ·  FRESH ' + state.fresh + '  ·  TAX ' + state.tax + '  ·  LIVES ' + state.lives, W - 14, 24);
+
+    if (state.phase !== 'title') {
+      for (const g of state.ghosts) {
+        const fr = g.tape[(g.i || 0) % g.tape.length];
+        if (fr) {
+          ship(fr.x, fr.y, fr.a, VIOLET, true);
+          ctx.globalAlpha = 0.2;
+          ctx.strokeStyle = VIOLET;
+          ctx.beginPath();
+          for (let i = 0; i < g.tape.length; i += 6) {
+            const n = g.tape[i];
+            if (i === 0) ctx.moveTo(n.x, n.y); else ctx.lineTo(n.x, n.y);
+          }
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+      for (const m of state.mites) {
+        ctx.strokeStyle = HOT;
+        ctx.strokeRect(m.x - 6, m.y - 6, 12, 12);
+      }
+      for (const b of state.bolts) { ctx.fillStyle = MINT; ctx.fillRect(b.x - 2, b.y - 2, 4, 4); }
+      for (const b of state.gbolts) { ctx.fillStyle = VIOLET; ctx.fillRect(b.x - 2, b.y - 2, 4, 4); }
+      if (!(state.inv > 0 && state.inv % 6 < 3)) ship(state.p.x, state.p.y, state.p.a, CYAN, false);
+    }
+    for (const s of state.sparks) { ctx.fillStyle = s.color; ctx.fillRect(s.x, s.y, 3, 3); }
+    if (state.msgT > 0 && state.phase === 'play') {
+      ctx.fillStyle = AMBER;
+      ctx.font = '16px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, W / 2, 52);
+    }
+    if (state.flash) { ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.fillRect(0, 0, W, H); }
+    ctx.restore();
+  }
+
+  function frame(now) {
+    acc += now - last; last = now;
+    if (acc > 200) acc = 200;
+    while (acc >= DT) { try { update(); } catch (e) { console.error(e); } acc -= DT; }
+    try { draw(); } catch (e) { console.error(e); }
+    requestAnimationFrame(frame);
+  }
+  try { canvas.focus(); } catch (_) {}
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
