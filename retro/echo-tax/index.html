@@ -92,6 +92,15 @@
   let padFire = false;
   let holdUntil = 0;
   function canStart() { return performance.now() >= holdUntil; }
+  function armOverlay(on) {
+    overlay.classList.toggle('hidden', !on);
+    overlay.style.pointerEvents = on ? 'auto' : 'none';
+  }
+  function requestStart() {
+    if (state.phase === 'play') return;
+    if (!canStart()) return;
+    startGame();
+  }
 
   function onKey(e, down) {
     const c = e.code || '';
@@ -100,7 +109,9 @@
     keys[c] = down;
     if (!down) return;
     ensureAudio();
-    if ((c === 'Enter' || c === 'Space') && state.phase !== 'play' && canStart()) startGame();
+    // During a run Space/Z is fire only — never wipe the credit.
+    if (state.phase === 'play') return;
+    if (c === 'Enter' || c === 'Space') requestStart();
   }
   addEventListener('keydown', e => onKey(e, true), true);
   addEventListener('keyup', e => onKey(e, false), true);
@@ -111,11 +122,14 @@
   }
   canvas.addEventListener('pointerdown', ev => {
     ev.preventDefault(); canvas.focus(); ensureAudio();
-    if (state.phase !== 'play') { if (canStart()) startGame(); return; }
+    if (state.phase !== 'play') { requestStart(); return; }
     pointer.down = true; const p = worldPos(ev); pointer.x = p.x; pointer.y = p.y;
     try { canvas.setPointerCapture(ev.pointerId); } catch (_) {}
   });
-  overlay.addEventListener('pointerdown', e => { e.preventDefault(); ensureAudio(); if (canStart()) startGame(); });
+  overlay.addEventListener('pointerdown', e => {
+    e.preventDefault(); ensureAudio();
+    requestStart();
+  });
   canvas.addEventListener('pointermove', ev => { if (!pointer.down) return; const p = worldPos(ev); pointer.x = p.x; pointer.y = p.y; });
   canvas.addEventListener('pointerup', () => { pointer.down = false; });
   canvas.addEventListener('contextmenu', e => e.preventDefault());
@@ -127,7 +141,7 @@
     const r = stick.getBoundingClientRect();
     stickV = { x: (ev.clientX - r.left) / r.width - 0.5, y: (ev.clientY - r.top) / r.height - 0.5 };
     ensureAudio();
-    if (state.phase !== 'play' && canStart()) startGame();
+    requestStart();
   });
   stick.addEventListener('pointermove', ev => {
     if (!stickV) return;
@@ -140,7 +154,7 @@
       ev.preventDefault(); b.classList.add('on'); ensureAudio();
       const act = b.getAttribute('data-act');
       if (act === 'fire') padFire = true;
-      if (act === 'start' && state.phase !== 'play' && canStart()) startGame();
+      if (act === 'start') requestStart();
     });
     b.addEventListener('pointerup', () => { b.classList.remove('on'); padFire = false; });
     b.addEventListener('pointercancel', () => { b.classList.remove('on'); padFire = false; });
@@ -199,6 +213,7 @@
   }
 
   function startGame() {
+    if (state.phase === 'play') return;
     if (!canStart()) return;
     ensureAudio();
     state.phase = 'play';
@@ -211,7 +226,7 @@
     state.fresh = 0;
     state.lives = 3;
     state.t = 0;
-    overlay.classList.add('hidden');
+    armOverlay(false);
     startLife(false);
     try { canvas.focus(); } catch (_) {}
     beep(330, 0.08); beep(440, 0.1);
@@ -221,8 +236,8 @@
     const hi = saveHi(state.score);
     state.phase = 'dead';
     holdUntil = performance.now() + 900;
-    overlay.classList.remove('hidden');
     overlay.innerHTML = `<h1>AUDITED</h1><p>Fresh ${state.fresh} · Tax ${state.tax} · Score <b>${state.score}</b></p><p>High ${hi}</p><div class="go">PRESS START</div>`;
+    armOverlay(true);
   }
 
   function killPlayer(why) {

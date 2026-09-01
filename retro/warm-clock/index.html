@@ -211,16 +211,16 @@
     state.shots = [];
     state.sparks = [];
     state.hp = 3;
-    state.inv = 80;
+    state.inv = 150;
     state.minutes = 0;
     state.hoursCleared = 0;
     state.t = 0;
-    state.spawnT = 40;
+    state.spawnT = 90;
     state.shake = 0;
     state.flash = 0;
     state.spin = 0;
-    state.msg = 'SWEEP THE UNLIT MARKS';
-    state.msgT = 90;
+    state.msg = 'OPENING 20s — SWEEP THE UNLIT MARKS';
+    state.msgT = 120;
     overlay.classList.add('hidden');
     try { canvas.focus(); } catch (_) {}
     beep(330, 0.08); beep(440, 0.1);
@@ -239,7 +239,7 @@
     if (state.inv > 0 || state.phase !== 'play') return;
     hitTick();
     state.hp--;
-    state.inv = 70;
+    state.inv = state.t < 20 * 60 ? 150 : 110;
     state.shake = 10;
     state.flash = 4;
     state.msg = why;
@@ -308,7 +308,8 @@
       if (Math.hypot(tip.x - p.x, tip.y - p.y) < 26) visit(i);
     }
 
-    const crawl = 0.42 + state.hoursCleared * 0.08;
+    const grace = state.t < 20 * 60;
+    const crawl = grace ? 0.16 : (0.42 + state.hoursCleared * 0.1);
     for (const tk of state.ticks) {
       tk.rad -= crawl;
       const a = markAng(tk.mark);
@@ -320,10 +321,12 @@
         state.sparks.push({ x, y, vx: Math.cos(state.sword) * 3, vy: Math.sin(state.sword) * 3, life: 12, color: MINT });
       }
       tk.cool--;
-      if (tk.cool <= 0 && tk.rad > 50) {
+      if (!grace && tk.cool <= 0 && tk.rad > 50) {
         tk.cool = 70 - Math.min(40, state.hoursCleared * 8);
         const sp = 1.6 + state.hoursCleared * 0.15;
         state.shots.push({ x, y, vx: -Math.cos(a) * sp, vy: -Math.sin(a) * sp, a });
+      } else if (grace && tk.cool < 8) {
+        tk.cool = 24;
       }
       if (tk.rad < 28) {
         if (covered(a)) {
@@ -355,8 +358,9 @@
 
     state.spawnT--;
     if (state.spawnT <= 0) {
-      spawnTick();
-      state.spawnT = Math.max(22, 55 - state.hoursCleared * 6);
+      const cap = grace ? 2 : 6;
+      if (state.ticks.length < cap) spawnTick();
+      state.spawnT = grace ? 110 : Math.max(20, 48 - state.hoursCleared * 6);
     }
 
     state.sparks = state.sparks.filter(p => { p.x += p.vx; p.y += p.vy; p.life--; return p.life > 0; });
@@ -454,7 +458,7 @@
     ctx.fillText('WARM CLOCK', 14, 24);
     ctx.textAlign = 'right';
     ctx.fillStyle = CHROME;
-    ctx.fillText(fmt(state.minutes) + '  ·  HP ' + state.hp + '  ·  HI ' + fmt(loadHi()), W - 14, 24);
+    ctx.fillText(fmt(state.minutes) + (state.phase === 'play' && state.t < 20 * 60 ? '  ·  OPENING' : '') + '  ·  HP ' + state.hp + '  ·  HI ' + fmt(loadHi()), W - 14, 24);
 
     if (state.phase !== 'title') {
       drawFace();
