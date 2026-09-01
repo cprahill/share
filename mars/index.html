@@ -7,9 +7,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="CyberBaja" />
 <title>CyberBaja: Planetary Tour</title>
 <meta name="theme-color" content="#0c0c10" />
-<link rel="stylesheet" href="hud.css?v=33" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="apple-touch-icon" href="./icon-180.png" />
+<link rel="stylesheet" href="hud.css?v=34" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -109,7 +112,7 @@
     <li><b>TOUR</b> coins + time vs CPU. A phantom of the fastest shared run rolls with you.</li>
     <li><b>EXPLORER</b> open course scavenger. Full list on the left. <b>F / SNAP</b> in any order.</li>
     <li><b>FREESTYLE</b> timed 90s. Hit ribbon jumps. Grab sky coins. Score = coins.</li>
-    <li><b>FULL SCREEN</b> fills the board. On iPhone it fits the visible view (Safari has no page fullscreen).</li>
+    <li><b>PHONE</b> landscape only. Share → Add to Home Screen for a chrome-free app. FULL SCREEN fits the visible view in Safari (iPhone cannot hide the URL bar in a tab).</li>
     <li><b>PLANET</b> three original courses: Mars Baja, Moon crater rim, Earth Starbase coast.</li>
     <li>Paint unlocks at score gates.</li>
     <li><b>SCORES</b> live on this device. Top 3 per planet and mode. 4-letter tag. Pass the phone and beat the board.</li>
@@ -152,6 +155,13 @@
   </div>
 </div>
 </div>
+<div id="rotate-lock" aria-hidden="true">
+  <div class="rotate-card">
+    <div class="rotate-kicker">CYBERBAJA</div>
+    <div class="rotate-title">TURN YOUR PHONE</div>
+    <p>Landscape only. Add to Home Screen for a full-phone app with no browser bar.</p>
+  </div>
+</div>
 <button type="button" id="fs-btn" class="pad-hit" aria-label="fullscreen" aria-pressed="false">FULL</button>
 <div id="touch" aria-hidden="true">
   <div id="steer-well" class="glass pad-hit">
@@ -165,6 +175,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v138.js"></script>
+<script type="module" src="./game-v139.js"></script>
 </body>
 </html>
