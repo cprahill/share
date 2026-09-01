@@ -133,7 +133,7 @@ const NAME_KEY = "rdb-name-v1";
 const PAINT_KEY = "rdb-paint-v1";
 const PAINT_UNLOCK_KEY = "rdb-paint-unlock-v1";
 const VEH_KEY = "rdb-veh-v1";
-const ROADSTER_LIVE = true;
+const ROADSTER_LIVE = false;
 let playerVeh = "truck";
 try {
   if (ROADSTER_LIVE) {
@@ -1670,78 +1670,122 @@ function wedgeTruck() {
 }
 
 
-function roadsterHullGeo() {
-  const rings = [
-    { z:  1.95, y0: 0.28, y2: 0.42, hw: 0.42 },
-    { z:  1.55, y0: 0.22, y2: 0.58, hw: 0.92 },
-    { z:  0.85, y0: 0.20, y2: 0.72, hw: 1.00 },
-    { z:  0.25, y0: 0.18, y2: 1.02, hw: 0.96 },
-    { z: -0.15, y0: 0.18, y2: 1.08, hw: 0.90 },
-    { z: -0.70, y0: 0.20, y2: 0.62, hw: 0.94 },
-    { z: -1.45, y0: 0.22, y2: 0.48, hw: 0.88 },
-    { z: -1.95, y0: 0.28, y2: 0.40, hw: 0.55 }
-  ];
-  const pos = [];
-  const idx = [];
-  const stride = 7;
-  function vert(x, y, z) {
-    pos.push(x, y, z);
+function hardenRoadsterMat(m) {
+  if (!m) return m;
+  const n = (m.name || "").toLowerCase();
+  const glass = /glass|transp|wind|canopy/.test(n) || (m.transmission != null && m.transmission > 0.2);
+  if (m.isMeshPhysicalMaterial || m.transmission || m.clearcoat) {
+    const std = new THREE.MeshStandardMaterial({
+      color: m.color ? m.color.clone() : new THREE.Color(0xB42018),
+      metalness: glass ? 0.15 : (m.metalness != null ? m.metalness : 0.55),
+      roughness: glass ? 0.08 : (m.roughness != null ? m.roughness : 0.38),
+      envMapIntensity: m.envMapIntensity != null ? m.envMapIntensity : 1.1,
+      transparent: glass,
+      opacity: glass ? 0.42 : 1,
+      depthWrite: !glass,
+      side: glass ? THREE.DoubleSide : THREE.FrontSide,
+      emissive: m.emissive ? m.emissive.clone() : new THREE.Color(0x000000),
+      map: m.map || null,
+      normalMap: m.normalMap || null,
+      roughnessMap: m.roughnessMap || null,
+      metalnessMap: m.metalnessMap || null
+    });
+    std.name = m.name || "";
+    return std;
   }
-  for (let i = 0; i < rings.length; i++) {
-    const r = rings[i];
-    const y1 = r.y0 + (r.y2 - r.y0) * 0.34;
-    vert(-r.hw, r.y0, r.z);
-    vert(-r.hw, y1, r.z);
-    vert(-r.hw, r.y2, r.z);
-    vert(0, r.y2 + 0.035, r.z);
-    vert(r.hw, r.y2, r.z);
-    vert(r.hw, y1, r.z);
-    vert(r.hw, r.y0, r.z);
+  if (m.transparent && !glass) { m.transparent = false; m.opacity = 1; m.depthWrite = true; }
+  return m;
+}
+function sitRoadsterGlb(g, glbRoot, root, fallback) {
+  glbRoot.clear();
+  glbRoot.add(root);
+  glbRoot.position.set(0, 0, 0);
+  glbRoot.rotation.set(0, 0, 0);
+  glbRoot.scale.setScalar(1);
+  root.traverse((o) => {
+    if (o.scale && Math.abs(o.scale.x) > 8) o.scale.set(1, 1, 1);
+  });
+  glbRoot.updateMatrixWorld(true);
+  let bb = new THREE.Box3().setFromObject(glbRoot);
+  if (!isFinite(bb.min.x) || !isFinite(bb.max.x)) return false;
+  let size = bb.getSize(new THREE.Vector3());
+  if (size.y > size.z && size.y > size.x * 1.15) {
+    glbRoot.rotation.x = -Math.PI / 2;
+    glbRoot.updateMatrixWorld(true);
+    bb = new THREE.Box3().setFromObject(glbRoot);
+    size = bb.getSize(new THREE.Vector3());
   }
-  function quad(a, b, c, d) {
-    idx.push(a, b, c, a, c, d);
-  }
-  for (let i = 0; i < rings.length - 1; i++) {
-    const a = i * stride, b = (i + 1) * stride;
-    for (let k = 0; k < stride; k++) {
-      const k2 = (k + 1) % stride;
-      quad(a + k, a + k2, b + k2, b + k);
-    }
-  }
-  const f = 0, n = (rings.length - 1) * stride;
-  for (let k = 0; k < stride; k++) {
-    const k2 = (k + 1) % stride;
-    idx.push(f + 3, f + k2, f + k);
-    idx.push(n + 3, n + k, n + k2);
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-  geo.setIndex(idx);
-  const hull = geo.toNonIndexed();
-  hull.computeVertexNormals();
-  return hull;
+  const length = Math.max(size.x, size.y, size.z);
+  if (length < 0.05) return false;
+  const TARGET_LEN = 4.2 / LOOK_TRUCK;
+  glbRoot.scale.setScalar(TARGET_LEN / length);
+  glbRoot.updateMatrixWorld(true);
+  bb = new THREE.Box3().setFromObject(glbRoot);
+  glbRoot.position.set(
+    -(bb.min.x + bb.max.x) * 0.5,
+    -bb.min.y,
+    -(bb.min.z + bb.max.z) * 0.5
+  );
+  glbRoot.updateMatrixWorld(true);
+  g.userData.stlScale = TARGET_LEN / length;
+  let opaque = 0;
+  const skip = /glass|rubber|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior/;
+  const seen = new Set();
+  const mats = [];
+  glbRoot.traverse((o) => {
+    if (!o.isMesh) return;
+    o.visible = true;
+    o.frustumCulled = false;
+    o.castShadow = !IS_MOBILE;
+    o.receiveShadow = !IS_MOBILE;
+    const list = Array.isArray(o.material) ? o.material.map(hardenRoadsterMat) : hardenRoadsterMat(o.material);
+    o.material = list;
+    const arr = Array.isArray(list) ? list : [list];
+    arr.forEach((m) => {
+      if (!m || seen.has(m)) return;
+      const n = ((m.name || "") + " " + (o.name || "")).toLowerCase();
+      if (!m.transparent) opaque++;
+      if (skip.test(n) || m.transparent) return;
+      seen.add(m);
+      mats.push(m);
+    });
+  });
+  g.userData.bodyMats = mats;
+  const L = LIVERIES[liveryIdx] || LIVERIES[0];
+  mats.forEach((m) => {
+    if (m.color) m.color.setHex(L.color);
+    if (m.metalness != null) m.metalness = L.metalness;
+    if (m.roughness != null) m.roughness = L.roughness;
+    m.needsUpdate = true;
+  });
+  if (opaque < 1) return false;
+  if (fallback) fallback.visible = false;
+  (g.userData.wheels || []).forEach((w) => { if (w.hub) w.hub.visible = false; });
+  g.traverse((o) => { o.frustumCulled = false; });
+  return true;
 }
 function makeRoadster() {
   const g = new THREE.Group();
   g.name = "roadster";
-  function part(geo, mat, x, y, z, rx) {
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x, y, z);
-    if (rx) m.rotation.x = rx;
-    m.castShadow = true;
-    m.receiveShadow = true;
-    m.frustumCulled = false;
-    m.visible = true;
-    g.add(m);
-    return m;
-  }
-  const hull = part(roadsterHullGeo(), steelRoadster, 0, 0, 0);
-  g.userData.bodyMats = [steelRoadster];
-  part(new THREE.BoxGeometry(1.70, 0.04, 1.15), glassMat.clone(), 0, 0.88, 0.15, 0.42);
-  part(new THREE.BoxGeometry(1.55, 0.025, 0.04), lampMat, 0, 0.40, 1.92);
-  part(new THREE.BoxGeometry(1.40, 0.04, 0.035), tailMat, 0, 0.38, -1.96);
-  part(new THREE.BoxGeometry(1.4, 0.04, 0.22), blackBar, 0, 0.16, 1.78);
-  part(new THREE.BoxGeometry(1.2, 0.06, 0.18), blackBar, 0, 0.14, -1.88);
+  const glbRoot = new THREE.Group();
+  glbRoot.name = "glbRoadster";
+  g.add(glbRoot);
+  g.userData.bodyMats = [];
+  const fallback = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.52, 3.9), steelRoadster);
+  fallback.name = "roadster-fallback";
+  fallback.position.y = 0.52;
+  fallback.castShadow = true;
+  g.add(fallback);
+  const bootGlb = () => {
+    if (!ROADSTER_LIVE) { fallback.visible = false; return; }
+    if (typeof gltfLoader === "undefined") { setTimeout(bootGlb, 40); return; }
+    gltfLoader.load("./mesh/roadster.glb", (gltf) => {
+      const ok = sitRoadsterGlb(g, glbRoot, gltf.scene, fallback);
+      if (!ok) fallback.visible = true;
+    }, undefined, () => { fallback.visible = true; });
+  };
+  if (ROADSTER_LIVE) queueMicrotask(bootGlb);
+  else fallback.visible = false;
   const WR = 0.58;
   const WW = 0.48;
   const wheelGeo = new THREE.CylinderGeometry(WR, WR, WW, 16);
@@ -1765,17 +1809,9 @@ function makeRoadster() {
     const spin = new THREE.Group();
     const tire = new THREE.Mesh(wheelGeo, rubberMat);
     tire.castShadow = true;
-    tire.frustumCulled = false;
-    tire.visible = true;
     spin.add(tire);
-    const rim = new THREE.Mesh(rimGeo, rimMat);
-    rim.frustumCulled = false;
-    rim.visible = true;
-    spin.add(rim);
-    const cap = new THREE.Mesh(hubCapGeo, blackBar);
-    cap.frustumCulled = false;
-    cap.visible = true;
-    spin.add(cap);
+    spin.add(new THREE.Mesh(rimGeo, rimMat));
+    spin.add(new THREE.Mesh(hubCapGeo, blackBar));
     steerHub.add(spin);
     g.add(steerHub);
     g.userData.wheels.push({
