@@ -1,25 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CRT Cabinet</title>
-<body style="margin:0;min-height:100vh;background:#05080a;color:#9fffc8;font:16px/1.4 ui-monospace,Menlo,monospace">
-<main style="max-width:36rem;margin:0 auto;padding:2.5rem 1.25rem">
-<h1 style="font-size:1.15rem;letter-spacing:.18em;text-transform:uppercase;color:#7dffb0">CRT Cabinet</h1>
-<p style="color:#6a8878;font-size:.85rem">Five PASS carts. Insert coin, hit a slot.</p>
-<ul style="list-style:none;padding:0;margin:1.5rem 0 0">
-<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./vector-forge/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Vector Forge</a></li>
-<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./cathode-wall/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Cathode Wall</a></li>
-<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./hex-cascade/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Hex Cascade</a></li>
-<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./neon-lane/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Neon Lane</a></li>
-<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./echo-run/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Echo Run</a></li>
+<script>
+(function () {
+  var p = location.pathname || '/';
+  if (/index\.html$/i.test(p)) p = p.replace(/index\.html$/i, '');
+  else if (!/\/$/.test(p)) p += '/';
+  var b = document.createElement('base');
+  b.href = p;
+  document.head.appendChild(b);
+})();
+</script>
+<style>
+  body{margin:0;min-height:100vh;background:#05080a;color:#9fffc8;font:16px/1.4 ui-monospace,Menlo,monospace}
+  main{max-width:36rem;margin:0 auto;padding:2.5rem 1.25rem}
+  h1{font-size:1.15rem;letter-spacing:.18em;text-transform:uppercase;color:#7dffb0}
+  .lede{color:#6a8878;font-size:.85rem}
+  .era{color:#6a8878;font-size:.85rem;margin:2rem 0 .75rem;letter-spacing:.18em;text-transform:uppercase}
+  .era.first{margin-top:1.5rem;color:#c9a46a}
+  ul{list-style:none;padding:0;margin:0}
+  a.cab{display:block;padding:.85rem 1rem;text-decoration:none;border:1px solid #1c3a2c;margin:0 0 .6rem}
+  a.cab .title{display:block;font-size:1.05rem}
+  a.cab .slug{display:block;margin-top:.2rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+  a.keep{color:#b8ffd6;border-color:#1c3a2c}
+  a.orig{color:#ffd6a8;border-color:#3a2c1c}
+</style>
+</head>
+<body>
+<main>
+<h1>CRT Cabinet</h1>
+<p class="lede">Insert coin, hit a slot. Original titles on the first row.</p>
+
+<p class="era first">Grok originals</p>
+<ul>
+<li><a class="cab orig" href="warm-clock/index.html"><span class="title">Warm Clock</span><span class="slug">warm-clock</span></a></li>
+<li><a class="cab orig" href="echo-tax/index.html"><span class="title">Echo Tax</span><span class="slug">echo-tax</span></a></li>
+<li><a class="cab orig" href="still-fire/index.html"><span class="title">Still Fire</span><span class="slug">still-fire</span></a></li>
+<li><a class="cab orig" href="shade-stake/index.html"><span class="title">Shade Stake</span><span class="slug">shade-stake</span></a></li>
+<li><a class="cab orig" href="stack-debt/index.html"><span class="title">Stack Debt</span><span class="slug">stack-debt</span></a></li>
 </ul>
-<p style="color:#6a8878;font-size:.85rem;margin:2rem 0 0;letter-spacing:.18em;text-transform:uppercase">Grok originals</p>
-<ul style="list-style:none;padding:0;margin:1rem 0 0">
-<li style="border:1px solid #3a2c1c;margin:0 0 .6rem"><a href="./warm-clock/" style="display:block;padding:.85rem 1rem;color:#ffd6a8;text-decoration:none">Warm Clock</a></li>
-<li style="border:1px solid #3a2c1c;margin:0 0 .6rem"><a href="./echo-tax/" style="display:block;padding:.85rem 1rem;color:#ffd6a8;text-decoration:none">Echo Tax</a></li>
-<li style="border:1px solid #3a2c1c;margin:0 0 .6rem"><a href="./still-fire/" style="display:block;padding:.85rem 1rem;color:#ffd6a8;text-decoration:none">Still Fire</a></li>
-<li style="border:1px solid #3a2c1c;margin:0 0 .6rem"><a href="./shade-stake/" style="display:block;padding:.85rem 1rem;color:#ffd6a8;text-decoration:none">Shade Stake</a></li>
-<li style="border:1px solid #3a2c1c;margin:0 0 .6rem"><a href="./stack-debt/" style="display:block;padding:.85rem 1rem;color:#ffd6a8;text-decoration:none">Stack Debt</a></li>
+
+<p class="era">PASS keepers</p>
+<ul>
+<li><a class="cab keep" href="vector-forge/index.html"><span class="title">Vector Forge</span><span class="slug">vector-forge</span></a></li>
+<li><a class="cab keep" href="cathode-wall/index.html"><span class="title">Cathode Wall</span><span class="slug">cathode-wall</span></a></li>
+<li><a class="cab keep" href="hex-cascade/index.html"><span class="title">Hex Cascade</span><span class="slug">hex-cascade</span></a></li>
+<li><a class="cab keep" href="neon-lane/index.html"><span class="title">Neon Lane</span><span class="slug">neon-lane</span></a></li>
+<li><a class="cab keep" href="echo-run/index.html"><span class="title">Echo Run</span><span class="slug">echo-run</span></a></li>
 </ul>
 </main>
 </body>
+</html>
