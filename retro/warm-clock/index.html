@@ -53,8 +53,9 @@
   const DT = 1000 / 60;
   let acc = 0, last = performance.now();
 
-  const coarse = matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches || 'ontouchstart' in window;
-  if (coarse || innerWidth < 820) document.body.classList.add('touch');
+  function isTouch() { return matchMedia('(pointer:coarse)').matches || innerWidth < 780; }
+  document.body.classList.toggle('touch', isTouch());
+  addEventListener('resize', () => document.body.classList.toggle('touch', isTouch()));
 
   let audioCtx = null;
   function ensureAudio() {

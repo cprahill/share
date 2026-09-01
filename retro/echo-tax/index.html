@@ -50,8 +50,9 @@
   const HS = 'retro.echo-tax.hi';
   const DT = 1000 / 60;
   let acc = 0, last = performance.now();
-  const coarse = matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches || 'ontouchstart' in window;
-  if (coarse || innerWidth < 820) document.body.classList.add('touch');
+  function isTouch() { return matchMedia('(pointer:coarse)').matches || innerWidth < 780; }
+  document.body.classList.toggle('touch', isTouch());
+  addEventListener('resize', () => document.body.classList.toggle('touch', isTouch()));
 
   let audioCtx = null;
   function ensureAudio() {
@@ -185,7 +186,9 @@
       state.ghosts.push({ tape: state.tape.slice(), i: 0 });
     }
     state.tape = [];
-    state.p = { x: 320, y: 240, a: -Math.PI / 2 };
+    const spots = [[200, 180], [440, 300], [220, 320], [400, 160]];
+    const spawn = spots[state.ghosts.length % spots.length];
+    state.p = { x: spawn[0], y: spawn[1], a: -Math.PI / 2 };
     state.bolts = [];
     state.gbolts = [];
     state.inv = 90;
@@ -223,12 +226,16 @@
   }
 
   function killPlayer(why) {
-    if (state.inv > 0) return;
+    if (state.inv > 0 || state.phase !== 'play') return;
     hitTick();
     state.lives--;
     state.shake = 10;
     state.flash = 5;
-    if (state.lives <= 0) { gameOver(); return; }
+    if (state.lives <= 0) {
+      state.inv = 999;
+      gameOver();
+      return;
+    }
     startLife(true);
     state.msg = why;
     state.msgT = 80;
@@ -299,10 +306,11 @@
       }
       const dist = Math.hypot(p.x - fr.x, p.y - fr.y);
       const sameHands = (fr.m & 15) !== 0 && (fr.m & 15) === (rec.m & 15);
-      if (dist < 40 && sameHands) {
+      if (dist < 42) {
         taxed = true;
-        state.tax += 2;
-        state.score = Math.max(0, state.score - 2);
+        const amt = sameHands ? 3 : 1;
+        state.tax += amt;
+        state.score = Math.max(0, state.score - amt);
       }
       if (state.inv <= 0 && dist < 14) killPlayer('Walked into your last life.');
     }

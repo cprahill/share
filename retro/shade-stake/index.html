@@ -50,8 +50,9 @@
   const HS = 'retro.shade-stake.hi';
   const DT = 1000 / 60;
   let acc = 0, last = performance.now();
-  const coarse = matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches || 'ontouchstart' in window;
-  if (coarse || innerWidth < 820) document.body.classList.add('touch');
+  function isTouch() { return matchMedia('(pointer:coarse)').matches || innerWidth < 780; }
+  document.body.classList.toggle('touch', isTouch());
+  addEventListener('resize', () => document.body.classList.toggle('touch', isTouch()));
 
   let audioCtx = null;
   function ensureAudio() {
@@ -203,7 +204,7 @@
   }
 
   function hurt() {
-    if (state.inv > 0) return;
+    if (state.inv > 0 || state.phase !== 'play') return;
     hitTick();
     state.hp--;
     state.inv = 55;
@@ -306,8 +307,9 @@
     state.spawnT--;
     if (state.spawnT <= 0) {
       spawnCreep();
-      if (state.wave > 2) spawnCreep();
-      state.spawnT = Math.max(14, 40 - state.wave * 4);
+      if (state.wave > 1) spawnCreep();
+      if (state.shades.length === 0) spawnCreep();
+      state.spawnT = Math.max(12, 34 - state.wave * 4);
     }
 
     for (const c of state.creeps) {
