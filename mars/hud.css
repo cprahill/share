@@ -181,7 +181,7 @@ body.mode-hunt #pad-snap{display:block}
 #home{display:none;position:absolute;inset:0;z-index:14;pointer-events:auto;overflow:auto;-webkit-overflow-scrolling:touch}
 #home.show{display:block}
 .home-art,.home-shade{pointer-events:none}
-.home-art{position:absolute;inset:0;z-index:0;background:#4A251D url("./shots/home-hero.jpg") 72% 50%/cover no-repeat}
+.home-art{position:absolute;inset:0;z-index:0;background:#4A251D url("./shots/home-hero.jpg?v=2") 72% 50%/cover no-repeat}
 .home-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#0c0c10f2 0%,#0c0c10c4 28%,#0c0c1066 48%,#0c0c1000 68%),linear-gradient(180deg,#0c0c1040 0%,transparent 24%,#0c0c10aa 100%)}
 .home-panel{position:absolute;z-index:2;pointer-events:auto;left:clamp(16px,3.5vw,40px);bottom:clamp(14px,5vh,48px);width:min(428px,90vw);max-height:calc(100svh - 28px);overflow:auto;-webkit-overflow-scrolling:touch;padding:26px 24px 18px;text-align:left;background:#0c0c10d4;border:1px solid #ffee5530;box-shadow:0 12px 48px #00000066,0 0 40px #ff6a2210;backdrop-filter:blur(8px)}
 .home-brand{margin:0 0 16px}
