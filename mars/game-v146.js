@@ -1668,45 +1668,64 @@ function wedgeTruck() {
 function makeRoadster() {
   const g = new THREE.Group();
   g.name = "roadster";
-  const stlRoot = new THREE.Group();
-  stlRoot.name = "stlRoadster";
-  g.add(stlRoot);
-  const loader = new STLLoader();
-  loader.load("./mesh/roadster.stl", (geo) => {
-    geo.applyMatrix4(STL_TO_YUP);
-    geo.computeVertexNormals();
-    geo.computeBoundingBox();
-    const m = new THREE.Mesh(geo, steelRoadster);
-    m.name = "roadster-hull";
-    m.castShadow = true;
-    m.receiveShadow = true;
-    m.frustumCulled = false;
-    stlRoot.add(m);
-    stlRoot.position.set(0, 0, 0);
-    stlRoot.rotation.set(0, 0, 0);
-    stlRoot.scale.setScalar(ROADSTER_STL_SCALE);
-    stlRoot.updateMatrix();
-    const bb = geo.boundingBox.clone().applyMatrix4(stlRoot.matrix);
+  const glbRoot = new THREE.Group();
+  glbRoot.name = "glbRoadster";
+  g.add(glbRoot);
+  g.userData.bodyMats = [];
+  queueMicrotask(() => {
+  loadGlb("./mesh/roadster.glb", (root) => {
+    glbRoot.clear();
+    glbRoot.add(root);
+    glbRoot.position.set(0, 0, 0);
+    glbRoot.rotation.set(0, 0, 0);
+    glbRoot.scale.setScalar(1);
+    glbRoot.updateMatrixWorld(true);
+    const bb = new THREE.Box3().setFromObject(glbRoot);
+    const dx = bb.max.x - bb.min.x;
+    const dz = bb.max.z - bb.min.z;
+    const length = Math.max(dx, dz);
+    const TARGET_LEN = 4.2 / LOOK_TRUCK;
+    const s = length > 0.01 ? TARGET_LEN / length : 1;
+    glbRoot.scale.setScalar(s);
+    glbRoot.updateMatrixWorld(true);
+    bb.setFromObject(glbRoot);
     const cx = (bb.min.x + bb.max.x) * 0.5;
     const cz = (bb.min.z + bb.max.z) * 0.5;
-    stlRoot.position.set(-cx, BODY_SIT_Y_ROADSTER - bb.min.y, -cz);
-    stlRoot.updateMatrixWorld(true);
-    g.userData.stlScale = ROADSTER_STL_SCALE;
-    const ws = glassMat.clone();
-    ws.color.setHex(0x1a2830);
-    ws.metalness = 0.58;
-    ws.roughness = 0.16;
-    ws.opacity = 0.78;
-    ws.transparent = true;
-    ws.depthWrite = true;
-    ws.side = THREE.DoubleSide;
-    const pane = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.034, 0.62), ws);
-    pane.name = "roadster-glass";
-    pane.position.set(0, 1.12, 0.52);
-    pane.rotation.x = 0.50;
-    pane.castShadow = true;
-    g.add(pane);
+    glbRoot.position.set(-cx, -bb.min.y, -cz);
+    glbRoot.updateMatrixWorld(true);
+    g.userData.stlScale = s;
+    g.userData.glbSitY = glbRoot.position.y;
+    const skip = /glass|rubber|chrome|emissive|lamp|light|headlight|indicator|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior|grill|carbon|ior|metal|black|disc/;
+    const seen = new Set();
+    const mats = [];
+    glbRoot.traverse((o) => {
+      if (!o.isMesh) return;
+      o.castShadow = true;
+      o.receiveShadow = true;
+      o.frustumCulled = false;
+      const list = Array.isArray(o.material) ? o.material : [o.material];
+      list.forEach((m) => {
+        if (!m || seen.has(m)) return;
+        const n = ((m.name || "") + " " + (o.name || "")).toLowerCase();
+        if (skip.test(n)) return;
+        if (m.transparent || (m.opacity != null && m.opacity < 0.92)) return;
+        seen.add(m);
+        mats.push(m);
+      });
+    });
+    g.userData.bodyMats = mats;
+    const L = LIVERIES[liveryIdx] || LIVERIES[0];
+    mats.forEach((m) => {
+      if (m.color) m.color.setHex(L.color);
+      if (m.emissive) m.emissive.setHex(L.color);
+      if (m.emissiveIntensity != null) m.emissiveIntensity = L.emi != null ? L.emi : 0.32;
+      if (m.metalness != null) m.metalness = L.metalness;
+      if (m.roughness != null) m.roughness = L.roughness;
+      if (m.envMapIntensity != null) m.envMapIntensity = L.env;
+      m.needsUpdate = true;
+    });
     g.traverse((o) => { o.frustumCulled = false; });
+  });
   });
   const WR = 0.58;
   const WW = 0.48;
@@ -1735,6 +1754,7 @@ function makeRoadster() {
     spin.add(new THREE.Mesh(rimGeo, rimMat));
     spin.add(new THREE.Mesh(hubCapGeo, blackBar));
     steerHub.add(spin);
+    steerHub.visible = false;
     g.add(steerHub);
     g.userData.wheels.push({
       hub: steerHub, spin, mesh: steerHub,
@@ -3049,6 +3069,16 @@ function applyLivery(idx, toast) {
   steelRoadster.roughness = L.roughness;
   steelRoadster.envMapIntensity = L.env;
   steelRoadster.needsUpdate = true;
+  const bodyMats = (typeof roadster !== "undefined" && roadster && roadster.userData && roadster.userData.bodyMats) ? roadster.userData.bodyMats : [];
+  bodyMats.forEach((m) => {
+    if (m.color) m.color.setHex(L.color);
+    if (m.emissive) m.emissive.setHex(L.color);
+    if (m.emissiveIntensity != null) m.emissiveIntensity = L.emi != null ? L.emi : 0.32;
+    if (m.metalness != null) m.metalness = L.metalness;
+    if (m.roughness != null) m.roughness = L.roughness;
+    if (m.envMapIntensity != null) m.envMapIntensity = L.env;
+    m.needsUpdate = true;
+  });
   if (elLiveryTap) elLiveryTap.style.backgroundColor = hexCss(L.color);
   paintSwatchSync();
   try { localStorage.setItem(PAINT_KEY, String(liveryIdx)); } catch (err) {}
