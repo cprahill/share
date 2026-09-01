@@ -222,7 +222,8 @@ function onPtrDown(e) {
   unlockAudio();
   const finger = e.pointerType === "touch" || e.pointerType === "pen";
   if (finger) document.body.classList.add("touch-on");
-  if (e.target && e.target.closest && e.target.closest("#home, #how, #scores, #boot, #share-chal, .boot-btn, .home-btn, #hs-name, #hs-save, #hs-board, #finish, #boot-name, #paint-row, #hs-home")) return;
+  if (waitingDiff || document.body.classList.contains("menu-on")) return;
+  if (e.target && e.target.closest && e.target.closest("#home, #how, #scores, #boot, #share-chal, .boot-btn, .home-btn, .home-card, .home-panel, .planet-chip, #hs-name, #hs-save, #hs-board, #finish, #boot-name, #paint-row, #hs-home")) return;
   if (finished) {
     if (ceremony.active && !ceremony.hudShown) {
       if (ceremony.t > 1.2) skipCeremony();
