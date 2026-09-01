@@ -243,10 +243,12 @@ function onPtrDown(e) {
   const finger = e.pointerType === "touch" || e.pointerType === "pen";
   if (finger) document.body.classList.add("touch-on");
   if (waitingDiff || document.body.classList.contains("menu-on")) {
-    let t = e.target && e.target.closest ? e.target : null;
-    if ((!t || t.tagName === "CANVAS") && document.elementsFromPoint) {
+    let t = e.target;
+    if (t && t.nodeType === 3) t = t.parentElement;
+    if (document.elementsFromPoint) {
       const stack = document.elementsFromPoint(e.clientX, e.clientY) || [];
-      t = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff], [data-veh]")) || t;
+      const hit = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff], [data-veh]"));
+      if (hit) t = hit;
     }
     if (t && t.closest) {
       const home = t.closest("[data-home]");
@@ -4164,8 +4166,16 @@ async function pullLiveBoard() {
     });
   });
   const got = await Promise.all(jobs);
-  const table = emptyScoreTable();
-  got.forEach((g) => { if (g.rows && g.rows.length) table[g.p][g.m][g.d] = g.rows.slice(0, 3); });
+  const table = localScoreTable();
+  const b = loadBoard();
+  got.forEach((g) => {
+    if (!g.rows) return;
+    table[g.p][g.m][g.d] = g.rows.slice(0, 3);
+    if (!b[g.p]) b[g.p] = emptyLane();
+    const rest = (b[g.p][g.m] || []).filter((r) => apiDiff(r.diff) !== g.d);
+    b[g.p][g.m] = rest.concat(g.rows.slice(0, 3).map((r) => Object.assign({}, r, { diff: g.d, planet: g.p, mode: g.m })));
+  });
+  saveBoard(b);
   paintScoresGrid(table);
   const cur = table[PLANET.key] && table[PLANET.key][boardMode(MODE.key)]
     ? table[PLANET.key][boardMode(MODE.key)][apiDiff(DIFF)] : [];
