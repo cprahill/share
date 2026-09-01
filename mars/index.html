@@ -103,7 +103,7 @@
   <div class="boot-title">HOW TO</div>
   <ul class="how-list">
     <li><b>W / GAS</b> throttle · <b>S</b> brake · <b>A D</b> steer</li>
-    <li><b>SPACE</b> unlimited boost. Yellow <b>BOLT</b> is the only course pickup — a long turbo punch.</li>
+    <li><b>SPACE</b> unlimited boost on dirt. Yellow <b>BOLT</b> is a few-second speed punch. Gold <b>STAR</b> on a jump = 20s invincible, one per round.</li>
     <li>Race modes: 5 gates a lap, launch on <b>1</b>. Send a challenge to share the board.</li>
     <li><b>TIME TRIAL</b> no coins. Yellow bolts on the dirt. CPU plus ghosts of your best and the top 3.</li>
     <li><b>TOUR</b> coins + time vs CPU. A phantom of the fastest shared run rolls with you.</li>
@@ -112,18 +112,22 @@
     <li><b>FULL SCREEN</b> fills the board. On iPhone it fits the visible view (Safari has no page fullscreen).</li>
     <li><b>PLANET</b> three original courses: Mars Baja, Moon crater rim, Earth Starbase coast.</li>
     <li>Paint unlocks at score gates.</li>
+    <li><b>SCORES</b> live on this device. Top 3 per planet and mode. 4-letter tag. Pass the phone and beat the board.</li>
   </ul>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
 </div>
 <div id="scores" class="glass menu-sheet">
   <div class="boot-title">SCORES</div>
-  <p class="boot-sub">Shared on this game. Open a challenge link to put a run on the common board.</p>
+  <p class="boot-sub">This device. Top 3 per planet and mode. 4-letter tags. Beat your friends.</p>
+  <div id="scores-planet" class="score-mode">MARS  ·  TOP 3</div>
   <div class="score-mode">TIME TRIAL</div>
   <ol id="hs-trial" class="hs-list"></ol>
   <div class="score-mode">TOUR</div>
   <ol id="hs-tour" class="hs-list"></ol>
   <div class="score-mode">EXPLORER</div>
   <ol id="hs-hunt" class="hs-list"></ol>
+  <div class="score-mode">FREESTYLE</div>
+  <ol id="hs-free" class="hs-list"></ol>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
 </div>
 <div id="boot" class="glass">
@@ -161,6 +165,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v135.js"></script>
+<script type="module" src="./game-v137.js"></script>
 </body>
 </html>
