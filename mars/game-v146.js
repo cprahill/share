@@ -327,13 +327,13 @@ try {
   IS_PHONE = matchMedia("(pointer: coarse)").matches && matchMedia("(hover: none)").matches;
 } catch (err) {}
 const renderer = new THREE.WebGLRenderer({ antialias: !IS_MOBILE, powerPreference: "high-performance" });
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, IS_PHONE ? 1 : (IS_MOBILE ? 1.15 : 1.75)));
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, IS_PHONE ? 1 : (IS_MOBILE ? 1.15 : 1.5)));
 renderer.shadowMap.enabled = !IS_MOBILE;
 renderer.setSize(innerWidth, innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 2.2;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.prepend(renderer.domElement);
 renderer.domElement.style.touchAction = "none";
 renderer.domElement.style.display = "block";
@@ -378,7 +378,7 @@ scene.add(new THREE.AmbientLight(PLANET.amb, 0.7));
 const sun = new THREE.DirectionalLight(PLANET.sun, 4.6);
 sun.position.set(-40, 28, -20);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(1024, 1024);
 sun.shadow.camera.near = 2;
 sun.shadow.camera.far = 220;
 sun.shadow.camera.left = -50;
@@ -891,13 +891,12 @@ function placeOnTrack(t) {
 
 const GROUND_OX = 230, GROUND_OZ = 880;
 const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(5200, 5200, 140, 140),
+  new THREE.PlaneGeometry(5200, 5200, 56, 56),
   new THREE.MeshStandardMaterial({ map: DIRT_GROUND, color: PLANET.ground, roughness: 0.97, metalness: 0.02 })
 );
 ground.rotation.x = -Math.PI / 2;
 ground.position.set(GROUND_OX, 0, GROUND_OZ);
 ground.receiveShadow = true;
-ground.frustumCulled = false;
 {
   const gpos = ground.geometry.attributes.position;
   for (let i = 0; i < gpos.count; i++) {
@@ -958,7 +957,6 @@ const ribbon = new THREE.Mesh(ribbonGeo, new THREE.MeshStandardMaterial({
   polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4, fog: false
 }));
 ribbon.receiveShadow = true;
-ribbon.frustumCulled = false;
 ribbon.renderOrder = 1;
 scene.add(ribbon);
 function ribbonColors() {
@@ -1054,7 +1052,6 @@ const sky = new THREE.Mesh(
 );
 sky.scale.setScalar(20);
 sky.renderOrder = -1000;
-sky.frustumCulled = false;
 scene.add(sky);
 const sunMesh = new THREE.Mesh(
   new THREE.SphereGeometry(70, 24, 16),
@@ -1182,7 +1179,6 @@ function padRocket() {
       const m = new THREE.Mesh(geo, mat);
       m.castShadow = true;
       m.receiveShadow = true;
-      m.frustumCulled = false;
       m.renderOrder = 2;
       stlRoot.add(m);
     });
@@ -1989,7 +1985,6 @@ function sitMesh(geo, x, z, worldH, mat, rotY, opts) {
   mesh.rotation.y = rotY || 0;
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-  mesh.frustumCulled = false;
   mesh.position.set(x, 0, z);
   mesh.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(mesh);
@@ -2108,7 +2103,6 @@ const rockMatC = new THREE.MeshStandardMaterial({
   vaultGlass.position.y = yPath + 0.2;
   vaultGlass.castShadow = false;
   vaultGlass.receiveShadow = false;
-  vaultGlass.frustumCulled = false;
   garden.add(vaultGlass);
 
   const ribN = IS_MOBILE ? 5 : 9;
@@ -2148,13 +2142,11 @@ const rockMatC = new THREE.MeshStandardMaterial({
     const wall = new THREE.Mesh(new THREE.PlaneGeometry(leanLen, leanH), glassMatDome);
     wall.position.set(side * (vaultR + leanW), yDeck + leanH * 0.5, 0);
     wall.rotation.y = Math.PI / 2;
-    wall.frustumCulled = false;
     garden.add(wall);
     const roof = new THREE.Mesh(new THREE.PlaneGeometry(leanW + 1, leanLen), glassMatDome);
     roof.rotation.x = -Math.PI / 2;
     roof.rotation.z = -0.36 * side;
     roof.position.set(side * (vaultR + leanW * 0.5), yDeck + leanH * 0.78, 0);
-    roof.frustumCulled = false;
     garden.add(roof);
     for (let i = 0; i < 7; i++) {
       const z = -leanLen * 0.42 + i * (leanLen * 0.84 / 6);
@@ -2403,7 +2395,6 @@ function sitGlb(root, x, z, worldH, rotY, opts) {
     if (!o.isMesh) return;
     o.castShadow = true;
     o.receiveShadow = true;
-    o.frustumCulled = false;
   });
   (opts.parent || scene).add(root);
   if (opts.collider) addCollider(x, z, opts.collider === true ? Math.max(1.1, foot * 0.38) : opts.collider, !!opts.parent);
@@ -2442,7 +2433,7 @@ function makeBiodome(R) {
     }
   }
   g.userData.foot = R * 2;
-  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; } });
+  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   return g;
 }
 function plantBiodome(t, side, dist, R) {
@@ -2508,7 +2499,6 @@ function plantHabitat(t, side, dist) {
   );
   glass.rotation.x = Math.PI / 2;
   glass.position.y = y0 + 0.12;
-  glass.frustumCulled = false;
   g.add(glass);
   const segs = IS_MOBILE ? 3 : 5;
   for (let i = 0; i < segs; i++) {
@@ -2538,7 +2528,6 @@ function plantHabitat(t, side, dist) {
   const panelGeo = new THREE.BoxGeometry(3.6, 0.05, 1.7);
   const farmN = IS_MOBILE ? 28 : 72;
   const farm = new THREE.InstancedMesh(panelGeo, solarMat, farmN);
-  farm.frustumCulled = false;
   let n = 0;
   const rows = IS_MOBILE ? 5 : 8, cols = IS_MOBILE ? 6 : 9;
   for (let row = 0; row < rows; row++) {
@@ -2808,7 +2797,7 @@ function dustSprite() {
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
-const DUST_N = IS_PHONE ? 72 : (IS_MOBILE ? 160 : 500);
+const DUST_N = IS_PHONE ? 48 : (IS_MOBILE ? 80 : 120);
 const dustPos = new Float32Array(DUST_N * 3);
 const dustVel = new Float32Array(DUST_N * 3);
 const dustLife = new Float32Array(DUST_N);
@@ -2821,7 +2810,6 @@ const dustMesh = new THREE.InstancedMesh(
   }),
   DUST_N
 );
-dustMesh.frustumCulled = false;
 dustMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
 for (let i = 0; i < DUST_N; i++) {
   dummy.position.set(0, -80, 0);
@@ -2846,20 +2834,20 @@ function emitDust(x, y, z, fx, fz, n) {
   }
 }
 function stepDust(dt) {
+  let moved = false;
   for (let i = 0; i < DUST_N; i++) {
-    if (dustLife[i] > 0) {
-      const i3 = i * 3;
-      dustVel[i3] *= Math.exp(-1.2 * dt);
-      dustVel[i3 + 1] -= 2.2 * dt;
-      dustVel[i3 + 2] *= Math.exp(-1.2 * dt);
-      dustPos[i3] += dustVel[i3] * dt;
-      dustPos[i3 + 1] += dustVel[i3 + 1] * dt;
-      dustPos[i3 + 2] += dustVel[i3 + 2] * dt;
-      dustLife[i] -= dt;
-    }
+    if (dustLife[i] <= 0) continue;
+    const i3 = i * 3;
+    dustVel[i3] *= Math.exp(-1.2 * dt);
+    dustVel[i3 + 1] -= 2.2 * dt;
+    dustVel[i3 + 2] *= Math.exp(-1.2 * dt);
+    dustPos[i3] += dustVel[i3] * dt;
+    dustPos[i3 + 1] += dustVel[i3 + 1] * dt;
+    dustPos[i3 + 2] += dustVel[i3 + 2] * dt;
+    dustLife[i] -= dt;
     dummy.quaternion.copy(camera.quaternion);
     if (dustLife[i] > 0) {
-      dummy.position.set(dustPos[i * 3], dustPos[i * 3 + 1], dustPos[i * 3 + 2]);
+      dummy.position.set(dustPos[i3], dustPos[i3 + 1], dustPos[i3 + 2]);
       dummy.scale.setScalar(1.4 + dustLife[i]);
     } else {
       dummy.position.set(0, -80, 0);
@@ -2867,8 +2855,9 @@ function stepDust(dt) {
     }
     dummy.updateMatrix();
     dustMesh.setMatrixAt(i, dummy.matrix);
+    moved = true;
   }
-  dustMesh.instanceMatrix.needsUpdate = true;
+  if (moved) dustMesh.instanceMatrix.needsUpdate = true;
 }
 
 const gateTs = [0.07, 0.35, 0.50, 0.70, 0.97];
@@ -3041,8 +3030,7 @@ function syncRig(rig) {
   rig.rotation.set(car.pitch, car.yaw, car.roll, "YXZ");
 }
 function syncTruck() {
-  syncRig(truck);
-  syncRig(roadster);
+  syncRig(playerRig());
 }
 function sitWheelsOn(rig) {
   if (!rig || !rig.userData.wheels) return;
@@ -3062,8 +3050,7 @@ function sitWheelsOn(rig) {
   });
 }
 function sitWheels() {
-  sitWheelsOn(truck);
-  sitWheelsOn(roadster);
+  sitWheelsOn(playerRig());
 }
 function stepWheels(rig, dt) {
   if (!rig || !rig.userData.wheels) return;
@@ -3342,7 +3329,6 @@ function makeBird() {
   g.add(body, beak, wingL, wingR);
   g.userData.wingL = wingL;
   g.userData.wingR = wingR;
-  g.frustumCulled = false;
   return g;
 }
 function makeBarrelHazard() {
@@ -3360,7 +3346,6 @@ function makeBarrelHazard() {
   warn.rotation.x = Math.PI / 2;
   warn.position.y = 0.08;
   g.add(keg, r1, r2, warn);
-  g.frustumCulled = false;
   return g;
 }
 function makeFlyer(kind) {
@@ -3412,8 +3397,7 @@ function makeFlyer(kind) {
     }
     g.add(box);
   }
-  g.frustumCulled = false;
-  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
+  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; } });
   return g;
 }
 function makeCrateHazard() {
@@ -3431,8 +3415,7 @@ function makeCrateHazard() {
   ring.rotation.x = Math.PI / 2;
   ring.position.y = 0.08;
   g.add(box, band, ring);
-  g.frustumCulled = false;
-  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; } });
+  g.traverse((o) => { if (o.isMesh) { o.castShadow = true; } });
   return g;
 }
 function seedHazards() {
@@ -3510,21 +3493,20 @@ function hitHazards(spdAbs, groundY) {
 }
 const dogeMap = new THREE.TextureLoader().load("./lib/doge-coin.jpg");
 dogeMap.colorSpace = THREE.SRGBColorSpace;
+const coinGoldMat = new THREE.MeshStandardMaterial({
+  color: 0xE8C84A, metalness: 0.88, roughness: 0.22,
+  emissive: 0x6A4A10, emissiveIntensity: 0.35, fog: false
+});
+const coinFaceMat = new THREE.MeshStandardMaterial({
+  map: dogeMap, color: 0xFFE08A, metalness: 0.72, roughness: 0.28,
+  emissive: 0x3A2A08, emissiveIntensity: 0.22, fog: false
+});
 function makeCoinMesh() {
-  const gold = new THREE.MeshStandardMaterial({
-    color: 0xE8C84A, metalness: 0.88, roughness: 0.22,
-    emissive: 0x6A4A10, emissiveIntensity: 0.35, fog: false
-  });
-  const face = new THREE.MeshStandardMaterial({
-    map: dogeMap, color: 0xFFE08A, metalness: 0.72, roughness: 0.28,
-    emissive: 0x3A2A08, emissiveIntensity: 0.22, fog: false
-  });
   const mesh = new THREE.Group();
-  const core = new THREE.Mesh(new THREE.CylinderGeometry(1.65, 1.65, 0.22, 28), [gold, face, face]);
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(1.65, 1.65, 0.22, 10), [coinGoldMat, coinFaceMat, coinFaceMat]);
   core.rotation.x = Math.PI / 2;
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.65, 0.12, 8, 28), gold);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.65, 0.12, 8, 10), coinGoldMat);
   mesh.add(core, rim);
-  mesh.frustumCulled = false;
   return mesh;
 }
 function plantCoin(t, lat, yAdd) {
@@ -4733,10 +4715,14 @@ function drive(dt) {
     const wantRoll = THREE.MathUtils.clamp(-steerVis * spdAbs * 0.004, -0.12, 0.12);
     car.roll += (wantRoll - car.roll) * Math.min(1, dt * 5);
   }
-  boostGlow.intensity = boosting ? 3.4 : 0;
-  brakeGlow.intensity = th < 0 ? 2.4 : 0;
-  boostGlowR.intensity = boostGlow.intensity;
-  brakeGlowR.intensity = brakeGlow.intensity;
+  {
+    const rig = playerRig();
+    const onTruck = rig === truck;
+    boostGlow.intensity = (onTruck && boosting) ? 3.4 : 0;
+    brakeGlow.intensity = (onTruck && th < 0) ? 2.4 : 0;
+    boostGlowR.intensity = (!onTruck && boosting) ? 3.4 : 0;
+    brakeGlowR.intensity = (!onTruck && th < 0) ? 2.4 : 0;
+  }
 
   if (!finished && !isOpenWorld() && !isPlayground()) {
     const g = gates[nextGate];
@@ -4776,8 +4762,7 @@ function drive(dt) {
     prevGateSide = side;
   }
 
-  stepWheels(truck, dt);
-  stepWheels(roadster, dt);
+  stepWheels(playerRig(), dt);
   syncTruck();
   sitWheels();
   {
@@ -6271,9 +6256,13 @@ if (PODIUM_PREVIEW === "win" || PODIUM_PREVIEW === "lose") {
 const clock = new THREE.Clock();
 function loop() {
   requestAnimationFrame(loop);
-  if (IS_PHONE && document.hidden) return;
+  if (document.hidden) return;
   let dt = clock.getDelta();
   if (dt > MAX_DT) dt = MAX_DT;
+  if (waitingDiff || document.body.classList.contains("menu-on")) {
+    hudBind();
+    return;
+  }
   const { boosting } = drive(dt);
   stepHazards(dt);
   stepCoins(dt);
