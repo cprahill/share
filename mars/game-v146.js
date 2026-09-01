@@ -132,6 +132,12 @@ let hsSavedName = "";
 const NAME_KEY = "rdb-name-v1";
 const PAINT_KEY = "rdb-paint-v1";
 const PAINT_UNLOCK_KEY = "rdb-paint-unlock-v1";
+const VEH_KEY = "rdb-veh-v1";
+let playerVeh = "truck";
+try {
+  const v = localStorage.getItem(VEH_KEY);
+  if (v === "roadster" || v === "truck") playerVeh = v;
+} catch (err) {}
 function sanitizeName(raw) {
   return (raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
 }
@@ -240,7 +246,7 @@ function onPtrDown(e) {
     let t = e.target && e.target.closest ? e.target : null;
     if ((!t || t.tagName === "CANVAS") && document.elementsFromPoint) {
       const stack = document.elementsFromPoint(e.clientX, e.clientY) || [];
-      t = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff]")) || t;
+      t = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff], [data-veh]")) || t;
     }
     if (t && t.closest) {
       const home = t.closest("[data-home]");
@@ -251,10 +257,12 @@ function onPtrDown(e) {
       if (free) { pickFree(free.getAttribute("data-free")); if (e.cancelable) e.preventDefault(); return; }
       const diff = t.closest(".boot-btn[data-diff]");
       if (diff) { pickDifficulty(diff.getAttribute("data-diff")); if (e.cancelable) e.preventDefault(); return; }
+      const veh = t.closest("[data-veh]");
+      if (veh) { pickVeh(veh.getAttribute("data-veh")); if (e.cancelable) e.preventDefault(); return; }
     }
     return;
   }
-  if (e.target && e.target.closest && e.target.closest("#home, #how, #scores, #boot, #share-chal, .boot-btn, .home-btn, .home-card, .home-panel, .planet-chip, #hs-name, #hs-save, #hs-board, #finish, #boot-name, #paint-row, #hs-home")) return;
+  if (e.target && e.target.closest && e.target.closest("#home, #how, #scores, #boot, #share-chal, .boot-btn, .home-btn, .home-card, .home-panel, .planet-chip, #hs-name, #hs-save, #hs-board, #finish, #boot-name, #paint-row, #veh-row, [data-veh], #hs-home")) return;
   if (finished) {
     if (ceremony.active && !ceremony.hudShown) {
       if (ceremony.t > 1.2) skipCeremony();
@@ -582,6 +590,8 @@ const steelStl = new THREE.MeshStandardMaterial({
   color: STEEL, metalness: 0.9, roughness: 0.32, envMapIntensity: 1.35,
   vertexColors: false, fog: false, emissive: STEEL, emissiveIntensity: 0.05
 });
+const steelRoadster = steelBody.clone();
+steelRoadster.vertexColors = false;
 const LIVERIES = [
   { name: "STEEL", color: STEEL, metalness: 0.9, roughness: 0.32, env: 1.35, emi: 0.05, need: 0 },
   { name: "BLACK", color: 0x161618, metalness: 0.58, roughness: 0.48, env: 0.70, need: 0 },
@@ -1284,6 +1294,8 @@ function wedgeHullGeo() {
 
 const BODY_STL_SCALE = 0.00971;
 const BODY_SIT_Y = 1.04;
+const BODY_SIT_Y_ROADSTER = 0.18;
+const ROADSTER_STL_SCALE = 1;
 const GROUND_SIT = RIBBON_LIFT;
 
 // Bake Z-up +X-nose → Y-up +Z-nose: (x,y,z) → (y,z,x).
@@ -1652,6 +1664,86 @@ function wedgeTruck() {
   return g;
 }
 
+
+function makeRoadster() {
+  const g = new THREE.Group();
+  g.name = "roadster";
+  const stlRoot = new THREE.Group();
+  stlRoot.name = "stlRoadster";
+  g.add(stlRoot);
+  const loader = new STLLoader();
+  loader.load("./mesh/roadster.stl", (geo) => {
+    geo.applyMatrix4(STL_TO_YUP);
+    geo.computeVertexNormals();
+    geo.computeBoundingBox();
+    const m = new THREE.Mesh(geo, steelRoadster);
+    m.name = "roadster-hull";
+    m.castShadow = true;
+    m.receiveShadow = true;
+    m.frustumCulled = false;
+    stlRoot.add(m);
+    stlRoot.position.set(0, 0, 0);
+    stlRoot.rotation.set(0, 0, 0);
+    stlRoot.scale.setScalar(ROADSTER_STL_SCALE);
+    stlRoot.updateMatrix();
+    const bb = geo.boundingBox.clone().applyMatrix4(stlRoot.matrix);
+    const cx = (bb.min.x + bb.max.x) * 0.5;
+    const cz = (bb.min.z + bb.max.z) * 0.5;
+    stlRoot.position.set(-cx, BODY_SIT_Y_ROADSTER - bb.min.y, -cz);
+    stlRoot.updateMatrixWorld(true);
+    g.userData.stlScale = ROADSTER_STL_SCALE;
+    const ws = glassMat.clone();
+    ws.color.setHex(0x1a2830);
+    ws.metalness = 0.58;
+    ws.roughness = 0.16;
+    ws.opacity = 0.78;
+    ws.transparent = true;
+    ws.depthWrite = true;
+    ws.side = THREE.DoubleSide;
+    const pane = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.034, 0.62), ws);
+    pane.name = "roadster-glass";
+    pane.position.set(0, 1.12, 0.52);
+    pane.rotation.x = 0.50;
+    pane.castShadow = true;
+    g.add(pane);
+    g.traverse((o) => { o.frustumCulled = false; });
+  });
+  const WR = 0.58;
+  const WW = 0.48;
+  const wheelGeo = new THREE.CylinderGeometry(WR, WR, WW, 16);
+  wheelGeo.rotateZ(Math.PI / 2);
+  const rimGeo = new THREE.CylinderGeometry(0.22, 0.22, WW + 0.03, 12);
+  rimGeo.rotateZ(Math.PI / 2);
+  const rimMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.72, roughness: 0.38, fog: false, emissive: 0x111111, emissiveIntensity: 0.3 });
+  const hubCapGeo = new THREE.CylinderGeometry(0.10, 0.10, WW + 0.06, 8);
+  hubCapGeo.rotateZ(Math.PI / 2);
+  g.userData.wheels = [];
+  g.userData.wheelRadius = WR;
+  const wpos = [
+    { x: -1.02, z: 1.28, front: true },
+    { x: 1.02, z: 1.28, front: true },
+    { x: -1.02, z: -1.22, front: false },
+    { x: 1.02, z: -1.22, front: false }
+  ];
+  wpos.forEach((p) => {
+    const steerHub = new THREE.Group();
+    steerHub.position.set(p.x, WR, p.z);
+    const spin = new THREE.Group();
+    const tire = new THREE.Mesh(wheelGeo, rubberMat);
+    tire.castShadow = true;
+    spin.add(tire);
+    spin.add(new THREE.Mesh(rimGeo, rimMat));
+    spin.add(new THREE.Mesh(hubCapGeo, blackBar));
+    steerHub.add(spin);
+    g.add(steerHub);
+    g.userData.wheels.push({
+      hub: steerHub, spin, mesh: steerHub,
+      x: p.x, z: p.z, front: p.front, radius: WR, fold: 0, blob: null
+    });
+  });
+  return g;
+}
+
 const truck = wedgeTruck();
 truck.scale.setScalar(LOOK_TRUCK);
 scene.add(truck);
@@ -1675,6 +1767,51 @@ truck.userData.wheels.forEach((w) => {
   w.hub.add(b);
   w.blob = b;
 });
+
+const roadster = makeRoadster();
+roadster.scale.setScalar(LOOK_TRUCK);
+scene.add(roadster);
+roadster.traverse((o) => { o.frustumCulled = false; });
+const brakeGlowR = new THREE.PointLight(0xff1a00, 0, 9, 2);
+brakeGlowR.position.set(0, 0.82, -1.92);
+roadster.add(brakeGlowR);
+const boostGlowR = new THREE.PointLight(0xff6a22, 0, 7, 2);
+boostGlowR.position.set(0, 0.55, -2.02);
+roadster.add(boostGlowR);
+roadster.userData.wheels.forEach((w) => {
+  const b = new THREE.Mesh(blobGeo, blobMat);
+  b.rotation.x = -Math.PI / 2;
+  b.position.set(0, -w.radius + 0.022, 0);
+  b.renderOrder = 2;
+  w.hub.add(b);
+  w.blob = b;
+});
+function playerRig() {
+  return playerVeh === "roadster" ? roadster : truck;
+}
+function applyPlayerVeh() {
+  const showR = playerVeh === "roadster";
+  if (truck) truck.visible = !showR;
+  if (roadster) roadster.visible = showR;
+  document.querySelectorAll("[data-veh]").forEach((b) => {
+    b.classList.toggle("on", b.getAttribute("data-veh") === playerVeh);
+  });
+}
+function pickVeh(name) {
+  playerVeh = name === "roadster" ? "roadster" : "truck";
+  try { localStorage.setItem(VEH_KEY, playerVeh); } catch (err) {}
+  applyPlayerVeh();
+}
+function setPlayerVisible(on) {
+  if (playerVeh === "roadster") {
+    if (roadster) roadster.visible = !!on;
+    if (truck) truck.visible = false;
+  } else {
+    if (truck) truck.visible = !!on;
+    if (roadster) roadster.visible = false;
+  }
+}
+applyPlayerVeh();
 
 
 const olympus = new THREE.Group();
@@ -2819,24 +2956,56 @@ function placeCar(t, yaw) {
   car.yaw = yaw; car.pitch = 0; car.roll = 0;
   car.speed = 0; car.lat = 0; car.vy = 0; car.air = false;
 }
-function syncTruck() {
-  truck.position.set(car.x, car.y, car.z);
-  truck.rotation.set(car.pitch, car.yaw, car.roll, "YXZ");
+function syncRig(rig) {
+  if (!rig) return;
+  rig.position.set(car.x, car.y, car.z);
+  rig.rotation.set(car.pitch, car.yaw, car.roll, "YXZ");
 }
-function sitWheels() {
-  const wr = truck.userData.wheelRadius || 0.74;
+function syncTruck() {
+  syncRig(truck);
+  syncRig(roadster);
+}
+function sitWheelsOn(rig) {
+  if (!rig || !rig.userData.wheels) return;
+  const wr = rig.userData.wheelRadius || 0.74;
   if (car.air) {
-    truck.userData.wheels.forEach((w) => { w.hub.position.set(w.x, wr, w.z); });
+    rig.userData.wheels.forEach((w) => { w.hub.position.set(w.x, wr, w.z); });
     return;
   }
-  truck.updateMatrixWorld(true);
-  truck.userData.wheels.forEach((w) => {
+  rig.updateMatrixWorld(true);
+  rig.userData.wheels.forEach((w) => {
     _p.set(w.x, 0, w.z);
-    truck.localToWorld(_p);
+    rig.localToWorld(_p);
     const deck = trackH(_p.x, _p.z) + RIBBON_LIFT;
     _w.set(_p.x, deck + wr, _p.z);
-    truck.worldToLocal(_w);
+    rig.worldToLocal(_w);
     w.hub.position.set(w.x, THREE.MathUtils.clamp(_w.y, wr - 0.01, wr + 0.28), w.z);
+  });
+}
+function sitWheels() {
+  sitWheelsOn(truck);
+  sitWheelsOn(roadster);
+}
+function stepWheels(rig, dt) {
+  if (!rig || !rig.userData.wheels) return;
+  const wr = rig.userData.wheelRadius || 0.74;
+  rig.userData.wheels.forEach((w) => {
+    w.spin.rotation.x += car.speed * dt / wr;
+    w.hub.rotation.y = (!car.air && w.front) ? steerVis * 0.45 : 0;
+    const wantFold = car.air ? (w.x < 0 ? 1 : -1) * Math.PI / 2 : 0;
+    const foldK = wantFold === 0 ? 18 : 7;
+    w.fold += (wantFold - w.fold) * Math.min(1, dt * foldK);
+    if (wantFold === 0 && Math.abs(w.fold) < 0.04) w.fold = 0;
+    w.hub.rotation.z = w.fold;
+    if (w.blob) w.blob.visible = !car.air;
+  });
+}
+function resetWheels(rig) {
+  if (!rig || !rig.userData.wheels) return;
+  rig.userData.wheels.forEach((w) => {
+    w.fold = 0;
+    w.hub.rotation.z = 0;
+    if (w.blob) w.blob.visible = true;
   });
 }
 
@@ -2873,6 +3042,13 @@ function applyLivery(idx, toast) {
     m.vertexColors = L.name !== "STEEL";
     m.needsUpdate = true;
   });
+  steelRoadster.color.setHex(L.color);
+  steelRoadster.emissive.setHex(L.color);
+  steelRoadster.emissiveIntensity = L.emi != null ? L.emi : 0.32;
+  steelRoadster.metalness = L.metalness;
+  steelRoadster.roughness = L.roughness;
+  steelRoadster.envMapIntensity = L.env;
+  steelRoadster.needsUpdate = true;
   if (elLiveryTap) elLiveryTap.style.backgroundColor = hexCss(L.color);
   paintSwatchSync();
   try { localStorage.setItem(PAINT_KEY, String(liveryIdx)); } catch (err) {}
@@ -2924,14 +3100,14 @@ function armHurtSafe(silent) {
 function stepHurtSafe(dt) {
   if (car.starT > 0) {
     car.starT -= dt;
-    if (truck) truck.visible = true;
+    setPlayerVisible(true);
     if (car.starT <= 0) { car.starT = 0; showToast("STAR END", 0.45); }
   }
   if (hurtSafeT > 0) {
     hurtSafeT -= dt;
-    if (car.starT <= 0) truck.visible = Math.floor(hurtSafeT * 14) % 2 === 0;
-    if (hurtSafeT <= 0) { hurtSafeT = 0; if (car.starT <= 0) truck.visible = true; }
-  } else if (truck && truck.visible === false && car.starT <= 0) truck.visible = true;
+    if (car.starT <= 0) setPlayerVisible(Math.floor(hurtSafeT * 14) % 2 === 0);
+    if (hurtSafeT <= 0) { hurtSafeT = 0; if (car.starT <= 0) setPlayerVisible(true); }
+  } else if (playerRig() && playerRig().visible === false && car.starT <= 0) setPlayerVisible(true);
 }
 function spinOut(t) {
   if (hurtSafe()) return;
@@ -3787,6 +3963,54 @@ function paintHsOl(id, mode, rows) {
   if (!ol) return;
   ol.innerHTML = rows && rows.length ? rows.map((r) => rowHtml(mode, r)).join("") : "<li>NO SCORES YET</li>";
 }
+const SCORE_PLANETS = [{ key: "mars", tag: "MARS" }, { key: "moon", tag: "MOON" }, { key: "earth", tag: "EARTH" }];
+const SCORE_MODES = [{ key: "trial", tag: "TIME TRIAL" }, { key: "tour", tag: "TOUR" }, { key: "hunt", tag: "EXPLORER" }, { key: "free", tag: "FREESTYLE" }];
+const SCORE_DIFFS = [{ key: "easy", tag: "EASY" }, { key: "medium", tag: "MED" }, { key: "hard", tag: "HARD" }, { key: "extra", tag: "XHARD" }];
+function emptyScoreTable() {
+  const t = {};
+  SCORE_PLANETS.forEach((p) => {
+    t[p.key] = {};
+    SCORE_MODES.forEach((m) => {
+      t[p.key][m.key] = {};
+      SCORE_DIFFS.forEach((d) => { t[p.key][m.key][d.key] = []; });
+    });
+  });
+  return t;
+}
+function localScoreTable() {
+  const t = emptyScoreTable();
+  const b = loadBoard();
+  SCORE_PLANETS.forEach((p) => {
+    const lane = b[p.key] || emptyLane();
+    SCORE_MODES.forEach((m) => {
+      SCORE_DIFFS.forEach((d) => {
+        t[p.key][m.key][d.key] = sortBoard(m.key, (lane[m.key] || []).filter((r) => !r.diff || apiDiff(r.diff) === d.key));
+      });
+    });
+  });
+  return t;
+}
+function laneCellHtml(mode, rows) {
+  if (!rows || !rows.length) return "<div class=\"sc-empty\">—</div>";
+  return "<ol class=\"hs-list sc-ol\">" + rows.slice(0, 3).map((r) => rowHtml(mode, r)).join("") + "</ol>";
+}
+function paintScoresGrid(table) {
+  const el = document.getElementById("scores-grid");
+  if (!el) return;
+  let html = "";
+  SCORE_PLANETS.forEach((p) => {
+    html += "<section class=\"sc-planet\"><h3>" + p.tag + "</h3>";
+    SCORE_MODES.forEach((m) => {
+      html += "<div class=\"sc-mode\"><div class=\"score-mode\">" + m.tag + "</div><div class=\"sc-diffs\">";
+      SCORE_DIFFS.forEach((d) => {
+        html += "<div class=\"sc-diff\"><div class=\"sc-dt\">" + d.tag + "</div>" + laneCellHtml(m.key, table[p.key][m.key][d.key]) + "</div>";
+      });
+      html += "</div></div>";
+    });
+    html += "</section>";
+  });
+  el.innerHTML = html;
+}
 function emptyLane() { return { raid: [], trial: [], tour: [], hunt: [], free: [] }; }
 function emptyBoard() { return { mars: emptyLane(), moon: emptyLane(), earth: emptyLane() }; }
 function laneOf(raw) {
@@ -3897,24 +4121,25 @@ function renderHsBoard() {
   const html = list.length ? list.map((r) => rowHtml(m, r)).join("") : "<li>NO SCORES YET</li>";
   const el = document.getElementById("hs-board");
   if (el) el.innerHTML = html;
-  const planetTag = document.getElementById("scores-planet");
-  if (planetTag) planetTag.textContent = PLANET.tag + "  ·  " + DIFF.tag + "  ·  TOP 3";
-  ["trial", "tour", "hunt", "free"].forEach((k) => {
-    paintHsOl("hs-" + k, k, listBoard(k));
-  });
+  paintScoresGrid(localScoreTable());
   pullLiveBoard();
 }
 async function pullLiveBoard() {
-  const planet = PLANET.key;
-  const diff = apiDiff(DIFF);
-  const modes = ["trial", "tour", "hunt", "free"];
-  const got = await Promise.all(modes.map((k) => fetchLane(planet, k, diff)));
-  modes.forEach((k, i) => {
-    const rows = got[i];
-    if (!rows || !rows.length) return;
-    paintHsOl("hs-" + k, k, rows);
-    if (boardMode(MODE.key) === k) paintHsOl("hs-board", k, rows);
+  const jobs = [];
+  SCORE_PLANETS.forEach((p) => {
+    SCORE_MODES.forEach((m) => {
+      SCORE_DIFFS.forEach((d) => {
+        jobs.push(fetchLane(p.key, m.key, d.key).then((rows) => ({ p: p.key, m: m.key, d: d.key, rows })));
+      });
+    });
   });
+  const got = await Promise.all(jobs);
+  const table = emptyScoreTable();
+  got.forEach((g) => { if (g.rows && g.rows.length) table[g.p][g.m][g.d] = g.rows.slice(0, 3); });
+  paintScoresGrid(table);
+  const cur = table[PLANET.key] && table[PLANET.key][boardMode(MODE.key)]
+    ? table[PLANET.key][boardMode(MODE.key)][apiDiff(DIFF)] : [];
+  paintHsOl("hs-board", boardMode(MODE.key), cur);
 }
 function fillFinishCard(label) {
   if (elFinishLabel) elFinishLabel.textContent = label;
@@ -4187,11 +4412,8 @@ function spawnStart() {
   lastT = START_T; prevDriveT = START_T; timeMs = 0; finished = false;
   car.boost = 1; car.overheating = false; car.spinT = 0;
   car.vy = 0; car.air = false; car.turboT = 0; car.starT = 0;
-  truck.userData.wheels.forEach((w) => {
-    w.fold = 0;
-    w.hub.rotation.z = 0;
-    if (w.blob) w.blob.visible = true;
-  });
+  resetWheels(truck);
+  resetWheels(roadster);
   startLock = !isOpenWorld() && !isPlayground();
   countT = startLock ? 3.5 : 0; falseStart = false; holdLaunch = false;
   playerWon = true; raceLap = 0;
@@ -4217,7 +4439,7 @@ function spawnStart() {
   ghostRec = []; lastGhostMs = 0;
   hazards.forEach((h) => { h.coolUntil = 0; });
   hurtSafeT = 0;
-  if (truck) truck.visible = true;
+  setPlayerVisible(true);
   clearRivals();
   rivals.forEach((r) => {
     r.spinT = 0; r.t = START_T; r.lat = 3.2; r.speed = DIFF.rival[0]; r.laps = 0; r.prevT = START_T;
@@ -4416,6 +4638,8 @@ function drive(dt) {
   }
   boostGlow.intensity = boosting ? 3.4 : 0;
   brakeGlow.intensity = th < 0 ? 2.4 : 0;
+  boostGlowR.intensity = boostGlow.intensity;
+  brakeGlowR.intensity = brakeGlow.intensity;
 
   if (!finished && !isOpenWorld() && !isPlayground()) {
     const g = gates[nextGate];
@@ -4455,25 +4679,20 @@ function drive(dt) {
     prevGateSide = side;
   }
 
-  const wr = truck.userData.wheelRadius || 0.74;
-  truck.userData.wheels.forEach((w) => {
-    w.spin.rotation.x += car.speed * dt / wr;
-    w.hub.rotation.y = (!car.air && w.front) ? steerVis * 0.45 : 0;
-    const wantFold = car.air ? (w.x < 0 ? 1 : -1) * Math.PI / 2 : 0;
-    const foldK = wantFold === 0 ? 18 : 7;
-    w.fold += (wantFold - w.fold) * Math.min(1, dt * foldK);
-    if (wantFold === 0 && Math.abs(w.fold) < 0.04) w.fold = 0;
-    w.hub.rotation.z = w.fold;
-    if (w.blob) w.blob.visible = !car.air;
-  });
+  stepWheels(truck, dt);
+  stepWheels(roadster, dt);
   syncTruck();
   sitWheels();
-  if (spdAbs > 1 && !car.air) {
-    truck.userData.wheels.forEach((w) => {
-      if (w.front) return;
-      w.spin.getWorldPosition(_w);
-      emitDust(_w.x, _w.y - wr + 0.2, _w.z, fx, fz, 40 * Math.min(1, spdAbs / 30) * dt * (boosting ? 1.5 : 1));
-    });
+  {
+    const rig = playerRig();
+    const wr = (rig && rig.userData.wheelRadius) || 0.74;
+    if (spdAbs > 1 && !car.air && rig && rig.userData.wheels) {
+      rig.userData.wheels.forEach((w) => {
+        if (w.front) return;
+        w.spin.getWorldPosition(_w);
+        emitDust(_w.x, _w.y - wr + 0.2, _w.z, fx, fz, 40 * Math.min(1, spdAbs / 30) * dt * (boosting ? 1.5 : 1));
+      });
+    }
   }
   return { boosting, fx, fz };
 }
@@ -5036,11 +5255,8 @@ function beginCeremony(label) {
   fillFinishCard(label);
   car.air = false; car.vy = 0; car.pitch = 0; car.roll = 0;
   car.y = terrainH(car.x, car.z) + GROUND_SIT;
-  truck.userData.wheels.forEach((w) => {
-    w.fold = 0;
-    w.hub.rotation.z = 0;
-    if (w.blob) w.blob.visible = true;
-  });
+  resetWheels(truck);
+  resetWheels(roadster);
   layoutCeremony();
   playSting(playerWon);
 }
@@ -5913,6 +6129,12 @@ document.querySelectorAll("[data-planet]").forEach((btn) => {
   btn.addEventListener("click", (e) => {
     e.preventDefault(); e.stopPropagation();
     pickPlanet(btn.getAttribute("data-planet"));
+  });
+});
+document.querySelectorAll("[data-veh]").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault(); e.stopPropagation();
+    pickVeh(btn.getAttribute("data-veh"));
   });
 });
 applyPlanetLook();

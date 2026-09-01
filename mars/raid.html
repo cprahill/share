@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0c0c10" />
 <link rel="manifest" href="./manifest.webmanifest" />
 <link rel="apple-touch-icon" href="./icon-180.png" />
-<link rel="stylesheet" href="hud.css?v=43" />
+<link rel="stylesheet" href="hud.css?v=44" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -119,18 +119,10 @@
   </ul>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
 </div>
-<div id="scores" class="glass menu-sheet">
+<div id="scores" class="glass menu-sheet scores-sheet">
   <div class="boot-title">SCORES</div>
-  <p class="boot-sub">Global top 3 per planet, mode, and difficulty. Local board if the live board is unreachable.</p>
-  <div id="scores-planet" class="score-mode">MARS  ·  TOP 3</div>
-  <div class="score-mode">TIME TRIAL</div>
-  <ol id="hs-trial" class="hs-list"></ol>
-  <div class="score-mode">TOUR</div>
-  <ol id="hs-tour" class="hs-list"></ol>
-  <div class="score-mode">EXPLORER</div>
-  <ol id="hs-hunt" class="hs-list"></ol>
-  <div class="score-mode">FREESTYLE</div>
-  <ol id="hs-free" class="hs-list"></ol>
+  <p class="boot-sub">Global top 3 for every planet, mode, and difficulty. Empty lanes stay blank until someone posts.</p>
+  <div id="scores-grid"></div>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
 </div>
 <div id="boot" class="glass">
@@ -175,6 +167,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v146.js?v=5"></script>
+<script type="module" src="./game-v146.js?v=7"></script>
 </body>
 </html>
