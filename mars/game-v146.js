@@ -133,10 +133,13 @@ const NAME_KEY = "rdb-name-v1";
 const PAINT_KEY = "rdb-paint-v1";
 const PAINT_UNLOCK_KEY = "rdb-paint-unlock-v1";
 const VEH_KEY = "rdb-veh-v1";
+const ROADSTER_LIVE = false;
 let playerVeh = "truck";
 try {
-  const v = localStorage.getItem(VEH_KEY);
-  if (v === "roadster" || v === "truck") playerVeh = v;
+  if (ROADSTER_LIVE) {
+    const v = localStorage.getItem(VEH_KEY);
+    if (v === "roadster" || v === "truck") playerVeh = v;
+  }
 } catch (err) {}
 function sanitizeName(raw) {
   return (raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
@@ -1774,13 +1777,15 @@ function makeRoadster() {
   fallback.castShadow = true;
   g.add(fallback);
   const bootGlb = () => {
+    if (!ROADSTER_LIVE) { fallback.visible = false; return; }
     if (typeof gltfLoader === "undefined") { setTimeout(bootGlb, 40); return; }
     gltfLoader.load("./mesh/roadster.glb", (gltf) => {
       const ok = sitRoadsterGlb(g, glbRoot, gltf.scene, fallback);
       if (!ok) fallback.visible = true;
     }, undefined, () => { fallback.visible = true; });
   };
-  queueMicrotask(bootGlb);
+  if (ROADSTER_LIVE) queueMicrotask(bootGlb);
+  else fallback.visible = false;
   const WR = 0.58;
   const WW = 0.48;
   const wheelGeo = new THREE.CylinderGeometry(WR, WR, WW, 16);
@@ -1871,6 +1876,7 @@ function applyPlayerVeh() {
   });
 }
 function pickVeh(name) {
+  if (!ROADSTER_LIVE) { playerVeh = "truck"; applyPlayerVeh(); return; }
   playerVeh = name === "roadster" ? "roadster" : "truck";
   try { localStorage.setItem(VEH_KEY, playerVeh); } catch (err) {}
   applyPlayerVeh();
