@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CATHODE WALL</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+  #wrap{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;box-sizing:border-box}
+  #tube{position:relative;width:min(960px,96vw,calc((100vh - 16px) * 4 / 3));aspect-ratio:4/3;max-height:calc(100vh - 16px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 40px #000}
+  canvas{display:block;width:100%;height:100%;image-rendering:pixelated;outline:none;touch-action:none}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.78);text-align:center;gap:10px;padding:16px}
+  #overlay h1{margin:0;color:#7dffb3;font-size:clamp(28px,6vw,42px);letter-spacing:.12em}
+  #overlay p{margin:0;max-width:28em;line-height:1.35;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500;letter-spacing:0;text-transform:none}
+  #overlay .go{color:#ff3d7a;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0"></canvas>
+    <div id="overlay">
+      <h1>CATHODE WALL</h1>
+      <p>Break every brick. Clear 5 boards. Miss the ball and you lose a life — that miss is yours.</p>
+      <p>← → / A D / drag = move only · Space = launch / start (drag never launches)</p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', COIN = '#ffc14a', HOT = '#ff3d7a', CHROME = '#c8d0e0';
+
+  // Feel signature: paddle thunk + brick coin-tick. Juice teaches contact.
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function beep(freq, dur, type='square', gain=0.05) {
+    if (!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(Math.max(0.0008, gain), audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + Math.max(0.02, dur));
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + Math.max(0.02, dur) + 0.02);
+    } catch (_) {}
+  }
+  // Feel stamp: paddle = heavy thunk; brick = coin-tick by row; wall = soft blip (not paddle)
+  function paddleTick() { beep(120, 0.07, 'square', 0.07); beep(70, 0.09, 'sawtooth', 0.035); }
+  function wallTick() { beep(260, 0.03, 'triangle', 0.03); }
+  function brickTick(row) {
+    const f = 660 + row * 90;
+    beep(f, 0.035, 'square', 0.055);
+    beep(f * 1.5, 0.045, 'triangle', 0.03);
+    beep(1320, 0.02, 'square', 0.015);
+  }
+  function missTick() { beep(80, 0.16, 'sawtooth', 0.07); beep(40, 0.2, 'square', 0.04); }
+  function winTick() { beep(523, 0.1); beep(659, 0.1); beep(784, 0.18); }
+
+  const keys = {};
+  let pointerX = null;
+  let lastInput = 'none';
+
+  function onKey(e, down) {
+    const code = e.code;
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyA','KeyD'].includes(code)) e.preventDefault();
+    keys[code] = down;
+    if (!down) return;
+    ensureAudio();
+    // tap-safe: one keydown always counts (held-only failed Forge playtests)
+    if (code === 'ArrowLeft' || code === 'KeyA') { pointerX = null; state.paddle.vx = -7; lastInput = 'LEFT'; }
+    if (code === 'ArrowRight' || code === 'KeyD') { pointerX = null; state.paddle.vx = 7; lastInput = 'RIGHT'; }
+    if ((code === 'Space' || code === 'Enter') && state.phase !== 'play') startGame();
+    else if (code === 'Space' && state.phase === 'play' && !state.ball.free) launchBall();
+  }
+  addEventListener('keydown', e => onKey(e, true));
+  addEventListener('keyup', e => onKey(e, false));
+
+  function canvasPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return (clientX - r.left) * (W / r.width);
+  }
+  let ptrDown = false;
+  canvas.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    canvas.focus(); ensureAudio();
+    try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    ptrDown = true;
+    pointerX = canvasPos(e);
+    lastInput = 'PTR';
+    // drag = move only. Never auto-launch (post-death drag was burning lives).
+    if (state.phase !== 'play') startGame();
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!ptrDown && !(e.buttons & 1)) return;
+    e.preventDefault();
+    pointerX = canvasPos(e);
+    lastInput = 'PTR';
+  });
+  canvas.addEventListener('pointerup', e => {
+    ptrDown = false;
+    pointerX = null; // unlatch — was killing arrows until reload
+    try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+  });
+  canvas.addEventListener('pointercancel', () => { ptrDown = false; pointerX = null; });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+  const ROWS = 5, COLS = 10;
+  const BRICK_W = 56, BRICK_H = 16, BRICK_GAP = 4;
+  const BRICK_TOP = 64;
+  const colors = ['#ff3d7a', '#ffc14a', '#7dffb3', '#5ec8ff', '#c8d0e0'];
+
+  const state = {
+    phase: 'title',
+    paddle: { x: W/2, y: H - 36, w: 96, h: 14, vx: 0 },
+    ball: { x: 0, y: 0, vx: 0, vy: 0, r: 6, free: false },
+    bricks: [],
+    board: 1,
+    lives: 3,
+    score: 0,
+    flash: 0,
+    shake: 0,
+    msg: '',
+    msgT: 0,
+    deathPause: 0,
+    t: 0,
+    paddleHits: 0,
+    brickStreak: 0, // brick hits since last paddle — trap detector
+  };
+
+  function buildBoard(n) {
+    state.bricks = [];
+    const totalW = COLS * BRICK_W + (COLS - 1) * BRICK_GAP;
+    const left = (W - totalW) / 2;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        // later boards: denser / leave fewer gaps — still all breakable
+        state.bricks.push({
+          x: left + c * (BRICK_W + BRICK_GAP),
+          y: BRICK_TOP + r * (BRICK_H + BRICK_GAP),
+          w: BRICK_W, h: BRICK_H, row: r, alive: true
+        });
+      }
+    }
+    // board 3+: slightly faster after launch via speedMul
+    state.speedMul = 1 + (n - 1) * 0.05; // gentle — board 1 stays human
+  }
+
+  function resetBallOnPaddle() {
+    const p = state.paddle;
+    state.ball.x = p.x;
+    state.ball.y = p.y - p.h/2 - state.ball.r - 1;
+    state.ball.vx = 0; state.ball.vy = 0;
+    state.ball.free = false;
+  }
+
+  function launchBall() {
+    if (state.ball.free) return;
+    if (state.phase !== 'play') return;
+    if (state.deathPause > 0) return;
+    const dir = (Math.random() < 0.5 ? -1 : 1);
+    // ~2.4 px @60fps — human-trackable; fixed timestep keeps Hz honest
+    const speed = 2.4 * (state.speedMul || 1);
+    // steeper launch — less horizontal trap entry
+    state.ball.vx = dir * speed * 0.35;
+    state.ball.vy = -speed;
+    state.ball.free = true;
+    state.brickStreak = 0;
+    paddleTick();
+  }
+
+  function normalizeBallVelocity(b, preferDown) {
+    // Kill shallow/horizontal brick-trap angles. Always keep readable |vy|.
+    const minVy = 1.55 * (state.speedMul || 1);
+    const maxSp = 3.2 * (state.speedMul || 1);
+    const minSp = 2.0 * (state.speedMul || 1);
+    if (Math.abs(b.vy) < minVy) {
+      const sign = preferDown ? 1 : (b.vy >= 0 ? 1 : -1);
+      b.vy = sign * minVy;
+    }
+    let sp = Math.hypot(b.vx, b.vy) || minSp;
+    if (sp > maxSp) { b.vx *= maxSp/sp; b.vy *= maxSp/sp; }
+    if (sp < minSp) {
+      const s = minSp / (sp || 1);
+      b.vx *= s; b.vy *= s;
+    }
+  }
+
+  function startGame() {
+    ensureAudio();
+    try { canvas.focus(); } catch (_) {}
+    state.phase = 'play';
+    state.board = 1;
+    state.lives = 3;
+    state.score = 0;
+    state.flash = 0; state.shake = 0; state.deathPause = 0;
+    state.paddleHits = 0; state.brickStreak = 0;
+    state.paddle.x = W/2; state.paddle.vx = 0;
+    buildBoard(1);
+    resetBallOnPaddle();
+    overlay.classList.add('hidden');
+    state.msg = 'BOARD 1 — SPACE TO LAUNCH · TRACK THE BALL';
+    state.msgT = 90;
+    beep(330, 0.08); beep(440, 0.1);
+  }
+
+  function loseLife(reason) {
+    missTick();
+    state.shake = 8;
+    state.flash = 3;
+    state.lives -= 1;
+    state.msg = reason;
+    state.msgT = 100;
+    state.deathPause = 75;
+    if (state.lives <= 0) {
+      state.phase = 'dead';
+      state.msgT = 0; // don't double the miss line over PRESS START
+      overlay.classList.remove('hidden');
+      overlay.innerHTML = `<h1>WALL HOLDS</h1><p>${reason}</p><p>Fair fail — the miss was yours.</p><div class="go">PRESS START</div>`;
+    } else {
+      resetBallOnPaddle();
+    }
+  }
+
+  function clearBoard() {
+    state.board += 1;
+    if (state.board > 5) {
+      state.phase = 'win';
+      winTick();
+      overlay.classList.remove('hidden');
+      overlay.innerHTML = `<h1>WALL DOWN</h1><p>Five boards cleared. You win.</p><div class="go">PRESS START · AGAIN</div>`;
+      return;
+    }
+    buildBoard(state.board);
+    resetBallOnPaddle();
+    state.msg = 'BOARD ' + state.board + ' — LAUNCH';
+    state.msgT = 90;
+    beep(440, 0.08); beep(660, 0.12);
+  }
+
+  function update() {
+    state.t++;
+    if (state.deathPause > 0) state.deathPause--;
+    if (state.phase !== 'play') return;
+    if (state.deathPause > 0) return;
+
+    const p = state.paddle;
+    // holds still work
+    if (keys.ArrowLeft || keys.KeyA) p.vx = -6.5;
+    if (keys.ArrowRight || keys.KeyD) p.vx = 6.5;
+    if (pointerX != null) {
+      const target = pointerX;
+      const dx = target - p.x;
+      p.vx = Math.max(-9, Math.min(9, dx * 0.35));
+    }
+    p.x += p.vx;
+    p.vx *= 0.72; // snappy stop — no float
+    const half = p.w / 2;
+    if (p.x < half) { p.x = half; p.vx = 0; }
+    if (p.x > W - half) { p.x = W - half; p.vx = 0; }
+
+    const b = state.ball;
+    if (!b.free) {
+      b.x = p.x;
+      b.y = p.y - p.h/2 - b.r - 1;
+    } else {
+      b.x += b.vx;
+      b.y += b.vy;
+      // walls
+      if (b.x < b.r) { b.x = b.r; b.vx = Math.abs(b.vx); wallTick(); normalizeBallVelocity(b, false); }
+      if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx); wallTick(); normalizeBallVelocity(b, false); }
+      if (b.y < b.r) { b.y = b.r; b.vy = Math.abs(b.vy); wallTick(); normalizeBallVelocity(b, true); }
+      // miss — fair fail
+      if (b.y > H + 10) {
+        loseLife('Missed the ball — paddle was elsewhere.');
+        return;
+      }
+      // paddle
+      if (b.vy > 0 &&
+          b.y + b.r >= p.y - p.h/2 && b.y - b.r <= p.y + p.h/2 &&
+          b.x >= p.x - half && b.x <= p.x + half) {
+        b.y = p.y - p.h/2 - b.r;
+        const hit = (b.x - p.x) / half; // -1..1
+        let speed = Math.hypot(b.vx, b.vy) || 2.4;
+        speed = Math.min(3.2 * (state.speedMul || 1), Math.max(2.0, speed));
+        // keep angle steep enough to leave the brick field (|hit| capped)
+        const ang = -Math.PI/2 + Math.max(-0.7, Math.min(0.7, hit)) * 0.75;
+        b.vx = Math.cos(ang) * speed;
+        b.vy = Math.sin(ang) * speed;
+        if (b.vy > -1.8) b.vy = -1.8;
+        state.paddleHits++;
+        state.brickStreak = 0;
+        paddleTick();
+        state.flash = 2;
+        state.msg = 'RALLY ' + state.paddleHits;
+        state.msgT = 40;
+      }
+      // bricks — bounce then de-trap (no AFK brick pinball)
+      for (const br of state.bricks) {
+        if (!br.alive) continue;
+        if (b.x + b.r < br.x || b.x - b.r > br.x + br.w ||
+            b.y + b.r < br.y || b.y - b.r > br.y + br.h) continue;
+        br.alive = false;
+        state.score += (5 - br.row) * 10;
+        brickTick(br.row);
+        state.flash = 2;
+        state.brickStreak++;
+        const overlapL = (b.x + b.r) - br.x;
+        const overlapR = (br.x + br.w) - (b.x - b.r);
+        const overlapT = (b.y + b.r) - br.y;
+        const overlapB = (br.y + br.h) - (b.y - b.r);
+        const minX = Math.min(overlapL, overlapR);
+        const minY = Math.min(overlapT, overlapB);
+        if (minX < minY) b.vx *= -1; else b.vy *= -1;
+        // After a few brick hits without paddle, force ball back toward paddle plane
+        const preferDown = state.brickStreak >= 4;
+        if (preferDown && b.vy < 0) b.vy = Math.abs(b.vy);
+        normalizeBallVelocity(b, preferDown);
+        break;
+      }
+      // also de-trap after wall glances in the brick band
+      if (b.y < BRICK_TOP + ROWS * (BRICK_H + BRICK_GAP) + 20) {
+        normalizeBallVelocity(b, state.brickStreak >= 6);
+      }
+      if (state.bricks.every(br => !br.alive)) clearBoard();
+    }
+
+    if (state.flash > 0) state.flash--;
+    if (state.shake > 0) state.shake--;
+    if (state.msgT > 0) state.msgT--;
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake > 0) {
+      ctx.translate((Math.random()-0.5)*state.shake, (Math.random()-0.5)*state.shake);
+    }
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0,0,W,H);
+
+    // soft scanlines vibe
+    ctx.strokeStyle = 'rgba(125,255,179,0.04)';
+    for (let y = 0; y < H; y += 4) {
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
+
+    // in-tube HUD only
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('BOARD ' + Math.min(state.board, 5) + '/5', 16, 28);
+    ctx.textAlign = 'center';
+    ctx.fillText('SCORE ' + state.score + ' · RALLY ' + state.paddleHits, W/2, 28);
+    ctx.textAlign = 'right';
+    ctx.fillText('LIVES ' + state.lives, W - 16, 28);
+
+    if (state.phase === 'play' || state.phase === 'dead' || state.phase === 'win') {
+      for (const br of state.bricks) {
+        if (!br.alive) continue;
+        ctx.fillStyle = colors[br.row % colors.length];
+        ctx.fillRect(br.x, br.y, br.w, br.h);
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.strokeRect(br.x + 0.5, br.y + 0.5, br.w - 1, br.h - 1);
+      }
+
+      const p = state.paddle;
+      ctx.fillStyle = MINT;
+      ctx.fillRect(p.x - p.w/2, p.y - p.h/2, p.w, p.h);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(p.x - 4, p.y - p.h/2, 8, 3); // aim notch
+
+      const b = state.ball;
+      ctx.beginPath();
+      ctx.fillStyle = AMBER;
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fill();
+      if (!b.free) {
+        ctx.fillStyle = HOT;
+        ctx.font = '12px Impact, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SPACE TO LAUNCH', W/2, p.y - 28);
+      }
+    }
+
+    if (state.msgT > 0 && state.phase === 'play') {
+      ctx.fillStyle = AMBER;
+      ctx.font = '16px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, W/2, H/2 + 40);
+    }
+
+    if (state.flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.28)';
+      ctx.fillRect(0,0,W,H);
+    }
+    ctx.restore();
+  }
+
+  // Fixed 60Hz sim — prevents 120Hz displays from making the ball unreactable
+  let lastTs = 0;
+  let acc = 0;
+  const STEP = 1000 / 60;
+  function loop(ts) {
+    if (!lastTs) lastTs = ts;
+    let dt = ts - lastTs;
+    lastTs = ts;
+    if (dt > 50) dt = 50;
+    acc += dt;
+    let guard = 0;
+    while (acc >= STEP && guard++ < 5) {
+      try { update(); } catch (err) { console.error('update', err); }
+      acc -= STEP;
+    }
+    try { draw(); } catch (err) { console.error('draw', err); }
+    requestAnimationFrame(loop);
+  }
+  try { canvas.focus(); } catch (_) {}
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

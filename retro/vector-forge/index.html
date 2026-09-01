@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VECTOR FORGE</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;cursor:default}
+  #tube,canvas{user-select:none;-webkit-user-select:none;touch-action:none;-webkit-user-drag:none}
+  #wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;padding:12px;box-sizing:border-box}
+  #tube{position:relative;width:min(880px,92vw);aspect-ratio:4/3;max-height:calc(100vh - 40px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 40px #000;flex:0 0 auto}
+  canvas{display:block;width:100%;height:100%;image-rendering:pixelated;outline:none;touch-action:none;user-select:none;cursor:crosshair}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.72);text-align:center;gap:10px}
+  #overlay h1{margin:0;color:#7dffb3;font-size:42px;letter-spacing:.12em}
+  #overlay p{margin:0;max-width:28em;line-height:1.35;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500;letter-spacing:0;text-transform:none}
+  #overlay .go{color:#ff3d7a;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0" aria-label="Vector Forge playfield"></canvas>
+    <div id="overlay">
+      <h1>VECTOR FORGE</h1>
+      <p>Mine ore. Carry it to the FORGE hearth (bottom). Die while loaded and you drop the cargo. Fill the meter, then punch EXIT.</p>
+      <p>← → / A D rotate · ↑ / W thrust · click-drag also flies · space start</p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', COIN = '#ff3d7a', CHROME = '#c8d0e0';
+
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function beep(freq, dur, type='square', gain=0.04) {
+    if (!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(Math.max(0.0008, gain), audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + Math.max(0.02, dur));
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + Math.max(0.02, dur) + 0.02);
+    } catch (_) { /* never let audio kill the sim */ }
+  }
+  let forgeHum = null; // continuous tone that tracks fill — hear without reading
+  function setForgeHum(pct) {
+    if (!audioCtx) return;
+    if (!forgeHum) {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sawtooth';
+      o.frequency.value = 180;
+      g.gain.value = 0.0001;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      forgeHum = { o, g };
+    }
+    const f = 160 + pct * 520;
+    const vol = pct <= 0 ? 0.0001 : 0.012 + pct * 0.028;
+    forgeHum.o.frequency.setTargetAtTime(f, audioCtx.currentTime, 0.04);
+    forgeHum.g.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.05);
+  }
+  function forgeTone(pct) {
+    // deposit punch + retune hum
+    const f = 220 + pct * 480;
+    beep(f, 0.09, 'sawtooth', 0.045);
+    beep(f * 1.5, 0.06, 'square', 0.02);
+    setForgeHum(pct);
+  }
+  function oreTick() {
+    beep(880, 0.035, 'square', 0.055);
+    beep(1320, 0.05, 'square', 0.035);
+    beep(1760, 0.03, 'triangle', 0.02);
+  }
+  function hitTick() { beep(110, 0.14, 'sawtooth', 0.07); beep(55, 0.18, 'square', 0.04); }
+  function telegraphTick(urgency) {
+    // urgency 0..1 — pitch climbs across the 8–12 frame window
+    const f = 220 + urgency * 520;
+    beep(f, 0.028, 'triangle', 0.02 + urgency * 0.03);
+  }
+
+  // Input: held flags + per-keydown impulse (automation often taps, never holds)
+  const keys = { left:false, right:false, up:false, start:false };
+  const pointer = { down:false, x: W/2, y: H/2 };
+  let lastInput = 'none';
+  function classify(e) {
+    const c = e.code || '';
+    const k = (e.key || '').toLowerCase();
+    const kc = e.keyCode || e.which || 0;
+    if (c === 'ArrowLeft' || k === 'arrowleft' || k === 'left' || c === 'KeyA' || k === 'a' || kc === 37 || kc === 65) return 'left';
+    if (c === 'ArrowRight' || k === 'arrowright' || k === 'right' || c === 'KeyD' || k === 'd' || kc === 39 || kc === 68) return 'right';
+    if (c === 'ArrowUp' || k === 'arrowup' || k === 'up' || c === 'KeyW' || k === 'w' || kc === 38 || kc === 87) return 'up';
+    if (c === 'Space' || k === ' ' || k === 'spacebar' || c === 'Enter' || k === 'enter' || kc === 32 || kc === 13) return 'start';
+    return null;
+  }
+  function impulse(dir) {
+    if (state.phase !== 'play' || !state.ship) return;
+    const s = state.ship;
+    if (dir === 'left') { s.a -= 0.35; lastInput = 'LEFT'; }
+    if (dir === 'right') { s.a += 0.35; lastInput = 'RIGHT'; }
+    if (dir === 'up') {
+      s.vx += Math.cos(s.a) * 0.85;
+      s.vy += Math.sin(s.a) * 0.85;
+      lastInput = 'THRUST';
+    }
+  }
+  function onKeyDown(e) {
+    const dir = classify(e);
+    if (!dir) return;
+    e.preventDefault();
+    e.stopPropagation();
+    keys[dir] = true;
+    if (dir === 'start') {
+      lastInput = 'START';
+      if (state.phase !== 'play') startGame();
+      return;
+    }
+    impulse(dir); // tap-safe: one keydown always moves the ship
+  }
+  function onKeyUp(e) {
+    const dir = classify(e);
+    if (!dir) return;
+    e.preventDefault();
+    keys[dir] = false;
+  }
+  // capture on window+document+canvas — desktop agents differ on focus target
+  for (const t of [window, document, canvas]) {
+    t.addEventListener('keydown', onKeyDown, true);
+    t.addEventListener('keyup', onKeyUp, true);
+  }
+  function canvasToWorld(ev) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (ev.clientX - rect.left) * (W / rect.width),
+      y: (ev.clientY - rect.top) * (H / rect.height)
+    };
+  }
+  canvas.addEventListener('pointerdown', ev => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    canvas.focus();
+    try { canvas.setPointerCapture(ev.pointerId); } catch (_) {}
+    const p = canvasToWorld(ev);
+    pointer.down = true; pointer.x = p.x; pointer.y = p.y;
+    lastInput = 'POINTER';
+    if (state.phase !== 'play') startGame();
+  });
+  canvas.addEventListener('pointermove', ev => {
+    if (!pointer.down) return;
+    ev.preventDefault();
+    const p = canvasToWorld(ev);
+    pointer.x = p.x; pointer.y = p.y;
+    lastInput = 'POINTER';
+  });
+  canvas.addEventListener('pointerup', ev => {
+    ev.preventDefault();
+    pointer.down = false;
+    try { canvas.releasePointerCapture(ev.pointerId); } catch (_) {}
+  });
+  canvas.addEventListener('pointercancel', () => { pointer.down = false; });
+  canvas.addEventListener('contextmenu', ev => ev.preventDefault());
+  canvas.addEventListener('dragstart', ev => ev.preventDefault());
+  window.addEventListener('blur', () => {
+    keys.left = keys.right = keys.up = keys.start = false;
+    pointer.down = false;
+  });
+  window.addEventListener('load', () => setTimeout(() => canvas.focus(), 0));
+
+  const state = {
+    phase: 'title', // title | play | win | dead
+    ship: null,
+    ores: [],
+    rocks: [],
+    hunters: [],
+    sparks: [],
+    forge: 0, // 0..1
+    oreHeld: 0,
+    lives: 3,
+    shake: 0,
+    flash: 0,
+    exitOpen: false,
+    msg: '',
+    msgT: 0,
+    deathPause: 0, // frames after a life loss — no collisions, banner holds
+    t: 0,
+  };
+
+  function resetShip() {
+    state.ship = { x: W/2, y: H/2, a: -Math.PI/2, vx: 0, vy: 0, inv: 300 };
+  }
+
+  const SAFE_SPAWN = 220; // clear bubble around ship at spawn / respawn
+  function farFromShip(minDist) {
+    const sx = W/2, sy = H/2;
+    for (let tries = 0; tries < 60; tries++) {
+      const x = 40 + Math.random() * (W - 80);
+      const y = 40 + Math.random() * (H - 80);
+      if (Math.hypot(x - sx, y - sy) >= minDist) return { x, y };
+    }
+    // corners only
+    const corners = [[60,60],[W-60,60],[60,H-60],[W-60,H-60]];
+    const c = corners[(Math.random()*4)|0];
+    return { x: c[0], y: c[1] };
+  }
+  function spawnField() {
+    state.ores = [];
+    state.rocks = [];
+    state.hunters = [];
+    // guaranteed first ore — short hop from spawn, inside invuln window
+    state.ores.push({ x: W/2, y: H/2 - 70, r: 8, alive: true, starter: true });
+    for (let i = 0; i < 7; i++) {
+      const p = farFromShip(120);
+      state.ores.push({ x: p.x, y: p.y, r: 7, alive: true });
+    }
+    for (let i = 0; i < 6; i++) {
+      const p = farFromShip(SAFE_SPAWN);
+      state.rocks.push({
+        x: p.x, y: p.y,
+        vx: (Math.random()-0.5)*0.7, vy: (Math.random()-0.5)*0.7,
+        r: 12 + Math.random()*14
+      });
+    }
+    for (let i = 0; i < 2; i++) {
+      const p = farFromShip(SAFE_SPAWN + 40);
+      state.hunters.push({
+        x: p.x, y: p.y,
+        vx: 0, vy: 0, r: 10,
+        telegraph: 0,
+        // ~5–7s before first telegraph — first ore is routine
+        cooldown: 300 + i*90
+      });
+    }
+  }
+
+  function startGame() {
+    ensureAudio();
+    state.phase = 'play';
+    state.forge = 0;
+    state.oreHeld = 0;
+    state.lives = 3;
+    state.exitOpen = false;
+    state.sparks = [];
+    state.shake = 0;
+    state.flash = 0;
+    state.deathPause = 0;
+    state.msg = 'THRUST TO THE GLOWING ORE — YOU ARE SAFE';
+    state.msgT = 90;
+    resetShip();
+    if (!state.ship) resetShip();
+    spawnField();
+    overlay.classList.add('hidden');
+    try { canvas.focus(); } catch (_) {}
+    beep(330, 0.08); beep(440, 0.1);
+    setForgeHum(0);
+  }
+
+  function killShip(reason) {
+    if (state.deathPause > 0 || state.phase !== 'play') return;
+    hitTick();
+    state.shake = 12;
+    state.flash = 4;
+    state.lives -= 1;
+    // carry risk: death dumps cargo — oreHeld is real, not HUD theater
+    let lost = state.oreHeld;
+    if (lost > 0) {
+      state.oreHeld = 0;
+      reason = reason + ' Cargo lost (' + lost + ').';
+      beep(90, 0.1, 'sawtooth', 0.05);
+    }
+    state.msg = reason;
+    state.msgT = 150; // ~2.5s — every life loss must be readable
+    state.deathPause = 120; // freeze world ~2s so banner is readable
+    if (state.lives <= 0) {
+      state.phase = 'dead';
+      overlay.classList.remove('hidden');
+      overlay.innerHTML = `<h1>FORGE COLD</h1><p>${reason}</p><p>Fair fail — your mistake, not a hidden roll.</p><div class="go">PRESS START</div>`;
+    } else {
+      resetShip();
+    }
+  }
+
+  function win() {
+    state.phase = 'win';
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>SECTOR ESCAPE</h1><p>Forge full. Gate punched. You win.</p><div class="go">PRESS START · AGAIN</div>`;
+    beep(523, 0.1); beep(659, 0.1); beep(784, 0.18);
+  }
+
+  function dist(a,b){ const dx=a.x-b.x, dy=a.y-b.y; return Math.hypot(dx,dy); }
+
+  function update() {
+    state.t++;
+    if (state.phase !== 'play') return;
+    if (!state.ship) resetShip();
+    const s = state.ship;
+    if (!s) return;
+    if (state.deathPause > 0) {
+      state.deathPause--;
+      // freeze world + collisions while banner is up (no silent drain)
+      return;
+    }
+
+    // held keys (human hold) + pointer (desktop click-drag)
+    if (keys.left) s.a -= 0.11;
+    if (keys.right) s.a += 0.11;
+    if (keys.up) {
+      s.vx += Math.cos(s.a) * 0.22;
+      s.vy += Math.sin(s.a) * 0.22;
+    }
+    if (pointer.down) {
+      s.a = Math.atan2(pointer.y - s.y, pointer.x - s.x);
+      s.vx += Math.cos(s.a) * 0.22;
+      s.vy += Math.sin(s.a) * 0.22;
+      lastInput = 'POINTER';
+    }
+    s.vx *= 0.992; s.vy *= 0.992;
+    const sp = Math.hypot(s.vx, s.vy);
+    if (sp > 4.2) { s.vx *= 4.2/sp; s.vy *= 4.2/sp; }
+    s.x += s.vx; s.y += s.vy;
+    if (s.x < 0) s.x += W; if (s.x > W) s.x -= W;
+    if (s.y < 0) s.y += H; if (s.y > H) s.y -= H;
+    if (s.inv > 0) s.inv--;
+
+    // rocks
+    for (const r of state.rocks) {
+      r.x += r.vx; r.y += r.vy;
+      if (r.x < -30) r.x = W+30; if (r.x > W+30) r.x = -30;
+      if (r.y < -30) r.y = H+30; if (r.y > H+30) r.y = -30;
+      // shove hazards out of spawn bubble while invulnerable
+      if (s.inv > 0 && dist(s,r) < 110) {
+        const ang = Math.atan2(r.y - s.y, r.x - s.x);
+        r.x = s.x + Math.cos(ang) * 130;
+        r.y = s.y + Math.sin(ang) * 130;
+        r.vx += Math.cos(ang) * 0.4;
+        r.vy += Math.sin(ang) * 0.4;
+      }
+      if (s.inv <= 0 && dist(s,r) < r.r + 8) { killShip('Hit a rock — you flew into mass.'); return; }
+    }
+
+    // ores — pick up only (carry risk). Deposit at forge hearth.
+    const MAX_CARRY = 3;
+    for (const o of state.ores) {
+      if (!o.alive) continue;
+      if (state.oreHeld >= MAX_CARRY) break;
+      if (dist(s,o) < o.r + 10) {
+        o.alive = false;
+        state.oreHeld++;
+        oreTick();
+        for (let i=0;i<8;i++) state.sparks.push({x:o.x,y:o.y,vx:(Math.random()-0.5)*4,vy:(Math.random()-0.5)*4,life:16,color:AMBER});
+        state.msg = state.oreHeld >= MAX_CARRY ? 'HOLD FULL — FEED THE FORGE' : 'ORE LOADED — FEED THE FORGE';
+        state.msgT = 50;
+      }
+    }
+    // forge hearth (bottom center) — only place that fills the meter
+    const hearth = { x: W/2, y: H - 56, r: 26 };
+    if (state.oreHeld > 0 && dist(s, hearth) < hearth.r + 10) {
+      const before = state.forge;
+      const fed = state.oreHeld;
+      state.forge = Math.min(1, state.forge + fed * 0.14);
+      state.oreHeld = 0;
+      forgeTone(state.forge);
+      for (let i=0;i<12;i++) state.sparks.push({x:hearth.x,y:hearth.y,vx:(Math.random()-0.5)*5,vy:-Math.random()*4,life:20,color:MINT});
+      state.msg = 'DEPOSITED x' + fed;
+      state.msgT = 45;
+      if (before < 1 && state.forge >= 1) {
+        state.exitOpen = true;
+        state.msg = 'FORGE FULL — HIT THE EXIT GATE';
+        state.msgT = 120;
+        beep(660, 0.15); beep(990, 0.2);
+      }
+    }
+    // cargo weight: slight thrust tax while loaded (felt risk)
+    if (state.oreHeld > 0 && keys.up) {
+      s.vx *= 0.985; s.vy *= 0.985;
+    }
+    // respawn ore if field empty
+    if (state.ores.every(o => !o.alive) && !state.exitOpen) {
+      for (const o of state.ores) {
+        o.alive = true;
+        const p = farFromShip(70);
+        o.x = p.x; o.y = p.y;
+      }
+    }
+
+    // hunters: telegraph 25–35 frames then lunge
+    for (const h of state.hunters) {
+      if (h.cooldown > 0) { h.cooldown--; continue; }
+      if (h.telegraph > 0) {
+        h.telegraph--;
+        if (h.telegraph === 0) {
+          // strike
+          const ang = Math.atan2(s.y - h.y, s.x - h.x);
+          h.vx = Math.cos(ang) * 5.5;
+          h.vy = Math.sin(ang) * 5.5;
+          h.cooldown = 90 + (Math.random()*40|0);
+        } else if (h.telegraph % 3 === 0) telegraphTick(1 - h.telegraph / 35);
+      } else if (Math.hypot(h.vx,h.vy) > 0.2) {
+        h.x += h.vx; h.y += h.vy;
+        h.vx *= 0.96; h.vy *= 0.96;
+      } else {
+        // drift + start telegraph when near
+        h.x += (Math.random()-0.5)*0.4;
+        h.y += (Math.random()-0.5)*0.4;
+        if (dist(h,s) < 140) {
+          h.telegraph = 28 + (Math.random()*8|0); // 28–35 — actionable
+        }
+      }
+      if (h.x < 0) h.x += W; if (h.x > W) h.x -= W;
+      if (h.y < 0) h.y += H; if (h.y > H) h.y -= H;
+      if (s.inv > 0 && dist(s,h) < 120) {
+        const ang = Math.atan2(h.y - s.y, h.x - s.x);
+        h.x = s.x + Math.cos(ang) * 150;
+        h.y = s.y + Math.sin(ang) * 150;
+        h.vx = 0; h.vy = 0; h.telegraph = 0;
+        h.cooldown = Math.max(h.cooldown, 60);
+      }
+      if (s.inv <= 0 && dist(s,h) < h.r + 9) { killShip('Hunter strike — ignored the telegraph flash.'); return; }
+    }
+
+    // exit gate when forge full
+    if (state.exitOpen) {
+      const gate = { x: W/2, y: 36, r: 28 };
+      if (dist(s, gate) < gate.r + 6) win();
+    }
+
+    // sparks
+    state.sparks = state.sparks.filter(p => {
+      p.x += p.vx; p.y += p.vy; p.life--;
+      return p.life > 0;
+    });
+    if (state.shake > 0) state.shake--;
+    if (state.flash > 0) state.flash--;
+    if (state.msgT > 0) state.msgT--;
+
+    // HUD is drawn in-tube only
+  }
+
+  function drawShip(s) {
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.a);
+    // invuln = ghost stroke, NEVER fully invisible (looked like missing ship)
+    ctx.globalAlpha = s.inv > 0 ? (0.45 + 0.55 * Math.sin(state.t * 0.4)) : 1;
+    ctx.strokeStyle = MINT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(12, 0);
+    ctx.lineTo(-10, 8);
+    ctx.lineTo(-6, 0);
+    ctx.lineTo(-10, -8);
+    ctx.closePath();
+    ctx.stroke();
+    if (keys.up) {
+      ctx.strokeStyle = COIN;
+      ctx.beginPath();
+      ctx.moveTo(-6, 0);
+      ctx.lineTo(-14 - Math.random()*4, (Math.random()-0.5)*6);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake > 0) {
+      ctx.translate((Math.random()-0.5)*state.shake, (Math.random()-0.5)*state.shake);
+    }
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0,0,W,H);
+
+    // soft playfield glow grid (vector era)
+    ctx.strokeStyle = 'rgba(125,255,179,0.05)';
+    ctx.lineWidth = 1;
+    for (let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // in-tube HUD — always visible at default zoom (chrome can clip)
+    ctx.fillStyle = MINT;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('VECTOR FORGE', 14, 22);
+    ctx.fillStyle = CHROME;
+    ctx.textAlign = 'right';
+    ctx.fillText(
+      'FORGE ' + Math.round(state.forge * 100) + '%  ·  ORE ' + state.oreHeld + '  ·  SHIPS ' + state.lives,
+      W - 14, 22
+    );
+
+    // forge hearth — deposit target
+    const hx = W/2, hy = H - 56;
+    ctx.strokeStyle = state.oreHeld > 0 ? AMBER : MINT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(hx, hy, 26, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.fillStyle = state.oreHeld > 0 ? AMBER : MINT;
+    ctx.font = '11px Impact, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('FORGE', hx, hy + 4);
+
+    // forge meter in-tube (also HUD)
+    ctx.fillStyle = '#12141a';
+    ctx.fillRect(16, H-28, W-32, 12);
+    ctx.fillStyle = state.forge >= 1 ? COIN : MINT;
+    ctx.shadowColor = state.forge >= 1 ? COIN : MINT;
+    ctx.shadowBlur = 4 + state.forge * 14;
+    ctx.fillRect(16, H-28, (W-32)*state.forge, 12);
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = CHROME;
+    ctx.strokeRect(16.5, H-27.5, W-33, 11);
+
+    if (state.exitOpen) {
+      ctx.strokeStyle = COIN;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(W/2, 36, 28, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.fillStyle = COIN;
+      ctx.font = '12px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('EXIT', W/2, 40);
+    }
+
+    for (const o of state.ores) {
+      if (!o.alive) continue;
+      if (o.starter) {
+        ctx.strokeStyle = AMBER;
+        ctx.globalAlpha = 0.35 + 0.35 * Math.sin(state.t * 0.2);
+        ctx.beginPath();
+        ctx.arc(o.x, o.y, o.r + 10, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+      ctx.strokeStyle = AMBER;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(o.x, o.y-o.r);
+      ctx.lineTo(o.x+o.r, o.y);
+      ctx.lineTo(o.x, o.y+o.r);
+      ctx.lineTo(o.x-o.r, o.y);
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    for (const r of state.rocks) {
+      ctx.strokeStyle = CHROME;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      const n = 7;
+      for (let i=0;i<n;i++){
+        const ang = i/n*Math.PI*2;
+        const rr = r.r * (0.75 + (Math.sin(r.x+i)*0.15+0.15));
+        const x = r.x + Math.cos(ang)*rr;
+        const y = r.y + Math.sin(ang)*rr;
+        if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    for (const h of state.hunters) {
+      if (h.telegraph > 0) {
+        // 25–35 frame telegraph — ring grows as strike nears (radius always > 0)
+        const urg = 1 - h.telegraph / 35;
+        const ringR = Math.max(12, h.r + 10 + (35 - h.telegraph) * 0.55);
+        ctx.strokeStyle = urg > 0.6 ? '#ffffff' : COIN;
+        ctx.lineWidth = 2 + urg * 2;
+        ctx.globalAlpha = 0.55 + 0.45 * Math.sin(state.t * (2 + urg * 3));
+        ctx.beginPath();
+        ctx.arc(h.x, h.y, ringR, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = urg > 0.5 ? 'rgba(255,255,255,0.35)' : 'rgba(255,61,122,0.25)';
+        ctx.beginPath();
+        ctx.moveTo(h.x, h.y - 10);
+        ctx.lineTo(h.x + 9, h.y + 8);
+        ctx.lineTo(h.x - 9, h.y + 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        const s = state.ship;
+        if (s) {
+          ctx.strokeStyle = COIN;
+          ctx.setLineDash([3, 3]);
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(h.x, h.y);
+          ctx.lineTo(s.x, s.y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+      ctx.strokeStyle = h.telegraph > 0 && h.telegraph <= 4 ? '#ffffff' : COIN;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(h.x, h.y-10);
+      ctx.lineTo(h.x+9, h.y+8);
+      ctx.lineTo(h.x-9, h.y+8);
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    for (const p of state.sparks) {
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, 2, 2);
+    }
+
+    if (state.ship) {
+      drawShip(state.ship);
+      // cargo pips orbit ship — readable carry state
+      if (state.oreHeld > 0) {
+        for (let i = 0; i < state.oreHeld; i++) {
+          const ang = state.t * 0.08 + i * (Math.PI * 2 / 3);
+          const px = state.ship.x + Math.cos(ang) * 18;
+          const py = state.ship.y + Math.sin(ang) * 18;
+          ctx.fillStyle = AMBER;
+          ctx.fillRect(px - 2, py - 2, 4, 4);
+        }
+      }
+    }
+
+    if (state.msgT > 0) {
+      ctx.fillStyle = 'rgba(5,5,8,0.82)';
+      ctx.fillRect(24, 36, W - 48, 52);
+      ctx.strokeStyle = AMBER;
+      ctx.strokeRect(24.5, 36.5, W - 49, 51);
+      ctx.fillStyle = AMBER;
+      ctx.font = '16px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, W/2, 68);
+    }
+
+    if (state.flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.fillRect(0,0,W,H);
+    }
+    ctx.restore();
+  }
+
+  function loop() {
+    try { update(); } catch (err) { console.error('update', err); }
+    try { draw(); } catch (err) { console.error('draw', err); }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>

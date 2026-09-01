@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ECHO RUN</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+  #wrap{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;box-sizing:border-box}
+  #tube{position:relative;width:min(960px,96vw,calc((100vh - 16px) * 4 / 3));aspect-ratio:4/3;max-height:calc(100vh - 16px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 48px #000}
+  canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.84);text-align:center;gap:10px;padding:16px;pointer-events:auto}
+  #overlay h1{margin:0;color:#5ec8ff;font-size:clamp(28px,6vw,44px);letter-spacing:.14em;text-shadow:0 0 18px rgba(94,200,255,.45)}
+  #overlay p{margin:0;max-width:32em;line-height:1.4;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500;letter-spacing:0;text-transform:none}
+  #overlay .go{color:#ffc14a;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0"></canvas>
+    <div id="overlay">
+      <h1>ECHO RUN</h1>
+      <p>Auto-run forward. Jump / slide. Plant an echo (Z) where you stand — the <b>next</b> screen’s hazards mirror that plant. Reach the exit with the plant chain intact.</p>
+      <p>↑ / Space jump · ↓ slide · Z plant echo · Enter start (after HOLD)</p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', HOT = '#ff3d7a', CHROME = '#c8d0e0', CYAN = '#5ec8ff';
+
+  const DT = 1000/60;
+  let acc = 0, last = performance.now();
+
+  // Iron death hold — only setTimeout releases (Hex locked lesson)
+  let deadUntil = 0;
+  let holdToken = 0;
+  let holdReleased = true;
+  const HOLD_MS = 3500;
+  function holdActive() { return !holdReleased || performance.now() < deadUntil; }
+  function holdLeft() { return Math.max(0, Math.ceil((deadUntil - performance.now()) / 1000)); }
+  function armHold() {
+    holdReleased = false;
+    const token = ++holdToken;
+    deadUntil = performance.now() + HOLD_MS;
+    setTimeout(() => {
+      if (token !== holdToken) return;
+      holdReleased = true;
+    }, HOLD_MS);
+  }
+
+  let audioCtx = null;
+  function ensureAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (_) {}
+  }
+  function beep(f,d,t='square',g=0.045){
+    try {
+      if(!audioCtx)return;
+      const o=audioCtx.createOscillator(), gn=audioCtx.createGain();
+      o.type=t; o.frequency.value=f; gn.gain.value=g;
+      o.connect(gn); gn.connect(audioCtx.destination);
+      o.start(); gn.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+d); o.stop(audioCtx.currentTime+d);
+    } catch (_) {}
+  }
+  // Plant thud — weight in the ground, then echo chirp (feel signature)
+  function plantTick(){
+    beep(70,0.09,'sawtooth',0.07);
+    beep(140,0.07,'square',0.05);
+    beep(420,0.04,'triangle',0.025);
+  }
+  // Echo spike rises on next screen — telegraph you planted this
+  function echoRiseTick(){
+    beep(220,0.05,'square',0.04);
+    beep(160,0.12,'sawtooth',0.045);
+    beep(90,0.16,'sawtooth',0.03);
+  }
+  function echoHitTick(){
+    beep(55,0.18,'sawtooth',0.08);
+    beep(110,0.1,'square',0.05);
+  }
+  function jumpTick(){ beep(520,0.03,'square',0.03); }
+  function hurtTick(){ beep(70,0.14,'sawtooth',0.07); }
+  function winTick(){ beep(523,0.1); beep(659,0.1); beep(784,0.16); }
+
+  const keys = {}, impulse = {};
+  function holdSink(e) {
+    if (!holdActive()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+  window.addEventListener('keydown', holdSink, true);
+  window.addEventListener('keyup', holdSink, true);
+  window.addEventListener('pointerdown', holdSink, true);
+  window.addEventListener('pointerup', holdSink, true);
+  window.addEventListener('click', holdSink, true);
+  window.addEventListener('mousedown', holdSink, true);
+
+  function onKey(e, down) {
+    const c = e.code;
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyZ','Enter'].includes(c)) e.preventDefault();
+    if (holdActive()) { if (down) return; }
+    if (down && !keys[c]) impulse[c] = true;
+    keys[c] = down;
+    if (!down) return;
+    ensureAudio();
+    // Dead: Space mute (jump key). Enter/click after HOLD only.
+    if (c === 'Space' && state.phase === 'dead') return;
+    if (c === 'Enter' && state.phase !== 'play') { if (!holdActive()) startGame(); return; }
+    if (c === 'Space' && state.phase === 'title') startGame();
+  }
+  addEventListener('keydown', e => onKey(e, true), true);
+  addEventListener('keyup', e => onKey(e, false), true);
+
+  function tryStartFromPointer(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    canvas.focus(); ensureAudio();
+    if (holdActive()) return;
+    if (state.phase !== 'play') startGame();
+  }
+  canvas.addEventListener('pointerdown', tryStartFromPointer, true);
+  overlay.addEventListener('pointerdown', tryStartFromPointer, true);
+  overlay.addEventListener('click', e => {
+    if (holdActive()) { e.preventDefault(); e.stopImmediatePropagation(); return; }
+    if (state.phase !== 'play') startGame();
+  }, true);
+
+  const GROUND = H - 70;
+  const state = {
+    phase: 'title',
+    x: 80, y: GROUND, vy: 0, onGround: true, sliding: false,
+    screen: 0, // 0..N
+    plant: null, // {x} planted this screen — mirrors next
+    hazards: [],
+    plants: 0, // agency
+    lives: 5,
+    inv: 0,
+    scroll: 0,
+    flash: 0, shake: 0,
+    plantFx: 0, // frames of plant thud ring
+    echoPulse: 0, // frames after echo rises
+    msg: '', msgT: 0,
+    exitX: 580,
+    t: 0,
+  };
+
+  function buildHazards(screenIndex, mirrorPlantX) {
+    // Progressive density — screen 0 teaches plant; later screens add mirror payoff
+    const hz = [];
+    let base;
+    if (screenIndex <= 0) {
+      // One jumpable spike late — wide lane to plant Z before exit
+      base = [ {x: 420, w: 26, h: 30, kind: 'spike'} ];
+    } else if (screenIndex === 1) {
+      base = [
+        {x: 240, w: 26, h: 32, kind: 'spike'},
+        {x: 460, w: 44, h: 16, kind: 'low'},
+      ];
+    } else {
+      base = [
+        {x: 200, w: 26, h: 32, kind: 'spike'},
+        {x: 340, w: 44, h: 16, kind: 'low'},
+        {x: 500, w: 26, h: 34, kind: 'spike'},
+      ];
+    }
+    for (const b of base) hz.push({...b, y: GROUND - b.h});
+    if (mirrorPlantX != null && screenIndex > 0) {
+      let mx = Math.max(150, Math.min(520, mirrorPlantX));
+      // Nudge echo off overlapping base hazards so the mirror is readable + jumpable
+      for (let i = 0; i < 6; i++) {
+        let hit = false;
+        for (const b of hz) {
+          if (Math.abs((b.x + b.w/2) - (mx + 15)) < 55) { mx += (mx < 320 ? 70 : -70); hit = true; break; }
+        }
+        if (!hit) break;
+        mx = Math.max(150, Math.min(520, mx));
+      }
+      hz.push({ x: mx, w: 28, h: 40, y: GROUND - 40, kind: 'echo', mirrored: true });
+    }
+    return hz;
+  }
+
+  function startGame() {
+    if (holdActive()) return;
+    ensureAudio();
+    try { canvas.focus(); } catch(_){}
+    holdReleased = true;
+    state.phase = 'play';
+    state.x = 80; state.y = GROUND; state.vy = 0; state.onGround = true; state.sliding = false;
+    state.screen = 0;
+    state.plant = null;
+    state.plants = 0;
+    state.lives = 5;
+    state.inv = 0;
+    state.scroll = 0;
+    state.flash = 0; state.shake = 0; state.plantFx = 0; state.echoPulse = 0;
+    state.hazards = buildHazards(0, null);
+    overlay.classList.add('hidden');
+    state.msg = 'PLANT ECHO (Z) — NEXT SCREEN MIRRORS IT';
+    state.msgT = 110;
+    beep(330,0.08); beep(440,0.1);
+  }
+
+  function die(reason, fromEcho) {
+    if (fromEcho) echoHitTick(); else hurtTick();
+    state.shake = fromEcho ? 14 : 10;
+    state.flash = fromEcho ? 5 : 3;
+    state.lives--;
+    state.msg = reason;
+    state.msgT = 80;
+    if (state.lives <= 0) {
+      state.phase = 'dead';
+      armHold();
+      overlay.classList.remove('hidden');
+      overlay.style.pointerEvents = 'auto';
+      canvas.style.pointerEvents = 'none';
+      // Honest fair-fail — only YOUR ECHO deaths claim the plant mirror
+      let fair;
+      if (fromEcho) fair = 'Fair fail — the spike matched your plant.';
+      else if (/plants|idle/i.test(reason)) fair = 'Fair fail — idle run is not a win.';
+      else fair = 'Fair fail — you hit a course hazard.';
+      overlay.innerHTML = `<h1>ECHO BROKEN</h1><p>${reason}</p><p>${fair}</p><div class="go" id="holdGo">HOLD…</div>`;
+    } else {
+      // Soft reset + brief invuln so one miss is not a chain death
+      state.x = 80; state.y = GROUND; state.vy = 0; state.sliding = false; state.onGround = true;
+      state.inv = 90; // 1.5s @60Hz
+    }
+  }
+
+  function win() {
+    winTick();
+    state.phase = 'win';
+    deadUntil = performance.now() + 2000;
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>CHAIN HELD</h1><p>Exit reached · PLANTS ${state.plants}. You win.</p><div class="go">PRESS ENTER</div>`;
+  }
+
+  function nextScreen() {
+    const mirror = state.plant ? state.plant.x : null;
+    if (!state.plant && state.screen >= 1) {
+      // after screen 0 you must plant — idle run into exit without plants fails agency on later screens
+    }
+    state.screen++;
+    state.x = 60;
+    state.hazards = buildHazards(state.screen, mirror);
+    state.plant = null; // must plant again this screen
+    if (mirror != null) {
+      echoRiseTick();
+      state.echoPulse = 45;
+      state.msg = 'ECHO SPIKE AHEAD — YOU PLANTED IT';
+    } else {
+      state.msg = 'PLANT BEFORE THE EXIT';
+    }
+    state.msgT = 70;
+    // Screens 0..2 played → entering 3 is the exit check (3 plant chances)
+    if (state.screen >= 3) {
+      if (state.plants >= 3) win();
+      else die('Reached the end with too few plants — idle run is not a win.');
+    }
+  }
+
+  function update() {
+    // overlay HOLD text
+    if (state.phase === 'dead') {
+      const el = document.getElementById('holdGo');
+      if (el) el.textContent = holdActive() ? ('HOLD ' + Math.max(holdLeft(), 1) + 's') : 'PRESS ENTER / CLICK';
+      if (!holdActive()) canvas.style.pointerEvents = 'auto';
+    }
+
+    if (state.phase !== 'play') {
+      for (const k of Object.keys(impulse)) delete impulse[k];
+      return;
+    }
+    state.t++;
+
+    // auto-run
+    state.x += 2.05;
+
+    // jump
+    if ((impulse.ArrowUp || impulse.Space) && state.onGround && !state.sliding) {
+      state.vy = -9.8;
+      state.onGround = false;
+      jumpTick();
+    }
+    // slide
+    state.sliding = !!(keys.ArrowDown) && state.onGround;
+    // plant
+    if (impulse.KeyZ) {
+      if (!state.plant) {
+        state.plant = { x: state.x };
+        state.plants++;
+        state.msg = 'ECHO PLANTED · NEXT SCREEN MIRRORS';
+      } else {
+        state.plant.x = state.x;
+        state.msg = 'ECHO MOVED · NEXT SCREEN MIRRORS';
+      }
+      plantTick();
+      state.plantFx = 18;
+      state.flash = 2;
+      state.msgT = 50;
+    }
+    for (const k of Object.keys(impulse)) delete impulse[k];
+
+    // gravity
+    if (!state.onGround) {
+      state.vy += 0.42;
+      state.y += state.vy;
+      if (state.y >= GROUND) {
+        state.y = GROUND; state.vy = 0; state.onGround = true;
+      }
+    }
+
+    // exit
+    if (state.x >= state.exitX) {
+      if (state.screen === 0 && state.plants < 1) {
+        // teach: must plant on first screen
+        state.msg = 'PLANT AN ECHO (Z) BEFORE THE EXIT';
+        state.msgT = 50;
+        state.x = state.exitX - 4;
+      } else {
+        nextScreen();
+      }
+    }
+
+    // collisions (skip while invuln after soft death)
+    if (state.inv > 0) state.inv--;
+    const pw = 22, ph = state.sliding ? 16 : 34;
+    const px = state.x, py = state.y - ph;
+    for (const h of state.hazards) {
+      if (state.inv > 0) break;
+      if (px + pw > h.x && px < h.x + h.w && py + ph > h.y && py < h.y + h.h) {
+        // low hazard: jump clears; slide clears low; echo spike needs jump
+        if (h.kind === 'low' && state.sliding) continue;
+        if (h.kind === 'low' && !state.onGround && state.y < GROUND - 20) continue;
+        const reason = h.mirrored
+          ? 'Hit your echo spike — last plant mirrored here.'
+          : (h.kind === 'low' ? 'Hit a low bar — slide next time.' : 'Hit a spike — jump it.');
+        die(reason, !!h.mirrored);
+        return;
+      }
+    }
+
+    if (state.flash > 0) state.flash--;
+    if (state.shake > 0) state.shake--;
+    if (state.plantFx > 0) state.plantFx--;
+    if (state.echoPulse > 0) state.echoPulse--;
+    if (state.msgT > 0) state.msgT--;
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake > 0) ctx.translate((Math.random()-0.5)*state.shake,(Math.random()-0.5)*state.shake);
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0,0,W,H);
+    // parallax bands
+    ctx.fillStyle = 'rgba(94,200,255,0.05)';
+    ctx.fillRect(0, 80, W, 120);
+    ctx.fillStyle = '#12151c';
+    ctx.fillRect(0, GROUND, W, H - GROUND);
+    ctx.strokeStyle = MINT;
+    ctx.shadowColor = MINT;
+    ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    if (state.phase !== 'title') {
+      // exit gate
+      ctx.strokeStyle = AMBER;
+      ctx.shadowColor = AMBER;
+      ctx.shadowBlur = 12;
+      ctx.strokeRect(state.exitX, GROUND - 70, 36, 70);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = AMBER;
+      ctx.font = '12px Impact, sans-serif';
+      ctx.fillText('EXIT', state.exitX + 4, GROUND - 76);
+
+      // hazards
+      for (const h of state.hazards) {
+        if (h.mirrored) {
+          const pulse = state.echoPulse > 0 ? (1 + 0.15 * Math.sin(state.t * 0.4)) : 1;
+          const hh = h.h * Math.min(1, 1 - (state.echoPulse / 45) * 0.35 + (45 - Math.min(state.echoPulse, 45)) / 45 * 0.35);
+          const y = GROUND - hh;
+          ctx.fillStyle = HOT;
+          ctx.shadowColor = HOT;
+          ctx.shadowBlur = 16;
+          // triangular spike crown — readable "your echo"
+          ctx.beginPath();
+          ctx.moveTo(h.x, GROUND);
+          ctx.lineTo(h.x, y + 10);
+          ctx.lineTo(h.x + h.w * 0.5, y);
+          ctx.lineTo(h.x + h.w, y + 10);
+          ctx.lineTo(h.x + h.w, GROUND);
+          ctx.closePath();
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = '#ffb0c8';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = HOT;
+          ctx.font = '11px Impact, sans-serif';
+          ctx.fillText('YOUR ECHO', h.x - 8, y - 6);
+        } else if (h.kind === 'low') {
+          ctx.fillStyle = CHROME;
+          ctx.shadowColor = CHROME;
+          ctx.shadowBlur = 6;
+          ctx.fillRect(h.x, h.y, h.w, h.h);
+          ctx.shadowBlur = 0;
+        } else {
+          ctx.fillStyle = CYAN;
+          ctx.shadowColor = CYAN;
+          ctx.shadowBlur = 6;
+          ctx.beginPath();
+          ctx.moveTo(h.x, GROUND);
+          ctx.lineTo(h.x + h.w * 0.5, h.y);
+          ctx.lineTo(h.x + h.w, GROUND);
+          ctx.closePath();
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      // planted ghost + thud ring
+      if (state.plant) {
+        if (state.plantFx > 0) {
+          const r = 12 + (18 - state.plantFx) * 2.2;
+          ctx.strokeStyle = 'rgba(255,193,74,' + (state.plantFx / 18) + ')';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(state.plant.x + 12, GROUND, r, Math.PI, 0);
+          ctx.stroke();
+          ctx.lineWidth = 1;
+        }
+        ctx.strokeStyle = AMBER;
+        ctx.setLineDash([4,4]);
+        ctx.strokeRect(state.plant.x, GROUND - 40, 24, 40);
+        ctx.setLineDash([]);
+        ctx.fillStyle = AMBER;
+        ctx.font = '11px Impact, sans-serif';
+        ctx.fillText('PLANT', state.plant.x - 2, GROUND - 44);
+      }
+
+      // player
+      const ph = state.sliding ? 16 : 34;
+      if (!(state.inv > 0 && (state.t % 6 < 3))) {
+        ctx.fillStyle = MINT;
+        ctx.shadowColor = MINT;
+        ctx.shadowBlur = 10;
+        ctx.fillRect(state.x, state.y - ph, 22, ph);
+      } else {
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = MINT;
+        ctx.fillRect(state.x, state.y - ph, 22, ph);
+        ctx.globalAlpha = 1;
+      }
+      ctx.shadowBlur = 0;
+    }
+
+    // HUD
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('ECHO RUN', 16, 28);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = CYAN;
+    ctx.fillText('SCREEN ' + (state.screen+1) + '/3 · PLANTS ' + state.plants, W/2, 28);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = CHROME;
+    ctx.fillText('LIVES ' + state.lives, W - 16, 28);
+
+    if (state.msgT > 0) {
+      ctx.fillStyle = AMBER;
+      ctx.font = '16px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, W/2, 56);
+    }
+    if (state.flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.fillRect(0,0,W,H);
+    }
+    ctx.restore();
+  }
+
+  function frame(now) {
+    acc += now - last; last = now;
+    if (acc > 200) acc = 200;
+    while (acc >= DT) { try { update(); } catch(e){console.error(e);} acc -= DT; }
+    try { draw(); } catch(e){console.error(e);}
+    requestAnimationFrame(frame);
+  }
+  try { canvas.focus(); } catch(_){}
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

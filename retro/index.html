@@ -1,119 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <base href="/share/retro/">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Retro — decades arcade</title>
-  <style>
-    :root { --void:#07040a; --neon:#ff3d8a; --cyan:#3df0ff; --gold:#f0c040; }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--void); color: #f4ead8; font: 15px/1.4 "Avenir Next", system-ui, sans-serif; }
-    .hero { position: relative; height: 38vh; min-height: 180px; overflow: hidden; border-bottom: 3px solid var(--neon); }
-    .hero img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
-    .hero::after { content:""; position:absolute; inset:0; background: linear-gradient(180deg, #07040a00 20%, #07040aee 94%); }
-    .mark { position:absolute; left:1.2rem; bottom:1.05rem; z-index:2; font:700 11px/1 ui-monospace,monospace; letter-spacing:.42em; text-transform:uppercase; color:var(--cyan); }
-    h1 { position:absolute; left:1.2rem; bottom:1.65rem; z-index:2; margin:0; font-size:clamp(2rem,7vw,3.4rem); letter-spacing:-.04em; text-shadow:0 0 18px #ff3d8a88; }
-    main { max-width:72rem; margin:0 auto; padding:1.1rem 1rem 4rem; }
-    .lede { color:#b8a898; max-width:42rem; }
-    .era { margin:1.6rem 0 .7rem; font:700 11px/1 ui-monospace,monospace; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); }
-    .row { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:.85rem; }
-    a.cab {
-      display:flex; flex-direction:column; justify-content:flex-end; min-height:188px;
-      padding:.7rem .65rem .55rem; text-decoration:none; color:inherit;
-      background: linear-gradient(180deg,#1a1018 0%,#10080e 52%,#2a1408 53%,#4a2410 100%);
-      border:2px solid #3a2030; border-radius:8px 8px 3px 3px;
-      box-shadow:inset 0 14px 0 #0a0608, 0 8px 0 #1a0a06;
-      position:relative; overflow:hidden;
-      transition: transform .12s ease, border-color .12s ease;
-    }
-    a.cab:hover, a.cab:focus { transform: translateY(-3px); border-color: var(--cyan); }
-    a.cab::before {
-      content:""; position:absolute; top:10px; left:10%; right:10%; height:46%;
-      background:#081018; border:2px solid #223; box-shadow:inset 0 0 16px #3df0ff33;
-      border-radius: 2px;
-    }
-    a.cab .glass {
-      position:absolute; top:12px; left:12%; right:12%; height:42%;
-      display:grid; place-items:center; font:700 12px/1 ui-monospace,monospace;
-      color:var(--cyan); z-index:1; text-shadow:0 0 8px #3df0ff;
-      background-size: cover; background-position: center;
-      border-radius: 2px;
-    }
-    a.cab .glass::after {
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, #3df0ff22, #07040a88);
-    }
-    a.cab .year { font:700 10px/1 ui-monospace,monospace; letter-spacing:.16em; color:var(--gold); position:relative; z-index:1; }
-    a.cab .title { font-weight:700; font-size:1.02rem; margin:.12rem 0 0; position:relative; z-index:1; }
-    a.cab .genre { color:#9a8070; font-size:.78rem; position:relative; z-index:1; }
-  </style>
-</head>
-<body>
-  <div class="hero">
-    <img id="heroimg" src="../stills/aisle.jpg" alt="" />
-    <p class="mark">Decades arcade · 20 cabs</p>
-    <h1>RETRO</h1>
-  </div>
-  <main>
-    <p class="lede">Twenty original-form cabinets. Tap a cab — insert coin, then play. Thumb pad on phones. Landscape if you can.</p>
-    <div id="hall"></div>
-  </main>
-  <script>
-    var inPlay = /\/play\/hall\.html/.test(location.pathname);
-    var run = inPlay ? "run.html" : "play/run.html";
-    var img = inPlay ? "../stills/aisle.jpg" : "stills/aisle.jpg";
-    var art = inPlay ? "art/" : "play/art/";
-    document.getElementById("heroimg").src = img;
-    var THUMB = {
-      paddle:"bg-court.jpg", bricks:"bg-yard.jpg", night:"bg-night.jpg", armor:"bg-rig.jpg",
-      rows:"bg-stars.jpg", rocks:"bg-stars.jpg", hopper:"bg-hopper.jpg", bugs:"bg-hopper.jpg",
-      manor:"bg-manor.jpg", swarm:"bg-stars.jpg", rig:"bg-rig.jpg", grid:"bg-grid.jpg",
-      stack:"bg-hex.jpg", foam:"bg-rig.jpg", stripe:"bg-city.jpg", ring:"bg-city.jpg",
-      dual:"bg-dual.jpg", beat:"bg-city.jpg", volt:"bg-city.jpg", hex:"bg-hex.jpg"
-    };
-    var CABS = [
-      {id:"paddle",title:"Paddle Court",year:1972,era:"1970s",genre:"Ball & paddle"},
-      {id:"bricks",title:"Brick Yard",year:1976,era:"1970s",genre:"Breakout"},
-      {id:"night",title:"Night Road",year:1976,era:"1970s",genre:"Driving"},
-      {id:"armor",title:"Armor Duel",year:1974,era:"1970s",genre:"Tank"},
-      {id:"rows",title:"Lunar Rows",year:1978,era:"1980s",genre:"Fixed shooter"},
-      {id:"rocks",title:"Drift Rocks",year:1979,era:"1980s",genre:"Vector"},
-      {id:"hopper",title:"Garden Hopper",year:1981,era:"1980s",genre:"Cross the road"},
-      {id:"bugs",title:"Bug Sweep",year:1981,era:"1980s",genre:"Garden shooter"},
-      {id:"manor",title:"Dot Manor",year:1980,era:"1980s",genre:"Maze"},
-      {id:"swarm",title:"Sky Swarm",year:1981,era:"1980s",genre:"Gallery shooter"},
-      {id:"rig",title:"Barrel Rig",year:1981,era:"1980s",genre:"Climb"},
-      {id:"grid",title:"Missile Grid",year:1980,era:"1980s",genre:"Defense"},
-      {id:"stack",title:"Stack Well",year:1985,era:"1980s",genre:"Falling blocks"},
-      {id:"foam",title:"Foam Kid",year:1986,era:"1980s",genre:"Platform bubble"},
-      {id:"stripe",title:"Stripe Run",year:1991,era:"1990s",genre:"Speed platform"},
-      {id:"ring",title:"Ring Fighter",year:1991,era:"1990s",genre:"Versus"},
-      {id:"dual",title:"Twin Storm",year:2005,era:"2000s",genre:"Twin-stick"},
-      {id:"beat",title:"Beat Tap",year:2005,era:"2000s",genre:"Rhythm"},
-      {id:"volt",title:"Volt Dash",year:2013,era:"2010s",genre:"Endless run"},
-      {id:"hex",title:"Hex Pulse",year:2015,era:"2010s",genre:"Survival"}
-    ];
-    var hall = document.getElementById("hall");
-    var eras = [];
-    CABS.forEach(function (c) { if (eras.indexOf(c.era) < 0) eras.push(c.era); });
-    eras.forEach(function (era) {
-      var h = document.createElement("div");
-      h.className = "era";
-      h.textContent = era;
-      hall.appendChild(h);
-      var row = document.createElement("div");
-      row.className = "row";
-      CABS.filter(function (c) { return c.era === era; }).forEach(function (c) {
-        var a = document.createElement("a");
-        a.className = "cab";
-        a.href = run + "?g=" + encodeURIComponent(c.id);
-        var src = THUMB[c.id] ? art + THUMB[c.id] : "";
-        a.innerHTML = '<div class="glass" style="background-image:url(\'' + src + '\')"></div><span class="year">' + c.year + '</span><span class="title">' + c.title + '</span><span class="genre">' + c.genre + '</span>';
-        row.appendChild(a);
-      });
-      hall.appendChild(row);
-    });
-  </script>
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRT Cabinet</title>
+<body style="margin:0;min-height:100vh;background:#05080a;color:#9fffc8;font:16px/1.4 ui-monospace,Menlo,monospace">
+<main style="max-width:36rem;margin:0 auto;padding:2.5rem 1.25rem">
+<h1 style="font-size:1.15rem;letter-spacing:.18em;text-transform:uppercase;color:#7dffb0">CRT Cabinet</h1>
+<p style="color:#6a8878;font-size:.85rem">Five PASS carts. Insert coin, hit a slot.</p>
+<ul style="list-style:none;padding:0;margin:1.5rem 0 0">
+<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./vector-forge/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Vector Forge</a></li>
+<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./cathode-wall/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Cathode Wall</a></li>
+<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./hex-cascade/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Hex Cascade</a></li>
+<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./neon-lane/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Neon Lane</a></li>
+<li style="border:1px solid #1c3a2c;margin:0 0 .6rem"><a href="./echo-run/" style="display:block;padding:.85rem 1rem;color:#b8ffd6;text-decoration:none">Echo Run</a></li>
+</ul>
+</main>
 </body>
-</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NEON LANE</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+  #wrap{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;box-sizing:border-box}
+  #tube{position:relative;width:min(960px,96vw,calc((100vh - 16px) * 4 / 3));aspect-ratio:4/3;max-height:calc(100vh - 16px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 48px #000}
+  canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.82);text-align:center;gap:10px;padding:16px}
+  #overlay h1{margin:0;color:#ff3d7a;font-size:clamp(28px,6vw,44px);letter-spacing:.14em;text-shadow:0 0 18px rgba(255,61,122,.5)}
+  #overlay p{margin:0;max-width:32em;line-height:1.4;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500;letter-spacing:0;text-transform:none}
+  #overlay .go{color:#7dffb3;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0"></canvas>
+    <div id="overlay">
+      <h1>NEON LANE</h1>
+      <p>Always full throttle. Your only control is latch/release draft on a ghost. Draft banks time. Wall-while-latched or coasting burns it. Finish 3 laps with bank &gt; 0.</p>
+      <p>← → steer · Space / Z latch-toggle · Enter start</p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', HOT = '#ff3d7a', CHROME = '#c8d0e0';
+
+  const DT = 1000/60;
+  let acc = 0, last = performance.now();
+
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function beep(f,d,t='square',g=0.045){
+    if(!audioCtx)return;
+    try{
+      const o=audioCtx.createOscillator(), gn=audioCtx.createGain();
+      o.type=t; o.frequency.value=f;
+      gn.gain.setValueAtTime(Math.max(0.0008,g), audioCtx.currentTime);
+      gn.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime+Math.max(0.02,d));
+      o.connect(gn); gn.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime+Math.max(0.02,d)+0.02);
+    }catch(_){}
+  }
+  // Feel stamp: latch click, bank pitch-rise, wall punch (hard)
+  function latchTick(){ beep(920,0.035,'square',0.055); beep(460,0.055,'triangle',0.03); }
+  function releaseTick(){ beep(180,0.06,'sawtooth',0.045); }
+  function wallPunch(){ beep(65,0.14,'sawtooth',0.08); beep(40,0.1,'square',0.04); }
+  function bankTick(pct){ beep(220+pct*560,0.028,'triangle',0.025); }
+  function winTick(){ beep(523,0.1); beep(659,0.1); beep(784,0.16); }
+
+  // Oval track centerline (parametric)
+  const CX = 320, CY = 250, RX = 210, RY = 140;
+  function trackPoint(u) {
+    const a = u * Math.PI * 2;
+    return { x: CX + Math.cos(a) * RX, y: CY + Math.sin(a) * RY, a };
+  }
+  function trackTangent(u) {
+    const a = u * Math.PI * 2;
+    // derivative of ellipse
+    const tx = -Math.sin(a) * RX, ty = Math.cos(a) * RY;
+    const len = Math.hypot(tx, ty) || 1;
+    return { x: tx/len, y: ty/len, a };
+  }
+  function trackNormal(u) {
+    const t = trackTangent(u);
+    return { x: -t.y, y: t.x };
+  }
+
+  const ROAD_HALF = 42;
+  const keys = {}, impulse = {};
+  function onKey(e, down) {
+    const c = e.code || '';
+    const k = e.key || '';
+    const isStart = c === 'Enter' || c === 'Space' || k === 'Enter' || k === ' ';
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyZ','Enter'].includes(c) || k === ' ') e.preventDefault();
+    if (!down) { keys[c] = false; if (isStart) keys.Space = false; return; }
+    ensureAudio();
+    if (isStart && state.phase !== 'play') {
+      if (state.deathPause > 0) { keys.Space = false; delete impulse.Space; return; }
+      startGame();
+      keys.Space = false; delete impulse.Space; delete impulse.Enter;
+      return;
+    }
+    if (!keys[c]) impulse[c] = true;
+    keys[c] = true;
+  }
+  addEventListener('keydown', e => onKey(e, true));
+  addEventListener('keyup', e => onKey(e, false));
+  canvas.addEventListener('pointerdown', () => {
+    canvas.focus(); ensureAudio();
+    if (state.phase !== 'play' && !(state.deathPause > 0)) startGame();
+  });
+
+  const state = {
+    phase: 'title',
+    player: null,
+    ghosts: [],
+    bank: 1, // 0..1 — must finish with > 0
+    laps: 0,
+    latches: 0, // agency proof
+    latching: false,
+    flash: 0,
+    shake: 0,
+    msg: '',
+    msgT: 0,
+    t: 0,
+    lastU: 0,
+    deathPause: 0,
+  };
+
+  function makeCar(u, lane, color, isPlayer) {
+    return { u, lane, color, isPlayer, speed: 0 };
+  }
+
+  function startGame() {
+    if (state.deathPause > 0) return;
+    ensureAudio();
+    try { canvas.focus(); } catch(_){}
+    state.phase = 'play';
+    state.bank = 1;
+    state.laps = 0;
+    state.latches = 0;
+    state.latching = false;
+    state.flash = 0; state.shake = 0;
+    state.lastU = 0;
+    state.player = makeCar(0, 0, MINT, true);
+    state.ghosts = [
+      makeCar(0.12, -0.55, AMBER, false),
+      makeCar(0.28, 0.45, HOT, false),
+      makeCar(0.55, -0.2, '#5ec8ff', false),
+      makeCar(0.78, 0.35, '#b388ff', false),
+    ];
+    overlay.classList.add('hidden');
+    state.msg = 'FULL THROTTLE — LATCH TO BANK';
+    state.msgT = 100;
+    beep(330,0.08); beep(440,0.1);
+  }
+
+  function fail(reason) {
+    wallPunch();
+    state.shake = 10;
+    state.deathPause = 120;
+    keys.Space = false; keys.Enter = false;
+    for (const k of Object.keys(impulse)) delete impulse[k];
+    state.phase = 'dead';
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>LANE COLD</h1><p>${reason}</p><p>Fair fail — the bank died from your control.</p><div class="go">PRESS START</div>`;
+  }
+
+  function win() {
+    winTick();
+    state.phase = 'win';
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>HEAT CHECK</h1><p>3 laps · bank held · LATCHES ${state.latches}. You win.</p><div class="go">PRESS START · AGAIN</div>`;
+  }
+
+  function carPos(car) {
+    const p = trackPoint(car.u);
+    const n = trackNormal(car.u);
+    const off = car.lane * ROAD_HALF * 0.75;
+    return { x: p.x + n.x * off, y: p.y + n.y * off, t: trackTangent(car.u) };
+  }
+
+  function update() {
+    if (state.deathPause > 0) state.deathPause--;
+    state.t++;
+    if (state.phase !== 'play') {
+      for (const k of Object.keys(impulse)) delete impulse[k];
+      return;
+    }
+    const p = state.player;
+
+    // steer = lane change (only control besides latch)
+    if (keys.ArrowLeft || keys.KeyA) p.lane = Math.max(-1, p.lane - 0.045);
+    if (keys.ArrowRight || keys.KeyD) p.lane = Math.min(1, p.lane + 0.045);
+    if (impulse.Space || impulse.KeyZ) {
+      const was = state.latching;
+      // toggle only if a ghost is in draft cone OR releasing
+      if (state.latching) {
+        state.latching = false;
+        releaseTick();
+        state.msg = 'DRAFT RELEASED';
+        state.msgT = 35;
+      } else {
+        const g = nearestDraftGhost();
+        if (g) {
+          state.latching = true;
+          state.latches++;
+          latchTick();
+          state.msg = 'LATCHED · BANKING';
+          state.msgT = 40;
+        } else {
+          state.msg = 'NO GHOST IN DRAFT';
+          state.msgT = 35;
+          beep(140,0.05,'sawtooth',0.03);
+        }
+      }
+    }
+    for (const k of Object.keys(impulse)) delete impulse[k];
+
+    // always full throttle along track
+    const base = 0.00215; // u per frame @60Hz
+    let spd = base;
+    if (state.latching) spd = base * 1.05; // slight pull when drafted
+    p.u = (p.u + spd) % 1;
+
+    // lap detect
+    if (state.lastU > 0.85 && p.u < 0.15) {
+      state.laps++;
+      state.msg = 'LAP ' + state.laps + '/3';
+      state.msgT = 50;
+      beep(660,0.08);
+      if (state.laps >= 3) {
+        if (state.bank > 0.02 && state.latches >= 1) { win(); return; }
+        // idle / no-latch finish is a fail — score≠agency
+        fail(state.latches < 1
+          ? 'Crossed with zero latches — idle throttle is not a win.'
+          : 'Bank empty at the line — coasted the heat away.');
+        return;
+      }
+    }
+    state.lastU = p.u;
+
+    // ghosts cruise
+    for (const g of state.ghosts) {
+      g.u = (g.u + base * 0.92) % 1;
+      g.lane += Math.sin(state.t * 0.02 + g.u * 10) * 0.002;
+      g.lane = Math.max(-1, Math.min(1, g.lane));
+    }
+
+    // bank economy
+    if (state.latching) {
+      const g = nearestDraftGhost();
+      if (!g) {
+        // lost draft envelope
+        state.latching = false;
+        releaseTick();
+      } else {
+        state.bank = Math.min(1, state.bank + 0.0035);
+        if (state.t % 12 === 0) bankTick(state.bank);
+        // wall while latched = hard punch
+        if (Math.abs(p.lane) > 0.92) {
+          state.bank = Math.max(0, state.bank - 0.35);
+          wallPunch();
+          state.shake = 8;
+          state.flash = 3;
+          state.latching = false;
+          state.msg = 'WALL WHILE LATCHED — BANK BURNED';
+          state.msgT = 55;
+          if (state.bank <= 0) { fail('Bank died — latched into the wall.'); return; }
+        }
+      }
+    } else {
+      // coasting burns bank — idle cannot preserve forever
+      state.bank = Math.max(0, state.bank - 0.0011);
+      if (state.bank <= 0) { fail('Bank empty — coasted without draft.'); return; }
+      if (Math.abs(p.lane) > 0.98) {
+        state.bank = Math.max(0, state.bank - 0.2);
+        wallPunch();
+        state.shake = 6;
+        if (state.bank <= 0) { fail('Scraped the wall with no bank left.'); return; }
+      }
+    }
+
+    if (state.flash > 0) state.flash--;
+    if (state.shake > 0) state.shake--;
+    if (state.msgT > 0) state.msgT--;
+  }
+
+  function nearestDraftGhost() {
+    const p = state.player;
+    let best = null, bestD = 1e9;
+    for (const g of state.ghosts) {
+      let du = g.u - p.u;
+      if (du < 0) du += 1;
+      // draft cone: ghost ahead within ~0.09 track, similar lane
+      if (du > 0.005 && du < 0.09 && Math.abs(g.lane - p.lane) < 0.55) {
+        if (du < bestD) { bestD = du; best = g; }
+      }
+    }
+    return best;
+  }
+
+  function drawRoad() {
+    // asphalt oval
+    ctx.fillStyle = '#0b0d12';
+    ctx.beginPath();
+    ctx.ellipse(CX, CY, RX + ROAD_HALF, RY + ROAD_HALF, 0, 0, Math.PI*2);
+    ctx.ellipse(CX, CY, RX - ROAD_HALF, RY - ROAD_HALF, 0, 0, Math.PI*2);
+    ctx.fill('evenodd');
+
+    // neon edges
+    ctx.strokeStyle = HOT;
+    ctx.shadowColor = HOT;
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(CX, CY, RX + ROAD_HALF, RY + ROAD_HALF, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.strokeStyle = MINT;
+    ctx.shadowColor = MINT;
+    ctx.beginPath();
+    ctx.ellipse(CX, CY, RX - ROAD_HALF, RY - ROAD_HALF, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // lane dashes
+    ctx.strokeStyle = 'rgba(200,208,224,0.25)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 12]);
+    ctx.beginPath();
+    ctx.ellipse(CX, CY, RX, RY, 0, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // start/finish
+    const sf = trackPoint(0);
+    const sn = trackNormal(0);
+    ctx.strokeStyle = CHROME;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(sf.x + sn.x * ROAD_HALF, sf.y + sn.y * ROAD_HALF);
+    ctx.lineTo(sf.x - sn.x * ROAD_HALF, sf.y - sn.y * ROAD_HALF);
+    ctx.stroke();
+  }
+
+  function drawCar(car, draft) {
+    const pos = carPos(car);
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    ctx.rotate(Math.atan2(pos.t.y, pos.t.x));
+    if (draft) {
+      ctx.strokeStyle = AMBER;
+      ctx.shadowColor = AMBER;
+      ctx.shadowBlur = 14;
+      ctx.strokeRect(-16, -10, 32, 20);
+    }
+    ctx.fillStyle = car.color;
+    ctx.shadowColor = car.color;
+    ctx.shadowBlur = 10;
+    ctx.fillRect(-14, -8, 28, 16);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(6, -3, 6, 6);
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake > 0) ctx.translate((Math.random()-0.5)*state.shake,(Math.random()-0.5)*state.shake);
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0,0,W,H);
+    // ambient
+    const g = ctx.createRadialGradient(CX, CY, 40, CX, CY, 280);
+    g.addColorStop(0, 'rgba(255,61,122,0.06)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+
+    if (state.phase !== 'title') {
+      drawRoad();
+      for (const ghost of state.ghosts) drawCar(ghost, false);
+      if (state.player) drawCar(state.player, state.latching);
+      // draft cone hint when near
+      const near = nearestDraftGhost();
+      if (near && state.player && !state.latching) {
+        const a = carPos(state.player), b = carPos(near);
+        ctx.strokeStyle = 'rgba(255,193,74,0.35)';
+        ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // HUD
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('NEON LANE', 16, 28);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = AMBER;
+    ctx.fillText('LAP ' + Math.min(state.laps,3) + '/3 · LATCHES ' + state.latches, W/2, 28);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = CHROME;
+    ctx.fillText(state.latching ? 'LATCHED' : 'COAST', W - 16, 28);
+
+    // bank meter
+    ctx.fillStyle = '#12141a';
+    ctx.fillRect(16, H - 28, W - 32, 12);
+    ctx.fillStyle = state.bank < 0.25 ? HOT : MINT;
+    ctx.shadowColor = ctx.fillStyle;
+    ctx.shadowBlur = 8;
+    ctx.fillRect(16, H - 28, (W - 32) * state.bank, 12);
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = CHROME;
+    ctx.strokeRect(16.5, H - 27.5, W - 33, 11);
+    ctx.fillStyle = CHROME;
+    ctx.font = '12px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('BANK', 20, H - 32);
+
+    if (state.msgT > 0) {
+      ctx.fillStyle = AMBER;
+      ctx.font = '18px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, W/2, 56);
+    }
+    if (state.flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.fillRect(0,0,W,H);
+    }
+    ctx.restore();
+  }
+
+  function frame(now) {
+    acc += now - last; last = now;
+    if (acc > 200) acc = 200;
+    while (acc >= DT) { try { update(); } catch(e){console.error(e);} acc -= DT; }
+    try { draw(); } catch(e){console.error(e);}
+    requestAnimationFrame(frame);
+  }
+  try { canvas.focus(); } catch(_){}
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

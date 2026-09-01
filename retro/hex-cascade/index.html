@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HEX CASCADE</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+  #wrap{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;box-sizing:border-box}
+  #tube{position:relative;width:min(960px,96vw,calc((100vh - 16px) * 4 / 3));aspect-ratio:4/3;max-height:calc(100vh - 16px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 48px #000}
+  canvas{display:block;width:100%;height:100%;image-rendering:auto;outline:none;touch-action:none}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.8);text-align:center;gap:10px;padding:16px}
+  #overlay h1{margin:0;color:#7dffb3;font-size:clamp(28px,6vw,44px);letter-spacing:.14em;text-shadow:0 0 18px rgba(125,255,179,.45)}
+  #overlay p{margin:0;max-width:30em;line-height:1.4;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500;letter-spacing:0;text-transform:none}
+  #overlay .go{color:#ff3d7a;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0"></canvas>
+    <div id="overlay">
+      <h1>HEX CASCADE</h1>
+      <p>Drop hexes. Match 3+ of a color to clear. Combos pay. Hit the score gate before the stack tops out.</p>
+      <p>← → move · ↑ / X rotate · ↓ soft drop · Space start / hard drop</p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', HOT = '#ff3d7a', CHROME = '#c8d0e0', CYAN = '#5ec8ff', VIOLET = '#b388ff';
+
+  // Fixed 60Hz — Cathode lesson: never frame-tie gameplay speed
+  const DT = 1000 / 60;
+  let acc = 0, last = performance.now();
+
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function beep(freq, dur, type='square', gain=0.045) {
+    if (!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(Math.max(0.0008, gain), audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + Math.max(0.02, dur));
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + Math.max(0.02, dur) + 0.02);
+    } catch (_) {}
+  }
+  // Feel stamp: rotate click / lock thud / clear cascade chirp (pitch climbs)
+  function rotateTick() { beep(640, 0.025, 'square', 0.04); }
+  function lockTick() { beep(140, 0.06, 'square', 0.06); beep(75, 0.09, 'sawtooth', 0.035); }
+  function clearTick(n) {
+    const f = 480 + n * 110;
+    beep(f, 0.045, 'square', 0.055);
+    beep(f * 1.5, 0.06, 'triangle', 0.035);
+    if (n > 1) beep(f * 2, 0.04, 'square', 0.02);
+  }
+  function topOutTick() { beep(70, 0.2, 'sawtooth', 0.07); }
+  function winTick() { beep(523,0.1); beep(659,0.1); beep(784,0.16); }
+
+  const COLS = 8, ROWS = 12;
+  const COLORS = [HOT, AMBER, MINT, CYAN, VIOLET];
+  const SCORE_GATE = 2500;
+  // axial-ish offset grid for flat-top hex look
+  const HEX_R = 18;
+  const originX = 210, originY = 78;
+
+  const keys = {};
+  const keyImpulse = {}; // tap-safe one-shots
+
+  // Iron hold: ONLY setTimeout may release. No input path can clear this early.
+  let holdToken = 0;
+  let holdReleased = true; // false while STACK LOCK blocks restart
+  const HOLD_MS = 3500;
+
+  function holdMsLeft() {
+    return Math.max(0, (state.deadUntil || 0) - performance.now());
+  }
+  function canRestart() {
+    if (!holdReleased) return false;
+    if (holdMsLeft() > 0) return false;
+    return state.phase !== 'play';
+  }
+  function eatStartInput() {
+    keys.Space = false; keys.Enter = false;
+    delete keyImpulse.Space; delete keyImpulse.Enter;
+    for (const k of Object.keys(keyImpulse)) delete keyImpulse[k];
+  }
+
+  // Capture sink FIRST — eats all restart-capable input during hold
+  function holdSink(e) {
+    if (holdReleased) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    eatStartInput();
+  }
+  // Must be on window BEFORE onKey — capture order is window then document
+  window.addEventListener('keydown', holdSink, true);
+  window.addEventListener('keyup', holdSink, true);
+  window.addEventListener('pointerdown', holdSink, true);
+  window.addEventListener('pointerup', holdSink, true);
+  window.addEventListener('click', holdSink, true);
+  window.addEventListener('mousedown', holdSink, true);
+  window.addEventListener('mouseup', holdSink, true);
+
+  function onKey(e, down) {
+    const c = e.code || '';
+    const k = e.key || '';
+    const isSpace = c === 'Space' || k === ' ' || k === 'Spacebar' || k === 'Space';
+    const isEnter = c === 'Enter' || k === 'Enter';
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyX','KeyZ','KeyA','KeyD'].includes(c) || k === ' ') e.preventDefault();
+    if (!down) {
+      keys[c] = false;
+      if (isSpace) keys.Space = false;
+      return;
+    }
+    ensureAudio();
+    if (state.phase !== 'play') {
+      // Dead: Space never restarts. Title/win: Space OK after holdReleased.
+      if (state.phase === 'dead' && isSpace) { eatStartInput(); e.preventDefault(); return; }
+      if (isEnter || (isSpace && state.phase !== 'dead')) {
+        if (!canRestart()) { eatStartInput(); e.preventDefault(); return; }
+        startGame();
+        eatStartInput();
+        return;
+      }
+      return;
+    }
+    if (!keys[c]) keyImpulse[c] = true;
+    keys[c] = true;
+  }
+  addEventListener('keydown', e => onKey(e, true), true);
+  addEventListener('keyup', e => onKey(e, false), true);
+  window.addEventListener('blur', () => {
+    for (const k of Object.keys(keys)) keys[k] = false;
+    for (const k of Object.keys(keyImpulse)) delete keyImpulse[k];
+  });
+  function onPointerStart(ev) {
+    try { canvas.focus(); } catch (_) {}
+    ensureAudio();
+    if (state.phase === 'play') return;
+    if (!canRestart()) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+      eatStartInput();
+      return;
+    }
+    startGame();
+  }
+  canvas.addEventListener('pointerdown', onPointerStart, true);
+  overlay.addEventListener('pointerdown', onPointerStart, true);
+  overlay.addEventListener('click', e => {
+    if (!canRestart()) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      return;
+    }
+    startGame();
+  }, true);
+
+  const state = {
+    phase: 'title',
+    grid: [], // ROWS x COLS color index or -1
+    piece: null, // {c,r,rot,cells:[{dc,dr,color}]}
+    score: 0,
+    combo: 0,
+    flash: 0,
+    shake: 0,
+    msg: '',
+    msgT: 0,
+    fallT: 0,
+    clearFx: [],
+    deathPause: 0,
+    deadUntil: 0, // performance.now() deadline — iron hold
+    _holdTimer: null,
+    locks: 0,
+    clears: 0,
+    armed: false, // gravity waits for first input — idle cannot win
+  };
+
+  function emptyGrid() {
+    state.grid = Array.from({length: ROWS}, () => Array(COLS).fill(-1));
+  }
+
+  function hexToPixel(c, r) {
+    const x = originX + c * (HEX_R * 1.75);
+    const y = originY + r * (HEX_R * 1.55) + ((c % 2) ? HEX_R * 0.78 : 0);
+    return {x, y};
+  }
+
+  function drawHex(x, y, r, fill, stroke, glow) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 6 + i * Math.PI / 3;
+      const px = x + Math.cos(a) * r;
+      const py = y + Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    if (glow) {
+      ctx.shadowColor = fill;
+      ctx.shadowBlur = glow;
+    }
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // color rim — board identity, not a thin wash
+    ctx.strokeStyle = stroke || fill;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // facet highlight
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 6 + i * Math.PI / 3;
+      const px = x + Math.cos(a) * r * 0.52;
+      const py = y + Math.sin(a) * r * 0.52 - 2.5;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fill();
+  }
+
+  // piece shapes: single, duo, trio-line, trio-v — colors mixed per cell (agency)
+  const SHAPES = [
+    [{dc:0,dr:0}],
+    [{dc:0,dr:0},{dc:1,dr:0}],
+    [{dc:0,dr:0},{dc:1,dr:0},{dc:2,dr:0}],
+    [{dc:0,dr:0},{dc:0,dr:1},{dc:1,dr:1}],
+  ];
+
+  function spawnPiece() {
+    const shape = SHAPES[(Math.random() * SHAPES.length) | 0];
+    // Mixed colors per cell — mono 3-piece was AFK-clearing on lock (agency FAIL)
+    const cells = shape.map(s => ({
+      dc: s.dc, dr: s.dr,
+      color: (Math.random() * COLORS.length) | 0
+    }));
+    // Guarantee at least two colors on multi-cell pieces so a single drop rarely self-clears
+    if (cells.length >= 2) {
+      const c0 = cells[0].color;
+      if (cells.every(c => c.color === c0)) {
+        cells[1].color = (c0 + 1 + ((Math.random() * (COLORS.length - 1)) | 0)) % COLORS.length;
+      }
+    }
+    state.piece = { c: 3, r: 0, cells };
+    state.fallT = 0;
+    if (!canPlace(state.piece.c, state.piece.r, cells)) {
+      topOut();
+    }
+  }
+
+  function canPlace(c, r, cells) {
+    for (const cell of cells) {
+      const cc = c + cell.dc;
+      const rr = r + cell.dr;
+      if (cc < 0 || cc >= COLS || rr < 0 || rr >= ROWS) return false;
+      if (state.grid[rr][cc] !== -1) return false;
+    }
+    return true;
+  }
+
+  function rotatePiece() {
+    const p = state.piece;
+    if (!p || p.cells.length < 2) return;
+    // rotate around first cell: (dc,dr) -> (dr, -dc) flat-ish
+    const next = p.cells.map((cell, i) => {
+      if (i === 0) return {...cell};
+      const dc = cell.dc - p.cells[0].dc;
+      const dr = cell.dr - p.cells[0].dr;
+      return { dc: p.cells[0].dc + dr, dr: p.cells[0].dr - dc, color: cell.color };
+    });
+    // normalize so min dc/dr relative stays
+    if (canPlace(p.c, p.r, next)) {
+      p.cells = next;
+      rotateTick();
+    } else if (canPlace(p.c - 1, p.r, next)) {
+      p.c -= 1; p.cells = next; rotateTick();
+    } else if (canPlace(p.c + 1, p.r, next)) {
+      p.c += 1; p.cells = next; rotateTick();
+    }
+  }
+
+  function lockPiece() {
+    const p = state.piece;
+    if (!p) return;
+    const locked = new Set();
+    for (const cell of p.cells) {
+      const cc = p.c + cell.dc;
+      const rr = p.r + cell.dr;
+      if (rr >= 0 && rr < ROWS && cc >= 0 && cc < COLS) {
+        state.grid[rr][cc] = cell.color;
+        locked.add(cc + ',' + rr);
+      }
+    }
+    lockTick();
+    state.locks = (state.locks || 0) + 1;
+    state.piece = null;
+    resolveClears(locked);
+    if (state.phase === 'play') {
+      if (state.score >= SCORE_GATE) win();
+      else spawnPiece();
+    }
+  }
+
+  function neighbors(c, r) {
+    // offset neighbors for odd-q vertical layout approximation
+    const odd = c & 1;
+    const dirs = odd
+      ? [[+1,0],[+1,-1],[0,-1],[-1,0],[-1,-1],[0,+1]]
+      : [[+1,0],[+1,+1],[0,-1],[-1,0],[-1,+1],[0,+1]];
+    const out = [];
+    for (const [dc,dr] of dirs) {
+      const nc = c + dc, nr = r + dr;
+      if (nc >= 0 && nc < COLS && nr >= 0 && nr < ROWS) out.push([nc, nr]);
+    }
+    return out;
+  }
+
+  function resolveClears(lockedSet) {
+    let combo = 0;
+    let guard = 0;
+    let playerWave = true; // first wave must touch the piece just locked
+    while (guard++ < 20) {
+      const visited = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+      const toClear = [];
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const col = state.grid[r][c];
+          if (col < 0 || visited[r][c]) continue;
+          const stack = [[c,r]];
+          const group = [];
+          visited[r][c] = true;
+          while (stack.length) {
+            const [cc, rr] = stack.pop();
+            group.push([cc, rr]);
+            for (const [nc, nr] of neighbors(cc, rr)) {
+              if (!visited[nr][nc] && state.grid[nr][nc] === col) {
+                visited[nr][nc] = true;
+                stack.push([nc, nr]);
+              }
+            }
+          }
+          if (group.length >= 3) {
+            if (playerWave && lockedSet && lockedSet.size) {
+              const touches = group.some(([gc, gr]) => lockedSet.has(gc + ',' + gr));
+              if (!touches) continue; // ignore leftover board matches not caused by this drop
+            }
+            toClear.push(...group);
+          }
+        }
+      }
+      if (!toClear.length) break;
+      combo++;
+      playerWave = false; // cascades after a player-caused clear still count
+      const uniq = new Map();
+      for (const [c,r] of toClear) uniq.set(c+','+r, [c,r]);
+      for (const [c,r] of uniq.values()) {
+        const col = state.grid[r][c];
+        state.grid[r][c] = -1;
+        const p = hexToPixel(c, r);
+        state.clearFx.push({x:p.x,y:p.y,color:COLORS[col],life:22,combo,kind:'hex'});
+        for (let i = 0; i < 5; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          state.clearFx.push({
+            x: p.x, y: p.y, color: COLORS[col], life: 14 + (Math.random()*8|0),
+            kind: 'spark', vx: Math.cos(ang) * (1.5 + Math.random()*2), vy: Math.sin(ang) * (1.5 + Math.random()*2) - 1
+          });
+        }
+      }
+      for (let c = 0; c < COLS; c++) {
+        const stack = [];
+        for (let r = ROWS - 1; r >= 0; r--) {
+          if (state.grid[r][c] !== -1) stack.push(state.grid[r][c]);
+        }
+        for (let r = ROWS - 1; r >= 0; r--) {
+          state.grid[r][c] = stack.length ? stack.shift() : -1;
+        }
+      }
+      const gained = uniq.size * 50 * combo;
+      state.score += gained;
+      state.clears = (state.clears || 0) + 1;
+      state.combo = combo;
+      clearTick(combo);
+      state.flash = 3;
+      state.msg = combo > 1 ? ('CASCADE x' + combo + ' +' + gained) : ('CLEAR +' + gained);
+      state.msgT = 50;
+    }
+  }
+
+  function startGame() {
+    if (!holdReleased || holdMsLeft() > 0) return; // iron gate — only timer releases
+    ensureAudio();
+    try { canvas.focus(); } catch (_) {}
+    state.phase = 'play';
+    state.score = 0;
+    state.combo = 0;
+    state.flash = 0;
+    state.shake = 0;
+    state.clearFx = [];
+    state.deathPause = 0;
+    state.deadUntil = 0;
+    holdReleased = true;
+    if (state._holdTimer) { clearTimeout(state._holdTimer); state._holdTimer = null; }
+    state.locks = 0;
+    state.clears = 0;
+    state.armed = false;
+    for (const k of Object.keys(keyImpulse)) delete keyImpulse[k];
+    emptyGrid();
+    spawnPiece();
+    overlay.classList.add('hidden');
+    canvas.style.pointerEvents = 'auto';
+    state.msg = 'MOVE TO ARM — MATCH 3+ · IDLE CANNOT WIN';
+    state.msgT = 120;
+    beep(330, 0.08); beep(440, 0.1);
+  }
+
+  function topOut() {
+    topOutTick();
+    state.shake = 10;
+    state.phase = 'dead';
+    state.msgT = 0;
+    state.deathPause = 999; // legacy counter
+    eatStartInput();
+    for (const k of Object.keys(keyImpulse)) delete keyImpulse[k];
+    // Arm iron hold BEFORE painting overlay — no input can clear early
+    holdReleased = false;
+    const token = ++holdToken;
+    state.deadUntil = performance.now() + HOLD_MS;
+    if (state._holdTimer) clearTimeout(state._holdTimer);
+    state._holdTimer = setTimeout(() => {
+      if (token !== holdToken) return; // superseded by a newer death
+      holdReleased = true;
+      if (state.phase === 'dead') {
+        const go = overlay.querySelector('.go');
+        if (go) go.textContent = 'PRESS ENTER / CLICK';
+        canvas.style.pointerEvents = 'auto';
+      }
+    }, HOLD_MS);
+    overlay.classList.remove('hidden');
+    overlay.style.pointerEvents = 'auto';
+    canvas.style.pointerEvents = 'none';
+    overlay.innerHTML = `<h1>STACK LOCK</h1><p>Topped out — the stack reached the rim.</p><p>Fair fail — your placements filled the board.</p><div class="go">HOLD…</div>`;
+  }
+
+  function win() {
+    if ((state.clears || 0) < 1) return; // score without a clear is not a win
+    winTick();
+    state.phase = 'win';
+    state.msgT = 0;
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>GATE OPEN</h1><p>Score ${state.score} — ${state.clears} clears / ${state.locks} locks. You win.</p><div class="go">PRESS START · AGAIN</div>`;
+  }
+
+  function hardDrop() {
+    const p = state.piece;
+    if (!p) return;
+    while (canPlace(p.c, p.r + 1, p.cells)) p.r++;
+    lockPiece();
+  }
+
+  function update() {
+    if (state.deathPause > 0) state.deathPause--;
+    if (state.phase !== 'play') {
+      for (const k of Object.keys(keyImpulse)) delete keyImpulse[k];
+      keys.Space = false;
+      // Flip PRESS START only after wall-clock hold
+      if (state.phase === 'dead') {
+        const left = holdMsLeft();
+        const go = overlay.querySelector('.go');
+        if (go) {
+          if (!holdReleased || left > 0) go.textContent = 'HOLD ' + Math.ceil(Math.max(left, 1)/1000) + 's';
+          else go.textContent = 'PRESS ENTER / CLICK';
+        }
+        // canvas stays pointer-events:none until setTimeout releases holdReleased
+      }
+      return;
+    }
+
+    const p = state.piece;
+    // Arm on move/rotate/soft-drop only — start Space must not arm+hard-drop the first piece
+    const moved = !!(keyImpulse.ArrowLeft || keyImpulse.KeyA || keyImpulse.ArrowRight || keyImpulse.KeyD ||
+      keyImpulse.ArrowUp || keyImpulse.KeyX || keyImpulse.KeyZ || keyImpulse.ArrowDown);
+    if (moved) state.armed = true;
+
+    if (keyImpulse.ArrowLeft || keyImpulse.KeyA) {
+      if (p && canPlace(p.c - 1, p.r, p.cells)) p.c--;
+    }
+    if (keyImpulse.ArrowRight || keyImpulse.KeyD) {
+      if (p && canPlace(p.c + 1, p.r, p.cells)) p.c++;
+    }
+    if (keyImpulse.ArrowUp || keyImpulse.KeyX || keyImpulse.KeyZ) rotatePiece();
+    if (keyImpulse.ArrowDown) {
+      if (p && canPlace(p.c, p.r + 1, p.cells)) { p.r++; state.fallT = 0; }
+      else if (p) lockPiece();
+    }
+    if (keyImpulse.Space && state.armed) hardDrop();
+    for (const k of Object.keys(keyImpulse)) delete keyImpulse[k];
+
+    // gravity only after player arms the round — idle 60s cannot AFK-win
+    if (state.armed) {
+      state.fallT++;
+      if (p && state.fallT >= 36) {
+        state.fallT = 0;
+        if (canPlace(p.c, p.r + 1, p.cells)) p.r++;
+        else lockPiece();
+      }
+    }
+
+    state.clearFx = state.clearFx.filter(fx => {
+      fx.life--;
+      if (fx.kind === 'spark') { fx.x += fx.vx; fx.y += fx.vy; fx.vy += 0.08; }
+      else fx.y -= 0.55;
+      return fx.life > 0;
+    });
+    if (state.flash > 0) state.flash--;
+    if (state.shake > 0) state.shake--;
+    if (state.msgT > 0) state.msgT--;
+  }
+
+  function drawWell() {
+    // ambient phosphor field
+    const g = ctx.createRadialGradient(W*0.35, H*0.4, 40, W*0.35, H*0.45, 280);
+    g.addColorStop(0, 'rgba(125,255,179,0.07)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+
+    // well border
+    const tl = hexToPixel(0, 0);
+    const br = hexToPixel(COLS - 1, ROWS - 1);
+    ctx.strokeStyle = 'rgba(200,208,224,0.25)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(originX - HEX_R * 1.2, originY - HEX_R, (COLS) * HEX_R * 1.75 + HEX_R, (ROWS) * HEX_R * 1.55 + HEX_R * 1.5);
+
+    // ghost cells
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const {x,y} = hexToPixel(c,r);
+        const col = state.grid[r][c];
+        if (col < 0) {
+          drawHex(x, y, HEX_R - 2, 'rgba(20,24,32,0.9)', 'rgba(80,90,110,0.35)', 0);
+        } else {
+          drawHex(x, y, HEX_R - 1, COLORS[col], COLORS[col], 12);
+        }
+      }
+    }
+    // danger rim — readable top-out threat
+    const dangerY = originY - HEX_R * 0.2;
+    ctx.strokeStyle = 'rgba(255,61,122,0.55)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(originX - HEX_R, dangerY);
+    ctx.lineTo(originX + COLS * HEX_R * 1.75, dangerY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake > 0) ctx.translate((Math.random()-0.5)*state.shake, (Math.random()-0.5)*state.shake);
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0,0,W,H);
+
+    // scan glow lines
+    ctx.strokeStyle = 'rgba(125,255,179,0.03)';
+    for (let y = 0; y < H; y += 3) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    if (state.phase !== 'title') drawWell();
+
+    // falling piece
+    const p = state.piece;
+    if (p && state.phase === 'play') {
+      for (const cell of p.cells) {
+        const {x,y} = hexToPixel(p.c + cell.dc, p.r + cell.dr);
+        drawHex(x, y, HEX_R - 1, COLORS[cell.color], '#fff', 16);
+      }
+    }
+
+    for (const fx of state.clearFx) {
+      if (fx.kind === 'spark') {
+        ctx.globalAlpha = Math.max(0, fx.life / 16);
+        ctx.fillStyle = fx.color;
+        ctx.shadowColor = fx.color;
+        ctx.shadowBlur = 8;
+        ctx.fillRect(fx.x - 2, fx.y - 2, 4, 4);
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+      } else {
+        ctx.globalAlpha = fx.life / 22;
+        drawHex(fx.x, fx.y, HEX_R * (0.55 + (22 - fx.life) * 0.06), fx.color, '#fff', 22);
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // side panel — gate meter
+    ctx.fillStyle = 'rgba(18,20,28,0.92)';
+    ctx.fillRect(455, 56, 160, 360);
+    ctx.strokeStyle = CHROME;
+    ctx.strokeRect(455.5, 56.5, 159, 359);
+    ctx.fillStyle = MINT;
+    ctx.font = '18px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('HEX CASCADE', 468, 84);
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.fillText('SCORE', 468, 120);
+    ctx.fillStyle = AMBER;
+    ctx.font = '28px Impact, sans-serif';
+    ctx.fillText(String(state.score), 468, 150);
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.fillText('GATE ' + SCORE_GATE, 468, 180);
+    // meter
+    const pct = Math.min(1, state.score / SCORE_GATE);
+    ctx.fillStyle = '#12141a';
+    ctx.fillRect(468, 190, 134, 14);
+    ctx.fillStyle = pct >= 1 ? HOT : MINT;
+    ctx.shadowColor = pct >= 1 ? HOT : MINT;
+    ctx.shadowBlur = 8;
+    ctx.fillRect(468, 190, 134 * pct, 14);
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = CHROME;
+    ctx.strokeRect(468.5, 190.5, 133, 13);
+    ctx.fillStyle = CHROME;
+    ctx.font = '13px Impact, sans-serif';
+    ctx.fillText('MATCH 3+ · COMBOS PAY', 468, 230);
+    ctx.fillText('TOP OUT = LOSS', 468, 250);
+    if (state.combo > 1) {
+      ctx.fillStyle = HOT;
+      ctx.font = '22px Impact, sans-serif';
+      ctx.fillText('CASCADE x' + state.combo, 468, 290);
+      ctx.fillStyle = 'rgba(255,61,122,0.12)';
+      ctx.fillRect(455, 56, 160, 360);
+    }
+    // color legend — board identity
+    ctx.fillStyle = CHROME;
+    ctx.font = '12px Impact, sans-serif';
+    ctx.fillText('COLORS', 468, 330);
+    for (let i = 0; i < COLORS.length; i++) {
+      const cx = 478 + i * 26;
+      drawHex(cx, 355, 10, COLORS[i], COLORS[i], 6);
+    }
+
+    // in-tube top HUD strip
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('HEX CASCADE', 16, 28);
+    ctx.textAlign = 'right';
+    ctx.fillText(state.score + ' / ' + SCORE_GATE + '  ·  LOCKS ' + (state.locks||0) + '  ·  CLEARS ' + (state.clears||0), W - 16, 28);
+
+    if (state.msgT > 0 && state.phase === 'play') {
+      ctx.fillStyle = AMBER;
+      ctx.font = '18px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, originX + COLS * HEX_R * 0.9, H - 36);
+    }
+
+    if (state.flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      ctx.fillRect(0,0,W,H);
+    }
+    ctx.restore();
+  }
+
+  function frame(now) {
+    acc += now - last;
+    last = now;
+    // spiral cap
+    if (acc > 200) acc = 200;
+    while (acc >= DT) {
+      try { update(); } catch (e) { console.error(e); }
+      acc -= DT;
+    }
+    try { draw(); } catch (e) { console.error(e); }
+    requestAnimationFrame(frame);
+  }
+  try { canvas.focus(); } catch (_) {}
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
