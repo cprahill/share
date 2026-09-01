@@ -1,0 +1,14 @@
+{
+  "name": "earth-starbase-flats",
+  "planet": "earth",
+  "layout": "coastal loop west of Mars, origin -1600/2200, water to the east",
+  "HALF_W": 14,
+  "JUMPS": [
+    {"t": 0.14, "kind": "whoops", "h": 1.1, "len": 48, "n": 4},
+    {"t": 0.30, "kind": "table", "h": 4.0, "len": 70},
+    {"t": 0.48, "kind": "valley", "h": 5.8, "len": 96},
+    {"t": 0.64, "kind": "whoops", "h": 1.2, "len": 52, "n": 5},
+    {"t": 0.80, "kind": "valley", "h": 6.6, "len": 108}
+  ],
+  "dress": ["gulf water disc", "date palms", "factory hangar", "building", "cactus", "fence", "tanks"]
+}

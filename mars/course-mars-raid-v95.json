@@ -1,0 +1,23 @@
+{
+  "name": "mars-raid",
+  "savedFrom": "playable/game-v95.js",
+  "note": "Frozen Baja ribbon + JUMPS. BUILD 96 does not recut this. Underground Boring offshoots wait for a later stamp that copies this file first.",
+  "HALF_W": 14,
+  "START_T": 0.02,
+  "PAD_ROCKET_X": 42,
+  "PAD_ROCKET_Z": 240,
+  "pathPtsSource": [
+    "for i=0..22: x=8*sin(u*PI*1.6), z=u*1700",
+    "[90,0,1785],[220,0,1840],[360,0,1790],[455,0,1660]",
+    "for i=21..0: x=460+8*sin(u*PI*1.6), z=u*1700",
+    "[320,0,-50],[150,0,-55],[40,0,-22],[3,0,-2]"
+  ],
+  "JUMPS": [
+    {"t": 0.11, "kind": "whoops", "h": 1.15, "len": 56, "n": 5},
+    {"t": 0.22, "kind": "valley", "h": 5.2, "len": 88},
+    {"t": 0.40, "kind": "table", "h": 3.6, "len": 64},
+    {"t": 0.56, "kind": "valley", "h": 6.4, "len": 110},
+    {"t": 0.74, "kind": "whoops", "h": 1.1, "len": 50, "n": 5},
+    {"t": 0.86, "kind": "valley", "h": 5.6, "len": 96}
+  ]
+}
