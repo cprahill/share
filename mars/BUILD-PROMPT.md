@@ -1,7 +1,6 @@
-# BUILD 139 — grok bot (SoT playable/game-v139.js)
+# BUILD 140 — grok bot (SoT playable/game-v140.js)
 
-HTML → game-v139.js. hud.css?v=34. Frozen Mars path/sit.
+HTML → game-v140.js. Frozen Mars path/sit.
 
-1. fitView pins canvas/hud/touch/home to visualViewport; clear CSS inset.
-2. Landscape only: #rotate-lock + orientation.lock on gesture.
-3. manifest.webmanifest display standalone, orientation landscape. Add to Home Screen.
+1. dumpCoinsOnHit: n = min(coinsGot, 2+rand 0–5). Keep remaining coinsGot.
+2. DIFF nFly 0/3/6/10. airHz 0/0.32/0.62/1.05.
