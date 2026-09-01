@@ -1667,45 +1667,82 @@ function wedgeTruck() {
 }
 
 
+function hardenRoadsterMat(m) {
+  if (!m) return m;
+  const n = (m.name || "").toLowerCase();
+  const glass = /glass|transp|wind|canopy/.test(n) || (m.transmission != null && m.transmission > 0.2);
+  if (m.isMeshPhysicalMaterial || m.transmission || m.clearcoat) {
+    const std = new THREE.MeshStandardMaterial({
+      color: m.color ? m.color.clone() : new THREE.Color(0xB42018),
+      metalness: glass ? 0.15 : (m.metalness != null ? m.metalness : 0.55),
+      roughness: glass ? 0.08 : (m.roughness != null ? m.roughness : 0.38),
+      envMapIntensity: m.envMapIntensity != null ? m.envMapIntensity : 1.1,
+      transparent: glass,
+      opacity: glass ? 0.42 : 1,
+      depthWrite: !glass,
+      side: glass ? THREE.DoubleSide : THREE.FrontSide,
+      emissive: m.emissive ? m.emissive.clone() : new THREE.Color(0x000000),
+      map: m.map || null,
+      normalMap: m.normalMap || null,
+      roughnessMap: m.roughnessMap || null,
+      metalnessMap: m.metalnessMap || null
+    });
+    std.name = m.name || "";
+    return std;
+  }
+  if (m.transparent && !glass) { m.transparent = false; m.opacity = 1; m.depthWrite = true; }
+  return m;
+}
 function sitRoadsterGlb(g, glbRoot, root, fallback) {
   glbRoot.clear();
   glbRoot.add(root);
   glbRoot.position.set(0, 0, 0);
   glbRoot.rotation.set(0, 0, 0);
   glbRoot.scale.setScalar(1);
+  root.traverse((o) => {
+    if (o.scale && Math.abs(o.scale.x) > 8) o.scale.set(1, 1, 1);
+  });
   glbRoot.updateMatrixWorld(true);
-  const bb = new THREE.Box3().setFromObject(glbRoot);
+  let bb = new THREE.Box3().setFromObject(glbRoot);
   if (!isFinite(bb.min.x) || !isFinite(bb.max.x)) return false;
-  const dx = bb.max.x - bb.min.x;
-  const dz = bb.max.z - bb.min.z;
-  const length = Math.max(dx, dz);
+  let size = bb.getSize(new THREE.Vector3());
+  if (size.y > size.z && size.y > size.x * 1.15) {
+    glbRoot.rotation.x = -Math.PI / 2;
+    glbRoot.updateMatrixWorld(true);
+    bb = new THREE.Box3().setFromObject(glbRoot);
+    size = bb.getSize(new THREE.Vector3());
+  }
+  const length = Math.max(size.x, size.y, size.z);
   if (length < 0.05) return false;
   const TARGET_LEN = 4.2 / LOOK_TRUCK;
-  const s = TARGET_LEN / length;
-  glbRoot.scale.setScalar(s);
+  glbRoot.scale.setScalar(TARGET_LEN / length);
   glbRoot.updateMatrixWorld(true);
-  bb.setFromObject(glbRoot);
-  const cx = (bb.min.x + bb.max.x) * 0.5;
-  const cz = (bb.min.z + bb.max.z) * 0.5;
-  glbRoot.position.set(-cx, -bb.min.y, -cz);
+  bb = new THREE.Box3().setFromObject(glbRoot);
+  glbRoot.position.set(
+    -(bb.min.x + bb.max.x) * 0.5,
+    -bb.min.y,
+    -(bb.min.z + bb.max.z) * 0.5
+  );
   glbRoot.updateMatrixWorld(true);
-  g.userData.stlScale = s;
-  g.userData.glbSitY = glbRoot.position.y;
-  const skip = /glass|rubber|chrome|lamp|light|headlight|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior/;
+  g.userData.stlScale = TARGET_LEN / length;
+  let opaque = 0;
+  const skip = /glass|rubber|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior/;
   const seen = new Set();
   const mats = [];
   glbRoot.traverse((o) => {
     if (!o.isMesh) return;
     o.visible = true;
-    o.castShadow = true;
-    o.receiveShadow = true;
     o.frustumCulled = false;
-    const list = Array.isArray(o.material) ? o.material : [o.material];
-    list.forEach((m) => {
+    o.castShadow = !IS_MOBILE;
+    o.receiveShadow = !IS_MOBILE;
+    const list = Array.isArray(o.material) ? o.material.map(hardenRoadsterMat) : hardenRoadsterMat(o.material);
+    o.material = list;
+    const arr = Array.isArray(list) ? list : [list];
+    arr.forEach((m) => {
       if (!m || seen.has(m)) return;
       const n = ((m.name || "") + " " + (o.name || "")).toLowerCase();
-      if (skip.test(n)) return;
-      if (m.transparent || (m.opacity != null && m.opacity < 0.92)) return;
+      if (!m.transparent) opaque++;
+      if (skip.test(n) || m.transparent) return;
       seen.add(m);
       mats.push(m);
     });
@@ -1718,6 +1755,7 @@ function sitRoadsterGlb(g, glbRoot, root, fallback) {
     if (m.roughness != null) m.roughness = L.roughness;
     m.needsUpdate = true;
   });
+  if (opaque < 1) return false;
   if (fallback) fallback.visible = false;
   (g.userData.wheels || []).forEach((w) => { if (w.hub) w.hub.visible = false; });
   g.traverse((o) => { o.frustumCulled = false; });
