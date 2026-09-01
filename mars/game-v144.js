@@ -260,7 +260,12 @@ addEventListener("pointermove", onPtrMove, { passive: false });
 addEventListener("pointerup", onPtrUp);
 addEventListener("pointercancel", onPtrUp);
 addEventListener("contextmenu", (e) => e.preventDefault());
-addEventListener("touchmove", (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+addEventListener("touchmove", (e) => {
+  if (!e.cancelable) return;
+  const el = e.target;
+  if (el && el.closest && el.closest("#home, #how, #scores, #boot, #finish, .menu-sheet, .home-panel, .hs-list, .how-list, #hs-board")) return;
+  e.preventDefault();
+}, { passive: false });
 (function () {
   try {
     if (matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches || ("ontouchstart" in window)) {
