@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>STACK DEBT</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0c;color:#c8d0e0;font-family:Impact,"Arial Narrow",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+  #wrap{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;box-sizing:border-box}
+  #tube{position:relative;width:min(960px,96vw,calc((100vh - 16px)*4/3));aspect-ratio:4/3;max-height:calc(100vh - 16px);background:#050508;box-shadow:0 0 0 8px #12141a,0 0 0 10px #2a2e38,inset 0 0 48px #000;overflow:hidden}
+  #tube::after{content:"";pointer-events:none;position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.14) 2px 3px);mix-blend-mode:multiply}
+  canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,8,.84);text-align:center;gap:10px;padding:16px;z-index:3}
+  #overlay h1{margin:0;color:#7dffb3;font-size:clamp(28px,6vw,44px);letter-spacing:.14em;text-shadow:0 0 18px rgba(125,255,179,.45)}
+  #overlay p{margin:0;max-width:32em;line-height:1.4;color:#c8d0e0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;font-weight:500}
+  #overlay .go{color:#ffc14a;font-size:18px;letter-spacing:.2em}
+  .hidden{display:none!important}
+  #pad{display:none;position:absolute;left:0;right:0;bottom:0;height:26%;z-index:4;pointer-events:none}
+  body.touch #pad{display:block}
+  #pad .row{pointer-events:auto;position:absolute;inset:8px 8px 10px;display:flex;gap:8px;align-items:stretch}
+  #pad b{flex:1;border:1px solid #3a4;background:#1c2420;color:#c8f4e8;display:grid;place-items:center;font:700 12px/1 ui-monospace,monospace;border-radius:8px}
+  #pad b.on{background:#3df0c8;color:#041}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="tube">
+    <canvas id="c" width="640" height="480" tabindex="0" aria-label="Stack Debt playfield"></canvas>
+    <div id="overlay">
+      <h1>STACK DEBT</h1>
+      <p>Clear a line and the well is owed a future lien. Cash score into forgiveness before the collector comes. Bars, trios, and odd polyominoes — never the seven four-cell classics.</p>
+      <p>← → move · ↑ / X rotate · ↓ soft · Space hard drop · Z / F forgive</p>
+      <p id="hiLine"></p>
+      <div class="go">INSERT COIN · PRESS START</div>
+    </div>
+    <div id="pad">
+      <div class="row">
+        <b data-act="L">◀</b><b data-act="R">▶</b><b data-act="rot">ROT</b><b data-act="drop">DROP</b><b data-act="forgive">FORGIVE</b>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const W = 640, H = 480;
+  const MINT = '#7dffb3', AMBER = '#ffc14a', HOT = '#ff3d7a', CHROME = '#c8d0e0', CYAN = '#5ec8ff', VIOLET = '#b388ff';
+  const HS = 'retro.stack-debt.hi';
+  const DT = 1000 / 60;
+  const COLS = 9, ROWS = 16, CELL = 24;
+  const OX = 86, OY = 48;
+  const FORGIVE_COST = 140;
+  let acc = 0, last = performance.now();
+  const coarse = matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches || 'ontouchstart' in window;
+  if (coarse || innerWidth < 820) document.body.classList.add('touch');
+
+  let audioCtx = null;
+  function ensureAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (_) {}
+  }
+  function beep(f, d, t = 'square', g = 0.045) {
+    if (!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator(), gn = audioCtx.createGain();
+      o.type = t; o.frequency.value = f;
+      gn.gain.setValueAtTime(Math.max(0.0008, g), audioCtx.currentTime);
+      gn.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + Math.max(0.02, d));
+      o.connect(gn); gn.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + Math.max(0.02, d) + 0.02);
+    } catch (_) {}
+  }
+  function rotTick() { beep(640, 0.025, 'square', 0.04); }
+  function lockTick() { beep(140, 0.06, 'square', 0.06); beep(75, 0.09, 'sawtooth', 0.03); }
+  function clearTick(n) { beep(480 + n * 110, 0.05, 'square', 0.055); beep(720, 0.06, 'triangle', 0.03); }
+  function lienTick() { beep(90, 0.12, 'sawtooth', 0.06); beep(140, 0.08, 'square', 0.04); }
+  function forgiveTick() { beep(523, 0.07); beep(784, 0.1); }
+  function topTick() { beep(70, 0.2, 'sawtooth', 0.07); }
+
+  function loadHi() { return parseInt(localStorage.getItem(HS) || '0', 10) || 0; }
+  function saveHi(v) {
+    const h = loadHi();
+    if (v > h) { localStorage.setItem(HS, String(v)); return v; }
+    return h;
+  }
+  document.getElementById('hiLine').textContent = 'HIGH ' + loadHi();
+
+  // Original pieces: 2, 3, and 5 cells only. No I/O/T/L/J/S/Z tetrominoes.
+  const SHAPES = [
+    { name: 'bar2', cells: [[0,0],[1,0]] },
+    { name: 'bar3', cells: [[0,0],[1,0],[2,0]] },
+    { name: 'ell3', cells: [[0,0],[0,1],[1,1]] },
+    { name: 'chip', cells: [[0,0]] },
+    { name: 'tee5', cells: [[0,0],[1,0],[2,0],[1,1],[1,2]] },
+    { name: 'plus', cells: [[1,0],[0,1],[1,1],[2,1],[1,2]] },
+    { name: 'u5', cells: [[0,0],[2,0],[0,1],[1,1],[2,1]] },
+    { name: 'v5', cells: [[0,0],[0,1],[0,2],[1,2],[2,2]] },
+    { name: 'w5', cells: [[0,0],[0,1],[1,1],[1,2],[2,2]] },
+    { name: 'p5', cells: [[0,0],[1,0],[0,1],[1,1],[0,2]] },
+    { name: 'y5', cells: [[1,0],[0,1],[1,1],[1,2],[1,3]] },
+    { name: 'n5', cells: [[1,0],[2,0],[0,1],[1,1],[0,2]] },
+    { name: 'bar5', cells: [[0,0],[1,0],[2,0],[3,0],[4,0]] }
+  ];
+  const COLORS = { bar2: CYAN, bar3: MINT, ell3: AMBER, chip: HOT, tee5: HOT, plus: VIOLET, u5: CYAN, v5: AMBER, w5: MINT, p5: HOT, y5: VIOLET, n5: CYAN, bar5: AMBER, lien: '#5a6470' };
+
+  const keys = {};
+  const impulse = {};
+  let das = 0, dasDir = 0;
+  let holdUntil = 0;
+  function canStart() { return performance.now() >= holdUntil; }
+
+  function onKey(e, down) {
+    const c = e.code || '';
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyZ','KeyX','KeyF','Enter','KeyA','KeyD'].includes(c)) e.preventDefault();
+    if (down && !keys[c]) impulse[c] = true;
+    keys[c] = down;
+    if (!down) return;
+    ensureAudio();
+    if ((c === 'Enter' || (c === 'Space' && state.phase === 'title')) && state.phase !== 'play' && canStart()) startGame();
+  }
+  addEventListener('keydown', e => onKey(e, true), true);
+  addEventListener('keyup', e => onKey(e, false), true);
+  overlay.addEventListener('pointerdown', e => { e.preventDefault(); ensureAudio(); if (canStart()) startGame(); });
+  canvas.addEventListener('pointerdown', e => {
+    e.preventDefault(); canvas.focus(); ensureAudio();
+    if (state.phase !== 'play' && canStart()) startGame();
+  });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+  document.querySelectorAll('#pad [data-act]').forEach(b => {
+    const act = b.getAttribute('data-act');
+    const map = { L: 'ArrowLeft', R: 'ArrowRight', rot: 'ArrowUp', drop: 'Space', forgive: 'KeyZ' };
+    b.addEventListener('pointerdown', ev => {
+      ev.preventDefault(); b.classList.add('on'); ensureAudio();
+      const code = map[act];
+      impulse[code] = true; keys[code] = true;
+      if (state.phase !== 'play' && canStart()) startGame();
+    });
+    const up = () => { b.classList.remove('on'); const code = map[act]; keys[code] = false; };
+    b.addEventListener('pointerup', up);
+    b.addEventListener('pointercancel', up);
+  });
+
+  const state = {
+    phase: 'title',
+    grid: [],
+    piece: null,
+    next: null,
+    score: 0,
+    debt: 0,
+    locks: 0,
+    clears: 0,
+    fallT: 0,
+    armed: false,
+    shake: 0,
+    flash: 0,
+    msg: '',
+    msgT: 0,
+    lienT: 0,
+    fx: []
+  };
+
+  function emptyGrid() {
+    state.grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+  }
+  function pickShape() { return SHAPES[(Math.random() * SHAPES.length) | 0]; }
+  function makePiece(shape) {
+    return { c: 3, r: 0, cells: shape.cells.map(([dc, dr]) => ({ dc, dr })), name: shape.name };
+  }
+  function canPlace(c, r, cells) {
+    for (const cell of cells) {
+      const cc = c + cell.dc, rr = r + cell.dr;
+      if (cc < 0 || cc >= COLS || rr >= ROWS) return false;
+      if (rr < 0) continue;
+      if (state.grid[rr][cc]) return false;
+    }
+    return true;
+  }
+  function spawn() {
+    const shape = state.next || pickShape();
+    state.next = pickShape();
+    state.piece = makePiece(shape);
+    state.fallT = 0;
+    if (!canPlace(state.piece.c, state.piece.r, state.piece.cells)) topOut();
+  }
+  function rotate() {
+    const p = state.piece;
+    if (!p || p.cells.length < 2) return;
+    const next = p.cells.map(cell => ({ dc: -cell.dr, dr: cell.dc }));
+    let minc = 99;
+    for (const cell of next) minc = Math.min(minc, cell.dc);
+    for (const cell of next) cell.dc -= minc;
+    for (const kick of [0, -1, 1, -2, 2]) {
+      if (canPlace(p.c + kick, p.r, next)) {
+        p.c += kick; p.cells = next; rotTick(); return;
+      }
+    }
+  }
+
+  function injectLien() {
+    if (state.debt <= 0) return;
+    state.debt--;
+    lienTick();
+    // Push the stack up one row, then write a junk row with 2 gaps.
+    for (let r = 0; r < ROWS - 1; r++) state.grid[r] = state.grid[r + 1].slice();
+    const row = Array(COLS).fill({ name: 'lien' });
+    const g1 = (Math.random() * COLS) | 0;
+    let g2 = (Math.random() * COLS) | 0;
+    if (g2 === g1) g2 = (g1 + 3) % COLS;
+    row[g1] = null; row[g2] = null;
+    state.grid[ROWS - 1] = row;
+    state.msg = 'LIEN COLLECTED';
+    state.msgT = 70;
+    state.shake = 6;
+    if (state.grid[0].some(Boolean)) topOut();
+  }
+
+  function clearLines() {
+    const full = [];
+    for (let r = 0; r < ROWS; r++) {
+      if (state.grid[r].every(Boolean)) full.push(r);
+    }
+    if (!full.length) return 0;
+    for (let i = full.length - 1; i >= 0; i--) {
+      const r = full[i];
+      for (let c = 0; c < COLS; c++) {
+        state.fx.push({ x: OX + c * CELL + CELL / 2, y: OY + r * CELL + CELL / 2, life: 16, color: MINT });
+      }
+      state.grid.splice(r, 1);
+      state.grid.unshift(Array(COLS).fill(null));
+    }
+    const n = full.length;
+    state.clears += n;
+    state.debt += n;
+    state.score += n * 100 + (n > 1 ? n * 40 : 0);
+    clearTick(n);
+    state.flash = 3;
+    state.msg = n > 1 ? ('CLEAR x' + n + '  DEBT +' + n) : ('LINE  DEBT +1');
+    state.msgT = 55;
+    return n;
+  }
+
+  function lock() {
+    const p = state.piece;
+    if (!p) return;
+    for (const cell of p.cells) {
+      const cc = p.c + cell.dc, rr = p.r + cell.dr;
+      if (rr >= 0 && rr < ROWS && cc >= 0 && cc < COLS) state.grid[rr][cc] = { name: p.name };
+    }
+    lockTick();
+    state.locks++;
+    state.piece = null;
+    clearLines();
+    state.lienT++;
+    if (state.lienT >= 6) {
+      state.lienT = 0;
+      if (state.debt > 0) injectLien();
+    }
+    if (state.phase === 'play') spawn();
+  }
+
+  function hardDrop() {
+    const p = state.piece;
+    if (!p) return;
+    while (canPlace(p.c, p.r + 1, p.cells)) p.r++;
+    lock();
+  }
+
+  function forgive() {
+    if (state.debt <= 0) {
+      state.msg = 'NO DEBT';
+      state.msgT = 40;
+      return;
+    }
+    if (state.score < FORGIVE_COST) {
+      state.msg = 'NEED ' + FORGIVE_COST + ' TO FORGIVE';
+      state.msgT = 50;
+      beep(140, 0.08, 'sawtooth', 0.04);
+      return;
+    }
+    state.score -= FORGIVE_COST;
+    state.debt--;
+    forgiveTick();
+    state.msg = 'FORGIVEN — DEBT ' + state.debt;
+    state.msgT = 55;
+  }
+
+  function startGame() {
+    if (!canStart()) return;
+    ensureAudio();
+    emptyGrid();
+    state.phase = 'play';
+    state.score = 0;
+    state.debt = 0;
+    state.locks = 0;
+    state.clears = 0;
+    state.fallT = 0;
+    state.armed = false;
+    state.next = pickShape();
+    state.fx = [];
+    state.lienT = 0;
+    state.msg = 'MOVE TO ARM · IDLE CANNOT FILL';
+    state.msgT = 90;
+    spawn();
+    overlay.classList.add('hidden');
+    try { canvas.focus(); } catch (_) {}
+    beep(330, 0.08); beep(440, 0.1);
+  }
+
+  function topOut() {
+    topTick();
+    const hi = saveHi(state.score);
+    state.phase = 'dead';
+    holdUntil = performance.now() + 1100;
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `<h1>CALLED IN</h1><p>Score <b>${state.score}</b> · ${state.clears} lines · leftover debt ${state.debt}</p><p>High ${hi}</p><div class="go">PRESS START</div>`;
+  }
+
+  function update() {
+    if (state.phase !== 'play') {
+      for (const k of Object.keys(impulse)) delete impulse[k];
+      return;
+    }
+    const p = state.piece;
+    const moved = !!(impulse.ArrowLeft || impulse.KeyA || impulse.ArrowRight || impulse.KeyD || impulse.ArrowUp || impulse.KeyX || impulse.ArrowDown || impulse.KeyZ || impulse.KeyF);
+    if (moved) state.armed = true;
+
+    if (impulse.ArrowLeft || impulse.KeyA) {
+      if (p && canPlace(p.c - 1, p.r, p.cells)) p.c--;
+      das = 12; dasDir = -1;
+    }
+    if (impulse.ArrowRight || impulse.KeyD) {
+      if (p && canPlace(p.c + 1, p.r, p.cells)) p.c++;
+      das = 12; dasDir = 1;
+    }
+    if (!(keys.ArrowLeft || keys.KeyA || keys.ArrowRight || keys.KeyD)) { das = 0; dasDir = 0; }
+    if (dasDir && (keys.ArrowLeft || keys.KeyA || keys.ArrowRight || keys.KeyD)) {
+      das--;
+      if (das <= 0) {
+        das = 4;
+        if (p && canPlace(p.c + dasDir, p.r, p.cells)) p.c += dasDir;
+      }
+    }
+    if (impulse.ArrowUp || impulse.KeyX) rotate();
+    if (impulse.ArrowDown) {
+      if (p && canPlace(p.c, p.r + 1, p.cells)) { p.r++; state.fallT = 0; }
+      else if (p) lock();
+    }
+    if (impulse.Space && state.armed) hardDrop();
+    if (impulse.KeyZ || impulse.KeyF) forgive();
+    for (const k of Object.keys(impulse)) delete impulse[k];
+
+    if (state.armed && p) {
+      state.fallT++;
+      const grav = Math.max(10, 36 - (state.clears | 0));
+      if (state.fallT >= grav) {
+        state.fallT = 0;
+        if (canPlace(p.c, p.r + 1, p.cells)) p.r++;
+        else lock();
+      }
+    }
+    state.fx = state.fx.filter(f => { f.life--; f.y -= 0.6; return f.life > 0; });
+    if (state.shake > 0) state.shake--;
+    if (state.flash > 0) state.flash--;
+    if (state.msgT > 0) state.msgT--;
+  }
+
+  function drawCell(c, r, name, ghost) {
+    const x = OX + c * CELL, y = OY + r * CELL;
+    const col = COLORS[name] || CHROME;
+    ctx.globalAlpha = ghost ? 0.28 : 1;
+    ctx.fillStyle = col;
+    ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillRect(x + 2, y + 2, CELL - 8, 4);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+    ctx.strokeRect(x + 0.5, y + 0.5, CELL - 1, CELL - 1);
+  }
+
+  function ghostY(p) {
+    let r = p.r;
+    while (canPlace(p.c, r + 1, p.cells)) r++;
+    return r;
+  }
+
+  function draw() {
+    ctx.save();
+    if (state.shake) ctx.translate((Math.random() - 0.5) * state.shake, (Math.random() - 0.5) * state.shake);
+    ctx.fillStyle = '#050508';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(125,255,179,0.03)';
+    for (let y = 0; y < H; y += 3) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    ctx.fillStyle = MINT;
+    ctx.font = '16px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('STACK DEBT', 14, 24);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = CHROME;
+    ctx.fillText('SCR ' + state.score + '  ·  DEBT ' + state.debt + '  ·  HI ' + loadHi(), W - 14, 24);
+
+    ctx.fillStyle = '#0c1016';
+    ctx.fillRect(OX - 4, OY - 4, COLS * CELL + 8, ROWS * CELL + 8);
+    ctx.strokeStyle = CHROME;
+    ctx.strokeRect(OX - 4.5, OY - 4.5, COLS * CELL + 9, ROWS * CELL + 9);
+
+    if (state.phase !== 'title') {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = state.grid[r][c];
+          if (cell) drawCell(c, r, cell.name, false);
+          else {
+            ctx.strokeStyle = 'rgba(80,90,110,0.25)';
+            ctx.strokeRect(OX + c * CELL + 0.5, OY + r * CELL + 0.5, CELL - 1, CELL - 1);
+          }
+        }
+      }
+      const p = state.piece;
+      if (p) {
+        const gy = ghostY(p);
+        for (const cell of p.cells) drawCell(p.c + cell.dc, gy + cell.dr, p.name, true);
+        for (const cell of p.cells) drawCell(p.c + cell.dc, p.r + cell.dr, p.name, false);
+      }
+    }
+
+    // side panel
+    ctx.fillStyle = 'rgba(18,20,28,0.92)';
+    ctx.fillRect(330, 48, 280, 390);
+    ctx.strokeStyle = CHROME;
+    ctx.strokeRect(330.5, 48.5, 279, 389);
+    ctx.fillStyle = MINT;
+    ctx.font = '20px Impact, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('LEDGER', 348, 78);
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.fillText('SCORE', 348, 112);
+    ctx.fillStyle = AMBER;
+    ctx.font = '32px Impact, sans-serif';
+    ctx.fillText(String(state.score), 348, 146);
+    ctx.fillStyle = CHROME;
+    ctx.font = '14px Impact, sans-serif';
+    ctx.fillText('DEBT  (liens owed)', 348, 180);
+    for (let i = 0; i < 8; i++) {
+      ctx.fillStyle = i < state.debt ? HOT : '#1a1e24';
+      ctx.fillRect(348 + i * 28, 190, 22, 14);
+      ctx.strokeStyle = CHROME;
+      ctx.strokeRect(348.5 + i * 28, 190.5, 21, 13);
+    }
+    ctx.fillStyle = CHROME;
+    ctx.font = '13px Impact, sans-serif';
+    ctx.fillText('FORGIVE  −' + FORGIVE_COST + ' / 1 debt', 348, 230);
+    ctx.fillText('Z or F cashes the score.', 348, 250);
+    ctx.fillText('Every 6 locks a lien may', 348, 278);
+    ctx.fillText('rise from the well floor.', 348, 296);
+    ctx.fillText('NEXT', 348, 336);
+    if (state.next) {
+      for (const [dc, dr] of state.next.cells) {
+        ctx.fillStyle = COLORS[state.next.name];
+        ctx.fillRect(360 + dc * 18, 350 + dr * 18, 16, 16);
+      }
+    }
+    ctx.fillStyle = VIOLET;
+    ctx.font = '12px Impact, sans-serif';
+    ctx.fillText('NO FOUR-CELL CLASSICS', 348, 420);
+
+    for (const f of state.fx) {
+      ctx.globalAlpha = f.life / 16;
+      ctx.fillStyle = f.color;
+      ctx.fillRect(f.x - 3, f.y - 3, 6, 6);
+      ctx.globalAlpha = 1;
+    }
+    if (state.msgT > 0 && state.phase === 'play') {
+      ctx.fillStyle = AMBER;
+      ctx.font = '16px Impact, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.msg, OX + COLS * CELL / 2, H - 18);
+    }
+    if (state.flash) { ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fillRect(0, 0, W, H); }
+    ctx.restore();
+  }
+
+  function frame(now) {
+    acc += now - last; last = now;
+    if (acc > 200) acc = 200;
+    while (acc >= DT) { try { update(); } catch (e) { console.error(e); } acc -= DT; }
+    try { draw(); } catch (e) { console.error(e); }
+    requestAnimationFrame(frame);
+  }
+  try { canvas.focus(); } catch (_) {}
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
