@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0c0c10" />
 <link rel="manifest" href="./manifest.webmanifest" />
 <link rel="apple-touch-icon" href="./icon-180.png" />
-<link rel="stylesheet" href="hud.css?v=35" />
+<link rel="stylesheet" href="hud.css?v=36" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -30,7 +30,7 @@
 </head>
 <body>
 <div id="hud">
-<div id="build-chip" hidden>BUILD 141</div>
+<div id="build-chip" hidden>BUILD 143</div>
 <div id="diff-chip">MED</div>
 <div id="pilot-chip">ACE</div>
 <div class="glass" id="timer-panel"><span class="label">TIME</span><span id="timer-val">00:00.000</span></div>
@@ -115,13 +115,13 @@
     <li><b>PHONE</b> landscape only. Share → Add to Home Screen for a chrome-free app. FULL SCREEN fits the visible view in Safari (iPhone cannot hide the URL bar in a tab).</li>
     <li><b>PLANET</b> three original courses: Mars Baja, Moon crater rim, Earth Starbase coast.</li>
     <li>Paint unlocks at score gates.</li>
-    <li><b>SCORES</b> live on this device. Top 3 per planet and mode. 4-letter tag. Pass the phone and beat the board.</li>
+    <li><b>SCORES</b> global top 3 per planet, mode, and difficulty. Local fallback if offline. 4-letter tag.</li>
   </ul>
   <button type="button" class="home-btn menu-back" data-home="back">BACK</button>
 </div>
 <div id="scores" class="glass menu-sheet">
   <div class="boot-title">SCORES</div>
-  <p class="boot-sub">This device. Top 3 per planet and mode. 4-letter tags. Beat your friends.</p>
+  <p class="boot-sub">Global top 3 per planet, mode, and difficulty. Local board if the live board is unreachable.</p>
   <div id="scores-planet" class="score-mode">MARS  ·  TOP 3</div>
   <div class="score-mode">TIME TRIAL</div>
   <ol id="hs-trial" class="hs-list"></ol>
@@ -175,6 +175,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v142.js"></script>
+<script type="module" src="./game-v143.js"></script>
 </body>
 </html>
