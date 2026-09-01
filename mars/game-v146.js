@@ -1667,6 +1667,62 @@ function wedgeTruck() {
 }
 
 
+function sitRoadsterGlb(g, glbRoot, root, fallback) {
+  glbRoot.clear();
+  glbRoot.add(root);
+  glbRoot.position.set(0, 0, 0);
+  glbRoot.rotation.set(0, 0, 0);
+  glbRoot.scale.setScalar(1);
+  glbRoot.updateMatrixWorld(true);
+  const bb = new THREE.Box3().setFromObject(glbRoot);
+  if (!isFinite(bb.min.x) || !isFinite(bb.max.x)) return false;
+  const dx = bb.max.x - bb.min.x;
+  const dz = bb.max.z - bb.min.z;
+  const length = Math.max(dx, dz);
+  if (length < 0.05) return false;
+  const TARGET_LEN = 4.2 / LOOK_TRUCK;
+  const s = TARGET_LEN / length;
+  glbRoot.scale.setScalar(s);
+  glbRoot.updateMatrixWorld(true);
+  bb.setFromObject(glbRoot);
+  const cx = (bb.min.x + bb.max.x) * 0.5;
+  const cz = (bb.min.z + bb.max.z) * 0.5;
+  glbRoot.position.set(-cx, -bb.min.y, -cz);
+  glbRoot.updateMatrixWorld(true);
+  g.userData.stlScale = s;
+  g.userData.glbSitY = glbRoot.position.y;
+  const skip = /glass|rubber|chrome|lamp|light|headlight|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior/;
+  const seen = new Set();
+  const mats = [];
+  glbRoot.traverse((o) => {
+    if (!o.isMesh) return;
+    o.visible = true;
+    o.castShadow = true;
+    o.receiveShadow = true;
+    o.frustumCulled = false;
+    const list = Array.isArray(o.material) ? o.material : [o.material];
+    list.forEach((m) => {
+      if (!m || seen.has(m)) return;
+      const n = ((m.name || "") + " " + (o.name || "")).toLowerCase();
+      if (skip.test(n)) return;
+      if (m.transparent || (m.opacity != null && m.opacity < 0.92)) return;
+      seen.add(m);
+      mats.push(m);
+    });
+  });
+  g.userData.bodyMats = mats;
+  const L = LIVERIES[liveryIdx] || LIVERIES[0];
+  mats.forEach((m) => {
+    if (m.color) m.color.setHex(L.color);
+    if (m.metalness != null) m.metalness = L.metalness;
+    if (m.roughness != null) m.roughness = L.roughness;
+    m.needsUpdate = true;
+  });
+  if (fallback) fallback.visible = false;
+  (g.userData.wheels || []).forEach((w) => { if (w.hub) w.hub.visible = false; });
+  g.traverse((o) => { o.frustumCulled = false; });
+  return true;
+}
 function makeRoadster() {
   const g = new THREE.Group();
   g.name = "roadster";
@@ -1674,61 +1730,19 @@ function makeRoadster() {
   glbRoot.name = "glbRoadster";
   g.add(glbRoot);
   g.userData.bodyMats = [];
-  queueMicrotask(() => {
-  loadGlb("./mesh/roadster.glb", (root) => {
-    glbRoot.clear();
-    glbRoot.add(root);
-    glbRoot.position.set(0, 0, 0);
-    glbRoot.rotation.set(0, 0, 0);
-    glbRoot.scale.setScalar(1);
-    glbRoot.updateMatrixWorld(true);
-    const bb = new THREE.Box3().setFromObject(glbRoot);
-    const dx = bb.max.x - bb.min.x;
-    const dz = bb.max.z - bb.min.z;
-    const length = Math.max(dx, dz);
-    const TARGET_LEN = 4.2 / LOOK_TRUCK;
-    const s = length > 0.01 ? TARGET_LEN / length : 1;
-    glbRoot.scale.setScalar(s);
-    glbRoot.updateMatrixWorld(true);
-    bb.setFromObject(glbRoot);
-    const cx = (bb.min.x + bb.max.x) * 0.5;
-    const cz = (bb.min.z + bb.max.z) * 0.5;
-    glbRoot.position.set(-cx, -bb.min.y, -cz);
-    glbRoot.updateMatrixWorld(true);
-    g.userData.stlScale = s;
-    g.userData.glbSitY = glbRoot.position.y;
-    const skip = /glass|rubber|chrome|emissive|lamp|light|headlight|indicator|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior|grill|carbon|ior|metal|black|disc/;
-    const seen = new Set();
-    const mats = [];
-    glbRoot.traverse((o) => {
-      if (!o.isMesh) return;
-      o.castShadow = true;
-      o.receiveShadow = true;
-      o.frustumCulled = false;
-      const list = Array.isArray(o.material) ? o.material : [o.material];
-      list.forEach((m) => {
-        if (!m || seen.has(m)) return;
-        const n = ((m.name || "") + " " + (o.name || "")).toLowerCase();
-        if (skip.test(n)) return;
-        if (m.transparent || (m.opacity != null && m.opacity < 0.92)) return;
-        seen.add(m);
-        mats.push(m);
-      });
-    });
-    g.userData.bodyMats = mats;
-    const L = LIVERIES[liveryIdx] || LIVERIES[0];
-    mats.forEach((m) => {
-      if (m.color) m.color.setHex(L.color);
-      if (m.emissive) m.emissive.setHex(L.color);
-      if (m.emissiveIntensity != null) m.emissiveIntensity = L.emi != null ? L.emi : 0.32;
-      if (m.metalness != null) m.metalness = L.metalness;
-      if (m.roughness != null) m.roughness = L.roughness;
-      if (m.envMapIntensity != null) m.envMapIntensity = L.env;
-      m.needsUpdate = true;
-    });
-    g.traverse((o) => { o.frustumCulled = false; });
-  });
-  });
+  const fallback = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.52, 3.9), steelRoadster);
+  fallback.name = "roadster-fallback";
+  fallback.position.y = 0.52;
+  fallback.castShadow = true;
+  g.add(fallback);
+  const bootGlb = () => {
+    if (typeof gltfLoader === "undefined") { setTimeout(bootGlb, 40); return; }
+    gltfLoader.load("./mesh/roadster.glb", (gltf) => {
+      const ok = sitRoadsterGlb(g, glbRoot, gltf.scene, fallback);
+      if (!ok) fallback.visible = true;
+    }, undefined, () => { fallback.visible = true; });
+  };
+  queueMicrotask(bootGlb);
   const WR = 0.58;
   const WW = 0.48;
   const wheelGeo = new THREE.CylinderGeometry(WR, WR, WW, 16);
@@ -1756,7 +1770,6 @@ function makeRoadster() {
     spin.add(new THREE.Mesh(rimGeo, rimMat));
     spin.add(new THREE.Mesh(hubCapGeo, blackBar));
     steerHub.add(spin);
-    steerHub.visible = false;
     g.add(steerHub);
     g.userData.wheels.push({
       hub: steerHub, spin, mesh: steerHub,
