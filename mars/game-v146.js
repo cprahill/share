@@ -74,9 +74,9 @@ function nearRocket(x, z) { return nearShipFire(x, z); }
 
 const DIFFS = {
   easy: { key: "easy", tag: "EASY", nFly: 0, airHz: 0, slow: 0.70, spin: false, rival: [50, 54, 44], scoreMul: 0 },
-  medium: { key: "medium", tag: "MED", nFly: 2, airHz: 0.18, slow: 0.62, spin: false, rival: [56, 60, 48], scoreMul: 2 },
-  hard: { key: "hard", tag: "HARD", nFly: 3, airHz: 0.28, slow: 0.48, spin: true, rival: [66, 74, 50], scoreMul: 5 },
-  extra: { key: "extra", tag: "XHARD", nFly: 5, airHz: 0.42, slow: 0.36, spin: true, rival: [76, 88, 48], scoreMul: 8 }
+  medium: { key: "medium", tag: "MED", nFly: 2, airHz: 0.22, slow: 0.62, spin: false, rival: [58, 66, 52], scoreMul: 2 },
+  hard: { key: "hard", tag: "HARD", nFly: 3, airHz: 0.36, slow: 0.48, spin: true, rival: [74, 84, 70], scoreMul: 5 },
+  extra: { key: "extra", tag: "XHARD", nFly: 5, airHz: 0.52, slow: 0.36, spin: true, rival: [82, 94, 76], scoreMul: 8 }
 };
 const CUP_GOLD = { easy: 70000, medium: 80000, hard: 90000, extra: 100000 };
 const CUP_SILVER = { easy: 50000, medium: 58000, hard: 65000, extra: 72000 };
