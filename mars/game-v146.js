@@ -3,7 +3,7 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
-// cache: game-v146.js  — board live + one CPU rival
+// cache: game-v146.js  — name gate + auto HS + rolling finish + cab glass dest
 const BUILD = "146";
 const GAME_TITLE = "CyberBaja: Planetary Tour";
 const LOOK_TRUCK = 1.16;
@@ -144,7 +144,7 @@ try {
 function sanitizeName(raw) {
   return (raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
 }
-let playerName = "ACE";
+let playerName = "";
 try {
   const saved = sanitizeName(localStorage.getItem(NAME_KEY));
   if (saved) playerName = saved;
@@ -165,8 +165,8 @@ addEventListener("keydown", (e) => {
   if (e.code === "Space" || e.code.startsWith("Arrow")) e.preventDefault();
   if (e.code === "KeyR" && !e.repeat) {
     if (waitingDiff) return;
-    if (finished && ceremony.active && !ceremony.hudShown) {
-      if (ceremony.t > 1.2) skipCeremony();
+    if (finished && !ceremony.hudShown) {
+      if (ceremony.t > 0.35) skipCeremony();
     } else onRetry();
     return;
   }
@@ -1295,8 +1295,6 @@ function wedgeHullGeo() {
 
 const BODY_STL_SCALE = 0.00971;
 const BODY_SIT_Y = 1.04;
-const BODY_SIT_Y_ROADSTER = 0.18;
-const ROADSTER_STL_SCALE = 1;
 const GROUND_SIT = RIBBON_LIFT;
 
 // Bake Z-up +X-nose → Y-up +Z-nose: (x,y,z) → (y,z,x).
@@ -1542,14 +1540,6 @@ function wedgeTruck() {
       g.userData.cabFill = null;
     }
     const fills = [];
-    const sideGlass = glassMat.clone();
-    sideGlass.color.setHex(0x0c1218);
-    sideGlass.opacity = 0.94;
-    sideGlass.transparent = true;
-    sideGlass.depthWrite = true;
-    sideGlass.side = THREE.DoubleSide;
-    sideGlass.needsUpdate = true;
-    const pillarMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.35, roughness: 0.55 });
     function add(m) {
       m.castShadow = true;
       m.receiveShadow = true;
@@ -1563,32 +1553,8 @@ function wedgeTruck() {
       m.position.set(x, y, z);
       return add(m);
     }
-    // Greenhouse above stainless door character line (hull door z=0.82 y2=1.56;
-    // cab roof ~2.28; BODY_SIT_Y=1.04). Belt y=1.82. A-pillar z=1.16, C-pillar z=-0.08.
-    // Do not paint glass on the door quads. Windshield is a separate sloped pane.
-    const sh = new THREE.Shape();
-    sh.moveTo(1.16, 1.82);
-    sh.lineTo(-0.08, 1.82);
-    sh.lineTo(-0.04, 2.16);
-    sh.lineTo(0.62, 2.28);
-    sh.lineTo(1.02, 2.20);
-    sh.closePath();
-    const sideGeo = new THREE.ShapeGeometry(sh);
-    [-1.19, 1.19].forEach((x) => {
-      const m = new THREE.Mesh(sideGeo, sideGlass);
-      m.rotation.y = -Math.PI / 2;
-      m.position.x = x;
-      add(m);
-    });
-    box(new THREE.BoxGeometry(0.05, 0.42, 0.07), pillarMat, -1.205, 2.04, 0.58);
-    box(new THREE.BoxGeometry(0.05, 0.42, 0.07), pillarMat, 1.205, 2.04, 0.58);
-    box(new THREE.BoxGeometry(2.02, 0.42, 0.07), sideGlass, 0, 2.04, -0.18);
-    {
-      const ws = new THREE.Mesh(new THREE.BoxGeometry(2.04, 0.045, 0.88), sideGlass);
-      ws.position.set(0, 2.02, 1.22);
-      ws.rotation.x = 0.38;
-      add(ws);
-    }
+    // Dest: no procedural side/rear/overlay glass. Windshield is windshield.stl.
+    // Keep steel bumper + lamp bar at the nose.
     box(new THREE.BoxGeometry(2.08, 0.55, 0.14), steelBody, 0, 0.92, 2.58);
     box(new THREE.BoxGeometry(2.12, 0.038, 0.05), lampMat, 0, 1.08, 2.70);
     box(new THREE.BoxGeometry(0.46, 0.032, 0.04), lampMat, -0.78, 0.46, 2.64);
@@ -1666,124 +1632,45 @@ function wedgeTruck() {
 }
 
 
-function hardenRoadsterMat(m) {
-  if (!m) return m;
-  const n = (m.name || "").toLowerCase();
-  const glass = /glass|transp|wind|canopy/.test(n) || (m.transmission != null && m.transmission > 0.2);
-  if (m.isMeshPhysicalMaterial || m.transmission || m.clearcoat) {
-    const std = new THREE.MeshStandardMaterial({
-      color: m.color ? m.color.clone() : new THREE.Color(0xB42018),
-      metalness: glass ? 0.15 : (m.metalness != null ? m.metalness : 0.55),
-      roughness: glass ? 0.08 : (m.roughness != null ? m.roughness : 0.38),
-      envMapIntensity: m.envMapIntensity != null ? m.envMapIntensity : 1.1,
-      transparent: glass,
-      opacity: glass ? 0.42 : 1,
-      depthWrite: !glass,
-      side: glass ? THREE.DoubleSide : THREE.FrontSide,
-      emissive: m.emissive ? m.emissive.clone() : new THREE.Color(0x000000),
-      map: m.map || null,
-      normalMap: m.normalMap || null,
-      roughnessMap: m.roughnessMap || null,
-      metalnessMap: m.metalnessMap || null
-    });
-    std.name = m.name || "";
-    return std;
-  }
-  if (m.transparent && !glass) { m.transparent = false; m.opacity = 1; m.depthWrite = true; }
-  return m;
-}
-function sitRoadsterGlb(g, glbRoot, root, fallback) {
-  glbRoot.clear();
-  glbRoot.add(root);
-  glbRoot.position.set(0, 0, 0);
-  glbRoot.rotation.set(0, 0, 0);
-  glbRoot.scale.setScalar(1);
-  root.traverse((o) => {
-    if (o.scale && Math.abs(o.scale.x) > 8) o.scale.set(1, 1, 1);
-  });
-  glbRoot.updateMatrixWorld(true);
-  let bb = new THREE.Box3().setFromObject(glbRoot);
-  if (!isFinite(bb.min.x) || !isFinite(bb.max.x)) return false;
-  let size = bb.getSize(new THREE.Vector3());
-  if (size.y > size.z && size.y > size.x * 1.15) {
-    glbRoot.rotation.x = -Math.PI / 2;
-    glbRoot.updateMatrixWorld(true);
-    bb = new THREE.Box3().setFromObject(glbRoot);
-    size = bb.getSize(new THREE.Vector3());
-  }
-  const length = Math.max(size.x, size.y, size.z);
-  if (length < 0.05) return false;
-  const TARGET_LEN = 4.2 / LOOK_TRUCK;
-  glbRoot.scale.setScalar(TARGET_LEN / length);
-  glbRoot.updateMatrixWorld(true);
-  bb = new THREE.Box3().setFromObject(glbRoot);
-  glbRoot.position.set(
-    -(bb.min.x + bb.max.x) * 0.5,
-    -bb.min.y,
-    -(bb.min.z + bb.max.z) * 0.5
-  );
-  glbRoot.updateMatrixWorld(true);
-  g.userData.stlScale = TARGET_LEN / length;
-  let opaque = 0;
-  const skip = /glass|rubber|tire|tyre|thread|sidewall|rim|brake|caliper|mirror|seat|interior/;
-  const seen = new Set();
-  const mats = [];
-  glbRoot.traverse((o) => {
-    if (!o.isMesh) return;
-    o.visible = true;
-    o.frustumCulled = false;
-    o.castShadow = !IS_MOBILE;
-    o.receiveShadow = !IS_MOBILE;
-    const list = Array.isArray(o.material) ? o.material.map(hardenRoadsterMat) : hardenRoadsterMat(o.material);
-    o.material = list;
-    const arr = Array.isArray(list) ? list : [list];
-    arr.forEach((m) => {
-      if (!m || seen.has(m)) return;
-      const n = ((m.name || "") + " " + (o.name || "")).toLowerCase();
-      if (!m.transparent) opaque++;
-      if (skip.test(n) || m.transparent) return;
-      seen.add(m);
-      mats.push(m);
-    });
-  });
-  g.userData.bodyMats = mats;
-  const L = LIVERIES[liveryIdx] || LIVERIES[0];
-  mats.forEach((m) => {
-    if (m.color) m.color.setHex(L.color);
-    if (m.metalness != null) m.metalness = L.metalness;
-    if (m.roughness != null) m.roughness = L.roughness;
-    m.needsUpdate = true;
-  });
-  if (opaque < 1) return false;
-  if (fallback) fallback.visible = false;
-  (g.userData.wheels || []).forEach((w) => { if (w.hub) w.hub.visible = false; });
-  g.traverse((o) => { o.frustumCulled = false; });
-  return true;
-}
 function makeRoadster() {
   const g = new THREE.Group();
   g.name = "roadster";
-  const glbRoot = new THREE.Group();
-  glbRoot.name = "glbRoadster";
-  g.add(glbRoot);
-  g.userData.bodyMats = [];
-  const fallback = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.52, 3.9), steelRoadster);
-  fallback.name = "roadster-fallback";
-  fallback.position.y = 0.52;
-  fallback.castShadow = true;
-  g.add(fallback);
-  const bootGlb = () => {
-    if (!ROADSTER_LIVE) { fallback.visible = false; return; }
-    if (typeof gltfLoader === "undefined") { setTimeout(bootGlb, 40); return; }
-    gltfLoader.load("./mesh/roadster.glb", (gltf) => {
-      const ok = sitRoadsterGlb(g, glbRoot, gltf.scene, fallback);
-      if (!ok) fallback.visible = true;
-    }, undefined, () => { fallback.visible = true; });
-  };
-  if (ROADSTER_LIVE) queueMicrotask(bootGlb);
-  else fallback.visible = false;
   const WR = 0.58;
   const WW = 0.48;
+  function part(geo, mat, x, y, z, rx) {
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(x, y, z);
+    if (rx) m.rotation.x = rx;
+    m.castShadow = true;
+    m.receiveShadow = true;
+    m.frustumCulled = false;
+    m.visible = true;
+    g.add(m);
+    return m;
+  }
+  g.userData.bodyMats = [steelRoadster];
+  const cabin = part(new THREE.BoxGeometry(1.70, 0.62, 1.35), steelRoadster, 0, WR + 0.55, 0.05);
+  cabin.name = "cabin";
+  const hood = part(new THREE.BoxGeometry(1.58, 0.28, 1.15), steelRoadster, 0, WR + 0.38, 1.35);
+  hood.name = "hood";
+  const wpos = [
+    { x: -0.88, z: 1.28, front: true },
+    { x: 0.88, z: 1.28, front: true },
+    { x: -0.88, z: -1.22, front: false },
+    { x: 0.88, z: -1.22, front: false }
+  ];
+  const fenderGeo = new THREE.BoxGeometry(0.52, 0.34, 0.74);
+  wpos.forEach((p, i) => {
+    const fender = part(fenderGeo, steelRoadster, p.x, WR + 0.14, p.z);
+    fender.name = "fender" + i;
+  });
+  const glassR = new THREE.MeshStandardMaterial({
+    transparent: true, opacity: 0.28, metalness: 0.2, roughness: 0.08,
+    color: 0x9ad4c8, side: THREE.DoubleSide, depthWrite: false
+  });
+  const glass = part(new THREE.PlaneGeometry(1.22, 0.48), glassR, 0, WR + 0.95, 0.62, -0.85);
+  glass.name = "glass";
+  glass.castShadow = false;
   const wheelGeo = new THREE.CylinderGeometry(WR, WR, WW, 16);
   wheelGeo.rotateZ(Math.PI / 2);
   const rimGeo = new THREE.CylinderGeometry(0.22, 0.22, WW + 0.03, 12);
@@ -1793,21 +1680,23 @@ function makeRoadster() {
   hubCapGeo.rotateZ(Math.PI / 2);
   g.userData.wheels = [];
   g.userData.wheelRadius = WR;
-  const wpos = [
-    { x: -1.02, z: 1.28, front: true },
-    { x: 1.02, z: 1.28, front: true },
-    { x: -1.02, z: -1.22, front: false },
-    { x: 1.02, z: -1.22, front: false }
-  ];
   wpos.forEach((p) => {
     const steerHub = new THREE.Group();
     steerHub.position.set(p.x, WR, p.z);
     const spin = new THREE.Group();
     const tire = new THREE.Mesh(wheelGeo, rubberMat);
     tire.castShadow = true;
+    tire.frustumCulled = false;
+    tire.visible = true;
     spin.add(tire);
-    spin.add(new THREE.Mesh(rimGeo, rimMat));
-    spin.add(new THREE.Mesh(hubCapGeo, blackBar));
+    const rim = new THREE.Mesh(rimGeo, rimMat);
+    rim.frustumCulled = false;
+    rim.visible = true;
+    spin.add(rim);
+    const cap = new THREE.Mesh(hubCapGeo, blackBar);
+    cap.frustumCulled = false;
+    cap.visible = true;
+    spin.add(cap);
     steerHub.add(spin);
     g.add(steerHub);
     g.userData.wheels.push({
@@ -3162,8 +3051,8 @@ function grantPaintUnlocks() {
   }
 }
 function commitName(raw) {
-  let n = sanitizeName(raw);
-  if (!n) n = "ACE";
+  const n = sanitizeName(raw);
+  if (!n) return playerName || "";
   playerName = n;
   try { localStorage.setItem(NAME_KEY, n); } catch (err) {}
   const boot = document.getElementById("boot-name");
@@ -3173,6 +3062,16 @@ function commitName(raw) {
   const chip = document.getElementById("pilot-chip");
   if (chip) chip.textContent = n;
   return n;
+}
+function requirePilotName() {
+  const boot = document.getElementById("boot-name");
+  const n = sanitizeName(boot ? boot.value : playerName);
+  if (!n) {
+    if (boot) boot.focus();
+    showToast("NEED NAME", 1.1);
+    return "";
+  }
+  return commitName(n);
 }
 let hurtSafeT = 0;
 const HURT_SAFE = 3;
@@ -4294,6 +4193,8 @@ function fillFinishCard(label) {
   }
   const inp = document.getElementById("hs-name");
   if (inp) inp.value = playerName;
+  const savedEl = document.getElementById("hs-saved");
+  if (savedEl) savedEl.textContent = (playerName || "----") + "  ·  SAVED";
   hsSubmitted = false;
   hsSavedName = "";
   renderHsBoard();
@@ -4303,16 +4204,23 @@ function revealFinishCard() {
   if (ceremony.hudShown) return;
   ceremony.hudShown = true;
   if (elFinish) elFinish.classList.add("show");
-  document.body.classList.remove("ceremony-hide-hud");
+  document.body.classList.add("ceremony-hide-hud");
 }
 function showFinish(label) {
   fillFinishCard(label);
+  submitHs(playerName, true);
   beginCeremony(label);
 }
-function submitHs(silent) {
+function submitHs(nameArg, silent) {
   if (!finished) return;
+  if (typeof nameArg === "boolean") { silent = nameArg; nameArg = null; }
+  if (hsSubmitted) {
+    if (!silent) showToast("ALREADY SAVED", 0.45);
+    return;
+  }
   const inp = document.getElementById("hs-name");
-  const name = commitName((inp && inp.value) || playerName);
+  const name = commitName(nameArg || (inp && inp.value) || playerName);
+  if (!name) return;
   if (!silent && hsSavedName === name) {
     showToast("ALREADY SAVED", 0.45);
     return;
@@ -4338,8 +4246,7 @@ function submitHs(silent) {
   });
 }
 function pickDifficulty(name) {
-  const bootName = document.getElementById("boot-name");
-  commitName(bootName ? bootName.value : playerName);
+  if (!requirePilotName()) return;
   DIFF = parseDiff(name);
   waitingDiff = false;
   setDiffChip();
@@ -4516,7 +4423,12 @@ wireNameInput(document.getElementById("boot-name"));
     });
   }
   applyLivery(liveryIdx, false);
-  commitName(playerName);
+  const boot = document.getElementById("boot-name");
+  if (boot) boot.value = playerName;
+  const hs = document.getElementById("hs-name");
+  if (hs) hs.value = playerName;
+  const chip = document.getElementById("pilot-chip");
+  if (chip) chip.textContent = playerName || "";
 })();
 
 function spawnStart() {
@@ -4637,7 +4549,7 @@ function drive(dt) {
     car.speed *= Math.exp(-1.8 * dt);
     if (car.spinT <= 0) showToast("GO", 0.4);
   }
-  if (finished) { th = 0; st = 0; bo = false; car.speed *= Math.exp(-2.2 * dt); }
+  if (finished) { th = 0; st = 0; bo = false; hb = false; }
   else {
     if (bo && car.boost > 0) {
       car.boost = Math.max(0, car.boost - BOOST_DRAIN * dt);
@@ -4649,13 +4561,14 @@ function drive(dt) {
   }
   const boosting = !finished && bo && car.boost > 0 && !car.overheating;
   if (car.overheating) th *= 0.55;
-  steerVis += (st - steerVis) * Math.min(1, dt * 10);
+  if (finished) steerVis = 0;
+  else steerVis += (st - steerVis) * Math.min(1, dt * 10);
   const spdAbs = Math.abs(car.speed);
   const mph = spdAbs * 2.236936;
   let steerEff = spdAbs < 0.5 ? 0 : Math.min(1, spdAbs / 4);
   if (mph > 80) steerEff *= Math.max(0.38, 1 - (mph - 80) * 0.0032);
   if (car.air) steerEff *= 0.55;
-  car.yaw += steerVis * (hb ? 2.4 : 2.05) * steerEff * (car.speed >= 0 ? 1 : -1) * dt;
+  if (!finished) car.yaw += steerVis * (hb ? 2.4 : 2.05) * steerEff * (car.speed >= 0 ? 1 : -1) * dt;
   if (car.turboT > 0) car.turboT -= dt;
   let vmax = car.turboT > 0 ? TURBO_SPEED : (boosting ? BOOST_SPEED : MAX_SPEED);
   if (isPlayground()) vmax *= 1.22;
@@ -4664,11 +4577,28 @@ function drive(dt) {
   const punch = car.air
     ? (car.turboT > 0 ? 1.2 : 1)
     : (car.turboT > 0 ? 3.2 : (boosting ? 2.35 : 1));
-  if (th > 0) car.speed += th * accel * punch * (1 - Math.max(0, car.speed) / (vmax + 14)) * dt;
-  else if (th < 0) car.speed += th * (car.speed > 0.4 ? 40 : 14) * dt;
-  if (!car.air) car.speed -= car.speed * (0.14 + (hb ? 1.35 : 0) + spdAbs * 0.0016) * dt;
-  if (car.speed > vmax) car.speed = THREE.MathUtils.lerp(car.speed, vmax, 1 - Math.exp(-1.6 * dt));
-  if (car.speed < -12) car.speed = -12;
+  if (finished) {
+    const cruise = 42;
+    if (!isOpenWorld()) {
+      const pr = projectTrack(_p.set(car.x, 0, car.z));
+      const want = Math.atan2(pr.tan.x, pr.tan.z);
+      let dYaw = want - car.yaw;
+      while (dYaw > Math.PI) dYaw -= Math.PI * 2;
+      while (dYaw < -Math.PI) dYaw += Math.PI * 2;
+      car.yaw += dYaw * Math.min(1, 2.6 * dt);
+      const kLat = Math.min(1, 2.0 * dt);
+      car.x -= pr.right.x * pr.offset * kLat;
+      car.z -= pr.right.z * pr.offset * kLat;
+    }
+    car.speed += (cruise - car.speed) * (1 - Math.exp(-1.4 * dt));
+    if (car.speed < 14) car.speed = 14;
+  } else {
+    if (th > 0) car.speed += th * accel * punch * (1 - Math.max(0, car.speed) / (vmax + 14)) * dt;
+    else if (th < 0) car.speed += th * (car.speed > 0.4 ? 40 : 14) * dt;
+    if (!car.air) car.speed -= car.speed * (0.14 + (hb ? 1.35 : 0) + spdAbs * 0.0016) * dt;
+    if (car.speed > vmax) car.speed = THREE.MathUtils.lerp(car.speed, vmax, 1 - Math.exp(-1.6 * dt));
+    if (car.speed < -12) car.speed = -12;
+  }
 
   const fx = Math.sin(car.yaw), fz = Math.cos(car.yaw);
   const rx = Math.cos(car.yaw), rz = -Math.sin(car.yaw);
@@ -4690,7 +4620,9 @@ function drive(dt) {
   }
 
   const off = Math.max(0, Math.abs(proj.offset) - HALF_W);
-  if (isOpenWorld()) {
+  if (finished) {
+    /* rolling cruise stays on the ribbon */
+  } else if (isOpenWorld()) {
     if (off > 0 && !car.air) car.speed -= car.speed * 0.08 * dt;
   } else {
     if (off > 0 && !car.air) {
@@ -4726,7 +4658,7 @@ function drive(dt) {
     car.vy = 0;
     const wantPitch = THREE.MathUtils.clamp(Math.atan2(yA - yB, 6.4), -0.45, 0.45);
     car.pitch += (wantPitch - car.pitch) * Math.min(1, dt * 9);
-    if (car.spinT <= 0 && spdAbs > 18 && onTake && !isOpenWorld()) {
+    if (!finished && car.spinT <= 0 && spdAbs > 18 && onTake && !isOpenWorld()) {
       const ang = Math.atan2(hit.j.h, Math.max(12, hit.j.len * 0.22));
       car.air = true;
       const moon = PLANET.key === "moon";
@@ -5361,22 +5293,19 @@ function layoutCeremony() {
   document.body.classList.add("ceremony-hide-hud");
 }
 function beginCeremony(label) {
-  ceremony.active = true;
+  ceremony.active = false;
   ceremony.t = 0;
   ceremony.won = playerWon;
   ceremony.hudShown = false;
   ceremony.label = label;
-  fillFinishCard(label);
-  car.air = false; car.vy = 0; car.pitch = 0; car.roll = 0;
-  car.y = terrainH(car.x, car.z) + GROUND_SIT;
-  resetWheels(truck);
-  resetWheels(roadster);
-  layoutCeremony();
+  if (ceremony.g) ceremony.g.visible = false;
+  if (ceremony.spray) ceremony.spray.visible = false;
+  if (ceremony.trophy) ceremony.trophy.visible = false;
   playSting(playerWon);
 }
 function skipCeremony() {
-  if (!ceremony.active) return;
-  ceremony.t = ceremony.won ? 3.25 : 1.45;
+  if (ceremony.hudShown) return;
+  ceremony.t = 1.2;
   revealFinishCard();
 }
 function endCeremony() {
@@ -5385,18 +5314,14 @@ function endCeremony() {
   ceremony.hudShown = false;
   if (ceremony.g) ceremony.g.visible = false;
   if (ceremony.spray) ceremony.spray.visible = false;
+  if (ceremony.trophy) ceremony.trophy.visible = false;
   if (scene.fog) scene.fog.color.setHex(PLANET.fog);
   document.body.classList.remove("ceremony-hide-hud");
 }
 function stepCeremony(dt) {
-  if (!ceremony.active) return;
+  if (!finished || ceremony.hudShown) return;
   ceremony.t += dt;
-  if (ceremony.trophy && ceremony.trophy.visible) {
-    ceremony.trophy.rotation.y += dt * 0.85;
-    ceremony.trophy.position.y = 2.35 + Math.sin(ceremony.t * 1.8) * 0.18;
-  }
-  const hudAt = ceremony.won ? 3.2 : 1.4;
-  if (!ceremony.hudShown && ceremony.t >= hudAt) revealFinishCard();
+  if (ceremony.t >= 1.2) revealFinishCard();
 }
 function ceremonyCam() {
   const sx = Math.sin(car.yaw), cz = Math.cos(car.yaw);
@@ -6292,6 +6217,7 @@ function loop() {
   let dt = clock.getDelta();
   if (dt > MAX_DT) dt = MAX_DT;
   if (waitingDiff || document.body.classList.contains("menu-on")) {
+    if (toastT > 0) { toastT -= dt; if (toastT <= 0 && elFailToast) elFailToast.classList.remove("show"); }
     hudBind();
     return;
   }

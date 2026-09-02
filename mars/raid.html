@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0c0c10" />
 <link rel="manifest" href="./manifest.webmanifest" />
 <link rel="apple-touch-icon" href="./icon-180.png" />
-<link rel="stylesheet" href="hud.css?v=17" />
+<link rel="stylesheet" href="hud.css?v=18" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -63,11 +63,12 @@
   <div class="val" id="finish-time">00:00.000</div>
   <div class="score" id="finish-score">0 PTS   ·   0 COINS</div>
   <div class="rank" id="finish-rank">1st  ·  GOLD CUP</div>
-  <div class="hs-enter">
+  <div class="hs-enter" hidden>
     <label for="hs-name">NAME</label>
     <input id="hs-name" type="text" maxlength="4" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text" placeholder="ACE" />
     <button type="button" id="hs-save" class="pad-hit">SAVE</button>
   </div>
+  <div class="hs-saved" id="hs-saved"></div>
   <ol id="hs-board"></ol>
   <button type="button" id="share-chal" class="pad-hit">SEND CHALLENGE</button>
   <button type="button" id="hs-again" class="pad-hit">RACE AGAIN</button>
@@ -167,6 +168,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v146.js?v=17"></script>
+<script type="module" src="./game-v146.js?v=18"></script>
 </body>
 </html>
