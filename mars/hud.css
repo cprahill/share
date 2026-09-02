@@ -310,11 +310,17 @@ html.touch-on #home-fs,body.touch-on #home-fs{display:none!important}
 body.touch-on.menu-on #fs-btn{display:none}
 html.touch-on #home,body.touch-on #home{overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
 html.touch-on .menu-sheet,body.touch-on .menu-sheet,
-html.touch-on #how,body.touch-on #how,
-html.touch-on #scores,body.touch-on #scores{
+html.touch-on #how,body.touch-on #how{
   left:clamp(8px,2vw,16px);right:auto;top:50%;transform:translate(0,-50%);
   width:min(300px,48vw);max-width:52vw;max-height:min(88svh,88dvh);
   overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain
+}
+html.touch-on #scores,body.touch-on #scores,
+html.touch-on #scores.show,body.touch-on #scores.show{
+  position:fixed;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);
+  width:min(96vw,920px);max-width:96vw;max-height:min(86svh,86dvh);
+  z-index:80;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;
+  overscroll-behavior:contain;pointer-events:auto!important
 }
 .menu-sheet,.home-panel,#how,#scores,#boot,#finish,#home{
   -webkit-overflow-scrolling:touch

@@ -78,14 +78,18 @@ async function call(handler, kv, method, opts) {
 }
 
 describe("cors", () => {
-  it("allows Pages, Mini 8766, and any localhost/127 port", () => {
+  it("allows Pages, Mini 8766, Tailscale CGNAT, and any localhost/127 port", () => {
     assert.equal(allowOrigin("https://cprahill.github.io"), "https://cprahill.github.io");
     assert.equal(allowOrigin("http://127.0.0.1:8766"), "http://127.0.0.1:8766");
     assert.equal(allowOrigin("http://localhost:8766"), "http://localhost:8766");
     assert.equal(allowOrigin("http://127.0.0.1:9999"), "http://127.0.0.1:9999");
     assert.equal(allowOrigin("http://localhost:1234"), "http://localhost:1234");
+    assert.equal(allowOrigin("http://100.92.162.78:8766"), "http://100.92.162.78:8766");
+    assert.equal(allowOrigin("http://100.64.1.2:8766"), "http://100.64.1.2:8766");
+    assert.equal(allowOrigin("http://100.1.2.3:9"), "http://100.1.2.3:9");
     assert.equal(allowOrigin("https://evil.example"), "");
     assert.equal(allowOrigin("https://localhost:8766"), "");
+    assert.equal(allowOrigin("http://8.8.8.8:8766"), "");
   });
 });
 

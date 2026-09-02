@@ -3,8 +3,8 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
-// cache: game-v144.js  — SAVE writes local + live board
-const BUILD = "145";
+// cache: game-v146.js  — board live + one CPU rival
+const BUILD = "146";
 const GAME_TITLE = "CyberBaja: Planetary Tour";
 const LOOK_TRUCK = 1.16;
 const LOOK_CROWD = 1.55;
@@ -1864,9 +1864,16 @@ function playerRig() {
   return playerVeh === "roadster" ? roadster : truck;
 }
 function applyPlayerVeh() {
+  if (!ROADSTER_LIVE) playerVeh = "truck";
   const showR = playerVeh === "roadster";
-  if (truck) truck.visible = !showR;
-  if (roadster) roadster.visible = showR;
+  if (truck) {
+    truck.visible = !showR;
+    if (showR) truck.position.set(0, -800, 0);
+  }
+  if (roadster) {
+    roadster.visible = showR;
+    if (!showR) roadster.position.set(0, -800, 0);
+  }
   document.querySelectorAll("[data-veh]").forEach((b) => {
     b.classList.toggle("on", b.getAttribute("data-veh") === playerVeh);
   });
@@ -3030,6 +3037,7 @@ function syncRig(rig) {
   rig.rotation.set(car.pitch, car.yaw, car.roll, "YXZ");
 }
 function syncTruck() {
+  applyPlayerVeh();
   syncRig(playerRig());
 }
 function sitWheelsOn(rig) {
@@ -3994,14 +4002,24 @@ function boardUrl(planet, mode, diff) {
     + "&diff=" + encodeURIComponent(apiDiff(diff));
   return BOARD_API + "?" + q;
 }
+function boardFetchCtl(ms) {
+  const c = new AbortController();
+  const t = setTimeout(() => { try { c.abort(); } catch (err) {} }, ms || 8000);
+  return { signal: c.signal, done() { clearTimeout(t); } };
+}
 async function fetchLane(planet, mode, diff) {
+  const ctl = boardFetchCtl(8000);
   try {
-    const r = await fetch(boardUrl(planet, mode, diff), { method: "GET" });
+    const r = await fetch(boardUrl(planet, mode, diff), {
+      method: "GET", mode: "cors", credentials: "omit", cache: "no-store", signal: ctl.signal
+    });
+    ctl.done();
     if (!r.ok) return null;
     const j = await r.json();
     if (!j || j.ok !== true || !Array.isArray(j.rows)) return null;
     return j.rows;
   } catch (err) {
+    ctl.done();
     return null;
   }
 }
@@ -4015,17 +4033,21 @@ async function postLiveRow(row) {
     coins: row.coins || 0,
     time: row.time || 0
   };
+  const ctl = boardFetchCtl(8000);
   try {
     const r = await fetch(BOARD_API, {
-      method: "POST",
+      method: "POST", mode: "cors", credentials: "omit", cache: "no-store",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: ctl.signal
     });
+    ctl.done();
     if (!r.ok) return null;
     const j = await r.json();
     if (!j || j.ok !== true || !Array.isArray(j.rows)) return null;
     return j.rows;
   } catch (err) {
+    ctl.done();
     return null;
   }
 }
@@ -4195,30 +4217,57 @@ function renderHsBoard() {
   paintScoresGrid(localScoreTable());
   pullLiveBoard();
 }
+function mergeLiveLane(b, p, m, d, rows) {
+  if (!rows || !rows.length) return;
+  if (!b[p]) b[p] = emptyLane();
+  const rest = (b[p][m] || []).filter((r) => apiDiff(r.diff) !== d);
+  b[p][m] = rest.concat(rows.slice(0, 3).map((r) => Object.assign({}, r, { diff: d, planet: p, mode: m })));
+}
+let liveBoardGen = 0;
 async function pullLiveBoard() {
-  const jobs = [];
+  const gen = ++liveBoardGen;
+  const table = localScoreTable();
+  const curP = PLANET.key;
+  const curM = boardMode(MODE.key);
+  const curD = apiDiff(DIFF);
+  const first = await fetchLane(curP, curM, curD);
+  if (gen !== liveBoardGen) return;
+  if (first && first.length) {
+    table[curP][curM][curD] = first.slice(0, 3);
+    const b0 = loadBoard();
+    mergeLiveLane(b0, curP, curM, curD, first);
+    saveBoard(b0);
+    paintScoresGrid(table);
+    paintHsOl("hs-board", curM, first.slice(0, 3));
+  }
+  const rest = [];
   SCORE_PLANETS.forEach((p) => {
     SCORE_MODES.forEach((m) => {
       SCORE_DIFFS.forEach((d) => {
-        jobs.push(fetchLane(p.key, m.key, d.key).then((rows) => ({ p: p.key, m: m.key, d: d.key, rows })));
+        if (p.key === curP && m.key === curM && d.key === curD) return;
+        rest.push({ p: p.key, m: m.key, d: d.key });
       });
     });
   });
-  const got = await Promise.all(jobs);
-  const table = localScoreTable();
   const b = loadBoard();
-  got.forEach((g) => {
-    if (!g.rows) return;
-    table[g.p][g.m][g.d] = g.rows.slice(0, 3);
-    if (!b[g.p]) b[g.p] = emptyLane();
-    const rest = (b[g.p][g.m] || []).filter((r) => apiDiff(r.diff) !== g.d);
-    b[g.p][g.m] = rest.concat(g.rows.slice(0, 3).map((r) => Object.assign({}, r, { diff: g.d, planet: g.p, mode: g.m })));
-  });
-  saveBoard(b);
-  paintScoresGrid(table);
-  const cur = table[PLANET.key] && table[PLANET.key][boardMode(MODE.key)]
-    ? table[PLANET.key][boardMode(MODE.key)][apiDiff(DIFF)] : [];
-  paintHsOl("hs-board", boardMode(MODE.key), cur);
+  const BATCH = 3;
+  for (let i = 0; i < rest.length; i += BATCH) {
+    if (gen !== liveBoardGen) return;
+    const chunk = rest.slice(i, i + BATCH);
+    const got = await Promise.all(chunk.map((g) => fetchLane(g.p, g.m, g.d).then((rows) => Object.assign({}, g, { rows }))));
+    if (gen !== liveBoardGen) return;
+    let hit = false;
+    got.forEach((g) => {
+      if (!g.rows || !g.rows.length) return;
+      table[g.p][g.m][g.d] = g.rows.slice(0, 3);
+      mergeLiveLane(b, g.p, g.m, g.d, g.rows);
+      hit = true;
+    });
+    if (hit) {
+      saveBoard(b);
+      paintScoresGrid(table);
+    }
+  }
 }
 function fillFinishCard(label) {
   if (elFinishLabel) elFinishLabel.textContent = label;
@@ -4896,27 +4945,6 @@ function spawnRivals() {
   if (rivals.length) return;
   if (!playerKitReady()) return;
   if (MODE.key === "hunt" || MODE.key === "free") return;
-  if (MODE.key === "trial") {
-    rivals.push({
-      mesh: makeRival("truck", 0x161618, false),
-      t: START_T, lat: 3.2, speed: DIFF.rival[0], spinT: 0, laps: 0, prevT: START_T,
-      hex: 0x161618, monster: false, kind: "truck", upgraded: true,
-      ghost: false, samples: null, phantom: false
-    });
-    pushGhosts("trial", [0x3de8ff, 0xffee55, 0xc48cff], 3);
-    return;
-  }
-  if (MODE.key === "tour") {
-    rivals.push({
-      mesh: makeRival("truck", 0x161618, false),
-      t: START_T, lat: 3.2, speed: DIFF.rival[0], spinT: 0, laps: 0, prevT: START_T,
-      hex: 0x161618, monster: false, kind: "truck", upgraded: true,
-      ghost: false, samples: null, phantom: false
-    });
-    pushGhosts("tour", [0x3de8ff], 1);
-    if (rivals.length < 2) pushGhosts("trial", [0x3de8ff], 1);
-    return;
-  }
   const rec = ghostIn ? decGhost(ghostIn) : null;
   rivals.push({
     mesh: makeRival("truck", rec ? 0x3de8ff : 0x161618, false),
@@ -5156,9 +5184,9 @@ function stepRivals(dt) {
     p.taken = p.kind === "STAR" ? 1e9 : (p.cool || 8);
     if (p.mesh) p.mesh.visible = false;
   });
-  const r = rivals[0];
-  if (!r) return;
-  {
+  if (!rivals.length) return;
+  rivals.forEach((r) => {
+    if (!r || !r.mesh) return;
     const kit = r.mesh.getObjectByName("rivalKit");
     const hull = r.mesh.userData.hull;
     if (hull) hull.visible = !kit;
@@ -5170,15 +5198,19 @@ function stepRivals(dt) {
       });
     }
     r.mesh.traverse((o) => { o.frustumCulled = false; });
-  }
+  });
+  const r = rivals[0];
+  if (!r) return;
   if (startLock) {
-    const p0 = curve.getPointAt(r.t);
-    const tan0 = curve.getTangentAt(r.t);
-    const right0 = new THREE.Vector3(tan0.z, 0, -tan0.x).normalize();
-    const x0 = p0.x + right0.x * r.lat;
-    const z0 = p0.z + right0.z * r.lat;
-    r.mesh.position.set(x0, terrainH(x0, z0) + GROUND_SIT + rivalFlightY(r.t), z0);
-    r.mesh.rotation.set(0, Math.atan2(tan0.x, tan0.z), 0, "YXZ");
+    rivals.forEach((rv) => {
+      const p0 = curve.getPointAt(rv.t);
+      const tan0 = curve.getTangentAt(rv.t);
+      const right0 = new THREE.Vector3(tan0.z, 0, -tan0.x).normalize();
+      const x0 = p0.x + right0.x * rv.lat;
+      const z0 = p0.z + right0.z * rv.lat;
+      rv.mesh.position.set(x0, terrainH(x0, z0) + GROUND_SIT + rivalFlightY(rv.t), z0);
+      rv.mesh.rotation.set(0, Math.atan2(tan0.x, tan0.z), 0, "YXZ");
+    });
     return;
   }
   if (r.ghost && r.samples) {
@@ -5853,8 +5885,8 @@ function plantParkedTrucks(gen) {
   const spots = [0.11, 0.24, 0.37, 0.51, 0.66, 0.81, 0.93];
   spots.forEach((t, i) => {
     const side = i % 2 ? 1 : -1;
-    const at = alongTrack(t, side, HALF_W + 16);
-    if (footprintHitsDirt(at.x, at.z, 6)) return;
+    const at = alongTrack(t, side, HALF_W + 42);
+    if (hitsPath(at.x, at.z, 18) || footprintHitsDirt(at.x, at.z, 10)) return;
     const ct = cloneParkedTruck(0xC8CCD4);
     if (!ct.children.length) return;
     ct.position.set(at.x, terrainH(at.x, at.z) + GROUND_SIT, at.z);

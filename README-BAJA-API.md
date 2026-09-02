@@ -13,7 +13,7 @@ GitHub Pages still serves the static game (`/mars`, `raid.html`). This folder ad
 
 The game files are unchanged. Point the client at `https://YOUR-PROJECT.vercel.app` when you wire it.
 
-CORS allowlist: `https://cprahill.github.io`, `http://127.0.0.1:8766`, `http://localhost:8766`, and any `http://127.0.0.1:*` / `http://localhost:*` (Mini play).
+CORS allowlist: `https://cprahill.github.io`, `http://127.0.0.1:8766`, `http://localhost:8766`, `http://100.92.162.78:8766`, any `http://127.0.0.1:*` / `http://localhost:*`, and Tailscale CGNAT `http://100.64.0.0/10` (Mini play).
 
 ## Scoreboard `GET|POST /api/board`
 

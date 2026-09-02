@@ -1,8 +1,19 @@
 const FIXED = new Set([
   "https://cprahill.github.io",
   "http://127.0.0.1:8766",
-  "http://localhost:8766"
+  "http://localhost:8766",
+  "http://100.92.162.78:8766"
 ]);
+
+function isLoopback(host) {
+  return host === "127.0.0.1" || host === "localhost";
+}
+
+function isTailscale(host) {
+  const m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
+  if (!m) return false;
+  return +m[1] === 100;
+}
 
 export function allowOrigin(origin) {
   if (!origin || typeof origin !== "string") return "";
@@ -10,8 +21,8 @@ export function allowOrigin(origin) {
   try {
     const u = new URL(origin);
     if (u.protocol !== "http:") return "";
-    if (u.hostname !== "127.0.0.1" && u.hostname !== "localhost") return "";
-    return origin;
+    if (isLoopback(u.hostname) || isTailscale(u.hostname)) return origin;
+    return "";
   } catch {
     return "";
   }
