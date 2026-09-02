@@ -2714,6 +2714,8 @@ for (let i = 0; i < DUST_N; i++) {
   dustMesh.setMatrixAt(i, dummy.matrix);
 }
 scene.add(dustMesh);
+dustMesh.frustumCulled = false;
+dustMesh.renderOrder = 3;
 let dustCursor = 0;
 function emitDust(x, y, z, fx, fz, n) {
   const count = Math.floor(n) + (Math.random() < n % 1 ? 1 : 0);
