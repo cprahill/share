@@ -193,6 +193,8 @@ body.mode-hunt #pad-snap{display:block}
 .planet-chip{appearance:none;margin:0;padding:9px 0;border:1px solid #ffffff20;background:#121218aa;color:#c4c8cc;border-radius:8px;font:700 11px/1 "IBM Plex Sans",sans-serif;letter-spacing:.16em;cursor:pointer;touch-action:manipulation;text-align:center}
 .planet-chip:hover,.planet-chip:focus{border-color:#ffee5566;color:#ffee55}
 .planet-chip.on{color:#0c0c10;background:#ffee55;border-color:#ffee55;box-shadow:0 0 16px #ffee5544}
+.boot-btn.on{color:#0c0c10;background:#ffee55;border-color:#ffee55;box-shadow:0 0 16px #ffee5544}
+.boot-btn.on span{opacity:.85;color:#0c0c10}
 .home-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
 .home-card{appearance:none;border:1px solid #ffffff1c;background:linear-gradient(180deg,#1c1c24ee,#121218ee);color:#f4f4f2;border-radius:12px;padding:14px 12px 12px;font:700 13px/1 "IBM Plex Sans",sans-serif;letter-spacing:.12em;cursor:pointer;touch-action:manipulation;text-align:left;min-height:76px}
 .home-card,.home-btn,.boot-btn,.planet-chip{position:relative;z-index:1}

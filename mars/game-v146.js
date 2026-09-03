@@ -133,6 +133,26 @@ const NAME_KEY = "rdb-name-v1";
 const PAINT_KEY = "rdb-paint-v1";
 const PAINT_UNLOCK_KEY = "rdb-paint-unlock-v1";
 const VEH_KEY = "rdb-veh-v1";
+const TURBO_KEY = "rdb-turbo-v1";
+let truckTurbo = false;
+try { truckTurbo = localStorage.getItem(TURBO_KEY) === "1"; } catch (err) {}
+function applyTurboUI() {
+  document.querySelectorAll("[data-turbo]").forEach((b) => {
+    const on = b.getAttribute("data-turbo") === "on";
+    b.classList.toggle("on", on === truckTurbo);
+  });
+}
+function pickTurbo(v) {
+  truckTurbo = v === true || v === "on" || v === "1";
+  if (typeof playerVeh !== "undefined" && playerVeh === "roadster") truckTurbo = false;
+  try { localStorage.setItem(TURBO_KEY, truckTurbo ? "1" : "0"); } catch (err) {}
+  applyTurboUI();
+  try {
+    if (typeof truck !== "undefined" && truck && truck.userData && truck.userData.applyTurboBody) {
+      truck.userData.applyTurboBody();
+    }
+  } catch (err) {}
+}
 const ROADSTER_LIVE = false;
 let playerVeh = "truck";
 try {
@@ -250,7 +270,7 @@ function onPtrDown(e) {
     if (t && t.nodeType === 3) t = t.parentElement;
     if (document.elementsFromPoint) {
       const stack = document.elementsFromPoint(e.clientX, e.clientY) || [];
-      const hit = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff], [data-veh]"));
+      const hit = stack.find((n) => n && n.closest && n.closest("[data-home], [data-planet], [data-free], .boot-btn[data-diff], [data-veh], [data-turbo]"));
       if (hit) t = hit;
     }
     if (t && t.closest) {
@@ -264,6 +284,8 @@ function onPtrDown(e) {
       if (diff) { pickDifficulty(diff.getAttribute("data-diff")); if (e.cancelable) e.preventDefault(); return; }
       const veh = t.closest("[data-veh]");
       if (veh) { pickVeh(veh.getAttribute("data-veh")); if (e.cancelable) e.preventDefault(); return; }
+      const turbo = t.closest("[data-turbo]");
+      if (turbo) { pickTurbo(turbo.getAttribute("data-turbo")); if (e.cancelable) e.preventDefault(); return; }
     }
     return;
   }
@@ -326,14 +348,15 @@ try {
   IS_MOBILE = matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches || ("ontouchstart" in window);
   IS_PHONE = matchMedia("(pointer: coarse)").matches && matchMedia("(hover: none)").matches;
 } catch (err) {}
+const DPR_CAP = IS_PHONE ? 1 : (IS_MOBILE ? 1.15 : 1.25);
 const renderer = new THREE.WebGLRenderer({ antialias: !IS_MOBILE, powerPreference: "high-performance" });
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, IS_PHONE ? 1 : (IS_MOBILE ? 1.15 : 1.5)));
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, DPR_CAP));
 renderer.shadowMap.enabled = !IS_MOBILE;
 renderer.setSize(innerWidth, innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 2.2;
-renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.prepend(renderer.domElement);
 renderer.domElement.style.touchAction = "none";
 renderer.domElement.style.display = "block";
@@ -457,7 +480,7 @@ function fitView() {
   const v = viewBox();
   camera.aspect = v.w / v.h;
   camera.updateProjectionMatrix();
-  if (IS_PHONE) renderer.setPixelRatio(1);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, DPR_CAP));
   renderer.setSize(v.w, v.h, false);
   pinBox(renderer.domElement, v);
   ["hud", "touch", "home"].forEach((id) => pinBox(document.getElementById(id), v));
@@ -1586,6 +1609,76 @@ function wedgeTruck() {
   addStl("./mesh/middle-body.stl", steelStl, true, "middle-body");
   addStl("./mesh/windshield.stl", glassMat, false, "windshield");
   addStl("./mesh/tail-bar.stl", tailMat, true, "tail-bar");
+  const turboRoot = new THREE.Group();
+  turboRoot.name = "stlTurbo";
+  turboRoot.visible = false;
+  g.add(turboRoot);
+  g.userData.turboReady = false;
+  function applyTurboBody() {
+    const on = !!(truckTurbo && g.userData.turboReady);
+    turboRoot.visible = on;
+    stlRoot.visible = !on;
+    if (g.userData.tonneau) g.userData.tonneau.visible = !on;
+    if (g.userData.cabFill) g.userData.cabFill.forEach((m) => { m.visible = !on; });
+    if (on) hideOnStl.forEach((m) => { m.visible = false; });
+    else if (stlLoaded >= 2) hideOnStl.forEach((m) => { m.visible = false; });
+  }
+  g.userData.applyTurboBody = applyTurboBody;
+  function sitTurboGeo(geo) {
+    try {
+      geo.applyMatrix4(STL_TO_YUP);
+      geo.computeVertexNormals();
+      geo.computeBoundingBox();
+      const raw = geo.boundingBox;
+      const span = new THREE.Vector3().subVectors(raw.max, raw.min);
+      let sc = BODY_STL_SCALE;
+      const longest = Math.max(span.x, span.y, span.z);
+      // cyber-turbo.stl is mm (~2.0 x 4.8 x 1.8 m). Stock kit uses BODY_STL_SCALE.
+      if (longest > 800) sc = 0.001;
+      if (span.x > span.z * 1.25) {
+        geo.applyMatrix4(new THREE.Matrix4().makeRotationY(-Math.PI / 2));
+        geo.computeBoundingBox();
+      }
+      paintStlDustFilm(geo);
+      const m = new THREE.Mesh(geo, steelStl);
+      m.name = "cyber-turbo";
+      m.castShadow = true;
+      m.receiveShadow = true;
+      m.frustumCulled = false;
+      while (turboRoot.children.length) turboRoot.remove(turboRoot.children[0]);
+      turboRoot.add(m);
+      turboRoot.position.set(0, 0, 0);
+      turboRoot.rotation.set(0, 0, 0);
+      turboRoot.scale.setScalar(sc);
+      turboRoot.updateMatrix();
+      const tBox = new THREE.Box3();
+      m.geometry.computeBoundingBox();
+      tBox.copy(m.geometry.boundingBox).applyMatrix4(turboRoot.matrix);
+      const sx = tBox.max.x - tBox.min.x;
+      const sy = tBox.max.y - tBox.min.y;
+      const sz = tBox.max.z - tBox.min.z;
+      if (!(sx > 1.2 && sx < 4.5 && sz > 3.2 && sz < 8.5 && sy > 0.8 && sy < 3.5)) {
+        while (turboRoot.children.length) turboRoot.remove(turboRoot.children[0]);
+        g.userData.turboReady = false;
+        applyTurboBody();
+        return;
+      }
+      const cx = (tBox.min.x + tBox.max.x) * 0.5;
+      const cz = (tBox.min.z + tBox.max.z) * 0.5;
+      turboRoot.position.set(-cx, BODY_SIT_Y - tBox.min.y, -cz);
+      g.userData.turboReady = true;
+      applyTurboBody();
+    } catch (err) {
+      while (turboRoot.children.length) turboRoot.remove(turboRoot.children[0]);
+      g.userData.turboReady = false;
+      applyTurboBody();
+    }
+  }
+    // 2026-09-01 dest: convert CAD to GLB before sit. Do not load raw STL.
+  if (false) loader.load("./mesh/cyber-turbo.stl", sitTurboGeo, undefined, () => {
+    g.userData.turboReady = false;
+    applyTurboBody();
+  });
   const WR = 0.74;
   const WW = 0.62;
   const wheelGeo = new THREE.CylinderGeometry(WR, WR, WW, 16);
@@ -3188,7 +3281,10 @@ function showBoot() {
       span.textContent = k === "easy" ? "no drones" : k === "hard" ? "drones · two styles" : k === "extra" ? "dense drones" : "few drones";
     }
   });
+  paintDiffBtns();
   if (elBoot) elBoot.classList.add("show");
+  if (typeof applyTurboUI === "function") applyTurboUI();
+  if (typeof applyPlayerVeh === "function") applyPlayerVeh();
   setMenuOn(true);
 }
 function showHow() {
@@ -3214,6 +3310,11 @@ function goHome() {
 
 function setDiffChip() {
   if (elDiffChip) elDiffChip.textContent = DIFF.tag + (ghostIn ? "  GHOST" : "");
+}
+function paintDiffBtns() {
+  document.querySelectorAll(".boot-btn[data-diff]").forEach((b) => {
+    b.classList.toggle("on", b.getAttribute("data-diff") === DIFF.key);
+  });
 }
 function placeOnLat(t, lat) {
   const tt = ((t % 1) + 1) % 1;
@@ -3410,12 +3511,15 @@ const coinFaceMat = new THREE.MeshStandardMaterial({
   map: dogeMap, color: 0xFFE08A, metalness: 0.72, roughness: 0.28,
   emissive: 0x3A2A08, emissiveIntensity: 0.22, fog: false
 });
+const coinCylGeo = new THREE.CylinderGeometry(1.65, 1.65, 0.22, 10);
+const coinTorusGeo = new THREE.TorusGeometry(1.65, 0.12, 8, 10);
 function makeCoinMesh() {
   const mesh = new THREE.Group();
-  const core = new THREE.Mesh(new THREE.CylinderGeometry(1.65, 1.65, 0.22, 10), [coinGoldMat, coinFaceMat, coinFaceMat]);
+  const core = new THREE.Mesh(coinCylGeo, [coinGoldMat, coinFaceMat, coinFaceMat]);
   core.rotation.x = Math.PI / 2;
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.65, 0.12, 8, 10), coinGoldMat);
+  const rim = new THREE.Mesh(coinTorusGeo, coinGoldMat);
   mesh.add(core, rim);
+  mesh.frustumCulled = core.frustumCulled = rim.frustumCulled = false;
   return mesh;
 }
 function plantCoin(t, lat, yAdd) {
@@ -4248,10 +4352,11 @@ function submitHs(nameArg, silent) {
   });
 }
 function pickDifficulty(name) {
-  if (!requirePilotName()) return;
   DIFF = parseDiff(name);
-  waitingDiff = false;
+  paintDiffBtns();
   setDiffChip();
+  if (!requirePilotName()) return;
+  waitingDiff = false;
   if (MODE.key === "hunt" || MODE.key === "free") {
     while (hazards.length) {
       const h = hazards.pop();
@@ -4362,6 +4467,10 @@ async function shareChallenge() {
   }
 }
 if (elShare) elShare.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); shareChallenge(); });
+document.querySelectorAll("[data-turbo]").forEach((btn) => {
+  btn.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); pickTurbo(btn.getAttribute("data-turbo")); });
+});
+applyTurboUI();
 document.querySelectorAll(".boot-btn[data-diff]").forEach((btn) => {
   btn.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); pickDifficulty(btn.getAttribute("data-diff")); });
 });
@@ -4572,7 +4681,7 @@ function drive(dt) {
   if (car.air) steerEff *= 0.55;
   if (!finished) car.yaw += steerVis * (hb ? 2.4 : 2.05) * steerEff * (car.speed >= 0 ? 1 : -1) * dt;
   if (car.turboT > 0) car.turboT -= dt;
-  let vmax = car.turboT > 0 ? TURBO_SPEED : (boosting ? BOOST_SPEED : MAX_SPEED);
+  let vmax = (car.turboT > 0 || (truckTurbo && boosting && playerVeh !== "roadster")) ? TURBO_SPEED : (boosting ? BOOST_SPEED : MAX_SPEED);
   if (isPlayground()) vmax *= 1.22;
   if (car.air) vmax = car.turboT > 0 ? MAX_SPEED + 34 : MAX_SPEED * 1.04;
   const accel = car.air ? (isPlayground() ? 16 : 12) : 48;
@@ -6213,9 +6322,10 @@ if (PODIUM_PREVIEW === "win" || PODIUM_PREVIEW === "lose") {
   }, 2800);
 }
 const clock = new THREE.Clock();
+let rafOn = true;
 function loop() {
+  if (document.hidden) { rafOn = false; return; }
   requestAnimationFrame(loop);
-  if (document.hidden) return;
   let dt = clock.getDelta();
   if (dt > MAX_DT) dt = MAX_DT;
   if (waitingDiff || document.body.classList.contains("menu-on")) {
@@ -6251,3 +6361,10 @@ function loop() {
   renderer.render(scene, camera);
 }
 requestAnimationFrame(loop);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && !rafOn) {
+    rafOn = true;
+    clock.getDelta();
+    requestAnimationFrame(loop);
+  }
+});
