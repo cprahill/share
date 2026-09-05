@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-05T16:41:51-0500",
+  "updated_at": "2026-09-05T18:35:01-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
     "leader": "trade_dev",
     "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
-    "main_return_pct": -0.0171,
-    "trade_dev_return_pct": -0.01,
-    "swarm_return_pct": -0.06,
+    "main_return_pct": -7.1562,
+    "trade_dev_return_pct": -0.04,
+    "swarm_return_pct": -0.2099,
     "timeline": "Sat RESET \u2192 Thu hot wash",
     "mode": "3-group mortality \u00b7 20\u00d7$5 swarm",
     "reset_at": null
@@ -15,32 +15,114 @@
   "main": {
     "label": "Main Desk",
     "mode": "PAPER",
-    "starting_cash_usd": 100,
-    "cash_usd": 81.9799,
-    "equity_usd": 99.9829,
-    "day_pnl_usd": -0.02,
-    "total_pnl_usd": -0.0171,
-    "return_pct": -0.0171,
-    "open_positions": 2,
+    "starting_cash_usd": 200.0,
+    "cash_usd": 142.6875,
+    "equity_usd": 185.6875,
+    "day_pnl_usd": -14.3125,
+    "total_pnl_usd": -14.3125,
+    "return_pct": -7.1562,
+    "open_positions": 3,
     "live_wallets": false,
     "gate": {
-      "open": true
+      "open": false
     },
     "confidence": {
-      "score": 0,
+      "score": 39,
       "live_ready": false,
-      "next": "Sat kick fills open \u00b7 weekday crons still for cadence"
+      "next": "2 closed \u00b7 eq $185.69 \u00b7 ret -7.1562% \u00b7 GATE CLOSED (L001) \u00b7 DD 7.2%"
     },
     "recent_fills": [
       {
+        "id": "F007",
+        "ts": "2026-09-05T18:18:18-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "side": "buy",
+        "qty": 28.3019,
+        "px": 0.53,
+        "edge": "E3",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "urls": [
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "id": "F006",
+        "ts": "2026-09-05T18:18:18-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "sell",
+        "qty": 78.9474,
+        "px": 0.01,
+        "pnl": -14.2263,
+        "edge": "E3",
+        "url": "https://api.weather.gov/stations/KNYC/observations",
+        "urls": [
+          "https://api.weather.gov/stations/KNYC/observations",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
+      },
+      {
+        "id": "F005",
+        "ts": "2026-09-04T23:42:05-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "buy",
+        "qty": 78.9474,
+        "px": 0.19,
+        "pnl": -14.2263,
+        "edge": "E3",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "urls": [
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
+          "https://www.weather.gov/climate/",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
+      },
+      {
+        "id": "F004",
+        "ts": "2026-09-04T23:42:05-05:00",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "sell",
+        "qty": 0.00022618,
+        "px": 79551.615,
+        "pnl": -0.0431,
+        "edge": "capacity",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "F003",
+        "ts": "2026-09-04T23:33:06-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-26SEP-H0",
+        "side": "buy",
+        "qty": 20.4082,
+        "px": 0.49,
+        "edge": "A2",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
+        ]
+      },
+      {
         "id": "F002",
-        "ts": "2026-09-05T16:41:40-0500",
+        "ts": "2026-09-04T23:25:22-05:00",
         "venue": "stocks",
         "symbol": "SPY",
         "side": "buy",
-        "qty": 0.01168543,
+        "qty": 0.02337086,
         "px": 770.19,
-        "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
@@ -48,13 +130,13 @@
       },
       {
         "id": "F001",
-        "ts": "2026-09-05T16:41:40-0500",
+        "ts": "2026-09-04T23:25:22-05:00",
         "venue": "crypto",
         "symbol": "BTC-USD",
         "side": "buy",
-        "qty": 0.00011271,
-        "px": 79851.885,
-        "edge": "sat-kick",
+        "qty": 0.00022618,
+        "px": 79583.165,
+        "pnl": -0.0431,
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
           "https://api.coinbase.com/v2/prices/BTC-USD/spot",
@@ -64,83 +146,41 @@
     ],
     "open": [
       {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 0.00011271,
-        "avg": 79851.885,
-        "mark": 79877.235,
-        "upnl": 0.0029,
-        "notional": 9.003,
-        "edge": "sat-kick",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
         "venue": "stocks",
         "symbol": "SPY",
-        "qty": 0.01168543,
+        "qty": 0.02337086,
         "avg": 770.19,
         "mark": 770.19,
-        "upnl": 0,
-        "notional": 9,
-        "edge": "sat-kick",
+        "upnl": 0.0,
+        "notional": 18.0,
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
         ]
-      }
-    ]
-  },
-  "trade_dev": {
-    "label": "Trade Dev",
-    "mode": "PAPER",
-    "starting_cash_usd": 100,
-    "cash_usd": 91.99,
-    "equity_usd": 99.99,
-    "day_pnl_usd": -0.01,
-    "total_pnl_usd": -0.01,
-    "return_pct": -0.01,
-    "open_positions": 1,
-    "live_wallets": false,
-    "gate": {
-      "open": true
-    },
-    "confidence": {
-      "score": 0,
-      "live_ready": false,
-      "next": "RESET clean \u00b7 paper only"
-    },
-    "recent_fills": [
+      },
       {
-        "id": "TDF001",
-        "ts": "2026-09-05T16:41:40-0500",
         "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "side": "buy",
-        "qty": 16,
-        "px": 0.5,
-        "edge": "TD1",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
+        "symbol": "KXFEDDECISION-26SEP-H0",
+        "qty": 20.4082,
+        "avg": 0.49,
+        "mark": 0.49,
+        "upnl": 0.0,
+        "notional": 10.0,
+        "edge": "A2",
+        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep",
         "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
-          "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-          "https://nextpredict.io/market-news/industry/kalshi-reins-weather-market-rules-manipulation-concerns/",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
         ]
-      }
-    ],
-    "open": [
+      },
       {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "qty": 16,
-        "avg": 0.5,
-        "mark": 0.5,
-        "upnl": 0,
-        "notional": 8,
-        "edge": "TD1",
+        "qty": 28.3019,
+        "avg": 0.53,
+        "mark": 0.53,
+        "upnl": 0.0,
+        "notional": 15.0,
+        "edge": "E3",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
         "urls": [
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
@@ -148,24 +188,162 @@
       }
     ]
   },
+  "trade_dev": {
+    "label": "Trade Dev",
+    "mode": "PAPER",
+    "starting_cash_usd": 100.0,
+    "cash_usd": 83.96,
+    "equity_usd": 99.96,
+    "day_pnl_usd": -7.6189,
+    "total_pnl_usd": -0.04,
+    "return_pct": -0.04,
+    "open_positions": 2,
+    "live_wallets": false,
+    "gate": {
+      "open": true
+    },
+    "confidence": {
+      "score": 0,
+      "live_ready": false,
+      "next": "Paper only"
+    },
+    "recent_fills": [
+      {
+        "id": "TDF001",
+        "ts": "2026-09-05T00:04:04-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "buy",
+        "qty": 42.1053,
+        "px": 0.19,
+        "notional_usd": 8.0,
+        "edge": "TD1",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
+          "https://nextpredict.io/market-news/industry/kalshi-reins-weather-market-rules-manipulation-concerns/",
+          "https://help.kalshi.com/en/articles/13823837-weather-markets",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
+      },
+      {
+        "id": "TDF002",
+        "ts": "2026-09-05T08:06:21-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXPAYROLLS-26SEP-T100000",
+        "side": "buy",
+        "qty": 32.0,
+        "px": 0.25,
+        "notional_usd": 8.0,
+        "edge": "TD6",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=40&status=open&event_ticker=KXPAYROLLS-26SEP",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=40&status=open&event_ticker=KXPAYROLLS-26SEP",
+          "https://kalshi-public-docs.s3.amazonaws.com/contract_terms/PAYROLLS.pdf",
+          "https://www.bls.gov/news.release/empsit.htm",
+          "https://kalshi.com/markets/kxpayrolls/kxpayrolls-26sep"
+        ]
+      },
+      {
+        "id": "TDF003",
+        "ts": "2026-09-05T08:50:28-05:00",
+        "venue": "stocks_paperMoney",
+        "symbol": "BIL",
+        "side": "buy",
+        "qty": 0.076545,
+        "px": 91.45,
+        "notional_usd": 7.0,
+        "pnl": -0.01,
+        "edge": "TD4",
+        "url": "https://www.newsquawk.com/headlines/us-sells-4-week-bills-at-a-high-rate-of-3700-bc-297x-sells-8-week-bills-at-a-high-rate-of-3750-bc-302x",
+        "urls": [
+          "https://www.newsquawk.com/headlines/us-sells-4-week-bills-at-a-high-rate-of-3700-bc-297x-sells-8-week-bills-at-a-high-rate-of-3750-bc-302x",
+          "https://www.treasurydirect.gov/auctions/announcements-data-results/",
+          "https://query1.finance.yahoo.com/v8/finance/chart/BIL?range=1d&interval=1m",
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
+      },
+      {
+        "id": "TDF004",
+        "ts": "2026-09-05T18:18:44-05:00",
+        "venue": "stocks_paperMoney",
+        "symbol": "BIL",
+        "side": "sell",
+        "qty": 0.076545,
+        "px": 91.45,
+        "notional_usd": 7.0,
+        "pnl": -0.01,
+        "edge": "TD4",
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/BIL?range=1d&interval=1m",
+        "urls": [
+          "https://query1.finance.yahoo.com/v8/finance/chart/BIL?range=1d&interval=1m",
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "qty": 42.1053,
+        "avg": 0.19,
+        "mark": 0.01,
+        "upnl": -7.578954,
+        "notional": 8.0,
+        "edge": "TD1",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep05",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXPAYROLLS-26SEP-T100000",
+        "qty": 32.0,
+        "avg": 0.25,
+        "mark": 0.25,
+        "upnl": 0.0,
+        "notional": 8.0,
+        "edge": "TD6",
+        "url": "https://kalshi.com/markets/kxpayrolls/kxpayrolls-26sep",
+        "urls": [
+          "https://kalshi.com/markets/kxpayrolls/kxpayrolls-26sep"
+        ]
+      }
+    ]
+  },
   "swarm": {
     "label": "SWARM",
-    "starting_cash_usd": 100,
-    "cash_usd": 99.94,
-    "equity_usd": 99.94,
-    "total_pnl_usd": -0.06,
-    "return_pct": -0.06,
-    "open_positions": 12,
+    "starting_cash_usd": 100.0,
+    "cash_usd": 74.3561,
+    "equity_usd": 99.7901,
+    "total_pnl_usd": -0.2099,
+    "return_pct": -0.2099,
+    "open_positions": 57,
     "open": [
       {
         "venue": "crypto",
         "symbol": "BTC-USD",
         "qty": 5.64e-06,
         "avg": 79851.885,
-        "mark": 79851.885,
-        "upnl": 0,
-        "notional": 0.4504,
+        "mark": 79789.535,
+        "upnl": -0.000352,
+        "notional": 0.450013,
         "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00010081,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "holiday-sizeup-live",
         "url": "https://www.coinbase.com/price/bitcoin",
         "urls": [
           "https://www.coinbase.com/price/bitcoin"
@@ -177,8 +355,8 @@
         "qty": 0.00058427,
         "avg": 770.19,
         "mark": 770.19,
-        "upnl": 0,
-        "notional": 0.45,
+        "upnl": 0.0,
+        "notional": 0.449999,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
@@ -187,12 +365,40 @@
       },
       {
         "venue": "stocks",
+        "symbol": "TLT",
+        "qty": 0.00608199,
+        "avg": 82.21,
+        "mark": 82.21,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/TLT/",
+        "urls": [
+          "https://finance.yahoo.com/quote/TLT/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00012098,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.3,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
         "symbol": "QQQ",
         "qty": 0.0006259,
         "avg": 718.96,
         "mark": 718.96,
-        "upnl": 0,
-        "notional": 0.45,
+        "upnl": 0.0,
+        "notional": 0.449997,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/QQQ/",
         "urls": [
@@ -201,13 +407,55 @@
       },
       {
         "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00726779,
+        "avg": 103.195,
+        "mark": 103.205,
+        "upnl": 0.0001,
+        "notional": 0.7501,
+        "edge": "sat-night-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 9.4e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.7499,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
         "symbol": "ETH-USD",
         "qty": 0.00018118,
         "avg": 2483.715,
-        "mark": 2483.715,
-        "upnl": 0,
-        "notional": 0.45,
+        "mark": 2479.865,
+        "upnl": -0.000698,
+        "notional": 0.449302,
         "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 3.13e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.2497,
+        "edge": "holiday-sizeup-live",
         "url": "https://www.coinbase.com/price/bitcoin",
         "urls": [
           "https://www.coinbase.com/price/bitcoin"
@@ -219,8 +467,8 @@
         "qty": 0.00098336,
         "avg": 406.77,
         "mark": 406.77,
-        "upnl": 0,
-        "notional": 0.4,
+        "upnl": 0.0,
+        "notional": 0.400001,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/GLD/",
         "urls": [
@@ -229,12 +477,40 @@
       },
       {
         "venue": "stocks",
+        "symbol": "BIL",
+        "qty": 0.00546747,
+        "avg": 91.45,
+        "mark": 91.45,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/BIL/",
+        "urls": [
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00014114,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.35,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
         "symbol": "IWM",
         "qty": 0.00135131,
         "avg": 296.01,
         "mark": 296.01,
-        "upnl": 0,
-        "notional": 0.4,
+        "upnl": 0.0,
+        "notional": 0.400001,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/IWM/",
         "urls": [
@@ -242,17 +518,59 @@
         ]
       },
       {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 9.4e-06,
+        "avg": 79775.395,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.7499,
+        "edge": "sat-night-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00726709,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "qty": 1,
+        "qty": 1.0,
         "avg": 0.5,
-        "mark": 0.5,
-        "upnl": 0,
-        "notional": 0.5,
+        "mark": 0.52,
+        "upnl": 0.02,
+        "notional": 0.52,
         "edge": "sat-kick",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
         "urls": [
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 2.88e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.2298,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
         ]
       },
       {
@@ -261,7 +579,7 @@
         "qty": 0.00437397,
         "avg": 91.45,
         "mark": 91.45,
-        "upnl": 0,
+        "upnl": 0.0,
         "notional": 0.4,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/BIL/",
@@ -270,17 +588,87 @@
         ]
       },
       {
+        "venue": "stocks",
+        "symbol": "IWM",
+        "qty": 0.00168913,
+        "avg": 296.01,
+        "mark": 296.01,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/IWM/",
+        "urls": [
+          "https://finance.yahoo.com/quote/IWM/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00014114,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.35,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
         "venue": "crypto",
         "symbol": "BTC-USD",
         "qty": 4.38e-06,
         "avg": 79851.885,
-        "mark": 79851.885,
-        "upnl": 0,
-        "notional": 0.3498,
+        "mark": 79777.265,
+        "upnl": -0.0003,
+        "notional": 0.3494,
         "edge": "sat-kick",
         "url": "https://www.coinbase.com/price/bitcoin",
         "urls": [
           "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00030248,
+        "avg": 2479.535,
+        "mark": 2479.83,
+        "upnl": 0.0001,
+        "notional": 0.7501,
+        "edge": "sat-night-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00726709,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "pumpfun_paper",
+        "symbol": "FARTCOIN",
+        "qty": 0.88011696,
+        "avg": 0.171,
+        "mark": 0.171,
+        "upnl": 0.0,
+        "notional": 0.1505,
+        "edge": "pumpfun-paper-explore",
+        "url": "https://finance.yahoo.com/",
+        "urls": [
+          "https://finance.yahoo.com/"
         ]
       },
       {
@@ -289,8 +677,8 @@
         "qty": 0.00045443,
         "avg": 770.19,
         "mark": 770.19,
-        "upnl": 0,
-        "notional": 0.35,
+        "upnl": 0.0,
+        "notional": 0.349997,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
@@ -298,13 +686,27 @@
         ]
       },
       {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 3.13e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.2497,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP06-B75.5",
         "qty": 1.9565,
         "avg": 0.23,
-        "mark": 0.23,
-        "upnl": 0,
-        "notional": 0.45,
+        "mark": 0.26,
+        "upnl": 0.058695,
+        "notional": 0.50869,
         "edge": "sat-kick",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
         "urls": [
@@ -313,16 +715,408 @@
       },
       {
         "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.00064919,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 9.731e-05,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.2413,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
         "symbol": "QQQ",
         "qty": 0.00048681,
         "avg": 718.96,
         "mark": 718.96,
-        "upnl": 0,
-        "notional": 0.35,
+        "upnl": 0.0,
+        "notional": 0.349997,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/QQQ/",
         "urls": [
           "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "GLD",
+        "qty": 0.00184379,
+        "avg": 406.77,
+        "mark": 406.77,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00726709,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 3.13e-06,
+        "avg": 79775.395,
+        "mark": 79775.395,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "sat-night-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.0003246,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "A1-VWAP-MR-paper",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00010081,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.00064919,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00020163,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00242236,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00030248,
+        "avg": 2479.535,
+        "mark": 2479.83,
+        "upnl": 0.0001,
+        "notional": 0.7501,
+        "edge": "sat-night-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00726709,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 6.27e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.5002,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.0024226,
+        "avg": 103.195,
+        "mark": 103.195,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "sat-night-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "QQQ",
+        "qty": 0.00034772,
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "A1-VWAP-MR-paper",
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 3.13e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.2497,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "QQQ",
+        "qty": 0.00069545,
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00020163,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00242236,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "qty": 1.4151,
+        "avg": 0.53,
+        "mark": 0.52,
+        "upnl": -0.0142,
+        "notional": 0.7359,
+        "edge": "sat-night-live",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00726709,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 6.27e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.5002,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "TLT",
+        "qty": 0.00304099,
+        "avg": 82.21,
+        "mark": 82.21,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/TLT/",
+        "urls": [
+          "https://finance.yahoo.com/quote/TLT/"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.0003246,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "A1-VWAP-MR-paper",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 3.13e-06,
+        "avg": 79777.265,
+        "mark": 79777.265,
+        "upnl": 0.0,
+        "notional": 0.2497,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "GLD",
+        "qty": 0.0012292,
+        "avg": 406.77,
+        "mark": 406.77,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00020163,
+        "avg": 2479.805,
+        "mark": 2479.805,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00242236,
+        "avg": 103.205,
+        "mark": 103.205,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "holiday-sizeup-live",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
         ]
       }
     ],
@@ -335,10 +1129,27 @@
         "side": "buy",
         "qty": 5.64e-06,
         "px": 79851.885,
+        "notional_usd": 0.4504,
         "edge": "sat-kick",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
           "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-01-F002",
+        "ts": "2026-09-05T18:27:18-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00010081,
+        "px": 2479.805,
+        "notional_usd": 0.25,
+        "edge": "holiday-sizeup-live",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
         ]
       },
@@ -350,10 +1161,42 @@
         "side": "buy",
         "qty": 0.00058427,
         "px": 770.19,
+        "notional_usd": 0.45,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "id": "SWM-02-F002",
+        "ts": "2026-09-05T18:25:57-0500",
+        "venue": "stocks",
+        "symbol": "TLT",
+        "side": "buy",
+        "qty": 0.00608199,
+        "px": 82.21,
+        "notional_usd": 0.5,
+        "edge": "sat-night-live",
+        "url": "https://finance.yahoo.com/quote/TLT/",
+        "urls": [
+          "https://finance.yahoo.com/quote/TLT/"
+        ]
+      },
+      {
+        "id": "SWM-02-F003",
+        "ts": "2026-09-05T18:27:18-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00012098,
+        "px": 2479.805,
+        "notional_usd": 0.3,
+        "edge": "holiday-sizeup-live",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       },
       {
@@ -364,10 +1207,43 @@
         "side": "buy",
         "qty": 0.0006259,
         "px": 718.96,
+        "notional_usd": 0.45,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/QQQ/",
         "urls": [
           "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      },
+      {
+        "id": "SWM-03-F002",
+        "ts": "2026-09-05T18:25:57-0500",
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "side": "buy",
+        "qty": 0.00726779,
+        "px": 103.195,
+        "notional_usd": 0.75,
+        "edge": "sat-night-live",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-03-F003",
+        "ts": "2026-09-05T18:27:18-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 9.4e-06,
+        "px": 79777.265,
+        "notional_usd": 0.7499,
+        "edge": "holiday-sizeup-live",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       },
       {
@@ -378,10 +1254,27 @@
         "side": "buy",
         "qty": 0.00018118,
         "px": 2483.715,
+        "notional_usd": 0.45,
         "edge": "sat-kick",
         "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
         "urls": [
           "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-04-F002",
+        "ts": "2026-09-05T18:27:18-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 3.13e-06,
+        "px": 79777.265,
+        "notional_usd": 0.2497,
+        "edge": "holiday-sizeup-live",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
         ]
       },
@@ -393,6 +1286,7 @@
         "side": "buy",
         "qty": 0.00098336,
         "px": 406.77,
+        "notional_usd": 0.4,
         "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/GLD/",
         "urls": [
@@ -400,913 +1294,311 @@
         ]
       },
       {
-        "id": "SWM-06-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "stocks",
-        "symbol": "IWM",
-        "side": "buy",
-        "qty": 0.00135131,
-        "px": 296.01,
-        "edge": "sat-kick",
-        "url": "https://finance.yahoo.com/quote/IWM/",
-        "urls": [
-          "https://finance.yahoo.com/quote/IWM/"
-        ]
-      },
-      {
-        "id": "SWM-07-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "side": "buy",
-        "qty": 1,
-        "px": 0.5,
-        "edge": "sat-kick",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
-        "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
-          "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
-        ]
-      },
-      {
-        "id": "SWM-08-F001",
-        "ts": "2026-09-05T16:41:40-0500",
+        "id": "SWM-05-F002",
+        "ts": "2026-09-05T18:25:57-0500",
         "venue": "stocks",
         "symbol": "BIL",
         "side": "buy",
-        "qty": 0.00437397,
+        "qty": 0.00546747,
         "px": 91.45,
-        "edge": "sat-kick",
+        "notional_usd": 0.5,
+        "edge": "sat-night-live",
         "url": "https://finance.yahoo.com/quote/BIL/",
         "urls": [
           "https://finance.yahoo.com/quote/BIL/"
-        ]
-      },
-      {
-        "id": "SWM-09-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "buy",
-        "qty": 4.38e-06,
-        "px": 79851.885,
-        "edge": "sat-kick",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "SWM-10-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "stocks",
-        "symbol": "SPY",
-        "side": "buy",
-        "qty": 0.00045443,
-        "px": 770.19,
-        "edge": "sat-kick",
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
-        "id": "SWM-11-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B75.5",
-        "side": "buy",
-        "qty": 1.9565,
-        "px": 0.23,
-        "edge": "sat-kick",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
-        "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
-          "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
-        ]
-      },
-      {
-        "id": "SWM-12-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "stocks",
-        "symbol": "QQQ",
-        "side": "buy",
-        "qty": 0.00048681,
-        "px": 718.96,
-        "edge": "sat-kick",
-        "url": "https://finance.yahoo.com/quote/QQQ/",
-        "urls": [
-          "https://finance.yahoo.com/quote/QQQ/"
         ]
       }
     ],
     "agents": [
       {
         "id": "SWM-01",
-        "equity": 4.995,
-        "cash_usd": 4.5446,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.989613,
+        "cash_usd": 4.2896,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "BTC-USD",
-            "venue": "crypto",
-            "qty": 5.64e-06,
-            "avg_px": 79851.885,
-            "mark_px": 79851.885,
-            "notional_usd": 0.4504,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-01-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-01-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 5.64e-06,
-            "px": 79851.885,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4504,
-            "thesis": "Sat kick swarm SWM-01: liquid BTC. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-01",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.2077,
+        "starting_cash_usd": 5.0,
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-02",
-        "equity": 4.995,
-        "cash_usd": 4.545,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.984999,
+        "cash_usd": 3.735,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "SPY",
-            "venue": "stocks",
-            "qty": 0.00058427,
-            "avg_px": 770.19,
-            "mark_px": 770.19,
-            "notional_usd": 0.45,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-02-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-02-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.00058427,
-            "px": 770.19,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-02: SPY ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-02",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-03",
-        "equity": 4.995,
-        "cash_usd": 4.545,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.9851,
+        "cash_usd": 3.0351,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "QQQ",
-            "venue": "stocks",
-            "qty": 0.0006259,
-            "avg_px": 718.96,
-            "mark_px": 718.96,
-            "notional_usd": 0.45,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-03-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-03-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "QQQ",
-            "side": "buy",
-            "qty": 0.0006259,
-            "px": 718.96,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-03: QQQ ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-03",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.298,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-04",
-        "equity": 4.995,
-        "cash_usd": 4.545,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.989302,
+        "cash_usd": 4.2903,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "ETH-USD",
-            "venue": "crypto",
-            "qty": 0.00018118,
-            "avg_px": 2483.715,
-            "mark_px": 2483.715,
-            "notional_usd": 0.45,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-04-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-04-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00018118,
-            "px": 2483.715,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-04: ETH spot. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-04",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.214,
+        "starting_cash_usd": 5.0,
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-05",
-        "equity": 4.995,
-        "cash_usd": 4.595,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.985001,
+        "cash_usd": 3.735,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "GLD",
-            "venue": "stocks",
-            "qty": 0.00098336,
-            "avg_px": 406.77,
-            "mark_px": 406.77,
-            "notional_usd": 0.4,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-05-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-05-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "GLD",
-            "side": "buy",
-            "qty": 0.00098336,
-            "px": 406.77,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4,
-            "thesis": "Sat kick swarm SWM-05: GLD. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/GLD/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-05",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-06",
-        "equity": 4.995,
-        "cash_usd": 4.595,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.9849,
+        "cash_usd": 3.085,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "IWM",
-            "venue": "stocks",
-            "qty": 0.00135131,
-            "avg_px": 296.01,
-            "mark_px": 296.01,
-            "notional_usd": 0.4,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-06-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-06-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "IWM",
-            "side": "buy",
-            "qty": 0.00135131,
-            "px": 296.01,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4,
-            "thesis": "Sat kick swarm SWM-06: IWM. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/IWM/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-06",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.302,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-07",
-        "equity": 4.995,
-        "cash_usd": 4.495,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 5.01,
+        "cash_usd": 4.2602,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "KXHIGHNY-26SEP06-B73.5",
-            "venue": "kalshi_demo",
-            "qty": 1.0,
-            "avg_px": 0.5,
-            "mark_px": 0.5,
-            "notional_usd": 0.5,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-07-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-07-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXHIGHNY-26SEP06-B73.5",
-            "side": "buy",
-            "qty": 1.0,
-            "px": 0.5,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat kick swarm SWM-07: Kalshi demo 73-74F; NWS Sun 74F. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-07",
-            "edge": "sat-kick",
-            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-            "stamps": {
-              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
-              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
-            }
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": 0.2,
+        "starting_cash_usd": 5.0,
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-08",
-        "equity": 4.995,
-        "cash_usd": 4.595,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.985,
+        "cash_usd": 3.735,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "BIL",
-            "venue": "stocks",
-            "qty": 0.00437397,
-            "avg_px": 91.45,
-            "mark_px": 91.45,
-            "notional_usd": 0.4,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-08-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-08-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "BIL",
-            "side": "buy",
-            "qty": 0.00437397,
-            "px": 91.45,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4,
-            "thesis": "Sat kick swarm SWM-08: BIL T-bill ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/BIL/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-08",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-09",
-        "equity": 4.995,
-        "cash_usd": 4.6452,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.9795,
+        "cash_usd": 2.9797,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "BTC-USD",
-            "venue": "crypto",
-            "qty": 4.38e-06,
-            "avg_px": 79851.885,
-            "mark_px": 79851.885,
-            "notional_usd": 0.3498,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-09-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-09-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 4.38e-06,
-            "px": 79851.885,
-            "fees_sim": 0.005,
-            "notional_usd": 0.3498,
-            "thesis": "Sat kick swarm SWM-09: BTC lean. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-09",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.41,
+        "starting_cash_usd": 5.0,
+        "open_positions": 4,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-10",
-        "equity": 4.995,
-        "cash_usd": 4.645,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.989997,
+        "cash_usd": 4.3903,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "SPY",
-            "venue": "stocks",
-            "qty": 0.00045443,
-            "avg_px": 770.19,
-            "mark_px": 770.19,
-            "notional_usd": 0.35,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-10-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-10-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.00045443,
-            "px": 770.19,
-            "fees_sim": 0.005,
-            "notional_usd": 0.35,
-            "thesis": "Sat kick swarm SWM-10: SPY lean. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-10",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.2001,
+        "starting_cash_usd": 5.0,
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-11",
-        "equity": 4.995,
-        "cash_usd": 4.545,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 5.04369,
+        "cash_usd": 3.7937,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "KXHIGHNY-26SEP06-B75.5",
-            "venue": "kalshi_demo",
-            "qty": 1.9565,
-            "avg_px": 0.23,
-            "mark_px": 0.23,
-            "notional_usd": 0.45,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-11-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-11-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXHIGHNY-26SEP06-B75.5",
-            "side": "buy",
-            "qty": 1.9565,
-            "px": 0.23,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-11: Kalshi demo 75-76F (OTM vs NWS 74) \u2014 tiny contrary paper. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-11",
-            "edge": "sat-kick",
-            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-            "stamps": {
-              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
-              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
-            }
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": 0.8738,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-12",
-        "equity": 4.995,
-        "cash_usd": 4.645,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": -0.005,
-        "return_pct": -0.1,
+        "equity": 4.985,
+        "cash_usd": 3.135,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [
-          {
-            "symbol": "QQQ",
-            "venue": "stocks",
-            "qty": 0.00048681,
-            "avg_px": 718.96,
-            "mark_px": 718.96,
-            "notional_usd": 0.35,
-            "unrealized_pnl_usd": 0.0,
-            "fill_ids": [
-              "SWM-12-F001"
-            ],
-            "edge": "sat-kick"
-          }
-        ],
-        "fills": [
-          {
-            "id": "SWM-12-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "QQQ",
-            "side": "buy",
-            "qty": 0.00048681,
-            "px": 718.96,
-            "fees_sim": 0.005,
-            "notional_usd": 0.35,
-            "thesis": "Sat kick swarm SWM-12: QQQ lean. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-12",
-            "edge": "sat-kick"
-          }
-        ],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-13",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.989,
+        "cash_usd": 4.239,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.22,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-14",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.985,
+        "cash_usd": 3.735,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-15",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.9851,
+        "cash_usd": 2.9848,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.298,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-16",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.989,
+        "cash_usd": 4.2393,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.22,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-17",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.985,
+        "cash_usd": 3.735,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-18",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.9709,
+        "cash_usd": 2.9848,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.582,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-19",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.989,
+        "cash_usd": 4.2393,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.22,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-20",
-        "equity": 5.0,
-        "cash_usd": 5.0,
-        "starting_cash_usd": 5.0,
-        "total_pnl_usd": 0.0,
-        "return_pct": 0.0,
+        "equity": 4.985,
+        "cash_usd": 3.735,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "open": [],
-        "fills": [],
-        "caps": {
-          "per_name_usd": 0.5,
-          "gross_usd": 1.25
-        },
-        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
+        "return_pct": -0.3,
+        "starting_cash_usd": 5.0,
+        "open_positions": 3,
+        "risk_allele": "balanced"
       }
     ],
     "living": 20,
     "dead": 0,
     "mr": {
       "label": "Swarm MR",
-      "starting_cash_usd": 0,
-      "cash_usd": 0,
-      "equity_usd": 0,
-      "total_pnl_usd": 0,
+      "starting_cash_usd": 0.0,
+      "cash_usd": 0.0,
+      "equity_usd": 0.0,
+      "total_pnl_usd": 0.0,
       "return_pct": 0,
       "open_positions": 0,
       "alive": false,
@@ -1317,21 +1609,55 @@
     },
     "event": {
       "label": "Swarm Event",
-      "starting_cash_usd": 0,
-      "cash_usd": 0,
-      "equity_usd": 0,
-      "total_pnl_usd": 0,
+      "starting_cash_usd": 0.0,
+      "cash_usd": 44.99,
+      "equity_usd": 49.8957,
+      "total_pnl_usd": -50.1043,
       "return_pct": 0,
-      "open_positions": 0,
+      "open_positions": 1,
       "alive": false,
       "parked": true,
       "lane": "calendar/event \u00b7 pool slice via agents",
-      "open": [],
-      "recent_fills": []
+      "open": [
+        {
+          "venue": "kalshi_demo",
+          "symbol": "KXHIGHNY-26SEP06-B73.5",
+          "qty": 9.434,
+          "avg": 0.53,
+          "mark": 0.52,
+          "upnl": -0.09434,
+          "notional": 4.90568,
+          "edge": "E3-event",
+          "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+          "urls": [
+            "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+          ]
+        }
+      ],
+      "recent_fills": [
+        {
+          "id": "SWME001",
+          "ts": "2026-09-05T18:22:22-0500",
+          "venue": "kalshi_demo",
+          "symbol": "KXHIGHNY-26SEP06-B73.5",
+          "side": "buy",
+          "qty": 9.434,
+          "px": 0.53,
+          "notional_usd": 5.0,
+          "edge": "E3-event",
+          "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "urls": [
+            "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+            "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP06",
+            "https://www.weather.gov/climate/",
+            "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+          ]
+        }
+      ]
     },
     "competition": "ACTIVE",
-    "pool_usd": 100,
-    "seed_usd": 5
+    "pool_usd": 100.0,
+    "seed_usd": 5.0
   },
   "grok": {
     "via": "grok-cli",
@@ -1417,32 +1743,114 @@
   "paper": {
     "label": "Main Desk",
     "mode": "PAPER",
-    "starting_cash_usd": 100,
-    "cash_usd": 81.9799,
-    "equity_usd": 99.9829,
-    "day_pnl_usd": -0.02,
-    "total_pnl_usd": -0.0171,
-    "return_pct": -0.0171,
-    "open_positions": 2,
+    "starting_cash_usd": 200.0,
+    "cash_usd": 142.6875,
+    "equity_usd": 185.6875,
+    "day_pnl_usd": -14.3125,
+    "total_pnl_usd": -14.3125,
+    "return_pct": -7.1562,
+    "open_positions": 3,
     "live_wallets": false,
     "gate": {
-      "open": true
+      "open": false
     },
     "confidence": {
-      "score": 0,
+      "score": 39,
       "live_ready": false,
-      "next": "Sat kick fills open \u00b7 weekday crons still for cadence"
+      "next": "2 closed \u00b7 eq $185.69 \u00b7 ret -7.1562% \u00b7 GATE CLOSED (L001) \u00b7 DD 7.2%"
     },
     "recent_fills": [
       {
+        "id": "F007",
+        "ts": "2026-09-05T18:18:18-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "side": "buy",
+        "qty": 28.3019,
+        "px": 0.53,
+        "edge": "E3",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "urls": [
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "id": "F006",
+        "ts": "2026-09-05T18:18:18-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "sell",
+        "qty": 78.9474,
+        "px": 0.01,
+        "pnl": -14.2263,
+        "edge": "E3",
+        "url": "https://api.weather.gov/stations/KNYC/observations",
+        "urls": [
+          "https://api.weather.gov/stations/KNYC/observations",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
+      },
+      {
+        "id": "F005",
+        "ts": "2026-09-04T23:42:05-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "buy",
+        "qty": 78.9474,
+        "px": 0.19,
+        "pnl": -14.2263,
+        "edge": "E3",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "urls": [
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
+          "https://www.weather.gov/climate/",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
+      },
+      {
+        "id": "F004",
+        "ts": "2026-09-04T23:42:05-05:00",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "sell",
+        "qty": 0.00022618,
+        "px": 79551.615,
+        "pnl": -0.0431,
+        "edge": "capacity",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "F003",
+        "ts": "2026-09-04T23:33:06-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-26SEP-H0",
+        "side": "buy",
+        "qty": 20.4082,
+        "px": 0.49,
+        "edge": "A2",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
+        ]
+      },
+      {
         "id": "F002",
-        "ts": "2026-09-05T16:41:40-0500",
+        "ts": "2026-09-04T23:25:22-05:00",
         "venue": "stocks",
         "symbol": "SPY",
         "side": "buy",
-        "qty": 0.01168543,
+        "qty": 0.02337086,
         "px": 770.19,
-        "edge": "sat-kick",
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
@@ -1450,13 +1858,13 @@
       },
       {
         "id": "F001",
-        "ts": "2026-09-05T16:41:40-0500",
+        "ts": "2026-09-04T23:25:22-05:00",
         "venue": "crypto",
         "symbol": "BTC-USD",
         "side": "buy",
-        "qty": 0.00011271,
-        "px": 79851.885,
-        "edge": "sat-kick",
+        "qty": 0.00022618,
+        "px": 79583.165,
+        "pnl": -0.0431,
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
           "https://api.coinbase.com/v2/prices/BTC-USD/spot",
@@ -1466,37 +1874,50 @@
     ],
     "open": [
       {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 0.00011271,
-        "avg": 79851.885,
-        "mark": 79877.235,
-        "upnl": 0.0029,
-        "notional": 9.003,
-        "edge": "sat-kick",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
         "venue": "stocks",
         "symbol": "SPY",
-        "qty": 0.01168543,
+        "qty": 0.02337086,
         "avg": 770.19,
         "mark": 770.19,
-        "upnl": 0,
-        "notional": 9,
-        "edge": "sat-kick",
+        "upnl": 0.0,
+        "notional": 18.0,
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-26SEP-H0",
+        "qty": 20.4082,
+        "avg": 0.49,
+        "mark": 0.49,
+        "upnl": 0.0,
+        "notional": 10.0,
+        "edge": "A2",
+        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep",
+        "urls": [
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
+        ]
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "qty": 28.3019,
+        "avg": 0.53,
+        "mark": 0.53,
+        "upnl": 0.0,
+        "notional": 15.0,
+        "edge": "E3",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
         ]
       }
     ]
   },
   "signals": {
-    "main": "green",
+    "main": "yellow",
     "trade_dev": "yellow",
     "swarm": "green",
     "grok": "green",

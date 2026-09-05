@@ -392,6 +392,23 @@ requestAnimationFrame(drawHive);
     var s=(Number(n)<0?'-':'')+'$'+Math.abs(Number(n)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     return s;
   }
+  function cashEq(cash, eq){
+    var c=(cash==null||isNaN(cash))?null:Number(cash);
+    var e=(eq==null||isNaN(eq))?null:Number(eq);
+    if(c!=null && e!=null) return money(c)+' c · '+money(e)+' e';
+    if(c!=null) return money(c)+' c';
+    if(e!=null) return money(e)+' e';
+    return '—';
+  }
+  function fillDollar(f){
+    if(!f) return '';
+    var n=f.notional_usd!=null?f.notional_usd:(f.notional!=null?f.notional:null);
+    if(n!=null && !isNaN(Number(n))) return money(Number(n));
+    var q=f.qty!=null?Number(f.qty):null, px=f.px!=null?Number(f.px):null;
+    if(q!=null && px!=null && !isNaN(q) && !isNaN(px)) return money(q*px);
+    if(px!=null && !isNaN(px)) return 'px '+px;
+    return '';
+  }
   function pnl(n){
     if(n==null||isNaN(n)) return '—';
     var v=Number(n); var sign=v>0?'+':(v<0?'':'');
@@ -487,8 +504,8 @@ requestAnimationFrame(drawHive);
     }
     feed.innerHTML=fills.slice(0,16).map(function(f){
       var side=(f.side||'').toUpperCase();
-      var px=f.px!=null?Number(f.px):null;
-      return '<div class="feedrow"><span class="sym">'+esc(f.symbol||'?')+'</span><span class="stage">'+esc(side)+' · '+esc(f.edge||f.venue||'')+'</span><span class="pct">'+(px!=null?px:'')+'</span></div>';
+      var dol=fillDollar(f);
+      return '<div class="feedrow"><span class="sym">'+esc(f.symbol||'?')+'</span><span class="stage">'+esc(side)+' · '+esc(f.edge||f.venue||'')+'</span><span class="pct">'+esc(dol)+'</span></div>';
     }).join('');
   }
   function paint(j){
@@ -498,10 +515,10 @@ requestAnimationFrame(drawHive);
     var td=j.trade_dev||{};
     var sw=j.swarm||{};
     var tEl=el('pd_trad'), dEl=el('pd_dev'), sEl=el('pd_swarm');
-    if(tEl) tEl.textContent=money(main.equity_usd);
-    if(dEl) dEl.textContent=money(td.equity_usd);
-    if(sEl) sEl.textContent=money(sw.pool_usd!=null?sw.pool_usd:sw.equity_usd);
-    var total=(Number(main.equity_usd)||0)+(Number(td.equity_usd)||0)+(Number(sw.pool_usd!=null?sw.pool_usd:sw.equity_usd)||0);
+    if(tEl) tEl.textContent=cashEq(main.cash_usd, main.equity_usd);
+    if(dEl) dEl.textContent=cashEq(td.cash_usd, td.equity_usd);
+    if(sEl) sEl.textContent=cashEq(sw.cash_usd, sw.equity_usd);
+    var total=(Number(main.equity_usd)||0)+(Number(td.equity_usd)||0)+(Number(sw.equity_usd)||0);
     var day=(Number(main.day_pnl_usd)||0)+(Number(td.day_pnl_usd)||0)+(Number(sw.day_pnl_usd)||0);
     var re=el('r_eq'); if(re) re.textContent=money(total);
     var rp=el('r_pnl');
@@ -529,14 +546,14 @@ requestAnimationFrame(drawHive);
     // Action log = chronological real fills all lanes
     var actions=[];
     (main.recent_fills||[]).forEach(function(f){
-      actions.push({ts:f.ts,lane:'TRAD',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · px '+(f.px!=null?f.px:'')});
+      actions.push({ts:f.ts,lane:'TRAD',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · '+(fillDollar(f)||('px '+(f.px!=null?f.px:'')))});
     });
     (td.recent_fills||[]).forEach(function(f){
-      actions.push({ts:f.ts,lane:'DEV',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · px '+(f.px!=null?f.px:'')});
+      actions.push({ts:f.ts,lane:'DEV',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · '+(fillDollar(f)||('px '+(f.px!=null?f.px:'')))});
     });
     (sw.agents||[]).forEach(function(a){
       (a.fills||[]).forEach(function(f){
-        actions.push({ts:f.ts,lane:'SWARM',sym:f.symbol||a.id,side:f.side,detail:a.id+' · '+(f.edge||'')});
+        actions.push({ts:f.ts,lane:'SWARM',sym:f.symbol||a.id,side:f.side,detail:a.id+' · '+(f.edge||'')+(fillDollar(f)?' · '+fillDollar(f):'')});
       });
       if(a.status==='dead' && a.died_at){
         actions.push({ts:a.died_at,lane:'SWARM',sym:a.id,side:'die',detail:'mortality · ret '+pct(a.return_pct)});
@@ -546,7 +563,7 @@ requestAnimationFrame(drawHive);
       }
     });
     (sw.recent_fills||[]).forEach(function(f){
-      actions.push({ts:f.ts,lane:'SWARM',sym:f.symbol,side:f.side,detail:(f.edge||f.agent_id||'')});
+      actions.push({ts:f.ts,lane:'SWARM',sym:f.symbol,side:f.side,detail:(f.edge||f.agent_id||'')+(fillDollar(f)?' · '+fillDollar(f):'')});
     });
     actions.sort(function(a,b){ return String(b.ts||'').localeCompare(String(a.ts||'')); });
     renderActionLog(actions);
