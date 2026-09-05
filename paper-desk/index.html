@@ -17,7 +17,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospace;font-size:12px;overflow:hidden;letter-spacing:.2px;-webkit-font-smoothing:antialiased}
-#stage{position:fixed;inset:0;display:grid;grid-template-rows:36px auto 22px 1fr 24px;
+#stage{position:fixed;inset:0;display:grid;grid-template-rows:36px auto auto 22px 1fr 24px;
   background:radial-gradient(1300px 680px at 50% 44%,rgba(20,241,149,.10),transparent 60%),radial-gradient(900px 500px at 8% 108%,rgba(12,180,120,.05),transparent 60%),var(--bg)}
 .mono2{font-family:'Azeret Mono',monospace}
 .honey{color:var(--honey-lite)}.grn{color:var(--grn)}.red{color:var(--red)}.dim{color:var(--dim)}
@@ -172,6 +172,13 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
     <div class="cell"><span class="k">DESK ONLINE</span><span class="v honey" id="r_ag">0 / 0</span></div>
     <div class="cell"><span class="k">HUMAN INPUT</span><span class="v grn" id="r_human">none</span></div>
   </div>
+  <div id="paper-strip">
+  <span class="lab">PAPER</span>
+  <span>TRAD <b id="pd_trad">—</b></span><span class="sep">·</span>
+  <span>DEV <b id="pd_dev">—</b></span><span class="sep">·</span>
+  <span>SWARM <b id="pd_swarm">—</b></span><span class="sep">·</span>
+  <span class="dim" id="pd_note">board.json · not live money</span>
+</div>
   <div id="tickertape"><span class="tag">SOL·DESK</span><div style="overflow:hidden;flex:1"><div id="ttrack"></div></div></div>
   <div id="grid">
     <div class="center panel"><div class="ph"><span class="t">THE FLOOR · MORTALITY SWARM</span><span class="htabs"><span class="on">DESK</span><span>FLOWS</span><span>FLOOR</span></span><span class="meta"><span id="hive_live">0</span> LIVE · <span id="hive_dead">0</span> DEAD</span></div><div class="pb"><div class="hivetitle"><span class="k">PAPER MORTALITY DESK</span><b>SWARM</b></div><canvas id="hive"></canvas></div></div>
@@ -189,8 +196,8 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
     </div>
   </div>
   <div id="foot">
-    <span class="fk red"><b>F1</b>KILL-DESK</span><span class="fk grn"><b>F2</b>SPAWN UNIT</span><span class="fk"><b>F3</b>SNIPE CFG</span><span class="fk"><b>F4</b>RUG FILTER</span><span class="fk"><b>F5</b>DRAIN VAULT</span>
-    <span class="spacer"></span><span class="tagline">19 UNITS · ONE GROKDESK · 0 HUMAN HANDS · SOLANA ·<span id="uptime" class="honey mono2">00:00:00</span> UPTIME</span>
+    <span class="fk"><b>F1</b>DESK</span><span class="fk"><b>F2</b>AGENTS</span><span class="fk"><b>F3</b>FILLS</span><span class="fk"><b>F4</b>OPEN</span><span class="fk"><b>F5</b>PAPER</span>
+    <span class="spacer"></span><span class="tagline">20 SWARM · TRAD+DEV · PAPER ONLY ·<span id="uptime" class="honey mono2">00:00:00</span> UPTIME</span>
   </div>
 </div>
 <div id="mega"><div class="bg"></div><div class="kick"></div><div class="big"></div></div>
@@ -202,7 +209,7 @@ const R=(a,b)=>a+Math.random()*(b-a),RI=(a,b)=>Math.floor(R(a,b+1)),pick=a=>a[RI
 const fmt=(n,d=0)=>n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const sign=n=>(n>=0?'+':'')+n;
 function hexRgba(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`;}
-const TOKENS=['$POPKAT','$WIFHAT','$MOGJR','$FROGX','$BONKR','$CATGOD','$NEIRA','$SHIBA9','$DOGWIF','$GIGAC','$SOLPAD','$MOONER','$PEPESOL','$CHUD','$GOATSE','$MICHIX','$BRETTO','$FWOGZ','$PMUTZ','$ACTX'];
+const TOKENS=['TRAD','DEV','SWARM','PAPER']; /* no fake meme tape */
 const AGENT_N=16;
 /* header */
 let equity=0,pnl=0,openPos=0,winRate=0,mpm=0,rugs=0,seen=0;
@@ -373,21 +380,10 @@ requestAnimationFrame(drawHive);requestAnimationFrame(drawChart);requestAnimatio
 
 <div id="paper-wm" aria-hidden="true">PAPER</div>
 <div id="paper-badge">PAPER</div>
-<div id="paper-strip">
-  <span class="lab">PAPER</span>
-  <span>TRAD <b id="pd_trad">—</b></span><span class="sep">·</span>
-  <span>DEV <b id="pd_dev">—</b></span><span class="sep">·</span>
-  <span>SWARM <b id="pd_swarm">—</b></span><span class="sep">·</span>
-  <span class="dim" id="pd_note">board.json · not live money</span>
-</div>
 <script>
 (function(){
   /* Move strip under ribbon without fighting GrokDesk layout */
-  try{
-    var ribbon=document.getElementById('ribbon');
-    var strip=document.getElementById('paper-strip');
-    if(ribbon&&strip) ribbon.insertAdjacentElement('afterend', strip);
-  }catch(e){}
+  /* paper-strip is a real #stage row — do not relocate */
   function money(n){
     if(n==null||isNaN(n)) return '—';
     var s=(Number(n)<0?'-':'')+'$'+Math.abs(Number(n)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
