@@ -188,6 +188,12 @@ function money(n){n=Number(n)||0;return (n<0?'-':'')+'$'+Math.abs(n).toLocaleStr
 function pct(n){n=Number(n)||0;return (n>=0?'+':'')+n.toFixed(3)+'%'}
 function cls(n){return (Number(n)||0)>=0?'pos':'neg'}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const FALLBACK='https://baja-board.vercel.app/paper-desk';
+const SYS_HREF={
+  vercel:FALLBACK, grok:'#grok', trade_dev:'#card-td', main:'#card-main',
+  trade_local:'#experiments', paper_local:'#card-main', openclaw:'#tower',
+  legal:'#tower', risk:'#tower', pnl:'#trial'
+};
 function safeUrl(u){
   try{
     const x=new URL(String(u||''));
@@ -198,24 +204,39 @@ function safeUrl(u){
   }catch(e){return ''}
 }
 function venueHref(row){
+  row=row||{};
   const u=safeUrl(row.url||row.evidence_url||(row.urls&&row.urls[0]));
   if(u) return u;
-  const s=String(row.symbol||'');
+  const s=String(row.symbol||row.id||'').trim();
   const v=String(row.venue||'').toLowerCase();
   if(s.startsWith('KX')||v.includes('kalshi')){
-    const series=s.split('-')[0].toLowerCase();
-    const ev=s.split('-').slice(0,2).join('-').toLowerCase();
+    const series=(s.split('-')[0]||'kalshi').toLowerCase();
+    const ev=s.split('-').slice(0,2).join('-').toLowerCase()||series;
     return 'https://kalshi.com/markets/'+series+'/'+ev;
   }
-  if(s.includes('BTC')) return 'https://www.coinbase.com/price/bitcoin';
-  if(/^[A-Z]{1,5}$/.test(s)) return 'https://finance.yahoo.com/quote/'+s+'/';
-  return '';
+  if(v.includes('poly')) return 'https://polymarket.com/';
+  if(s.includes('BTC')||v.includes('crypto')) return 'https://www.coinbase.com/price/bitcoin';
+  if(/^[A-Z][A-Z.]{0,9}$/.test(s)) return 'https://finance.yahoo.com/quote/'+encodeURIComponent(s)+'/';
+  if(v.includes('stock')||v.includes('paper')) return 'https://finance.yahoo.com/';
+  if(s) return 'https://www.google.com/search?q='+encodeURIComponent(s);
+  return FALLBACK;
 }
 function a(href, text){
-  const u=safeUrl(href);
-  const t=esc(text);
-  if(!u) return t;
+  const t=esc(text==null||text===''? 'src' : text);
+  const h=String(href||'');
+  if(h.charAt(0)==='#') return `<a class="plain" href="${esc(h)}">${t}</a>`;
+  const u=safeUrl(h)||venueHref({url:h, symbol:text})||FALLBACK;
   return `<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`;
+}
+function eventHref(e){
+  e=e||{};
+  if(safeUrl(e.url)) return e.url;
+  const blob=String(e.label||'')+' '+String(e.detail||'');
+  const kx=blob.match(/KX[A-Z0-9-]+/);
+  if(kx) return venueHref({symbol:kx[0], venue:'kalshi'});
+  const known=blob.match(/\b(BTC-USD|BTC|SPY|QQQ|BIL|SHY)\b/);
+  if(known) return venueHref({symbol:known[1]});
+  return SYS_HREF[e.system]||'#tower';
 }
 async function fetchJson(urls){
   for(const u of urls){
@@ -231,7 +252,7 @@ function fillFills(el, rows){
   rows=rows||[];
   el.innerHTML=rows.length?rows.slice(0,8).map(f=>{
     const href=venueHref(f);
-    return `<tr><td>${a(href, f.id||'')}</td><td>${a(href, f.symbol||'')}</td><td>${esc(f.edge||f.side||'')}</td><td>${esc(f.px??'')}</td></tr>`;
+    return `<tr><td>${a(href, f.id||'fill')}</td><td>${a(href, f.symbol||'sym')}</td><td>${a(href, f.edge||f.side||'src')}</td><td>${esc(f.px??'')}</td></tr>`;
   }).join(''):'<tr><td colspan="4" class="label">None</td></tr>';
 }
 function bookOf(b, key){
@@ -260,8 +281,10 @@ function render(b, ops){
   if(b.disclaimer) $('disclaimer').textContent=b.disclaimer;
   const leader=d.leader||'tie';
   const pill=$('leader-pill');
-  pill.textContent=leader==='main'?'Leader: TRADITIONAL':leader==='trade_dev'?'Leader: CUTTING':leader==='swarm'?'Leader: SWARM':'Tied';
+  const leadHref=leader==='main'?'#card-main':leader==='trade_dev'?'#card-td':leader==='swarm'?'#card-sw':'#trial';
+  const leadTxt=leader==='main'?'Leader: TRADITIONAL':leader==='trade_dev'?'Leader: CUTTING':leader==='swarm'?'Leader: SWARM':'Tied';
   pill.className='leader'+(leader==='tie'?'':' win');
+  pill.innerHTML=a(leadHref, leadTxt);
   $('main-rp').textContent=pct(d.main_return_pct);
   $('td-rp').textContent=pct(d.trade_dev_return_pct);
   $('sw-rp').textContent=pct(d.swarm_return_pct);
@@ -278,15 +301,15 @@ function render(b, ops){
 
   const exps=b.experiments||ops.experiments||[];
   $('exp-list').innerHTML=exps.length?exps.map(e=>{
-    const links=(e.links||[]).map(l=>a(l.href, l.label||'src')).filter(Boolean);
-    if(!links.length && e.url) links.push(a(e.url,'source'));
-    return `<div class="exp">${a(e.url, e.id||'')}<span class="pill ${e.keep?'keep':'drop'}">${e.keep?'KEEP':'KILL'}</span><div>${esc(e.note||'')}</div><div class="label">${esc(e.next||'')}</div>${links.length?`<div class="links">${links.join('')}</div>`:''}</div>`;
+    const href=e.url||(e.id==='TD4'?'https://www.treasurydirect.gov/auctions/announcements-data-results/':'https://demo.kalshi.co/');
+    const links=(e.links&&e.links.length?e.links:[{label:'source',href}]).map(l=>a(l.href||href, l.label||'src'));
+    return `<div class="exp">${a(href, e.id||'TD')}<span class="pill ${e.keep?'keep':'drop'}">${e.keep?'KEEP':'KILL'}</span><div>${esc(e.note||'')}</div><div class="label">${esc(e.next||'')}</div><div class="links">${links.join('')}</div></div>`;
   }).join(''):'<div class="label">No experiment notes yet</div>';
 
   const g=b.grok||ops.grok||{};
   const desk=g.desk||{};
-  $('grok-pill').textContent=(g.status||'wired')+' · CLI';
-  $('grok-via').textContent=(g.via||'grok-cli')+' · not Grok Bot';
+  $('grok-pill').innerHTML=a('#grok', (g.status||'wired')+' · CLI');
+  $('grok-via').innerHTML=a('#grok', (g.via||'grok-cli')+' · not Grok Bot');
   $('grok-at').textContent=g.at||'—';
   $('grok-note').textContent=desk.note||g.note||'Cloud seat for stamps + experiments.';
   $('grok-block').textContent=desk.blockers||g.blockers||'—';
@@ -298,18 +321,19 @@ function render(b, ops){
     {id:'trade_local',name:'trade-dev',role:'local',status:'cron'},
     {id:'grok',name:'Grok CLI',role:'stamps',status:'wired'}
   ];
-  const sysHref={vercel:'https://baja-board.vercel.app/paper-desk',grok:'#grok',trade_dev:'#card-td',main:'#card-main',trade_local:'#experiments',paper_local:'#card-main'};
   $('systems').innerHTML=systems.map(s=>{
-    const href=sysHref[s.id];
-    const name=href? (String(href).startsWith('http')? a(href,s.name): `<a class="plain" href="${esc(href)}">${esc(s.name)}</a>`) : esc(s.name);
-    return `<div class="chip"><b>${name}</b><div class="role">${esc(s.role||'')} · ${esc(s.status||'')}</div></div>`;
+    const href=SYS_HREF[s.id]||'#tower';
+    return `<div class="chip"><b>${a(href,s.name||s.id||'sys')}</b><div class="role">${esc(s.role||'')} · ${esc(s.status||'')}</div></div>`;
   }).join('');
   $('bottlenecks').innerHTML=(ops.bottlenecks||[]).map(x=>`<div class="bn ${x.severity||''}"><b>${x.severity||''}</b> — ${x.text}</div>`).join('')||'<div class="label">—</div>';
   const c=(ops.confidence||main.confidence||{}), bars=c.bars||{};
   $('conf').innerHTML=`<div class="row"><span class="label">Score</span><span class="val">${c.score??'—'}/80</span></div>
     <div class="row"><span class="label">Closed</span><span class="val">${bars.trades_closed??0}</span></div>
     <div class="row"><span class="label">LIVE-READY</span><span class="val">no</span></div>`;
-  $('feed').innerHTML=(ops.events||[]).slice(0,24).map(e=>`<div class="ev"><div class="when">${String(e.ts||'').replace('T',' ').slice(5,19)}</div><div><span class="sys">${e.system||''}</span><b>${e.label||e.kind||''}</b><div class="label">${e.detail||''}</div></div></div>`).join('')||'—';
+  $('feed').innerHTML=(ops.events||[]).slice(0,24).map(e=>{
+    const href=eventHref(e);
+    return `<div class="ev"><div class="when">${esc(String(e.ts||'').replace('T',' ').slice(5,19))}</div><div>${a(SYS_HREF[e.system]||'#tower', e.system||'sys')} <b>${a(href, e.label||e.kind||'event')}</b><div class="label">${esc(e.detail||'')}</div></div></div>`;
+  }).join('')||'—';
 
   if(b.burn){
     $('house').classList.remove('hidden');

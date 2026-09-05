@@ -43,7 +43,8 @@
         "urls": [
           "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
-          "https://www.weather.gov/climate/"
+          "https://www.weather.gov/climate/",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
       {
@@ -58,7 +59,8 @@
         "edge": "capacity",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       },
       {
@@ -73,7 +75,8 @@
         "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
         "urls": [
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
-          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html"
+          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
         ]
       },
       {
@@ -100,7 +103,8 @@
         "pnl": -0.0431,
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       }
     ],
@@ -112,7 +116,11 @@
         "avg": 770.19,
         "mark": 770.19,
         "upnl": 0.0,
-        "notional": 18.0
+        "notional": 18.0,
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
         "venue": "kalshi_demo",
@@ -121,7 +129,11 @@
         "avg": 0.49,
         "mark": 0.49,
         "upnl": 0.0,
-        "notional": 10.0
+        "notional": 10.0,
+        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep",
+        "urls": [
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
+        ]
       },
       {
         "venue": "kalshi_demo",
@@ -130,7 +142,11 @@
         "avg": 0.19,
         "mark": 0.18,
         "upnl": -0.7895,
-        "notional": 14.2105
+        "notional": 14.2105,
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep05",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
       }
     ]
   },
@@ -167,7 +183,8 @@
         "urls": [
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
           "https://nextpredict.io/market-news/industry/kalshi-reins-weather-market-rules-manipulation-concerns/",
-          "https://help.kalshi.com/en/articles/13823837-weather-markets"
+          "https://help.kalshi.com/en/articles/13823837-weather-markets",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
       {
@@ -183,7 +200,8 @@
         "urls": [
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=40&status=open&event_ticker=KXPAYROLLS-26SEP",
           "https://kalshi-public-docs.s3.amazonaws.com/contract_terms/PAYROLLS.pdf",
-          "https://www.bls.gov/news.release/empsit.htm"
+          "https://www.bls.gov/news.release/empsit.htm",
+          "https://kalshi.com/markets/kxpayrolls/kxpayrolls-26sep"
         ]
       },
       {
@@ -199,7 +217,8 @@
         "urls": [
           "https://www.newsquawk.com/headlines/us-sells-4-week-bills-at-a-high-rate-of-3700-bc-297x-sells-8-week-bills-at-a-high-rate-of-3750-bc-302x",
           "https://www.treasurydirect.gov/auctions/announcements-data-results/",
-          "https://query1.finance.yahoo.com/v8/finance/chart/BIL?range=1d&interval=1m"
+          "https://query1.finance.yahoo.com/v8/finance/chart/BIL?range=1d&interval=1m",
+          "https://finance.yahoo.com/quote/BIL/"
         ]
       }
     ],
@@ -212,7 +231,11 @@
         "mark": 0.18,
         "upnl": -0.4211,
         "notional": 8.0,
-        "edge": "TD1"
+        "edge": "TD1",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep05",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
       },
       {
         "venue": "kalshi_demo",
@@ -222,7 +245,11 @@
         "mark": 0.25,
         "upnl": 0.0,
         "notional": 8.0,
-        "edge": "TD6"
+        "edge": "TD6",
+        "url": "https://kalshi.com/markets/kxpayrolls/kxpayrolls-26sep",
+        "urls": [
+          "https://kalshi.com/markets/kxpayrolls/kxpayrolls-26sep"
+        ]
       },
       {
         "venue": "stocks_paperMoney",
@@ -232,7 +259,11 @@
         "mark": 91.45,
         "upnl": 0.0,
         "notional": 7.0,
-        "edge": "TD4"
+        "edge": "TD4",
+        "url": "https://finance.yahoo.com/quote/BIL/",
+        "urls": [
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
       }
     ]
   },
@@ -314,7 +345,13 @@
       "keep": false,
       "note": "KILL \u2014 combo books thin / zero MVE.",
       "next": "Do not reopen.",
-      "url": "https://docs.kalshi.com/getting_started/demo_env"
+      "url": "https://docs.kalshi.com/getting_started/demo_env",
+      "links": [
+        {
+          "label": "source",
+          "href": "https://docs.kalshi.com/getting_started/demo_env"
+        }
+      ]
     },
     {
       "id": "TD4",
@@ -384,7 +421,8 @@
         "urls": [
           "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
-          "https://www.weather.gov/climate/"
+          "https://www.weather.gov/climate/",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
       {
@@ -399,7 +437,8 @@
         "edge": "capacity",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       },
       {
@@ -414,7 +453,8 @@
         "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
         "urls": [
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
-          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html"
+          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
         ]
       },
       {
@@ -441,7 +481,8 @@
         "pnl": -0.0431,
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       }
     ],
@@ -453,7 +494,11 @@
         "avg": 770.19,
         "mark": 770.19,
         "upnl": 0.0,
-        "notional": 18.0
+        "notional": 18.0,
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
         "venue": "kalshi_demo",
@@ -462,7 +507,11 @@
         "avg": 0.49,
         "mark": 0.49,
         "upnl": 0.0,
-        "notional": 10.0
+        "notional": 10.0,
+        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep",
+        "urls": [
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
+        ]
       },
       {
         "venue": "kalshi_demo",
@@ -471,7 +520,11 @@
         "avg": 0.19,
         "mark": 0.18,
         "upnl": -0.7895,
-        "notional": 14.2105
+        "notional": 14.2105,
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep05",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
+        ]
       }
     ]
   },
