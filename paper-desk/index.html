@@ -215,7 +215,8 @@ const AGENT_N=16;
 let equity=0,pnl=0,openPos=0,winRate=0,mpm=0,rugs=0,seen=0;
 const startT=Date.now();
 function tick2(){const d=new Date();document.getElementById('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
-  const up=Math.floor((Date.now()-startT)/1000)+5027;document.getElementById('uptime').textContent=pad(Math.floor(up/3600))+':'+pad(Math.floor(up/60)%60)+':'+pad(up%60);}
+  const up=Math.floor((Date.now()-startT)/1000);document.getElementById('uptime').textContent=pad(Math.floor(up/3600))+':'+pad(Math.floor(up/60)%60)+':'+pad(up%60);}
+tick2(); setInterval(tick2,1000);
 function statsTick(){ /* demo stats disabled — paper wire owns ribbon */ }
 /* ticker */
 (function(){const track=document.getElementById('ttrack');let html='';for(let k=0;k<2;k++)TOKENS.forEach(t=>{const p=R(-40,320),cls=p>=0?'up':'down';html+=`<span><span class="sym">${t}</span> <span class="${cls}">${sign(p.toFixed(1))}%</span></span>`;});track.innerHTML=html;let x=0;const w=track.scrollWidth/2;(function loop(){x-=0.6;if(-x>=w)x=0;track.style.transform=`translateX(${x}px)`;requestAnimationFrame(loop);})();})();
