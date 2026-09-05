@@ -81,12 +81,11 @@ async function fetchBoard(){
       const r=await fetch(u,{cache:'no-store'});
       if(!r.ok) throw new Error(u+' '+r.status);
       const j=await r.json();
-      if(j && (j.paper || j.ok===false)){
-        if(j.ok===false && j.board) return j.board;
-        if(j.paper) return j.board||j;
-        if(j.ok===false) throw new Error(j.error||'api');
-      }
-      return j;
+      if(j && j.empty) throw new Error('empty');
+      if(j && j.ok===false && !j.paper) throw new Error(j.error||'api');
+      if(j && j.paper) return j.board && j.board.paper ? j.board : j;
+      if(j && j.board && j.board.paper) return j.board;
+      throw new Error('no-paper');
     }catch(e){lastErr=e}
   }
   throw lastErr||new Error('no board');
