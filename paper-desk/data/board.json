@@ -1,31 +1,31 @@
 {
-  "updated_at": "2026-09-05T00:05:03-0500",
+  "updated_at": "2026-09-05T08:06:59-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
     "leader": "trade_dev",
     "stakes": "Winner stays \u00b7 loser goes \u00b7 paper money \u00b7 real competition",
-    "main_return_pct": -0.043,
-    "trade_dev_return_pct": -0.01
+    "main_return_pct": -0.4378,
+    "trade_dev_return_pct": -0.02
   },
   "main": {
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
-    "cash_usd": 156.9139,
-    "equity_usd": 199.9139,
+    "cash_usd": 156.9138,
+    "equity_usd": 199.1244,
     "day_pnl_usd": -0.0861,
-    "total_pnl_usd": -0.0861,
-    "return_pct": -0.043,
+    "total_pnl_usd": -0.8756,
+    "return_pct": -0.4378,
     "open_positions": 3,
     "live_wallets": false,
     "gate": {
       "open": true
     },
     "confidence": {
-      "score": 50,
+      "score": 52,
       "live_ready": false,
-      "next": "Need closed marks (BTC closed). LIVE-READY \u226580 + YES"
+      "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
     },
     "recent_fills": [
       {
@@ -98,17 +98,17 @@
         "mark": 0.49,
         "upnl": 0.0,
         "notional": 10.0,
-        "edge": "A2"
+        "edge": null
       },
       {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP05-B81.5",
         "qty": 78.9474,
         "avg": 0.19,
-        "mark": 0.19,
-        "upnl": 0.0,
+        "mark": 0.18,
+        "upnl": -0.7895,
         "notional": 15.0,
-        "edge": "E3"
+        "edge": null
       }
     ]
   },
@@ -116,12 +116,12 @@
     "label": "Trade Dev",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 91.99,
-    "equity_usd": 99.99,
-    "day_pnl_usd": -0.01,
-    "total_pnl_usd": -0.01,
-    "return_pct": -0.01,
-    "open_positions": 1,
+    "cash_usd": 83.98,
+    "equity_usd": 99.98,
+    "day_pnl_usd": -0.02,
+    "total_pnl_usd": -0.02,
+    "return_pct": -0.02,
+    "open_positions": 2,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -141,6 +141,16 @@
         "qty": 42.1053,
         "px": 0.19,
         "edge": "TD1"
+      },
+      {
+        "id": "TDF002",
+        "ts": "2026-09-05T08:06:21-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXPAYROLLS-26SEP-T100000",
+        "side": "buy",
+        "qty": 32.0,
+        "px": 0.25,
+        "edge": "TD6"
       }
     ],
     "open": [
@@ -149,10 +159,20 @@
         "symbol": "KXHIGHNY-26SEP05-B81.5",
         "qty": 42.1053,
         "avg": 0.19,
-        "mark": null,
-        "upnl": -8.0,
+        "mark": 0.18,
+        "upnl": -0.421,
         "notional": 8.0,
         "edge": "TD1"
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXPAYROLLS-26SEP-T100000",
+        "qty": 32.0,
+        "avg": 0.25,
+        "mark": null,
+        "upnl": null,
+        "notional": 8.0,
+        "edge": "TD6"
       }
     ]
   },
@@ -160,20 +180,20 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
-    "cash_usd": 156.9139,
-    "equity_usd": 199.9139,
+    "cash_usd": 156.9138,
+    "equity_usd": 199.1244,
     "day_pnl_usd": -0.0861,
-    "total_pnl_usd": -0.0861,
-    "return_pct": -0.043,
+    "total_pnl_usd": -0.8756,
+    "return_pct": -0.4378,
     "open_positions": 3,
     "live_wallets": false,
     "gate": {
       "open": true
     },
     "confidence": {
-      "score": 50,
+      "score": 52,
       "live_ready": false,
-      "next": "Need closed marks (BTC closed). LIVE-READY \u226580 + YES"
+      "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
     },
     "recent_fills": [
       {
@@ -246,17 +266,17 @@
         "mark": 0.49,
         "upnl": 0.0,
         "notional": 10.0,
-        "edge": "A2"
+        "edge": null
       },
       {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP05-B81.5",
         "qty": 78.9474,
         "avg": 0.19,
-        "mark": 0.19,
-        "upnl": 0.0,
+        "mark": 0.18,
+        "upnl": -0.7895,
         "notional": 15.0,
-        "edge": "E3"
+        "edge": null
       }
     ]
   },

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="robots" content="noindex"/>
+<title>Paper Desk · Ops</title>
+<style>
+:root{--bg:#0b0d10;--card:#141820;--text:#e8eaed;--muted:#8b93a0;--green:#3ddc97;--yellow:#f5c542;--red:#ff5c5c;--line:#232a35;--accent:#3d7eff;--purple:#b388ff}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;padding-bottom:40px}
+h1{font-size:1.15rem;margin:4px 0 2px}.sub{color:var(--muted);font-size:.8rem;margin-bottom:12px}
+a{color:var(--accent);text-decoration:none}
+.layout{display:grid;gap:12px}@media(min-width:960px){.layout{grid-template-columns:1.2fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.banner{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.pill{font-size:.7rem;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.pill.on{color:var(--green);border-color:#2a5}
+.map{position:relative;min-height:340px;background:#0f131a;border-radius:12px;border:1px solid var(--line);overflow:hidden}
+svg.flows{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.node{position:absolute;width:118px;padding:8px;border-radius:10px;border:1px solid var(--line);background:#1a2030;font-size:.68rem;text-align:center;transform:translate(-50%,-50%)}
+.node b{display:block;font-size:.72rem;margin-bottom:2px}
+.node .role{color:var(--muted);font-size:.62rem;line-height:1.2}
+.node.live{border-color:#2a5;box-shadow:0 0 12px #2a54}
+.node.gate{border-color:#856}.node.cloud{border-color:#3d7eff}.node.cron{border-color:#b388ff}
+.pulse{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.feed{max-height:420px;overflow:auto}
+.ev{display:grid;grid-template-columns:72px 1fr;gap:6px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.72rem}
+.ev .when{color:var(--muted);font-size:.65rem}
+.ev .sys{display:inline-block;padding:1px 6px;border-radius:99px;border:1px solid var(--line);font-size:.62rem;margin-right:4px}
+.sys.main,.sys.trade_dev{color:var(--green)}.sys.legal,.sys.risk{color:var(--yellow)}.sys.openclaw{color:var(--purple)}.sys.grok{color:var(--accent)}
+.footer{margin-top:12px;color:var(--muted);font-size:.68rem}
+</style>
+</head>
+<body>
+<h1>Ops map</h1>
+<div class="sub"><a href="./">Duel board</a> · live systems · <span id="updated">…</span></div>
+<div class="banner">
+  <span class="pill on" id="stakes">Winner stays · loser goes</span>
+  <span class="pill" id="leader">leader —</span>
+  <span class="pill" id="ends">ends —</span>
+</div>
+<div class="layout">
+  <div class="card">
+    <div class="label" style="color:var(--muted);font-size:.78rem;margin-bottom:8px">How work flows</div>
+    <div class="map" id="map">
+      <svg class="flows" id="flows"></svg>
+    </div>
+  </div>
+  <div class="card">
+    <div style="color:var(--muted);font-size:.78rem;margin-bottom:8px">Recent activity</div>
+    <div class="feed" id="feed"></div>
+  </div>
+</div>
+<div class="footer" id="disclaimer">Paper ops visualization. Fake money. No personal data.</div>
+<script>
+const POS={
+  openclaw:[18,22], paper_local:[18,48], trade_local:[18,74],
+  main:[50,28], trade_dev:[50,62],
+  legal:[78,22], risk:[78,48], pnl:[78,74],
+  vercel:[50,90], grok:[82,90]
+};
+const $=id=>document.getElementById(id);
+async function load(){
+  let d;
+  try{d=await (await fetch('data/activity.json?t='+Date.now(),{cache:'no-store'})).json()}
+  catch(e){ $('updated').textContent='offline'; return }
+  $('updated').textContent='upd '+(d.updated_at||'—');
+  if(d.disclaimer) $('disclaimer').textContent=d.disclaimer;
+  const du=d.duel||{};
+  $('stakes').textContent=du.stakes||'Winner stays · loser goes';
+  $('leader').textContent='leader '+(du.leader||'—')+' · main '+(du.main_return_pct??'—')+'% · td '+(du.trade_dev_return_pct??'—')+'%';
+  $('ends').textContent='ends '+String(du.ends_at||'').slice(0,16).replace('T',' ');
+  const map=$('map');
+  [...map.querySelectorAll('.node')].forEach(n=>n.remove());
+  (d.systems||[]).forEach(s=>{
+    const [x,y]=POS[s.id]||[50,50];
+    const el=document.createElement('div');
+    el.className='node '+(s.status||'')+(s.status==='live'?' pulse':'');
+    el.style.left=x+'%'; el.style.top=y+'%';
+    el.innerHTML=`<b>${s.name}</b><div class="role">${s.role}</div>`;
+    map.appendChild(el);
+  });
+  const svg=$('flows');
+  const W=map.clientWidth||600, H=map.clientHeight||340;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML='';
+  (d.flows||[]).forEach(f=>{
+    const a=POS[f.from], b=POS[f.to]; if(!a||!b) return;
+    const x1=a[0]/100*W, y1=a[1]/100*H, x2=b[0]/100*W, y2=b[1]/100*H;
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('stroke','#3d7eff55'); line.setAttribute('stroke-width','1.5');
+    svg.appendChild(line);
+  });
+  const feed=$('feed');
+  feed.innerHTML=(d.events||[]).map(e=>{
+    const when=String(e.ts||'').replace('T',' ').slice(5,19);
+    return `<div class="ev"><div class="when">${when}</div><div><span class="sys ${e.system}">${e.system}</span><b>${e.label||e.kind}</b><div style="color:var(--muted)">${e.detail||''}</div></div></div>`;
+  }).join('')||'<div class="when">No events yet</div>';
+}
+load(); setInterval(load,5000); addEventListener('resize', load);
+</script>
+</body>
+</html>
