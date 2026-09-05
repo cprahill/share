@@ -1330,7 +1330,7 @@
       "recent_fills": []
     },
     "competition": "ACTIVE",
-    "pool_usd": 100.0,
+    "pool_usd": 100,
     "seed_usd": 5
   },
   "grok": {

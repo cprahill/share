@@ -123,7 +123,7 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
 #foot .fk b{color:var(--honey-lite);font-weight:700}
 #foot .fk.red b{color:var(--red)}#foot .fk.grn b{color:var(--grn)}
 #foot .spacer{flex:1}#foot .tagline{padding:0 12px;color:var(--dim);letter-spacing:1px}
-#mega{display:none!important;position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;background:rgba(3,8,10,.8)}
+#mega,.mega{display:none!important;opacity:0!important;pointer-events:none!important;position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;background:rgba(3,8,10,.8)}
 #mega.show{animation:megain 2.5s cubic-bezier(.2,.8,.2,1) forwards}
 #mega .bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--mc,#14f195) 18%, transparent), transparent 62%)}
 #mega .kick{position:relative;font-size:30px;letter-spacing:16px;font-weight:700;color:#eafffb;text-shadow:0 0 18px var(--mc,#14f195);margin-bottom:12px;font-family:'IBM Plex Mono',monospace}
@@ -205,7 +205,7 @@ function hexRgba(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>
 const TOKENS=['$POPKAT','$WIFHAT','$MOGJR','$FROGX','$BONKR','$CATGOD','$NEIRA','$SHIBA9','$DOGWIF','$GIGAC','$SOLPAD','$MOONER','$PEPESOL','$CHUD','$GOATSE','$MICHIX','$BRETTO','$FWOGZ','$PMUTZ','$ACTX'];
 const AGENT_N=16;
 /* header */
-let equity=44.28,pnl=15.92,openPos=7,winRate=62,mpm=38,rugs=300,seen=11200;
+let equity=0,pnl=0,openPos=0,winRate=0,mpm=0,rugs=0,seen=0;
 const startT=Date.now();
 function tick2(){const d=new Date();document.getElementById('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
   const up=Math.floor((Date.now()-startT)/1000)+5027;document.getElementById('uptime').textContent=pad(Math.floor(up/3600))+':'+pad(Math.floor(up/60)%60)+':'+pad(up%60);}
@@ -352,14 +352,18 @@ function drawHive(){hf++;hx.clearRect(0,0,HW,HH);
     hx.strokeStyle=hexRgba(col,Math.min(1,.5+Math.sin(c.pulse)*.12+(c.hot||0)*.5));hx.lineWidth=(core?2.6:1.6)+(c.hot||0)*2.5;hx.stroke();
     hx.strokeStyle=hexRgba(col,.16+(c.hot||0)*.4);hx.lineWidth=glow+2+(c.hot||0)*4;hx.stroke();
     if((c.hot||0)>0.5){blobPath(c.x,c.y,rad+5,c.pulse);hx.strokeStyle=hexRgba(col,(c.hot-0.5)*.6);hx.lineWidth=2;hx.stroke();}
-    if(core){const lr=rad*0.6;if(logoImg.complete&&logoImg.naturalWidth){hx.save();hx.beginPath();hx.arc(c.x,c.y,lr,0,7);hx.clip();hx.drawImage(logoImg,c.x-lr,c.y-lr,lr*2,lr*2);hx.restore();hx.beginPath();hx.arc(c.x,c.y,lr,0,7);hx.strokeStyle='#14f195';hx.lineWidth=2.2;hx.shadowColor='#14f195';hx.shadowBlur=16;hx.stroke();hx.shadowBlur=0;}hx.fillStyle='#a6ffd9';hx.font='700 11px "IBM Plex Mono"';hx.textAlign='center';hx.fillText('GROK CORE',c.x,c.y+rad+14);}
+    if(core){const lr=rad*0.6;if(logoImg.complete&&logoImg.naturalWidth){hx.save();hx.beginPath();hx.arc(c.x,c.y,lr,0,7);hx.clip();hx.drawImage(logoImg,c.x-lr,c.y-lr,lr*2,lr*2);hx.restore();hx.beginPath();hx.arc(c.x,c.y,lr,0,7);hx.strokeStyle='#14f195';hx.lineWidth=2.2;hx.shadowColor='#14f195';hx.shadowBlur=16;hx.stroke();hx.shadowBlur=0;}hx.fillStyle='#a6ffd9';hx.font='700 11px "IBM Plex Mono"';hx.textAlign='center';hx.fillText('PAPER CORE',c.x,c.y+rad+14);}
     else if(c.role==='mem'){const s=SIZE*0.55,S=s/8,px=(a,b)=>({x:c.x+(a-8)*S,y:c.y+(b-8)*S});const f=[[[8,1.4],[13.6,6],[8,14.6],[2.4,6],'#17d488'],[[8,1.4],[13.6,6],[8,8.3],'#7cffcf'],[[8,1.4],[2.4,6],[8,8.3],'#0e9e6e'],[[2.4,6],[8,8.3],[8,14.6],'#06402a'],[[13.6,6],[8,8.3],[8,14.6],'#14b88a']];hx.save();hx.shadowColor='#0e9e6e';hx.shadowBlur=10;f.forEach(ff=>{hx.beginPath();for(let i=0;i<ff.length-1;i++){const p=px(ff[i][0],ff[i][1]);i?hx.lineTo(p.x,p.y):hx.moveTo(p.x,p.y);}hx.closePath();hx.fillStyle=ff[ff.length-1];hx.fill();});hx.restore();hx.fillStyle='#bff8e0';hx.font='700 9px "IBM Plex Mono"';hx.textAlign='center';hx.fillText('VAULT',c.x,c.y+SIZE*0.5+12);}
-    else{grok(c.x,c.y-SIZE*0.06,SIZE*0.34,col);hx.fillStyle='#cfe8e2';hx.font='700 8.5px "IBM Plex Mono"';hx.textAlign='center';hx.fillText(c.t,c.x,c.y+SIZE*0.5+3);if(c.role==='sn'||c.lane){hx.fillStyle=dead?'#ff5d6c':'#7cffcf';hx.font='600 7px "IBM Plex Mono"';var sub=dead?'DEAD':(c.equity!=null?'$'+Number(c.equity).toFixed(2):'');if(sub) hx.fillText(sub,c.x,c.y+SIZE*0.5+12);if(c.role==='sn'){hx.fillStyle='#7cffcf';hx.font='700 8px "Azeret Mono"';hx.fillText('+'+c.pnl.toFixed(0),c.x,c.y+SIZE*0.5+13);}}
+    else{grok(c.x,c.y-SIZE*0.06,SIZE*0.34,col);hx.fillStyle='#cfe8e2';hx.font='700 8.5px "IBM Plex Mono"';hx.textAlign='center';hx.fillText(c.t,c.x,c.y+SIZE*0.5+3);
+      hx.fillStyle=dead?'#ff5d6c':'#7cffcf';hx.font='600 7px "IBM Plex Mono"';
+      var sub=dead?'DEAD':(c.equity!=null?'$'+Number(c.equity).toFixed(2):(c.ret!=null?((c.ret>0?'+':'')+Number(c.ret).toFixed(1)+'%'):''));
+      if(sub) hx.fillText(sub,c.x,c.y+SIZE*0.5+12);
+    }
   });
   for(let i=packets.length-1;i>=0;i--){const p=packets[i];p.t+=0.045;const x=p.a.x+(p.b.x-p.a.x)*p.t,y=p.a.y+(p.b.y-p.a.y)*p.t;hx.beginPath();hx.moveTo(p.a.x,p.a.y);hx.lineTo(x,y);hx.strokeStyle=hexRgba(p.col,.4);hx.lineWidth=2;hx.stroke();hx.beginPath();hx.arc(x,y,4.5,0,7);hx.fillStyle=p.col;hx.shadowColor=p.col;hx.shadowBlur=16;hx.fill();hx.shadowBlur=0;if(p.t>=1)packets.splice(i,1);}
   for(let i=floaters.length-1;i>=0;i--){const f=floaters[i];f.t+=0.016;hx.fillStyle=hexRgba('#7cffcf',Math.max(0,1-f.t));hx.font='700 13px "Azeret Mono"';hx.textAlign='center';hx.fillText(f.txt,f.cell.x,f.cell.y-SIZE*0.35-f.t*46);if(f.t>=1)floaters.splice(i,1);}
   for(let i=alerts.length-1;i>=0;i--){const al=alerts[i];al.t+=0.011;const aa=Math.max(0,1-al.t*al.t),ax=al.cell.x,yy=al.cell.y-SIZE*0.8-al.t*26;hx.font='700 10.5px "IBM Plex Mono"';const w=hx.measureText(al.txt).width+18;hx.globalAlpha=aa;hx.fillStyle='rgba(6,14,15,.92)';if(hx.roundRect){hx.beginPath();hx.roundRect(ax-w/2,yy-10,w,19,4);hx.fill();}else hx.fillRect(ax-w/2,yy-10,w,19);hx.strokeStyle=al.col;hx.lineWidth=1.2;hx.stroke();hx.fillStyle=al.col;hx.textAlign='center';hx.fillText(al.txt,ax,yy+3.5);hx.globalAlpha=1;if(al.t>=1)alerts.splice(i,1);}
-  {const bm=cellByName['VAULT'];if(bm&&typeof vaultBal!=='undefined'){hx.save();hx.textAlign='center';hx.fillStyle=hexRgba('#7cffcf',.35);hx.font='700 9px "IBM Plex Mono"';hx.fillText('VAULT',bm.x,bm.y+SIZE*0.5+23);hx.fillStyle='#7cffcf';hx.font='700 12px "Azeret Mono"';hx.shadowColor='#14f195';hx.shadowBlur=8;hx.fillText(vaultBal.toFixed(2)+' SOL',bm.x,bm.y+SIZE*0.5+36);hx.shadowBlur=0;hx.restore();}}
+  /* vault SOL floater removed — real paper only */
   requestAnimationFrame(drawHive);}
 function resizeAll(){layoutHive();layoutChart();layoutRR();}
 window.addEventListener('resize',resizeAll);newFeatured();pushCandle();resizeAll();
