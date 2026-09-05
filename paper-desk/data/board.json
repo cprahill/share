@@ -507,222 +507,796 @@
       {
         "id": "SWM-01",
         "equity": 4.995,
+        "cash_usd": 4.5446,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "BTC-USD",
+            "venue": "crypto",
+            "qty": 5.64e-06,
+            "avg_px": 79851.885,
+            "mark_px": 79851.885,
+            "notional_usd": 0.4504,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-01-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-01-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "crypto",
+            "symbol": "BTC-USD",
+            "side": "buy",
+            "qty": 5.64e-06,
+            "px": 79851.885,
+            "fees_sim": 0.005,
+            "notional_usd": 0.4504,
+            "thesis": "Sat kick swarm SWM-01: liquid BTC. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-01",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-02",
         "equity": 4.995,
+        "cash_usd": 4.545,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "SPY",
+            "venue": "stocks",
+            "qty": 0.00058427,
+            "avg_px": 770.19,
+            "mark_px": 770.19,
+            "notional_usd": 0.45,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-02-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-02-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "SPY",
+            "side": "buy",
+            "qty": 0.00058427,
+            "px": 770.19,
+            "fees_sim": 0.005,
+            "notional_usd": 0.45,
+            "thesis": "Sat kick swarm SWM-02: SPY ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-02",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-03",
         "equity": 4.995,
+        "cash_usd": 4.545,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "QQQ",
+            "venue": "stocks",
+            "qty": 0.0006259,
+            "avg_px": 718.96,
+            "mark_px": 718.96,
+            "notional_usd": 0.45,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-03-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-03-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "QQQ",
+            "side": "buy",
+            "qty": 0.0006259,
+            "px": 718.96,
+            "fees_sim": 0.005,
+            "notional_usd": 0.45,
+            "thesis": "Sat kick swarm SWM-03: QQQ ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-03",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-04",
         "equity": 4.995,
+        "cash_usd": 4.545,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "ETH-USD",
+            "venue": "crypto",
+            "qty": 0.00018118,
+            "avg_px": 2483.715,
+            "mark_px": 2483.715,
+            "notional_usd": 0.45,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-04-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-04-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "crypto",
+            "symbol": "ETH-USD",
+            "side": "buy",
+            "qty": 0.00018118,
+            "px": 2483.715,
+            "fees_sim": 0.005,
+            "notional_usd": 0.45,
+            "thesis": "Sat kick swarm SWM-04: ETH spot. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-04",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-05",
         "equity": 4.995,
+        "cash_usd": 4.595,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "GLD",
+            "venue": "stocks",
+            "qty": 0.00098336,
+            "avg_px": 406.77,
+            "mark_px": 406.77,
+            "notional_usd": 0.4,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-05-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-05-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "GLD",
+            "side": "buy",
+            "qty": 0.00098336,
+            "px": 406.77,
+            "fees_sim": 0.005,
+            "notional_usd": 0.4,
+            "thesis": "Sat kick swarm SWM-05: GLD. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/GLD/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-05",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-06",
         "equity": 4.995,
+        "cash_usd": 4.595,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "IWM",
+            "venue": "stocks",
+            "qty": 0.00135131,
+            "avg_px": 296.01,
+            "mark_px": 296.01,
+            "notional_usd": 0.4,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-06-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-06-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "IWM",
+            "side": "buy",
+            "qty": 0.00135131,
+            "px": 296.01,
+            "fees_sim": 0.005,
+            "notional_usd": 0.4,
+            "thesis": "Sat kick swarm SWM-06: IWM. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/IWM/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-06",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-07",
         "equity": 4.995,
+        "cash_usd": 4.495,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "KXHIGHNY-26SEP06-B73.5",
+            "venue": "kalshi_demo",
+            "qty": 1.0,
+            "avg_px": 0.5,
+            "mark_px": 0.5,
+            "notional_usd": 0.5,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-07-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-07-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "kalshi_demo",
+            "symbol": "KXHIGHNY-26SEP06-B73.5",
+            "side": "buy",
+            "qty": 1.0,
+            "px": 0.5,
+            "fees_sim": 0.005,
+            "notional_usd": 0.5,
+            "thesis": "Sat kick swarm SWM-07: Kalshi demo 73-74F; NWS Sun 74F. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-07",
+            "edge": "sat-kick",
+            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
+            "stamps": {
+              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
+              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
+            }
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-08",
         "equity": 4.995,
+        "cash_usd": 4.595,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "BIL",
+            "venue": "stocks",
+            "qty": 0.00437397,
+            "avg_px": 91.45,
+            "mark_px": 91.45,
+            "notional_usd": 0.4,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-08-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-08-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "BIL",
+            "side": "buy",
+            "qty": 0.00437397,
+            "px": 91.45,
+            "fees_sim": 0.005,
+            "notional_usd": 0.4,
+            "thesis": "Sat kick swarm SWM-08: BIL T-bill ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/BIL/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-08",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-09",
         "equity": 4.995,
+        "cash_usd": 4.6452,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "BTC-USD",
+            "venue": "crypto",
+            "qty": 4.38e-06,
+            "avg_px": 79851.885,
+            "mark_px": 79851.885,
+            "notional_usd": 0.3498,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-09-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-09-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "crypto",
+            "symbol": "BTC-USD",
+            "side": "buy",
+            "qty": 4.38e-06,
+            "px": 79851.885,
+            "fees_sim": 0.005,
+            "notional_usd": 0.3498,
+            "thesis": "Sat kick swarm SWM-09: BTC lean. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-09",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-10",
         "equity": 4.995,
+        "cash_usd": 4.645,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "SPY",
+            "venue": "stocks",
+            "qty": 0.00045443,
+            "avg_px": 770.19,
+            "mark_px": 770.19,
+            "notional_usd": 0.35,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-10-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-10-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "SPY",
+            "side": "buy",
+            "qty": 0.00045443,
+            "px": 770.19,
+            "fees_sim": 0.005,
+            "notional_usd": 0.35,
+            "thesis": "Sat kick swarm SWM-10: SPY lean. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-10",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-11",
         "equity": 4.995,
+        "cash_usd": 4.545,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "KXHIGHNY-26SEP06-B75.5",
+            "venue": "kalshi_demo",
+            "qty": 1.9565,
+            "avg_px": 0.23,
+            "mark_px": 0.23,
+            "notional_usd": 0.45,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-11-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-11-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "kalshi_demo",
+            "symbol": "KXHIGHNY-26SEP06-B75.5",
+            "side": "buy",
+            "qty": 1.9565,
+            "px": 0.23,
+            "fees_sim": 0.005,
+            "notional_usd": 0.45,
+            "thesis": "Sat kick swarm SWM-11: Kalshi demo 75-76F (OTM vs NWS 74) \u2014 tiny contrary paper. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-11",
+            "edge": "sat-kick",
+            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
+            "stamps": {
+              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
+              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
+            }
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-12",
         "equity": 4.995,
+        "cash_usd": 4.645,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": -0.005,
+        "return_pct": -0.1,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": -0.1,
-        "starting_cash_usd": 5
+        "open": [
+          {
+            "symbol": "QQQ",
+            "venue": "stocks",
+            "qty": 0.00048681,
+            "avg_px": 718.96,
+            "mark_px": 718.96,
+            "notional_usd": 0.35,
+            "unrealized_pnl_usd": 0.0,
+            "fill_ids": [
+              "SWM-12-F001"
+            ],
+            "edge": "sat-kick"
+          }
+        ],
+        "fills": [
+          {
+            "id": "SWM-12-F001",
+            "ts": "2026-09-05T16:41:40-0500",
+            "venue": "stocks",
+            "symbol": "QQQ",
+            "side": "buy",
+            "qty": 0.00048681,
+            "px": 718.96,
+            "fees_sim": 0.005,
+            "notional_usd": 0.35,
+            "thesis": "Sat kick swarm SWM-12: QQQ lean. Cap \u2264$0.50/name. PAPER. Not advice.",
+            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
+            "pnl": null,
+            "status": "open",
+            "agent_id": "SWM-12",
+            "edge": "sat-kick"
+          }
+        ],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-13",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-14",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-15",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-16",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-17",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-18",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-19",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       },
       {
         "id": "SWM-20",
-        "equity": 5,
+        "equity": 5.0,
+        "cash_usd": 5.0,
+        "starting_cash_usd": 5.0,
+        "total_pnl_usd": 0.0,
+        "return_pct": 0.0,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0,
-        "starting_cash_usd": 5
+        "open": [],
+        "fills": [],
+        "caps": {
+          "per_name_usd": 0.5,
+          "gross_usd": 1.25
+        },
+        "lane": "paper \u00b7 kalshi_demo/yahoo/coinbase \u00b7 lean"
       }
     ],
     "living": 20,
@@ -756,7 +1330,7 @@
       "recent_fills": []
     },
     "competition": "ACTIVE",
-    "pool_usd": 100,
+    "pool_usd": 100.0,
     "seed_usd": 5
   },
   "grok": {
