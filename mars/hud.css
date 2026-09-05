@@ -142,13 +142,13 @@ html.touch-on #speed-cluster,body.touch-on #speed-cluster{bottom:calc(200px + en
   html.touch-on #gate-dist,body.touch-on #gate-dist{font-size:16px}
   html.touch-on #lap-panel,body.touch-on #lap-panel{top:calc(62px + env(safe-area-inset-top,0px));left:calc(12px + env(safe-area-inset-left,0px))}
 html.touch-on #place-panel,body.touch-on #place-panel{
-    top:calc(48px + env(safe-area-inset-top,0px));
-    left:calc(8px + env(safe-area-inset-left,0px));
+    top:calc(108px + env(safe-area-inset-top,0px));
+    left:calc(12px + env(safe-area-inset-left,0px));
     min-width:100px;padding:6px 10px;
   }
   html.touch-on #coin-panel,body.touch-on #coin-panel{
-    top:calc(88px + env(safe-area-inset-top,0px));
-    left:calc(8px + env(safe-area-inset-left,0px));
+    top:calc(154px + env(safe-area-inset-top,0px));
+    left:calc(12px + env(safe-area-inset-left,0px));
     min-width:100px;padding:6px 10px;
   }
   html.touch-on #count,body.touch-on #count{font-size:72px;top:38%}
