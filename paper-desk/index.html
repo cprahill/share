@@ -276,23 +276,32 @@ function renderBook(prefix, b, lead){
 function render(b, ops){
   const d=b.duel||{};
   $('stakes').textContent=d.stakes||'Winner stays · loser goes';
-  $('ends').textContent=(d.ends_at||'2026-09-10').slice(0,16).replace('T',' ');
+  $('ends').textContent=(d.ends_at||d.thru||'2026-09-10').toString().slice(0,16).replace('T',' ');
   $('updated').textContent='upd '+(b.updated_at||ops.updated_at||'—');
   if(b.disclaimer) $('disclaimer').textContent=b.disclaimer;
-  const leader=d.leader||'tie';
+  const main=bookOf(b,'main'), td=bookOf(b,'td'), sw=bookOf(b,'sw');
+  // Prefer live 3-group board books when duel still carries stale 2-model fields
+  const mainRp = (d.main_return_pct!=null)? Number(d.main_return_pct) : Number(main.return_pct)||0;
+  const tdRp = (d.trade_dev_return_pct!=null)? Number(d.trade_dev_return_pct) : Number(td.return_pct)||0;
+  const swRp = (d.swarm_return_pct!=null)? Number(d.swarm_return_pct) : Number(sw.return_pct)||0;
+  let leader=d.leader||'tie';
+  if(d.swarm_return_pct==null || /2-model/i.test(String(d.mark_note||''))){
+    const rps={main:mainRp, trade_dev:tdRp, swarm:swRp};
+    const uniq=new Set(Object.values(rps).map(v=>Number(v.toFixed(4))));
+    leader = uniq.size===1 ? 'tie' : Object.keys(rps).sort((a,b)=>rps[b]-rps[a])[0];
+  }
   const pill=$('leader-pill');
   const leadHref=leader==='main'?'#card-main':leader==='trade_dev'?'#card-td':leader==='swarm'?'#card-sw':'#trial';
   const leadTxt=leader==='main'?'Leader: TRADITIONAL':leader==='trade_dev'?'Leader: CUTTING':leader==='swarm'?'Leader: SWARM':'Tied';
   pill.className='leader'+(leader==='tie'?'':' win');
   pill.innerHTML=a(leadHref, leadTxt);
-  $('main-rp').textContent=pct(d.main_return_pct);
-  $('td-rp').textContent=pct(d.trade_dev_return_pct);
-  $('sw-rp').textContent=pct(d.swarm_return_pct);
-  const main=bookOf(b,'main'), td=bookOf(b,'td'), sw=bookOf(b,'sw');
+  $('main-rp').textContent=pct(mainRp);
+  $('td-rp').textContent=pct(tdRp);
+  $('sw-rp').textContent=pct(swRp);
   renderBook('main', main, leader==='main');
   renderBook('td', td, leader==='trade_dev');
   renderBook('sw', sw, leader==='swarm');
-  const ev=sw.event||{}, mr=sw.mr||{};
+  const ev=sw.event||d.swarm_event||{}, mr=sw.mr||d.swarm_mr||{};
   $('sw-ev').textContent=ev.equity_usd!=null?`${money(ev.equity_usd)} · ${pct(ev.return_pct)}`:'$50 · flat';
   $('sw-mr').textContent=mr.equity_usd!=null?`${money(mr.equity_usd)} · ${pct(mr.return_pct)}`:'$50 · flat';
   const dd=Math.min(100, Math.max(0, Math.abs(Math.min(0, Number(sw.return_pct)||0))/15*100));

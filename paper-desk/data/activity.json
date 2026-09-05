@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T15:35:27-0500",
+  "updated_at": "2026-09-05T15:51:16-0500",
   "duel": {
     "leader": "swarm",
     "main_return_pct": -0.4378,
@@ -302,7 +302,7 @@
   },
   "events": [
     {
-      "ts": "2026-09-05T15:35:26-0500",
+      "ts": "2026-09-05T15:51:15-0500",
       "system": "openclaw",
       "kind": "tick",
       "label": "backbone --publish",
