@@ -187,10 +187,10 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
       <div class="panel"><div class="ph"><span class="t">OPEN · TRAD+DEV+SWARM</span><span class="meta"><span id="op_count">0</span> OPEN</span></div><div class="pb" style="overflow:auto"><table class="postbl"><thead><tr><th>SYMBOL</th><th>ENTRY</th><th>MULT</th><th>PNL</th></tr></thead><tbody id="postbody"></tbody></table></div></div>
       <div class="panel"><div class="ph"><span class="t">TRAD FILLS · REAL</span><span class="meta">MAIN DESK</span></div><div class="subh"><span>SYMBOL</span><span>STATE</span><span>Δ 5M</span></div><div class="pb"><div class="feed" id="pulsefeed"></div></div></div>
       <div class="panel"><div class="ph"><span class="t">DEV FILLS · REAL</span><span class="meta">TRADE DEV</span></div><div class="pb"><div class="feed" id="roster"></div></div></div>
-      <div class="panel mini"><div class="ph"><span class="t">FEATURED · <span id="ch_head_sym">$—</span></span><span class="meta">1s</span></div><div class="pb"><div class="chhead"><span class="cs" id="ch_sym">$—</span><span class="cp mono2" id="ch_px">—</span></div><canvas id="chart"></canvas></div></div>
+      <div class="panel mini"><div class="ph"><span class="t">FEATURED · <span id="ch_head_sym">—</span></span><span class="meta">1s</span></div><div class="pb"><div class="chhead"><span class="cs" id="ch_sym">$—</span><span class="cp mono2" id="ch_px">—</span></div><canvas id="chart"></canvas></div></div>
       <div class="panel mini"><div class="ph"><span class="t">RUN-RATE</span><span class="meta">SOL/H</span></div><div class="pb"><canvas id="runrate"></canvas></div></div>
       <div class="panel mini"><div class="ph"><span class="t">DEPTH</span><span class="meta">0.3%</span></div><div class="pb"><div class="depth" id="depth"></div></div></div>
-      <div class="panel mini"><div class="ph"><span class="t">MEME HEATMAP</span><span class="meta"><span id="heat_up">0</span>G</span></div><div class="pb"><div class="heat" id="heat"></div></div></div>
+      <div class="panel mini"><div class="ph"><span class="t">SWARM HEAT</span><span class="meta"><span id="heat_up">0</span>G</span></div><div class="pb"><div class="heat" id="heat"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">CORRELATION</span><span class="meta">pnl</span></div><div class="pb"><div class="corr" id="corr"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">THROUGHPUT</span><span class="meta">fills</span></div><div class="pb"><div class="thr" id="thr"></div></div></div>
     </div>
@@ -273,7 +273,7 @@ function layoutHive(){
   try{
     let chip=document.getElementById('hive-debug');
     if(!chip){ chip=document.createElement('div'); chip.id='hive-debug'; chip.style.cssText='position:absolute;right:8px;bottom:8px;z-index:8;font:10px "IBM Plex Mono",monospace;color:#7cffcf;opacity:.7;pointer-events:none'; (hC.parentElement||document.body).appendChild(chip); }
-    chip.textContent=HW+'×'+HH+' · cells '+cells.length;
+    if(chip) chip.style.display='none';
   }catch(e){}
 }
 function posUpdate(){cells.forEach(c=>{if(c.ring){const a=c.base+c.ring.rot;c.x=cx0+Math.cos(a)*rxB*c.ring.rf;c.y=cy0+Math.sin(a)*ryB*c.ring.rf;}});}
@@ -553,6 +553,133 @@ requestAnimationFrame(drawHive);
     renderOpens(opensAll);
     renderFillFeed('pulsefeed', main.recent_fills||[], 'no TRAD fills yet');
     renderFillFeed('roster', td.recent_fills||[], 'no DEV fills yet');
+    paintFeatured(opensAll);
+    paintDepth(opensAll, main, td, sw);
+    paintSwarmHeat(sw.agents||[]);
+    paintCorr(main, td, sw);
+    paintThroughput(main, td, sw, actions);
+    paintFeaturedChart(opensAll, main, td);
+  }
+
+  function paintFeatured(opens){
+    var head=el('ch_head_sym'), sym=el('ch_sym'), px=el('ch_px');
+    if(!opens.length){
+      if(head) head.textContent='—';
+      if(sym) sym.textContent='no open';
+      if(px) px.textContent='—';
+      return;
+    }
+    var best=opens.slice().sort(function(a,b){
+      var na=Math.abs(Number(a.notional)||(Number(a.qty)||0)*Number(a.mark||a.avg||0));
+      var nb=Math.abs(Number(b.notional)||(Number(b.qty)||0)*Number(b.mark||b.avg||0));
+      return nb-na;
+    })[0];
+    var label=(best.lane||'')+' '+(best.symbol||'?');
+    if(head) head.textContent=best.symbol||'—';
+    if(sym) sym.textContent=label;
+    var mark=best.mark!=null?best.mark:best.avg;
+    if(px) px.textContent=mark!=null?String(mark):'—';
+  }
+
+  function paintDepth(opens, main, td, sw){
+    var d=el('depth'); if(!d) return;
+    function sumLane(lane){
+      return opens.filter(function(o){return o.lane===lane;}).reduce(function(s,o){
+        return s+Math.abs(Number(o.notional)||(Number(o.qty)||0)*Number(o.mark||o.avg||0));
+      },0);
+    }
+    var rows=[
+      {k:'TRAD', v:sumLane('TRAD'), c:'#14f195'},
+      {k:'DEV', v:sumLane('DEV'), c:'#3dffb0'},
+      {k:'SWARM', v:sumLane('SWARM'), c:'#7cffcf'}
+    ];
+    var max=Math.max.apply(null, rows.map(function(r){return r.v;}).concat([0.01]));
+    d.innerHTML=rows.map(function(r){
+      var pct=Math.round(100*r.v/max);
+      return '<div style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:10px">'
+        +'<span style="width:44px;color:'+r.c+'">'+r.k+'</span>'
+        +'<div style="flex:1;height:8px;background:rgba(20,241,149,.08);border-radius:2px;overflow:hidden">'
+        +'<div style="width:'+pct+'%;height:100%;background:'+r.c+';opacity:.85"></div></div>'
+        +'<span class="dim">'+money(r.v)+'</span></div>';
+    }).join('');
+  }
+
+  function paintSwarmHeat(agents){
+    var heat=el('heat'); if(!heat) return;
+    var up=0;
+    if(!agents.length){ heat.innerHTML='<div class="dim">no agents</div>'; return; }
+    heat.style.display='grid';
+    heat.style.gridTemplateColumns='repeat(5,1fr)';
+    heat.style.gap='3px';
+    heat.innerHTML=agents.slice(0,20).map(function(a){
+      var ret=Number(a.return_pct)||0;
+      if(ret>0) up++;
+      var dead=(a.status==='dead');
+      var bg=dead?'#5a2030':(ret>=0?'rgba(20,241,149,'+Math.min(0.85,0.25+Math.abs(ret)/20)+')':'rgba(255,93,108,'+Math.min(0.85,0.25+Math.abs(ret)/20)+')');
+      return '<div title="'+esc(a.id)+' '+pct(ret)+'" style="aspect-ratio:1;background:'+bg+';border:1px solid rgba(124,255,207,.15);border-radius:2px;font-size:7px;display:flex;align-items:center;justify-content:center;color:#cfe8e2">'
+        +esc((a.id||'').replace('SWM-',''))+'</div>';
+    }).join('');
+    var hu=el('heat_up'); if(hu) hu.textContent=String(up);
+  }
+
+  function paintCorr(main, td, sw){
+    var c=el('corr'); if(!c) return;
+    var vals=[
+      ['TRAD', Number(main.return_pct)||0],
+      ['DEV', Number(td.return_pct)||0],
+      ['SWARM', Number(sw.return_pct)||0]
+    ];
+    c.style.display='grid'; c.style.gridTemplateColumns='repeat(3,1fr)'; c.style.gap='4px';
+    c.innerHTML=vals.map(function(v){
+      var ret=v[1];
+      var bg=ret>=0?'rgba(20,241,149,.35)':'rgba(255,93,108,.35)';
+      return '<div style="padding:8px 4px;text-align:center;background:'+bg+';border-radius:3px;font-size:9px">'
+        +'<div class="dim">'+v[0]+'</div><div>'+pct(ret)+'</div></div>';
+    }).join('');
+  }
+
+  function paintThroughput(main, td, sw, actions){
+    var thr=el('thr'); if(!thr) return;
+    var living=sw.living!=null?sw.living:(sw.agents||[]).filter(function(a){return a.status!=='dead';}).length;
+    var dead=sw.dead!=null?sw.dead:0;
+    var tf=(main.recent_fills||[]).length, df=(td.recent_fills||[]).length;
+    var sf=(actions||[]).filter(function(a){return a.lane==='SWARM' && (a.side==='buy'||a.side==='sell');}).length;
+    thr.innerHTML=[
+      ['TRAD fills', tf],
+      ['DEV fills', df],
+      ['SWARM acts', sf],
+      ['Living', living],
+      ['Dead', dead],
+      ['Opens', (main.open_positions||0)+(td.open_positions||0)+(sw.open_positions||0)]
+    ].map(function(r){
+      return '<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;border-bottom:1px solid rgba(20,241,149,.06)"><span class="dim">'+r[0]+'</span><b style="color:#7cffcf">'+r[1]+'</b></div>';
+    }).join('');
+  }
+
+  function paintFeaturedChart(opens, main, td){
+    var canvas=el('chart'); if(!canvas||!canvas.getContext) return;
+    var fills=[].concat(main.recent_fills||[], td.recent_fills||[]);
+    fills.sort(function(a,b){return String(a.ts||'').localeCompare(String(b.ts||''));});
+    var pts=fills.map(function(f){return Number(f.px);}).filter(function(x){return !isNaN(x);});
+    var ctx=canvas.getContext('2d');
+    var w=canvas.parentElement?canvas.parentElement.clientWidth:180;
+    var h=70;
+    canvas.width=w*2; canvas.height=h*2; canvas.style.width=w+'px'; canvas.style.height=h+'px';
+    ctx.setTransform(2,0,0,2,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='rgba(5,16,11,.9)'; ctx.fillRect(0,0,w,h);
+    if(pts.length<2){
+      ctx.fillStyle='#5f9c82'; ctx.font='10px IBM Plex Mono'; ctx.fillText('need more real fills', 8, h/2);
+      return;
+    }
+    var lo=Math.min.apply(null,pts), hi=Math.max.apply(null,pts); if(hi===lo) hi=lo+1;
+    ctx.strokeStyle='#14f195'; ctx.lineWidth=1.5; ctx.beginPath();
+    pts.forEach(function(p,i){
+      var x=i/(pts.length-1)*(w-8)+4;
+      var y=h-4-((p-lo)/(hi-lo))*(h-12);
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    });
+    ctx.stroke();
   }
   async function tick(){ try{ paint(await fetchBoard()); }catch(e){} }
   // expose cells for mortality once hive inited
