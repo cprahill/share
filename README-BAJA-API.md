@@ -60,3 +60,12 @@ curl -sS 'https://YOUR-PROJECT.vercel.app/api/room?code=ABCD'
 ```
 
 Local check (no KV expected): `npm test`.
+
+## Paper Desk `GET|POST /api/paper-desk`
+
+Scrubbed live paper blotter for friend-share (`/paper-desk`). No personal fields.
+
+- **GET** — reads KV key `paper-desk:v1:public`. Returns `{ ok, board, paper, signals, updated_at, disclaimer }`.
+- **POST** — requires `Authorization: Bearer $PAPER_DESK_PUBLISH_TOKEN` (Vercel env). Body `{ "board": { "paper": {...}, "signals": {...}, "updated_at": "...", "disclaimer": "..." } }`. Strips `burn` / `studio_sprint` / `r1` if present; forces `live_wallets: false`.
+
+Static fallback: `/paper-desk/data/board.json` (may lag until next publish to KV).

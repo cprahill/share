@@ -2,7 +2,14 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/board.js": { "maxDuration": 10 },
-    "api/room.js": { "maxDuration": 10 }
+    "api/board.js": {
+      "maxDuration": 10
+    },
+    "api/room.js": {
+      "maxDuration": 10
+    },
+    "api/paper-desk.js": {
+      "maxDuration": 10
+    }
   }
 }
