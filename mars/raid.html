@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0c0c10" />
 <link rel="manifest" href="./manifest.webmanifest" />
 <link rel="apple-touch-icon" href="./icon-180.png" />
-<link rel="stylesheet" href="hud.css?v=28" />
+<link rel="stylesheet" href="hud.css?v=41" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -30,7 +30,7 @@
 </head>
 <body>
 <div id="hud">
-<div id="build-chip" hidden>BUILD 146</div>
+<div id="build-chip" hidden>BUILD 148</div>
 <div id="diff-chip">MED</div>
 <div id="pilot-chip">ACE</div>
 <div class="glass" id="timer-panel"><span class="label">TIME</span><span id="timer-val">00:00.000</span></div>
@@ -38,7 +38,8 @@
 <div class="gate-line"><span id="gate-idx">GATE 1/5</span></div>
 <div id="gate-dist">0 m</div>
 </div>
-<div class="glass" id="place-panel"><span class="label">PLACE</span><span id="place-val">2nd</span></div>
+<div class="glass" id="lap-panel"><span class="label">LAP</span><span id="lap-val">1 / 3</span></div>
+<div class="glass" id="place-panel"><span class="label">PLACE</span><span id="place-val">1st</span></div>
 <div class="glass" id="coin-panel"><span class="label">COINS</span><span id="coin-val">0</span></div>
 <ol id="hunt-list"></ol>
 <div id="chevron"></div>
@@ -178,6 +179,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v147.js?v=40"></script>
+<script type="module" src="./game-v148.js?v=41"></script>
 </body>
 </html>
