@@ -363,15 +363,21 @@ function drawHive(){hf++; if(HW<40||HH<40){ try{layoutHive();}catch(e){} } if(HW
   for(let i=alerts.length-1;i>=0;i--){const al=alerts[i];al.t+=0.011;const aa=Math.max(0,1-al.t*al.t),ax=al.cell.x,yy=al.cell.y-SIZE*0.8-al.t*26;hx.font='700 10.5px "IBM Plex Mono"';const w=hx.measureText(al.txt).width+18;hx.globalAlpha=aa;hx.fillStyle='rgba(6,14,15,.92)';if(hx.roundRect){hx.beginPath();hx.roundRect(ax-w/2,yy-10,w,19,4);hx.fill();}else hx.fillRect(ax-w/2,yy-10,w,19);hx.strokeStyle=al.col;hx.lineWidth=1.2;hx.stroke();hx.fillStyle=al.col;hx.textAlign='center';hx.fillText(al.txt,ax,yy+3.5);hx.globalAlpha=1;if(al.t>=1)alerts.splice(i,1);}
   /* vault SOL floater removed — real paper only */
   requestAnimationFrame(drawHive);}
-function resizeAll(){layoutHive();layoutChart();layoutRR();}
-window.addEventListener('resize',resizeAll);newFeatured();pushCandle();resizeAll();
-function ensureHiveSize(){layoutHive(); if((HW<40||HH<40)) return false; return true;}
+// Stubs — chart/featured demo stripped; must not ReferenceError or hive never starts
+function layoutChart(){}
+function layoutRR(){}
+function newFeatured(){}
+function pushCandle(){}
+function drawChart(){}
+function resizeAll(){ try{ layoutHive(); }catch(e){ console.warn('layoutHive', e); } }
+window.addEventListener('resize',resizeAll);
+resizeAll();
 requestAnimationFrame(function(){ resizeAll(); requestAnimationFrame(function(){ resizeAll(); drawHive(); }); });
-setTimeout(function(){ resizeAll(); }, 50);
-setTimeout(function(){ resizeAll(); }, 250);
-setTimeout(function(){ resizeAll(); }, 1000);
+setTimeout(resizeAll, 50);
+setTimeout(resizeAll, 250);
+setTimeout(resizeAll, 1000);
 if(window.ResizeObserver){ try{ new ResizeObserver(function(){ resizeAll(); }).observe(hC.parentElement||hC); }catch(e){} }
-requestAnimationFrame(drawHive);requestAnimationFrame(drawChart);requestAnimationFrame(drawRR);
+requestAnimationFrame(drawHive);
 })();
 </script>
 
