@@ -1,29 +1,26 @@
 {
-  "updated_at": "2026-09-04T23:42:05-05:00",
-  "signals": {
-    "paper": "yellow",
-    "confidence": "yellow",
-    "mistake_gate": "green",
-    "wallets": "red"
+  "updated_at": "2026-09-05T00:05:03-0500",
+  "duel": {
+    "ends_at": "2026-09-10T16:00:00-05:00",
+    "metric": "return_pct",
+    "leader": "trade_dev",
+    "stakes": "Winner stays \u00b7 loser goes \u00b7 paper money \u00b7 real competition",
+    "main_return_pct": -0.043,
+    "trade_dev_return_pct": -0.01
   },
-  "paper": {
-    "mode": "PAPER DEMO",
+  "main": {
+    "label": "Main Desk",
+    "mode": "PAPER",
     "starting_cash_usd": 200.0,
     "cash_usd": 156.9139,
     "equity_usd": 199.9139,
     "day_pnl_usd": -0.0861,
     "total_pnl_usd": -0.0861,
+    "return_pct": -0.043,
     "open_positions": 3,
-    "venues": [
-      "crypto",
-      "stocks",
-      "kalshi_demo",
-      "polymarket_journal"
-    ],
     "live_wallets": false,
     "gate": {
-      "open": true,
-      "blocked_reason": null
+      "open": true
     },
     "confidence": {
       "score": 50,
@@ -39,8 +36,7 @@
         "side": "buy",
         "qty": 78.9474,
         "px": 0.19,
-        "edge": "E3",
-        "note": "E3: NWS OKX forecast Sat high 81\u00b0F vs Kalshi mid favoring 79\u201380\u00b0 (57\u00a2). Buy YES "
+        "edge": "E3"
       },
       {
         "id": "F004",
@@ -51,8 +47,7 @@
         "qty": 0.00022618,
         "px": 79551.615,
         "pnl": -0.0431,
-        "edge": "capacity",
-        "note": "Close smoke BTC to free gross for Scout E3 Kalshi weather (prefer week-1). Path "
+        "edge": "capacity"
       },
       {
         "id": "F003",
@@ -62,8 +57,7 @@
         "side": "buy",
         "qty": 20.4082,
         "px": 0.49,
-        "edge": "A2",
-        "note": "A2 Kalshi demo calibration: YES Fed maintains Sep-26 meeting @49\u00a2. Tiny clip for"
+        "edge": "A2"
       },
       {
         "id": "F002",
@@ -72,8 +66,7 @@
         "symbol": "SPY",
         "side": "buy",
         "qty": 0.02337086,
-        "px": 770.19,
-        "note": "Post-reset small clip: SPY ETF paper; ~9% equity; diversify vs BTC clip; gross\u22642"
+        "px": 770.19
       },
       {
         "id": "F001",
@@ -83,8 +76,7 @@
         "side": "buy",
         "qty": 0.00022618,
         "px": 79583.165,
-        "pnl": -0.0431,
-        "note": "Post-reset small clip: liquid BTC spot; ~9% equity under Risk 10%/name. Desk pat"
+        "pnl": -0.0431
       }
     ],
     "open": [
@@ -95,6 +87,7 @@
         "avg": 770.19,
         "mark": 770.19,
         "upnl": 0.0,
+        "notional": 18.0,
         "edge": null
       },
       {
@@ -104,6 +97,7 @@
         "avg": 0.49,
         "mark": 0.49,
         "upnl": 0.0,
+        "notional": 10.0,
         "edge": "A2"
       },
       {
@@ -113,16 +107,163 @@
         "avg": 0.19,
         "mark": 0.19,
         "upnl": 0.0,
+        "notional": 15.0,
         "edge": "E3"
       }
-    ],
-    "mistakes_open": [],
-    "edge_menu": {
-      "E3": "F005 NYC high 81-82\u00b0 $15 vs NWS 81\u00b0",
-      "E1": "no new \u2014 SPY open path clip only",
-      "A1": "no signal prior",
-      "A3": "wait panic"
-    }
+    ]
   },
-  "disclaimer": "Paper trading demo only. Fake money, real public prices. Not financial advice. No live funds."
+  "trade_dev": {
+    "label": "Trade Dev",
+    "mode": "PAPER",
+    "starting_cash_usd": 100.0,
+    "cash_usd": 91.99,
+    "equity_usd": 99.99,
+    "day_pnl_usd": -0.01,
+    "total_pnl_usd": -0.01,
+    "return_pct": -0.01,
+    "open_positions": 1,
+    "live_wallets": false,
+    "gate": {
+      "open": true
+    },
+    "confidence": {
+      "score": 0,
+      "live_ready": false,
+      "next": "Paper only"
+    },
+    "recent_fills": [
+      {
+        "id": "TDF001",
+        "ts": "2026-09-05T00:04:04-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "buy",
+        "qty": 42.1053,
+        "px": 0.19,
+        "edge": "TD1"
+      }
+    ],
+    "open": [
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "qty": 42.1053,
+        "avg": 0.19,
+        "mark": null,
+        "upnl": -8.0,
+        "notional": 8.0,
+        "edge": "TD1"
+      }
+    ]
+  },
+  "paper": {
+    "label": "Main Desk",
+    "mode": "PAPER",
+    "starting_cash_usd": 200.0,
+    "cash_usd": 156.9139,
+    "equity_usd": 199.9139,
+    "day_pnl_usd": -0.0861,
+    "total_pnl_usd": -0.0861,
+    "return_pct": -0.043,
+    "open_positions": 3,
+    "live_wallets": false,
+    "gate": {
+      "open": true
+    },
+    "confidence": {
+      "score": 50,
+      "live_ready": false,
+      "next": "Need closed marks (BTC closed). LIVE-READY \u226580 + YES"
+    },
+    "recent_fills": [
+      {
+        "id": "F005",
+        "ts": "2026-09-04T23:42:05-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "side": "buy",
+        "qty": 78.9474,
+        "px": 0.19,
+        "edge": "E3"
+      },
+      {
+        "id": "F004",
+        "ts": "2026-09-04T23:42:05-05:00",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "sell",
+        "qty": 0.00022618,
+        "px": 79551.615,
+        "pnl": -0.0431,
+        "edge": "capacity"
+      },
+      {
+        "id": "F003",
+        "ts": "2026-09-04T23:33:06-05:00",
+        "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-26SEP-H0",
+        "side": "buy",
+        "qty": 20.4082,
+        "px": 0.49,
+        "edge": "A2"
+      },
+      {
+        "id": "F002",
+        "ts": "2026-09-04T23:25:22-05:00",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "buy",
+        "qty": 0.02337086,
+        "px": 770.19
+      },
+      {
+        "id": "F001",
+        "ts": "2026-09-04T23:25:22-05:00",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 0.00022618,
+        "px": 79583.165,
+        "pnl": -0.0431
+      }
+    ],
+    "open": [
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.02337086,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 18.0,
+        "edge": null
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-26SEP-H0",
+        "qty": 20.4082,
+        "avg": 0.49,
+        "mark": 0.49,
+        "upnl": 0.0,
+        "notional": 10.0,
+        "edge": "A2"
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP05-B81.5",
+        "qty": 78.9474,
+        "avg": 0.19,
+        "mark": 0.19,
+        "upnl": 0.0,
+        "notional": 15.0,
+        "edge": "E3"
+      }
+    ]
+  },
+  "signals": {
+    "main": "yellow",
+    "trade_dev": "yellow",
+    "duel": "green"
+  },
+  "disclaimer": "Paper trading duel demo only. Fake money, real competition (winner stays / loser goes). Not financial advice. No live funds. No personal data."
 }

@@ -3,133 +3,120 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="robots" content="noindex"/>
-<title>Paper Desk Demo</title>
+<title>Paper Duel · Main vs Trade Dev</title>
 <style>
-:root{--bg:#0b0d10;--card:#141820;--text:#e8eaed;--muted:#8b93a0;--green:#3ddc97;--yellow:#f5c542;--red:#ff5c5c;--line:#232a35}
+:root{--bg:#0b0d10;--card:#141820;--text:#e8eaed;--muted:#8b93a0;--green:#3ddc97;--yellow:#f5c542;--red:#ff5c5c;--line:#232a35;--accent:#3d7eff}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;padding-bottom:48px}
 h1{font-size:1.15rem;margin:4px 0 2px}.sub{color:var(--muted);font-size:.8rem;margin-bottom:10px}
-.grid{display:grid;gap:10px}@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.banner{background:linear-gradient(90deg,#1a2230,#141820);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.banner .stakes{font-size:.85rem;font-weight:600}.banner .meta{color:var(--muted);font-size:.72rem;margin-top:4px}
+.leader{display:inline-block;padding:2px 8px;border-radius:99px;border:1px solid var(--line);font-size:.7rem;margin-left:6px}
+.leader.win{color:var(--green);border-color:#2a5}.grid{display:grid;gap:10px}@media(min-width:800px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.card.lead{border-color:#2a5;box-shadow:0 0 0 1px #2a53}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}
 .label{color:var(--muted);font-size:.78rem}.val{font-weight:600;font-size:.95rem;text-align:right}
 .big{font-size:1.55rem;font-weight:700;letter-spacing:-.02em}
-.sig{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
-.sig.green{background:var(--green);box-shadow:0 0 8px var(--green)}.sig.yellow{background:var(--yellow);box-shadow:0 0 8px var(--yellow)}.sig.red{background:var(--red);box-shadow:0 0 8px var(--red)}
-.bar{height:8px;background:#0f131a;border-radius:99px;overflow:hidden;margin-top:8px}.bar>i{display:block;height:100%;background:linear-gradient(90deg,#3d7eff,var(--green));width:0%}
 .pill{font-size:.7rem;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
 .pill.on{color:var(--green);border-color:#2a5}.pill.off{color:var(--red);border-color:#633}
-.signals{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:.72rem}
-table{width:100%;border-collapse:collapse;font-size:.72rem;margin-top:8px}th,td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}
-.footer{margin-top:14px;color:var(--muted);font-size:.68rem}.full{grid-column:1/-1}
-.pos{color:var(--green)}.neg{color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:.7rem;margin-top:8px}th,td{text-align:left;padding:5px 3px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}
+.footer{margin-top:14px;color:var(--muted);font-size:.68rem}.pos{color:var(--green)}.neg{color:var(--red)}
+h2{font-size:.95rem;margin:0 0 8px}
 </style>
 </head>
 <body>
-<h1>Paper Desk Demo</h1>
-<div class="sub">Live paper blotter · no personal data · <span id="updated">…</span></div>
-<div class="signals" id="signals"></div>
-<div class="grid">
-  <div class="card">
-    <div class="row"><span class="label"><span class="sig" id="s-paper"></span>Paper P&amp;L</span><span class="pill" id="gate-pill">GATE</span></div>
-    <div class="big" id="paper-pnl">$0</div>
-    <div class="row"><span class="label">Equity</span><span class="val" id="paper-eq">—</span></div>
-    <div class="row"><span class="label">Cash · day · open</span><span class="val" id="paper-day">—</span></div>
-    <div class="row"><span class="label">Wallets</span><span class="val">OFF</span></div>
+<h1>Paper Duel</h1>
+<div class="sub">Main Desk vs Trade Dev · fake money · real competition · <span id="updated">…</span></div>
+<div class="banner">
+  <div class="stakes" id="stakes">Winner stays · loser goes</div>
+  <div class="meta">Metric: return % · ends <span id="ends">Thu 2026-09-10 4pm CT</span>
+    <span class="leader" id="leader-pill">—</span>
   </div>
-  <div class="card">
-    <div class="row"><span class="label"><span class="sig" id="s-conf"></span>Confidence</span><span class="pill" id="live-pill">PAPER</span></div>
-    <div class="big" id="conf-big">0 / 80</div>
-    <div class="bar"><i id="conf-bar"></i></div>
-    <div class="row"><span class="label">LIVE-READY</span><span class="val" id="live-ready">no</span></div>
-    <div class="row"><span class="label">Next</span><span class="val" id="conf-next">—</span></div>
+  <div class="row" style="margin-top:8px">
+    <span class="label">Main return</span><span class="val" id="main-rp">—</span>
   </div>
-  <div class="card">
-    <div class="row"><span class="label"><span class="sig" id="s-mist"></span>Mistake gate</span><span class="pill" id="mist-pill">CLEAR</span></div>
-    <div id="mistakes">No open mistakes</div>
-  </div>
-  <div class="card">
-    <div class="label">Edge menu</div>
-    <div id="edges" class="label">—</div>
-  </div>
-  <div class="card full">
-    <div class="label">Recent paper fills</div>
-    <table><thead><tr><th>when</th><th>venue</th><th>symbol</th><th>side</th><th>qty</th><th>px</th><th>pnl</th></tr></thead>
-    <tbody id="fills"><tr><td colspan="7" class="label">No fills yet</td></tr></tbody></table>
-  </div>
-  <div class="card full">
-    <div class="label">Open positions</div>
-    <table><thead><tr><th>venue</th><th>symbol</th><th>qty</th><th>avg</th><th>mark</th><th>uPNL</th></tr></thead>
-    <tbody id="open"><tr><td colspan="6" class="label">Flat</td></tr></tbody></table>
+  <div class="row">
+    <span class="label">Trade Dev return</span><span class="val" id="td-rp">—</span>
   </div>
 </div>
-<div class="footer" id="disclaimer">Paper trading demo only. Not financial advice.</div>
+<div class="grid">
+  <div class="card" id="card-main">
+    <h2>Main Desk <span class="pill" id="main-start">$200</span></h2>
+    <div class="row"><span class="label">Return</span><span class="big" id="main-ret">—</span></div>
+    <div class="row"><span class="label">Equity / cash</span><span class="val" id="main-eq">—</span></div>
+    <div class="row"><span class="label">Total P&amp;L · open</span><span class="val" id="main-pnl">—</span></div>
+    <div class="label">Open</div>
+    <table><thead><tr><th>sym</th><th>qty</th><th>uPNL</th></tr></thead><tbody id="main-open"></tbody></table>
+    <div class="label" style="margin-top:8px">Fills</div>
+    <table><thead><tr><th>id</th><th>sym</th><th>side</th><th>px</th></tr></thead><tbody id="main-fills"></tbody></table>
+  </div>
+  <div class="card" id="card-td">
+    <h2>Trade Dev <span class="pill" id="td-start">$100</span></h2>
+    <div class="row"><span class="label">Return</span><span class="big" id="td-ret">—</span></div>
+    <div class="row"><span class="label">Equity / cash</span><span class="val" id="td-eq">—</span></div>
+    <div class="row"><span class="label">Total P&amp;L · open</span><span class="val" id="td-pnl">—</span></div>
+    <div class="label">Open</div>
+    <table><thead><tr><th>sym</th><th>qty</th><th>uPNL</th></tr></thead><tbody id="td-open"></tbody></table>
+    <div class="label" style="margin-top:8px">Fills</div>
+    <table><thead><tr><th>id</th><th>sym</th><th>side</th><th>px</th></tr></thead><tbody id="td-fills"></tbody></table>
+  </div>
+</div>
+<div class="footer" id="disclaimer">Paper duel demo. Not advice. No live funds.</div>
 <script>
 const $=id=>document.getElementById(id);
-const sig=(el,c)=>{if(el) el.className='sig '+c};
 function money(n){n=Number(n)||0;return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:2})}
+function pct(n){n=Number(n)||0;return (n>=0?'+':'')+n.toFixed(3)+'%'}
 async function fetchBoard(){
-  const tries=[
-    '/api/paper-desk',
-    'data/board.json?t='+Date.now()
-  ];
-  let lastErr;
-  for(const u of tries){
+  for(const u of ['/api/paper-desk','data/board.json?t='+Date.now()]){
     try{
       const r=await fetch(u,{cache:'no-store'});
-      if(!r.ok) throw new Error(u+' '+r.status);
+      if(!r.ok) throw 0;
       const j=await r.json();
-      if(j && j.empty) throw new Error('empty');
-      if(j && j.ok===false && !j.paper) throw new Error(j.error||'api');
-      if(j && j.paper) return j.board && j.board.paper ? j.board : j;
-      if(j && j.board && j.board.paper) return j.board;
-      throw new Error('no-paper');
-    }catch(e){lastErr=e}
+      if(j && j.empty) throw 0;
+      if(j && (j.main||j.trade_dev||j.paper)) return j.board && (j.board.main||j.board.paper) ? j.board : j;
+    }catch(e){}
   }
-  throw lastErr||new Error('no board');
+  throw new Error('offline');
+}
+function fillOpen(el, rows){
+  rows=rows||[];
+  el.innerHTML=rows.length?rows.map(o=>`<tr><td>${o.symbol||''}</td><td>${o.qty??''}</td><td class="${(o.upnl||0)>=0?'pos':'neg'}">${o.upnl??''}</td></tr>`).join(''):'<tr><td colspan="3" class="label">Flat</td></tr>';
+}
+function fillFills(el, rows){
+  rows=rows||[];
+  el.innerHTML=rows.length?rows.slice(0,8).map(f=>`<tr><td>${f.id||''}</td><td>${f.symbol||''}</td><td>${f.side||''}</td><td>${f.px??''}</td></tr>`).join(''):'<tr><td colspan="4" class="label">None</td></tr>';
+}
+function renderBook(prefix, b, lead){
+  const rp=Number(b.return_pct)||0;
+  $(prefix+'-ret').textContent=pct(rp);
+  $(prefix+'-ret').className='big '+(rp>=0?'pos':'neg');
+  $(prefix+'-eq').textContent=`${money(b.equity_usd)} / ${money(b.cash_usd)}`;
+  const pnl=Number(b.total_pnl_usd)||0;
+  $(prefix+'-pnl').textContent=`${money(pnl)} · ${b.open_positions??0}`;
+  $(prefix+'-pnl').className='val '+(pnl>=0?'pos':'neg');
+  fillOpen($(prefix+'-open'), b.open);
+  fillFills($(prefix+'-fills'), b.recent_fills);
+  const card=$(prefix==='main'?'card-main':'card-td');
+  card.className='card'+(lead?' lead':'');
 }
 function render(b){
-  const S=b.signals||{};
-  sig($('s-paper'),S.paper||'yellow');
-  sig($('s-conf'),S.confidence||'yellow');
-  const mg=S.mistake_gate||'green';
-  sig($('s-mist'), mg);
-  $('signals').innerHTML=Object.entries(S).map(([k,v])=>`<span class="chip"><span class="sig ${v}"></span>${k}</span>`).join('');
+  const d=b.duel||{};
+  $('stakes').textContent=d.stakes||'Winner stays · loser goes · paper money · real competition';
+  $('ends').textContent=(d.ends_at||'2026-09-10').slice(0,16).replace('T',' ');
   $('updated').textContent='upd '+(b.updated_at||'—');
   if(b.disclaimer) $('disclaimer').textContent=b.disclaimer;
-  const p=b.paper||{}, c=p.confidence||{score:0,live_ready:false,next:'—'};
-  const pnl=Number(p.total_pnl_usd)||0;
-  $('paper-pnl').textContent=(pnl>=0?'+':'')+money(pnl).replace('$-','-$');
-  $('paper-pnl').className='big '+(pnl>=0?'pos':'neg');
-  $('paper-eq').textContent=money(p.equity_usd);
-  $('paper-day').textContent=`${money(p.cash_usd)} · ${money(p.day_pnl_usd)} · ${p.open_positions??0}`;
-  const openGate=!(p.gate)||p.gate.open!==false;
-  $('gate-pill').textContent=openGate?'GATE OPEN':'GATE LOCKED';
-  $('gate-pill').className='pill '+(openGate?'on':'off');
-  $('conf-big').textContent=`${c.score||0} / 80`;
-  $('conf-bar').style.width=Math.min(100,(c.score||0)/80*100)+'%';
-  $('live-ready').textContent='no (demo)';
-  $('conf-next').textContent=c.next||'—';
-  $('live-pill').textContent='PAPER';
-  $('live-pill').className='pill off';
-  const m=p.mistakes_open||[];
-  if(!m.length){$('mistakes').innerHTML='<span class="label">No open mistakes</span>'; $('mist-pill').textContent='CLEAR'; $('mist-pill').className='pill on';}
-  else{$('mist-pill').textContent='FIX FIRST'; $('mist-pill').className='pill off';
-    $('mistakes').innerHTML='<table><thead><tr><th>id</th><th>mistake</th></tr></thead><tbody>'+
-      m.map(x=>`<tr><td>${x.id||''}</td><td>${x.mistake||''}</td></tr>`).join('')+'</tbody></table>';}
-  const em=p.edge_menu||{};
-  $('edges').innerHTML=Object.keys(em).length?Object.entries(em).map(([k,v])=>`<div class="row"><span class="label">${k}</span><span class="val">${v}</span></div>`).join(''):'<span class="label">—</span>';
-  const fills=p.recent_fills||[];
-  $('fills').innerHTML=fills.length?fills.slice(0,20).map(f=>`<tr><td>${(f.ts||'').replace('T',' ').slice(0,19)}</td><td>${f.venue||''}</td><td>${f.symbol||''}</td><td>${f.side||''}</td><td>${f.qty??''}</td><td>${f.px??''}</td><td class="${(f.pnl||0)>=0?'pos':'neg'}">${f.pnl??''}</td></tr>`).join(''):'<tr><td colspan="7" class="label">No fills yet</td></tr>';
-  const op=p.open||[];
-  $('open').innerHTML=op.length?op.map(o=>`<tr><td>${o.venue||''}</td><td>${o.symbol||''}</td><td>${o.qty??''}</td><td>${o.avg??''}</td><td>${o.mark??''}</td><td class="${(o.upnl||0)>=0?'pos':'neg'}">${o.upnl??''}</td></tr>`).join(''):'<tr><td colspan="6" class="label">Flat</td></tr>';
+  const leader=d.leader||'tie';
+  const pill=$('leader-pill');
+  pill.textContent=leader==='main'?'Leader: Main':leader==='trade_dev'?'Leader: Trade Dev':'Tied';
+  pill.className='leader'+(leader==='tie'?'':' win');
+  $('main-rp').textContent=pct(d.main_return_pct);
+  $('td-rp').textContent=pct(d.trade_dev_return_pct);
+  const main=b.main||b.paper||{};
+  const td=b.trade_dev||{};
+  renderBook('main', main, leader==='main');
+  renderBook('td', td, leader==='trade_dev');
 }
-async function load(){
-  try{render(await fetchBoard())}
-  catch(e){$('updated').textContent='offline'}
-}
+async function load(){try{render(await fetchBoard())}catch(e){$('updated').textContent='offline'}}
 load(); setInterval(load,5000);
 </script>
 </body>
