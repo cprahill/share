@@ -4,127 +4,285 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="noindex"/>
-<title>Paper Duel · Main vs Trade Dev</title>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Paper Desk</title>
 <style>
-:root{--bg:#0b0d10;--card:#141820;--text:#e8eaed;--muted:#8b93a0;--green:#3ddc97;--yellow:#f5c542;--red:#ff5c5c;--line:#232a35;--accent:#3d7eff}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;padding-bottom:48px}
-h1{font-size:1.15rem;margin:4px 0 2px}.sub{color:var(--muted);font-size:.8rem;margin-bottom:10px}
-.banner{background:linear-gradient(90deg,#1a2230,#141820);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
-.banner .stakes{font-size:.85rem;font-weight:600}.banner .meta{color:var(--muted);font-size:.72rem;margin-top:4px}
+:root{
+  --bg:#0a0b12;--card:#14121c;--text:#efe6d4;--muted:#9a917e;--green:#7dcea0;--yellow:#e3c56b;--red:#e07a6a;
+  --line:#2a2433;--gold:#d4b56a;--accent:#c9a45c;--void:#1b1730;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;background:
+  radial-gradient(1200px 500px at 10% -10%,#1c1630 0%,transparent 50%),var(--bg);color:var(--text);padding:12px;padding-bottom:56px}
+h1{font-size:1.2rem;margin:2px 0;letter-spacing:.04em}
+h2{font-size:.82rem;margin:0 0 8px;color:var(--gold);font-weight:650;letter-spacing:.08em;text-transform:uppercase}
+.sub{color:var(--muted);font-size:.78rem;margin-bottom:10px}
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.nav a{color:var(--gold);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:.72rem}
+.nav a:hover,.nav a.on{background:#1e1830;border-color:var(--gold)}
+.scream{border:1px solid #5a4a22;background:#16120a;color:var(--yellow);border-radius:12px;padding:8px 12px;font:700 11px/1.3 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.banner{background:linear-gradient(120deg,#1a1628,#14121c);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.banner .stakes{font-size:.88rem;font-weight:650}
+.banner .meta{color:var(--muted);font-size:.72rem;margin-top:4px}
 .leader{display:inline-block;padding:2px 8px;border-radius:99px;border:1px solid var(--line);font-size:.7rem;margin-left:6px}
-.leader.win{color:var(--green);border-color:#2a5}.grid{display:grid;gap:10px}@media(min-width:800px){.grid{grid-template-columns:1fr 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.card.lead{border-color:#2a5;box-shadow:0 0 0 1px #2a53}
+.leader.win{color:var(--green);border-color:#2a5}
+.grid{display:grid;gap:10px}@media(min-width:900px){.grid.three{grid-template-columns:1fr 1fr 1fr}.grid.two{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.card.lead{border-color:var(--gold);box-shadow:0 0 0 1px #d4b56a55}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}
-.label{color:var(--muted);font-size:.78rem}.val{font-weight:600;font-size:.95rem;text-align:right}
-.big{font-size:1.55rem;font-weight:700;letter-spacing:-.02em}
-.pill{font-size:.7rem;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-.pill.on{color:var(--green);border-color:#2a5}.pill.off{color:var(--red);border-color:#633}
-table{width:100%;border-collapse:collapse;font-size:.7rem;margin-top:8px}th,td{text-align:left;padding:5px 3px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}
-.footer{margin-top:14px;color:var(--muted);font-size:.68rem}.pos{color:var(--green)}.neg{color:var(--red)}
-h2{font-size:.95rem;margin:0 0 8px}
+.label{color:var(--muted);font-size:.76rem}.val{font-weight:600;font-size:.92rem;text-align:right}
+.big{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+.pill{font-size:.68rem;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);display:inline-block}
+.pill.on,.pill.keep{color:var(--green);border-color:#2a5}
+.pill.off,.pill.drop{color:var(--red);border-color:#633}
+.pill.wired{color:var(--gold);border-color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:.7rem;margin-top:8px}
+th,td{text-align:left;padding:5px 3px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.dd{height:7px;background:#0f131a;border-radius:99px;overflow:hidden;margin-top:6px}.dd>i{display:block;height:100%;background:var(--gold);width:0%}
+.exp{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:.78rem}
+.exp b{margin-right:6px}
+.feed{max-height:280px;overflow:auto}
+.ev{display:grid;grid-template-columns:72px 1fr;gap:6px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.7rem}
+.ev .when{color:var(--muted);font-size:.62rem}
+.sys{display:inline-block;padding:1px 6px;border-radius:99px;border:1px solid var(--line);font-size:.6rem;margin-right:4px}
+.bn{padding:8px;border-radius:10px;border:1px solid var(--line);margin:6px 0;font-size:.75rem}
+.bn.blocker{border-color:#833;background:#1a1010}.bn.high{border-color:#664}
+.chip{background:var(--void);border:1px solid var(--line);border-radius:10px;padding:8px;font-size:.7rem;text-align:center}
+.chip b{display:block;font-size:.74rem}.chip .role{color:var(--muted);font-size:.62rem}
+.sysgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.hidden{display:none !important}
+.footer{margin-top:14px;color:var(--muted);font-size:.68rem}
+section{margin-top:14px}
+.tl{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:.7rem;color:var(--muted)}
+.tl span{border:1px solid var(--line);border-radius:99px;padding:3px 8px}
+.sig{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.sig.green{background:var(--green)}.sig.yellow{background:var(--yellow)}.sig.red{background:var(--red)}
 </style>
 </head>
 <body>
-<h1>Paper Duel</h1>
-<div class="sub">Main Desk vs Trade Dev · fake money · real competition · <a href="/paper-desk/ops.html" style="color:#3d7eff">control tower</a> · <span id="updated">…</span></div>
+<div class="scream">PAPER / not live · fake money until Friday seed</div>
+<h1>Paper Desk</h1>
+<div class="sub">One board · TRADITIONAL · CUTTING · SWARM · Grok · <span id="updated">…</span></div>
+<nav class="nav">
+  <a href="#trial">Trial</a>
+  <a href="#experiments">Experiments</a>
+  <a href="#grok">Grok</a>
+  <a href="#tower">Tower</a>
+  <a href="#tape">Tape</a>
+  <a href="#house" id="nav-house" class="hidden">House</a>
+</nav>
+
+<section id="trial">
 <div class="banner">
   <div class="stakes" id="stakes">Winner stays · loser goes</div>
-  <div class="meta">Metric: return % · ends <span id="ends">Thu 2026-09-10 4pm CT</span>
+  <div class="meta">return % · ends <span id="ends">Thu 2026-09-10 16:00 CT</span>
     <span class="leader" id="leader-pill">—</span>
   </div>
-  <div class="row" style="margin-top:8px">
-    <span class="label">Main return</span><span class="val" id="main-rp">—</span>
-  </div>
-  <div class="row">
-    <span class="label">Trade Dev return</span><span class="val" id="td-rp">—</span>
+  <div class="row" style="margin-top:8px"><span class="label">TRADITIONAL Main</span><span class="val" id="main-rp">—</span></div>
+  <div class="row"><span class="label">CUTTING Trade Dev</span><span class="val" id="td-rp">—</span></div>
+  <div class="row"><span class="label">SWARM Event+MR</span><span class="val" id="sw-rp">—</span></div>
+  <div class="tl">
+    <span>Thu Trial</span><span>Fri Mend</span><span>Sat Crown</span>
   </div>
 </div>
-<div class="grid">
+<div class="grid three">
   <div class="card" id="card-main">
-    <h2>Main Desk <span class="pill" id="main-start">$200</span></h2>
+    <h2>Traditional · Main <span class="pill">$200 · gemma</span></h2>
     <div class="row"><span class="label">Return</span><span class="big" id="main-ret">—</span></div>
     <div class="row"><span class="label">Equity / cash</span><span class="val" id="main-eq">—</span></div>
-    <div class="row"><span class="label">Total P&amp;L · open</span><span class="val" id="main-pnl">—</span></div>
+    <div class="row"><span class="label">P&amp;L · open</span><span class="val" id="main-pnl">—</span></div>
     <div class="label">Open</div>
     <table><thead><tr><th>sym</th><th>qty</th><th>uPNL</th></tr></thead><tbody id="main-open"></tbody></table>
     <div class="label" style="margin-top:8px">Fills</div>
-    <table><thead><tr><th>id</th><th>sym</th><th>side</th><th>px</th></tr></thead><tbody id="main-fills"></tbody></table>
+    <table><thead><tr><th>id</th><th>sym</th><th>edge</th><th>px</th></tr></thead><tbody id="main-fills"></tbody></table>
   </div>
   <div class="card" id="card-td">
-    <h2>Trade Dev <span class="pill" id="td-start">$100</span></h2>
+    <h2>Cutting · Trade Dev <span class="pill">$100 · qwen</span></h2>
     <div class="row"><span class="label">Return</span><span class="big" id="td-ret">—</span></div>
     <div class="row"><span class="label">Equity / cash</span><span class="val" id="td-eq">—</span></div>
-    <div class="row"><span class="label">Total P&amp;L · open</span><span class="val" id="td-pnl">—</span></div>
+    <div class="row"><span class="label">P&amp;L · open</span><span class="val" id="td-pnl">—</span></div>
     <div class="label">Open</div>
     <table><thead><tr><th>sym</th><th>qty</th><th>uPNL</th></tr></thead><tbody id="td-open"></tbody></table>
     <div class="label" style="margin-top:8px">Fills</div>
-    <table><thead><tr><th>id</th><th>sym</th><th>side</th><th>px</th></tr></thead><tbody id="td-fills"></tbody></table>
+    <table><thead><tr><th>id</th><th>sym</th><th>edge</th><th>px</th></tr></thead><tbody id="td-fills"></tbody></table>
+  </div>
+  <div class="card" id="card-sw">
+    <h2>Swarm · Event+MR <span class="pill">$50+$50</span></h2>
+    <div class="row"><span class="label">Return</span><span class="big" id="sw-ret">—</span></div>
+    <div class="row"><span class="label">Equity / cash</span><span class="val" id="sw-eq">—</span></div>
+    <div class="row"><span class="label">P&amp;L · open</span><span class="val" id="sw-pnl">—</span></div>
+    <div class="row"><span class="label">Event</span><span class="val" id="sw-ev">—</span></div>
+    <div class="row"><span class="label">MR sleeve</span><span class="val" id="sw-mr">—</span></div>
+    <div class="label">DD to −15% die</div>
+    <div class="dd"><i id="sw-dd"></i></div>
+    <div class="label" style="margin-top:8px">Open</div>
+    <table><thead><tr><th>sym</th><th>qty</th><th>uPNL</th></tr></thead><tbody id="sw-open"></tbody></table>
   </div>
 </div>
+</section>
 
-<div class="card" id="soundtrack" style="margin-top:12px;padding:10px 12px">
-  <div style="font-weight:600;font-size:.85rem;margin-bottom:2px">Snoop Dogg — Paper'd Up</div>
-  <div class="label" style="margin:0 0 6px">Full track · compact</div>
-  <iframe title="Paper'd Up — Snoop Dogg" src="https://www.youtube.com/embed/-bXxs_UvhVI?rel=0" width="100%" height="152" style="width:100%;height:152px;border:0;border-radius:10px;display:block;background:#000" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-  <a href="https://open.spotify.com/track/5zwBaiUIrUi25qEKV0Kswe" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#1DB954;color:#041;font-weight:700;font-size:.75rem;padding:8px 12px;border-radius:99px;text-decoration:none">Also on Spotify</a>
-</div>
-<div class="footer" id="disclaimer">Paper duel demo. Not advice. No live funds.</div>
+<section id="experiments">
+  <div class="card">
+    <h2>Experiments</h2>
+    <div class="sub">Trade Dev edges Grok keeps or kills · paper only</div>
+    <div id="exp-list"></div>
+  </div>
+</section>
+
+<section id="grok">
+  <div class="card">
+    <h2>Grok <span class="pill wired" id="grok-pill">CLI</span></h2>
+    <div class="row"><span class="label">Seat</span><span class="val" id="grok-via">grok-cli · not Grok Bot</span></div>
+    <div class="row"><span class="label">Last</span><span class="val" id="grok-at">—</span></div>
+    <p id="grok-note" style="font-size:.85rem;margin:8px 0"></p>
+    <div class="row"><span class="label">Blockers</span><span class="val" id="grok-block">—</span></div>
+    <div class="row"><span class="label">Next</span><span class="val" id="grok-next">—</span></div>
+  </div>
+</section>
+
+<section id="tower">
+  <div class="grid two">
+    <div class="card">
+      <h2>Tower · systems</h2>
+      <div class="sysgrid" id="systems"></div>
+    </div>
+    <div class="card">
+      <h2>Bottlenecks</h2>
+      <div id="bottlenecks"></div>
+      <h2 style="margin-top:12px">Confidence</h2>
+      <div id="conf"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <h2>Activity</h2>
+    <div class="feed" id="feed"></div>
+  </div>
+</section>
+
+<section id="tape">
+  <div class="card" style="padding:10px 12px">
+    <div style="font-weight:600;font-size:.85rem;margin-bottom:2px">Snoop Dogg — Paper'd Up</div>
+    <div class="label" style="margin:0 0 6px">Full track · compact</div>
+    <iframe title="Paper'd Up — Snoop Dogg" src="https://www.youtube.com/embed/-bXxs_UvhVI?rel=0" width="100%" height="152" style="width:100%;height:152px;border:0;border-radius:10px;display:block;background:#000" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <a href="https://open.spotify.com/track/5zwBaiUIrUi25qEKV0Kswe" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#1DB954;color:#041;font-weight:700;font-size:.75rem;padding:8px 12px;border-radius:99px;text-decoration:none">Also on Spotify</a>
+  </div>
+</section>
+
+<section id="house" class="hidden">
+  <div class="card">
+    <h2>House (private)</h2>
+    <div id="house-body"></div>
+  </div>
+</section>
+
+<div class="footer" id="disclaimer">Paper trial. Fake money. Not advice. No live funds.</div>
 <script>
 const $=id=>document.getElementById(id);
 function money(n){n=Number(n)||0;return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:2})}
 function pct(n){n=Number(n)||0;return (n>=0?'+':'')+n.toFixed(3)+'%'}
-async function fetchBoard(){
-  for(const u of ['/api/paper-desk','data/board.json?t='+Date.now()]){
-    try{
-      const r=await fetch(u,{cache:'no-store'});
-      if(!r.ok) throw 0;
-      const j=await r.json();
-      if(j && j.empty) throw 0;
-      if(j && (j.main||j.trade_dev||j.paper)) return j.board && (j.board.main||j.board.paper) ? j.board : j;
-    }catch(e){}
+function cls(n){return (Number(n)||0)>=0?'pos':'neg'}
+async function fetchJson(urls){
+  for(const u of urls){
+    try{const r=await fetch(u,{cache:'no-store'}); if(!r.ok) throw 0; const j=await r.json(); if(j && !j.empty) return j;}catch(e){}
   }
-  throw new Error('offline');
+  return null;
 }
 function fillOpen(el, rows){
   rows=rows||[];
-  el.innerHTML=rows.length?rows.map(o=>`<tr><td>${o.symbol||''}</td><td>${o.qty??''}</td><td class="${(o.upnl||0)>=0?'pos':'neg'}">${o.upnl??''}</td></tr>`).join(''):'<tr><td colspan="3" class="label">Flat</td></tr>';
+  el.innerHTML=rows.length?rows.map(o=>`<tr><td>${o.symbol||''}</td><td>${o.qty??''}</td><td class="${cls(o.upnl)}">${o.upnl??''}</td></tr>`).join(''):'<tr><td colspan="3" class="label">Flat</td></tr>';
 }
 function fillFills(el, rows){
   rows=rows||[];
-  el.innerHTML=rows.length?rows.slice(0,8).map(f=>`<tr><td>${f.id||''}</td><td>${f.symbol||''}</td><td>${f.side||''}</td><td>${f.px??''}</td></tr>`).join(''):'<tr><td colspan="4" class="label">None</td></tr>';
+  el.innerHTML=rows.length?rows.slice(0,8).map(f=>`<tr><td>${f.id||''}</td><td>${f.symbol||''}</td><td>${f.edge||f.side||''}</td><td>${f.px??''}</td></tr>`).join(''):'<tr><td colspan="4" class="label">None</td></tr>';
+}
+function bookOf(b, key){
+  if(key==='main') return b.main||b.paper||{};
+  if(key==='td') return b.trade_dev||{};
+  return b.swarm||{};
 }
 function renderBook(prefix, b, lead){
   const rp=Number(b.return_pct)||0;
   $(prefix+'-ret').textContent=pct(rp);
-  $(prefix+'-ret').className='big '+(rp>=0?'pos':'neg');
+  $(prefix+'-ret').className='big '+cls(rp);
   $(prefix+'-eq').textContent=`${money(b.equity_usd)} / ${money(b.cash_usd)}`;
   const pnl=Number(b.total_pnl_usd)||0;
   $(prefix+'-pnl').textContent=`${money(pnl)} · ${b.open_positions??0}`;
-  $(prefix+'-pnl').className='val '+(pnl>=0?'pos':'neg');
+  $(prefix+'-pnl').className='val '+cls(pnl);
   fillOpen($(prefix+'-open'), b.open);
-  fillFills($(prefix+'-fills'), b.recent_fills);
-  const card=$(prefix==='main'?'card-main':'card-td');
-  card.className='card'+(lead?' lead':'');
+  if($(prefix+'-fills')) fillFills($(prefix+'-fills'), b.recent_fills||b.fills);
+  const card=$({'main':'card-main','td':'card-td','sw':'card-sw'}[prefix]);
+  if(card) card.className='card'+(lead?' lead':'');
 }
-function render(b){
+function render(b, ops){
   const d=b.duel||{};
-  $('stakes').textContent=d.stakes||'Winner stays · loser goes · paper money · real competition';
+  $('stakes').textContent=d.stakes||'Winner stays · loser goes';
   $('ends').textContent=(d.ends_at||'2026-09-10').slice(0,16).replace('T',' ');
-  $('updated').textContent='upd '+(b.updated_at||'—');
+  $('updated').textContent='upd '+(b.updated_at||ops.updated_at||'—');
   if(b.disclaimer) $('disclaimer').textContent=b.disclaimer;
   const leader=d.leader||'tie';
   const pill=$('leader-pill');
-  pill.textContent=leader==='main'?'Leader: Main':leader==='trade_dev'?'Leader: Trade Dev':'Tied';
+  pill.textContent=leader==='main'?'Leader: TRADITIONAL':leader==='trade_dev'?'Leader: CUTTING':leader==='swarm'?'Leader: SWARM':'Tied';
   pill.className='leader'+(leader==='tie'?'':' win');
   $('main-rp').textContent=pct(d.main_return_pct);
   $('td-rp').textContent=pct(d.trade_dev_return_pct);
-  const main=b.main||b.paper||{};
-  const td=b.trade_dev||{};
+  $('sw-rp').textContent=pct(d.swarm_return_pct);
+  const main=bookOf(b,'main'), td=bookOf(b,'td'), sw=bookOf(b,'sw');
   renderBook('main', main, leader==='main');
   renderBook('td', td, leader==='trade_dev');
+  renderBook('sw', sw, leader==='swarm');
+  const ev=sw.event||{}, mr=sw.mr||{};
+  $('sw-ev').textContent=ev.equity_usd!=null?`${money(ev.equity_usd)} · ${pct(ev.return_pct)}`:'$50 · flat';
+  $('sw-mr').textContent=mr.equity_usd!=null?`${money(mr.equity_usd)} · ${pct(mr.return_pct)}`:'$50 · flat';
+  const dd=Math.min(100, Math.max(0, Math.abs(Math.min(0, Number(sw.return_pct)||0))/15*100));
+  $('sw-dd').style.width=dd+'%';
+  $('sw-dd').style.background=dd>80? 'var(--red)': 'var(--gold)';
+
+  const exps=b.experiments||ops.experiments||[];
+  $('exp-list').innerHTML=exps.length?exps.map(e=>`<div class="exp"><b>${e.id||''}</b><span class="pill ${e.keep?'keep':'drop'}">${e.keep?'KEEP':'KILL'}</span><div>${e.note||''}</div><div class="label">${e.next||''}</div></div>`).join(''):'<div class="label">No experiment notes yet</div>';
+
+  const g=b.grok||ops.grok||{};
+  const desk=g.desk||{};
+  $('grok-pill').textContent=(g.status||'wired')+' · CLI';
+  $('grok-via').textContent=(g.via||'grok-cli')+' · not Grok Bot';
+  $('grok-at').textContent=g.at||'—';
+  $('grok-note').textContent=desk.note||g.note||'Cloud seat for stamps + experiments.';
+  $('grok-block').textContent=desk.blockers||g.blockers||'—';
+  $('grok-next').textContent=desk.next||g.next||'—';
+
+  const systems=ops.systems||[
+    {id:'openclaw',name:'OpenClaw',role:'marks',status:'live'},
+    {id:'paper_local',name:'paper-desk',role:'local',status:'cron'},
+    {id:'trade_local',name:'trade-dev',role:'local',status:'cron'},
+    {id:'grok',name:'Grok CLI',role:'stamps',status:'wired'}
+  ];
+  $('systems').innerHTML=systems.map(s=>`<div class="chip"><b>${s.name}</b><div class="role">${s.role||''} · ${s.status||''}</div></div>`).join('');
+  $('bottlenecks').innerHTML=(ops.bottlenecks||[]).map(x=>`<div class="bn ${x.severity||''}"><b>${x.severity||''}</b> — ${x.text}</div>`).join('')||'<div class="label">—</div>';
+  const c=(ops.confidence||main.confidence||{}), bars=c.bars||{};
+  $('conf').innerHTML=`<div class="row"><span class="label">Score</span><span class="val">${c.score??'—'}/80</span></div>
+    <div class="row"><span class="label">Closed</span><span class="val">${bars.trades_closed??0}</span></div>
+    <div class="row"><span class="label">LIVE-READY</span><span class="val">no</span></div>`;
+  $('feed').innerHTML=(ops.events||[]).slice(0,24).map(e=>`<div class="ev"><div class="when">${String(e.ts||'').replace('T',' ').slice(5,19)}</div><div><span class="sys">${e.system||''}</span><b>${e.label||e.kind||''}</b><div class="label">${e.detail||''}</div></div></div>`).join('')||'—';
+
+  if(b.burn){
+    $('house').classList.remove('hidden');
+    $('nav-house').classList.remove('hidden');
+    const st=b.studio_sprint||{}, r1=b.r1||{};
+    $('house-body').innerHTML=`<div class="row"><span class="label">AI burn collected</span><span class="val">$${b.burn.collected_mtd_usd} / $${b.burn.monthly_usd}</span></div>
+      <div class="row"><span class="label">Studio sprint</span><span class="val">${st.pct||0}% · $${(st.treasury_usd||0).toLocaleString()} / $${(st.target_usd||0).toLocaleString()}</span></div>
+      <div class="row"><span class="label">R1</span><span class="val">${r1.offer||'—'} · Stripe ${r1.stripe||'OFF'}</span></div>
+      <div class="label">Private Mini only · stripped from public board</div>`;
+  }
 }
-async function load(){try{render(await fetchBoard())}catch(e){$('updated').textContent='offline'}}
+async function load(){
+  let raw=await fetchJson(['/api/paper-desk','data/board.json?t='+Date.now()]);
+  if(!raw){$('updated').textContent='offline';return}
+  const b=raw.board && (raw.board.main||raw.board.paper||raw.board.trade_dev)? raw.board : raw;
+  const ops=await fetchJson(['data/activity.json?t='+Date.now()]) || b.ops || {};
+  render(b, ops);
+}
 load(); setInterval(load,5000);
+if(location.hash){const el=document.querySelector(location.hash); if(el) el.scrollIntoView();}
 </script>
 </body>
 </html>

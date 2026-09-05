@@ -1,12 +1,14 @@
 {
-  "updated_at": "2026-09-05T08:06:59-0500",
+  "updated_at": "2026-09-05T09:26:40-05:00",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
-    "leader": "trade_dev",
-    "stakes": "Winner stays \u00b7 loser goes \u00b7 paper money \u00b7 real competition",
+    "leader": "swarm",
+    "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
     "main_return_pct": -0.4378,
-    "trade_dev_return_pct": -0.02
+    "trade_dev_return_pct": -0.451,
+    "swarm_return_pct": 0.0,
+    "timeline": "Thu hot wash \u2192 Fri fix \u2192 Sat seed"
   },
   "main": {
     "label": "Main Desk",
@@ -14,7 +16,7 @@
     "starting_cash_usd": 200.0,
     "cash_usd": 156.9138,
     "equity_usd": 199.1244,
-    "day_pnl_usd": -0.0861,
+    "day_pnl_usd": -0.8756,
     "total_pnl_usd": -0.8756,
     "return_pct": -0.4378,
     "open_positions": 3,
@@ -25,7 +27,7 @@
     "confidence": {
       "score": 52,
       "live_ready": false,
-      "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
+      "next": "1 closed / 3 open \u00b7 equity $199.12 \u00b7 F005 mark 18\u00a2 \u00b7 duel return -0.4378%"
     },
     "recent_fills": [
       {
@@ -107,7 +109,7 @@
         "avg": 0.19,
         "mark": 0.18,
         "upnl": -0.7895,
-        "notional": 15.0,
+        "notional": 14.2105,
         "edge": null
       }
     ]
@@ -116,12 +118,12 @@
     "label": "Trade Dev",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 83.98,
-    "equity_usd": 99.98,
-    "day_pnl_usd": -0.02,
-    "total_pnl_usd": -0.02,
-    "return_pct": -0.02,
-    "open_positions": 2,
+    "cash_usd": 76.97,
+    "equity_usd": 99.549,
+    "day_pnl_usd": -0.451,
+    "total_pnl_usd": -0.451,
+    "return_pct": -0.451,
+    "open_positions": 3,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -151,6 +153,16 @@
         "qty": 32.0,
         "px": 0.25,
         "edge": "TD6"
+      },
+      {
+        "id": "TDF003",
+        "ts": "2026-09-05T08:50:28-05:00",
+        "venue": "stocks_paperMoney",
+        "symbol": "BIL",
+        "side": "buy",
+        "qty": 0.076545,
+        "px": 91.45,
+        "edge": "TD4"
       }
     ],
     "open": [
@@ -160,7 +172,7 @@
         "qty": 42.1053,
         "avg": 0.19,
         "mark": 0.18,
-        "upnl": -0.421,
+        "upnl": -0.4211,
         "notional": 8.0,
         "edge": "TD1"
       },
@@ -169,20 +181,107 @@
         "symbol": "KXPAYROLLS-26SEP-T100000",
         "qty": 32.0,
         "avg": 0.25,
-        "mark": null,
-        "upnl": null,
+        "mark": 0.25,
+        "upnl": 0.0,
         "notional": 8.0,
         "edge": "TD6"
+      },
+      {
+        "venue": "stocks_paperMoney",
+        "symbol": "BIL",
+        "qty": 0.076545,
+        "avg": 91.45,
+        "mark": 91.45,
+        "upnl": 0.0,
+        "notional": 7.0,
+        "edge": "TD4"
       }
     ]
   },
+  "swarm": {
+    "label": "SWARM",
+    "starting_cash_usd": 100.0,
+    "cash_usd": 100.0,
+    "equity_usd": 100.0,
+    "total_pnl_usd": 0.0,
+    "return_pct": 0.0,
+    "open_positions": 0,
+    "open": [],
+    "recent_fills": [],
+    "mr": {
+      "label": "Swarm MR",
+      "starting_cash_usd": 50.0,
+      "cash_usd": 50.0,
+      "equity_usd": 50.0,
+      "total_pnl_usd": 0.0,
+      "return_pct": 0.0,
+      "open_positions": 0,
+      "alive": true,
+      "parked": false,
+      "lane": "ETF A1 VWAP mean-reversion SPY/QQQ only",
+      "open": [],
+      "recent_fills": []
+    },
+    "event": {
+      "label": "Swarm Event",
+      "starting_cash_usd": 50.0,
+      "cash_usd": 50.0,
+      "equity_usd": 50.0,
+      "total_pnl_usd": 0.0,
+      "return_pct": 0.0,
+      "open_positions": 0,
+      "alive": true,
+      "parked": false,
+      "lane": "calendar/event + stamped Kalshi demo only",
+      "open": [],
+      "recent_fills": []
+    },
+    "competition": "ACTIVE"
+  },
+  "grok": {
+    "via": "grok-cli",
+    "status": "wired",
+    "at": "2026-09-05T15:01:10-0500",
+    "note": "Grok CLI is now the cloud seat. Grok Bot paused. Local gemma/qwen still grind; Grok stamps, reviews experiments, and will hot-wash Thu.",
+    "blockers": "LIVE-READY day-span 0/10 \u00b7 expectancy \u22640 \u00b7 Bot usage maxed \u00b7 no XAI_API_KEY (session auth used)",
+    "next": "Lean TD gross ($23/$25) until a close. Mon 10:20 CT grok_wire cron. No live.",
+    "jobs_done": [
+      "desk-pulse"
+    ]
+  },
+  "experiments": [
+    {
+      "id": "TD1",
+      "keep": true,
+      "note": "Weather settlement-delay on demo NYC high. Hold through prelim.",
+      "next": "Wait official determination; no add-on size."
+    },
+    {
+      "id": "TD2",
+      "keep": false,
+      "note": "KILL \u2014 combo books thin / zero MVE.",
+      "next": "Do not reopen."
+    },
+    {
+      "id": "TD4",
+      "keep": true,
+      "note": "BIL $7 after routine ~3x bill covers. Gross $23/$25.",
+      "next": "Journal next bill print; no SHY yet."
+    },
+    {
+      "id": "TD6",
+      "keep": true,
+      "note": "Sep NFP first-print ladder. Grade BLS first sentence only.",
+      "next": "Hold to close window; never regrade revisions."
+    }
+  ],
   "paper": {
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
     "cash_usd": 156.9138,
     "equity_usd": 199.1244,
-    "day_pnl_usd": -0.0861,
+    "day_pnl_usd": -0.8756,
     "total_pnl_usd": -0.8756,
     "return_pct": -0.4378,
     "open_positions": 3,
@@ -193,7 +292,7 @@
     "confidence": {
       "score": 52,
       "live_ready": false,
-      "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
+      "next": "1 closed / 3 open \u00b7 equity $199.12 \u00b7 F005 mark 18\u00a2 \u00b7 duel return -0.4378%"
     },
     "recent_fills": [
       {
@@ -275,7 +374,7 @@
         "avg": 0.19,
         "mark": 0.18,
         "upnl": -0.7895,
-        "notional": 15.0,
+        "notional": 14.2105,
         "edge": null
       }
     ]
@@ -283,402 +382,9 @@
   "signals": {
     "main": "yellow",
     "trade_dev": "yellow",
+    "swarm": "green",
+    "grok": "green",
     "duel": "green"
   },
-  "disclaimer": "Paper trading duel demo only. Fake money, real competition (winner stays / loser goes). Not financial advice. No live funds. No personal data.",
-  "ops": {
-    "updated_at": "2026-09-05T08:34:40-0500",
-    "duel": {
-      "leader": "trade_dev",
-      "main_return_pct": -0.4378,
-      "trade_dev_return_pct": -0.02,
-      "ends_at": "2026-09-10T16:00:00-05:00",
-      "stakes": "Winner stays \u00b7 loser goes"
-    },
-    "confidence": {
-      "score": 52,
-      "live_ready": false,
-      "bars": {
-        "trades_closed": 1,
-        "expectancy_ok": false,
-        "max_dd_ok": true,
-        "days_span": 0,
-        "mistakes_clear_7d": true,
-        "thesis_complete": true,
-        "venue_legal_pass": true
-      },
-      "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
-    },
-    "systems": [
-      {
-        "id": "openclaw",
-        "name": "OpenClaw backbone",
-        "role": "marks \u00b7 duel \u00b7 publish",
-        "status": "live"
-      },
-      {
-        "id": "paper_local",
-        "name": "OC paper-desk",
-        "role": "local proposals",
-        "status": "cron"
-      },
-      {
-        "id": "trade_local",
-        "name": "OC trade-dev",
-        "role": "local edge hunt",
-        "status": "cron"
-      },
-      {
-        "id": "main",
-        "name": "Main Desk",
-        "role": "$200 fills",
-        "status": "live"
-      },
-      {
-        "id": "trade_dev",
-        "name": "Trade Dev",
-        "role": "$100 fills",
-        "status": "live"
-      },
-      {
-        "id": "legal",
-        "name": "Legal",
-        "role": "stamps",
-        "status": "gate"
-      },
-      {
-        "id": "risk",
-        "name": "Risk",
-        "role": "stamps",
-        "status": "gate"
-      },
-      {
-        "id": "pnl",
-        "name": "P&L",
-        "role": "score \u00b7 MTM",
-        "status": "live"
-      },
-      {
-        "id": "vercel",
-        "name": "Vercel",
-        "role": "public UI",
-        "status": "live"
-      },
-      {
-        "id": "grok",
-        "name": "Grok Bot",
-        "role": "route \u00b7 hot wash",
-        "status": "cloud"
-      }
-    ],
-    "flows": [
-      {
-        "from": "openclaw",
-        "to": "main",
-        "label": "marks"
-      },
-      {
-        "from": "openclaw",
-        "to": "trade_dev",
-        "label": "marks"
-      },
-      {
-        "from": "openclaw",
-        "to": "vercel",
-        "label": "publish"
-      },
-      {
-        "from": "trade_local",
-        "to": "trade_dev",
-        "label": "draft"
-      },
-      {
-        "from": "paper_local",
-        "to": "main",
-        "label": "draft"
-      },
-      {
-        "from": "trade_dev",
-        "to": "legal",
-        "label": "ask"
-      },
-      {
-        "from": "trade_dev",
-        "to": "risk",
-        "label": "ask"
-      },
-      {
-        "from": "legal",
-        "to": "trade_dev",
-        "label": "PASS"
-      },
-      {
-        "from": "risk",
-        "to": "trade_dev",
-        "label": "PASS"
-      },
-      {
-        "from": "main",
-        "to": "pnl",
-        "label": "fills"
-      },
-      {
-        "from": "trade_dev",
-        "to": "pnl",
-        "label": "fills"
-      },
-      {
-        "from": "pnl",
-        "to": "vercel",
-        "label": "board"
-      },
-      {
-        "from": "grok",
-        "to": "legal",
-        "label": "route"
-      },
-      {
-        "from": "grok",
-        "to": "risk",
-        "label": "route"
-      }
-    ],
-    "touchpoints": [
-      {
-        "id": "prices",
-        "name": "Public prices",
-        "freq": "every 30m (OpenClaw tick)",
-        "who": "backbone.py"
-      },
-      {
-        "id": "propose_main",
-        "name": "Main action proposal",
-        "freq": "weekdays 10:15 CT",
-        "who": "OpenClaw paper-desk (local)"
-      },
-      {
-        "id": "propose_td",
-        "name": "Trade Dev edge proposal",
-        "freq": "weekdays 10:05 CT",
-        "who": "OpenClaw trade-dev (local)"
-      },
-      {
-        "id": "stamp",
-        "name": "Legal + Risk stamp",
-        "freq": "per new edge",
-        "who": "cloud seats"
-      },
-      {
-        "id": "fill_main",
-        "name": "Main fill",
-        "freq": "after stamp/signal",
-        "who": "Paper Desk"
-      },
-      {
-        "id": "fill_td",
-        "name": "Trade Dev fill",
-        "freq": "after dual PASS",
-        "who": "Trade Dev"
-      },
-      {
-        "id": "pnl",
-        "name": "P&L / confidence",
-        "freq": "after fills",
-        "who": "P&L Runner"
-      },
-      {
-        "id": "publish",
-        "name": "Public board publish",
-        "freq": "on tick/EOD change",
-        "who": "backbone \u2192 Vercel KV"
-      },
-      {
-        "id": "duel",
-        "name": "Duel score",
-        "freq": "every tick + Thu hot wash",
-        "who": "backbone + Grok hot wash"
-      },
-      {
-        "id": "yes",
-        "name": "Live unlock",
-        "freq": "once",
-        "who": "Christopher YES"
-      }
-    ],
-    "bottlenecks": [
-      {
-        "id": "expectancy",
-        "severity": "high",
-        "text": "Expectancy \u2264 0 after fees \u2014 required for LIVE-READY"
-      },
-      {
-        "id": "days_span",
-        "severity": "blocker",
-        "text": "Trading-day span 0/10 \u2014 cannot hit by Fri Sep 11 under current gate"
-      },
-      {
-        "id": "closes",
-        "severity": "high",
-        "text": "Closed trades 1 (need many more for score; +2 pts each cap 30)"
-      },
-      {
-        "id": "score",
-        "severity": "high",
-        "text": "Confidence 52/80"
-      },
-      {
-        "id": "yes",
-        "severity": "gate",
-        "text": "Christopher YES + wallet connect still required even at 100"
-      },
-      {
-        "id": "stamp_latency",
-        "severity": "med",
-        "text": "New edges wait Legal+Risk dual PASS before fill"
-      }
-    ],
-    "cadence": {
-      "openclaw_ticks_per_weekday": 14,
-      "local_scans_per_weekday": 2,
-      "main_fills_logged": 5,
-      "trade_dev_fills_logged": 2,
-      "main_closed": 1,
-      "trade_dev_closed": 0,
-      "days_to_friday": 6,
-      "recommended_closes_per_day": 3
-    },
-    "strategy": {
-      "main": {
-        "book": 200,
-        "caps": "$20/name \u00b7 $50 gross",
-        "edges": "A1 VWAP MR \u00b7 A2 Kalshi Fed/CPI \u00b7 A3 sports panic journal \u00b7 A4 notes \u00b7 Scout E1\u2013E5",
-        "cadence_target": "2\u20134 paper decisions/day weekdays; prefer closes over open pile-up"
-      },
-      "trade_dev": {
-        "book": 100,
-        "caps": "$10/name \u00b7 $25 gross",
-        "edges": "Non-obvious legal (TD1 weather settlement delay, TD6 payrolls first-print, \u2026)",
-        "cadence_target": "1\u20132 stamped clips/day; append lessons every close"
-      },
-      "duel": "Return % thru Thu 2026-09-10 16:00 CT \u2014 winner stays / loser goes \u2014 paper money real stakes",
-      "friday_live": {
-        "target": "2026-09-11",
-        "possible_under_current_gate": false,
-        "why": "\u226510 trading days required; from now only ~4 weekdays remain before Friday",
-        "paths": [
-          "A) Keep gate \u2014 Fri = optimized paper + hot-wash report; live after day-span met",
-          "B) Dest MICRO-LIVE Fri \u2014 tiny size after Thu hot wash + YES + Legal venue PASS (explicit exception)",
-          "C) Soften days_span only with your dest (not recommended without Risk/Legal)"
-        ]
-      }
-    },
-    "events": [
-      {
-        "ts": "2026-09-05T08:06:21-05:00",
-        "system": "trade_dev",
-        "kind": "fill",
-        "label": "TDF002 KXPAYROLLS-26SEP-T100000",
-        "detail": "px=0.25 $8.0"
-      },
-      {
-        "ts": "2026-09-05T00:04:04-05:00",
-        "system": "trade_dev",
-        "kind": "fill",
-        "label": "TDF001 KXHIGHNY-26SEP05-B81.5",
-        "detail": "px=0.19 $8.0"
-      },
-      {
-        "ts": "2026-09-05T00:00:00",
-        "system": "trade_dev",
-        "kind": "lesson",
-        "label": "TDF001 FILLED TD1 weather_settlement_delay KXHIGHNY-26SEP05-B81.5 @0.19 \u00d742.1053 ($8 +$0.01 fee) kalshi_de",
-        "detail": ""
-      },
-      {
-        "ts": "2026-09-05T00:00:00",
-        "system": "trade_dev",
-        "kind": "lesson",
-        "label": "DUEL STAKES LOCKED \u2014 winner stays / loser seat+book sunset after hot wash. Thru 2026-09-10 16:00 CT return",
-        "detail": ""
-      },
-      {
-        "ts": "2026-09-05T00:00:00",
-        "system": "trade_dev",
-        "kind": "lesson",
-        "label": "TDF002 FILLED TD6 payrolls_initial_print_finality KXPAYROLLS-26SEP-T100000 @0.25 \u00d732 ($8 +$0.01 fee) kalsh",
-        "detail": ""
-      },
-      {
-        "ts": "2026-09-04T23:57:05-0500",
-        "system": "openclaw",
-        "kind": "tick",
-        "label": "backbone --tick",
-        "detail": "leader=trade_dev main=-0.043 td=0.0"
-      },
-      {
-        "ts": "2026-09-04T23:42:05-05:00",
-        "system": "main",
-        "kind": "fill",
-        "label": "F005 KXHIGHNY-26SEP05-B81.5 buy",
-        "detail": "px=0.19 edge=E3"
-      },
-      {
-        "ts": "2026-09-04T23:42:05-05:00",
-        "system": "main",
-        "kind": "fill",
-        "label": "F004 BTC-USD sell",
-        "detail": "px=79551.615 edge=capacity"
-      },
-      {
-        "ts": "2026-09-04T23:33:06-05:00",
-        "system": "main",
-        "kind": "fill",
-        "label": "F003 KXFEDDECISION-26SEP-H0 buy",
-        "detail": "px=0.49 edge=A2"
-      },
-      {
-        "ts": "2026-09-04T23:25:22-05:00",
-        "system": "main",
-        "kind": "fill",
-        "label": "F002 SPY buy",
-        "detail": "px=770.19 edge="
-      },
-      {
-        "ts": "2026-09-04T23:25:22-05:00",
-        "system": "main",
-        "kind": "fill",
-        "label": "F001 BTC-USD buy",
-        "detail": "px=79583.165 edge="
-      },
-      {
-        "ts": "2026-09-04T23:14:48-0500",
-        "system": "legal",
-        "kind": "stamp",
-        "label": "LEGAL-STAMP-OFFER-R1-2026-09-04",
-        "detail": "Legal stamp"
-      },
-      {
-        "ts": "2026-09-04T00:00:00",
-        "system": "trade_dev",
-        "kind": "lesson",
-        "label": "Book opened. Caps $10/$25. Risk book PASS. No fills yet.",
-        "detail": ""
-      },
-      {
-        "ts": "2026-09-04T00:00:00",
-        "system": "trade_dev",
-        "kind": "lesson",
-        "label": "Edges filed `TRADE-DEV-EDGES-2026-09-04.md` (TD1\u2013TD5). Top pick TD1 weather_settlement_delay awaiting Lega",
-        "detail": ""
-      },
-      {
-        "ts": "2026-09-04T00:00:00",
-        "system": "trade_dev",
-        "kind": "lesson",
-        "label": "Continued hunt \u2192 TD6\u2013TD9 appended. TD1 still hold for Legal (Risk PASS).",
-        "detail": ""
-      }
-    ],
-    "disclaimer": "Control tower for paper duel. Fake money. Friday live blocked by day-span unless you dest an exception."
-  }
+  "disclaimer": "Paper trading trial demo only. Fake money, real competition. Not financial advice. No live funds. No personal data."
 }

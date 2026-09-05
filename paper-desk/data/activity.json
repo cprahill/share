@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T08:34:40-0500",
+  "updated_at": "2026-09-05T15:08:00-0500",
   "duel": {
     "leader": "trade_dev",
     "main_return_pct": -0.4378,
@@ -19,7 +19,7 @@
       "thesis_complete": true,
       "venue_legal_pass": true
     },
-    "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
+    "next": "1 closed / 3 open \u00b7 equity $199.12 \u00b7 F005 mark 18\u00a2 \u00b7 duel return -0.4378%"
   },
   "systems": [
     {
@@ -78,9 +78,9 @@
     },
     {
       "id": "grok",
-      "name": "Grok Bot",
-      "role": "route \u00b7 hot wash",
-      "status": "cloud"
+      "name": "Grok CLI",
+      "role": "stamps \u00b7 experiments \u00b7 hot wash",
+      "status": "wired"
     }
   ],
   "flows": [
@@ -147,12 +147,22 @@
     {
       "from": "grok",
       "to": "legal",
-      "label": "route"
+      "label": "stamp"
     },
     {
       "from": "grok",
       "to": "risk",
-      "label": "route"
+      "label": "stamp"
+    },
+    {
+      "from": "grok",
+      "to": "trade_dev",
+      "label": "experiments"
+    },
+    {
+      "from": "grok",
+      "to": "main",
+      "label": "review"
     }
   ],
   "touchpoints": [
@@ -177,8 +187,8 @@
     {
       "id": "stamp",
       "name": "Legal + Risk stamp",
-      "freq": "per new edge",
-      "who": "cloud seats"
+      "freq": "per new edge \u00b7 weekdays 10:20 CT",
+      "who": "Grok CLI wire"
     },
     {
       "id": "fill_main",
@@ -208,7 +218,13 @@
       "id": "duel",
       "name": "Duel score",
       "freq": "every tick + Thu hot wash",
-      "who": "backbone + Grok hot wash"
+      "who": "backbone + Grok CLI wash"
+    },
+    {
+      "id": "grok_wire",
+      "name": "Grok wire",
+      "freq": "weekdays 10:20 CT + on dest",
+      "who": "openclaw/grok_wire.py"
     },
     {
       "id": "yes",
@@ -253,7 +269,7 @@
     "openclaw_ticks_per_weekday": 14,
     "local_scans_per_weekday": 2,
     "main_fills_logged": 5,
-    "trade_dev_fills_logged": 2,
+    "trade_dev_fills_logged": 3,
     "main_closed": 1,
     "trade_dev_closed": 0,
     "days_to_friday": 6,
@@ -285,6 +301,76 @@
     }
   },
   "events": [
+    {
+      "ts": "2026-09-05T15:01:10-0500",
+      "system": "grok",
+      "kind": "wire",
+      "label": "Grok CLI desk-pulse",
+      "detail": "Grok CLI is now the cloud seat. Grok Bot paused. Local gemma/qwen still grind; Grok stamps, reviews experiments, and will hot-wash Thu."
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "risk",
+      "kind": "stamp",
+      "label": "RISK-STAMP-TD4-2026-09-05",
+      "detail": "Risk stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "risk",
+      "kind": "stamp",
+      "label": "RISK-STAMP-TD6-2026-09-05",
+      "detail": "Risk stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "risk",
+      "kind": "stamp",
+      "label": "RISK-STAMP-TD1-2026-09-04",
+      "detail": "Risk stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "legal",
+      "kind": "stamp",
+      "label": "LEGAL-STAMP-POLYMARKET-2026-09-04",
+      "detail": "Legal stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "legal",
+      "kind": "stamp",
+      "label": "LEGAL-STAMP-TD4-2026-09-05",
+      "detail": "Legal stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "legal",
+      "kind": "stamp",
+      "label": "LEGAL-STAMP-TD1-2026-09-04",
+      "detail": "Legal stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "legal",
+      "kind": "stamp",
+      "label": "LEGAL-STAMP-TD6-2026-09-04",
+      "detail": "Legal stamp"
+    },
+    {
+      "ts": "2026-09-05T14:59:29-0500",
+      "system": "legal",
+      "kind": "stamp",
+      "label": "LEGAL-STAMP-KALSHI-2026-09-04",
+      "detail": "Legal stamp"
+    },
+    {
+      "ts": "2026-09-05T08:50:28-05:00",
+      "system": "trade_dev",
+      "kind": "fill",
+      "label": "TDF003 BIL",
+      "detail": "px=91.45 $7.0"
+    },
     {
       "ts": "2026-09-05T08:06:21-05:00",
       "system": "trade_dev",
@@ -318,6 +404,55 @@
       "system": "trade_dev",
       "kind": "lesson",
       "label": "TDF002 FILLED TD6 payrolls_initial_print_finality KXPAYROLLS-26SEP-T100000 @0.25 \u00d732 ($8 +$0.01 fee) kalsh",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "Group WEIRD in 3-group mortality swarm (vs EVENT + LIQUID/MR). Timeline Thu hot wash \u2192 Fri fix \u2192 Sat seed ",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "Next stamp proposed TD2 NFL combo maker-fee micro (\u2264$9). Alt TD4 bill internals if sports HOLD.",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "TD2 KILL \u2014 public MVE/combo books show 0 bid/ask/volume (RFQ thin). Per Risk kill. Flip to TD4 bill auctio",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "TDF003 FILLED TD4 treasury_bill_auction_internals BIL @91.45 \u00d70.076545 ($7 +$0.01 fee) stocks_paperMoney. ",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "DEST LOCK \u2014 CUTTING (qwen3.6:27b) vs Paper Desk TRADITIONAL (gemma/$200). Swarm Event/MR parked. Lean gros",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "3-group Trial ACTIVE \u2014 CUTTING vs TRADITIONAL Main + SWARM Event/MR (unparked). Lean gross $23.",
+      "detail": ""
+    },
+    {
+      "ts": "2026-09-05T00:00:00",
+      "system": "trade_dev",
+      "kind": "lesson",
+      "label": "GROK WIRE \u2014 Grok Bot out of usage. Cloud seat is Grok CLI `openclaw/grok_wire.py` (not local Ollama, not a",
       "detail": ""
     },
     {
@@ -368,27 +503,46 @@
       "kind": "stamp",
       "label": "LEGAL-STAMP-OFFER-R1-2026-09-04",
       "detail": "Legal stamp"
+    }
+  ],
+  "grok": {
+    "via": "grok-cli-session",
+    "status": "wired",
+    "at": "2026-09-05T15:01:10-0500",
+    "jobs_done": [
+      "desk-pulse"
+    ],
+    "not": "grok-bot",
+    "desk": {
+      "note": "Grok CLI is now the cloud seat. Grok Bot paused. Local gemma/qwen still grind; Grok stamps, reviews experiments, and will hot-wash Thu.",
+      "blockers": "LIVE-READY day-span 0/10 \u00b7 expectancy \u22640 \u00b7 Bot usage maxed \u00b7 no XAI_API_KEY (session auth used)",
+      "next": "Lean TD gross ($23/$25) until a close. Mon 10:20 CT grok_wire cron. No live."
+    }
+  },
+  "experiments": [
+    {
+      "id": "TD1",
+      "keep": true,
+      "note": "Weather settlement-delay on demo NYC high. Hold through prelim.",
+      "next": "Wait official determination; no add-on size."
     },
     {
-      "ts": "2026-09-04T00:00:00",
-      "system": "trade_dev",
-      "kind": "lesson",
-      "label": "Book opened. Caps $10/$25. Risk book PASS. No fills yet.",
-      "detail": ""
+      "id": "TD2",
+      "keep": false,
+      "note": "KILL \u2014 combo books thin / zero MVE.",
+      "next": "Do not reopen."
     },
     {
-      "ts": "2026-09-04T00:00:00",
-      "system": "trade_dev",
-      "kind": "lesson",
-      "label": "Edges filed `TRADE-DEV-EDGES-2026-09-04.md` (TD1\u2013TD5). Top pick TD1 weather_settlement_delay awaiting Lega",
-      "detail": ""
+      "id": "TD4",
+      "keep": true,
+      "note": "BIL $7 after routine ~3x bill covers. Gross $23/$25.",
+      "next": "Journal next bill print; no SHY yet."
     },
     {
-      "ts": "2026-09-04T00:00:00",
-      "system": "trade_dev",
-      "kind": "lesson",
-      "label": "Continued hunt \u2192 TD6\u2013TD9 appended. TD1 still hold for Legal (Risk PASS).",
-      "detail": ""
+      "id": "TD6",
+      "keep": true,
+      "note": "Sep NFP first-print ladder. Grade BLS first sentence only.",
+      "next": "Hold to close window; never regrade revisions."
     }
   ],
   "disclaimer": "Control tower for paper duel. Fake money. Friday live blocked by day-span unless you dest an exception."
