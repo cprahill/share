@@ -188,7 +188,7 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
       <div class="panel"><div class="ph"><span class="t">TRAD FILLS · REAL</span><span class="meta">MAIN DESK</span></div><div class="subh"><span>SYMBOL</span><span>STATE</span><span>Δ 5M</span></div><div class="pb"><div class="feed" id="pulsefeed"></div></div></div>
       <div class="panel"><div class="ph"><span class="t">DEV FILLS · REAL</span><span class="meta">TRADE DEV</span></div><div class="pb"><div class="feed" id="roster"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">FEATURED · <span id="ch_head_sym">—</span></span><span class="meta">1s</span></div><div class="pb"><div class="chhead"><span class="cs" id="ch_sym">$—</span><span class="cp mono2" id="ch_px">—</span></div><canvas id="chart"></canvas></div></div>
-      <div class="panel mini"><div class="ph"><span class="t">RUN-RATE</span><span class="meta">SOL/H</span></div><div class="pb"><canvas id="runrate"></canvas></div></div>
+      <div class="panel mini"><div class="ph"><span class="t">RUN-RATE</span><span class="meta">FILLS</span></div><div class="pb"><canvas id="runrate"></canvas></div></div>
       <div class="panel mini"><div class="ph"><span class="t">DEPTH</span><span class="meta">0.3%</span></div><div class="pb"><div class="depth" id="depth"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">SWARM HEAT</span><span class="meta"><span id="heat_up">0</span>G</span></div><div class="pb"><div class="heat" id="heat"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">CORRELATION</span><span class="meta">pnl</span></div><div class="pb"><div class="corr" id="corr"></div></div></div>
@@ -559,6 +559,7 @@ requestAnimationFrame(drawHive);
     paintCorr(main, td, sw);
     paintThroughput(main, td, sw, actions);
     paintFeaturedChart(opensAll, main, td);
+    paintRunRate(main, td, sw);
   }
 
   function paintFeatured(opens){
@@ -654,6 +655,49 @@ requestAnimationFrame(drawHive);
     ].map(function(r){
       return '<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;border-bottom:1px solid rgba(20,241,149,.06)"><span class="dim">'+r[0]+'</span><b style="color:#7cffcf">'+r[1]+'</b></div>';
     }).join('');
+  }
+
+
+  function paintRunRate(main, td, sw){
+    var canvas=el('runrate'); if(!canvas||!canvas.getContext) return;
+    var fills=[].concat(main.recent_fills||[], td.recent_fills||[]);
+    (sw.agents||[]).forEach(function(a){ fills=fills.concat(a.fills||[]); });
+    fills=fills.filter(function(f){return f&&f.ts;});
+    fills.sort(function(a,b){return String(a.ts).localeCompare(String(b.ts));});
+    // bucket by minute of day from timestamps — count real fills
+    var buckets={};
+    fills.forEach(function(f){
+      var key=(f.ts||'').slice(0,16); // YYYY-MM-DDTHH:MM
+      if(!key) return;
+      buckets[key]=(buckets[key]||0)+1;
+    });
+    var keys=Object.keys(buckets).sort();
+    var pts=keys.map(function(k){return buckets[k];});
+    var ctx=canvas.getContext('2d');
+    var w=(canvas.parentElement&&canvas.parentElement.clientWidth)||160;
+    var h=70;
+    canvas.width=w*2; canvas.height=h*2; canvas.style.width=w+'px'; canvas.style.height=h+'px';
+    ctx.setTransform(2,0,0,2,0,0);
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='rgba(5,16,11,.9)'; ctx.fillRect(0,0,w,h);
+    if(pts.length<1){
+      ctx.fillStyle='#5f9c82'; ctx.font='10px IBM Plex Mono'; ctx.fillText('no fills yet', 8, h/2);
+      return;
+    }
+    if(pts.length===1) pts=[0, pts[0]];
+    var lo=0, hi=Math.max.apply(null,pts.concat([1]));
+    // bars
+    var n=pts.length, bw=Math.max(2,(w-8)/n-2);
+    pts.forEach(function(p,i){
+      var x=4+i*((w-8)/n);
+      var bh=((p-lo)/(hi-lo))*(h-14);
+      ctx.fillStyle='#14f195';
+      ctx.globalAlpha=0.85;
+      ctx.fillRect(x, h-4-bh, bw, bh);
+    });
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#7cffcf'; ctx.font='9px IBM Plex Mono';
+    ctx.fillText(fills.length+' real', 6, 12);
   }
 
   function paintFeaturedChart(opens, main, td){
