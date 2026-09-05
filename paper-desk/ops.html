@@ -4,110 +4,89 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="noindex"/>
-<title>Paper Desk · Ops</title>
+<title>Control Tower · Paper Desk</title>
 <style>
 :root{--bg:#0b0d10;--card:#141820;--text:#e8eaed;--muted:#8b93a0;--green:#3ddc97;--yellow:#f5c542;--red:#ff5c5c;--line:#232a35;--accent:#3d7eff;--purple:#b388ff}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;padding-bottom:40px}
-h1{font-size:1.15rem;margin:4px 0 2px}.sub{color:var(--muted);font-size:.8rem;margin-bottom:12px}
-a{color:var(--accent);text-decoration:none}
-.layout{display:grid;gap:12px}@media(min-width:960px){.layout{grid-template-columns:1.2fr 1fr}}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;padding-bottom:48px}
+h1{font-size:1.2rem;margin:4px 0}h2{font-size:.9rem;margin:0 0 8px;color:var(--muted);font-weight:600}
+.sub{color:var(--muted);font-size:.8rem;margin-bottom:12px}a{color:var(--accent);text-decoration:none}
+.grid{display:grid;gap:10px}@media(min-width:900px){.grid.two{grid-template-columns:1.1fr 1fr}.grid.three{grid-template-columns:1fr 1fr 1fr}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
-.banner{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
-.pill{font-size:.7rem;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-.pill.on{color:var(--green);border-color:#2a5}
-.map{position:relative;min-height:340px;background:#0f131a;border-radius:12px;border:1px solid var(--line);overflow:hidden}
-svg.flows{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.node{position:absolute;width:118px;padding:8px;border-radius:10px;border:1px solid var(--line);background:#1a2030;font-size:.68rem;text-align:center;transform:translate(-50%,-50%)}
-.node b{display:block;font-size:.72rem;margin-bottom:2px}
-.node .role{color:var(--muted);font-size:.62rem;line-height:1.2}
-.node.live{border-color:#2a5;box-shadow:0 0 12px #2a54}
-.node.gate{border-color:#856}.node.cloud{border-color:#3d7eff}.node.cron{border-color:#b388ff}
-.pulse{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
-.feed{max-height:420px;overflow:auto}
-.ev{display:grid;grid-template-columns:72px 1fr;gap:6px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.72rem}
-.ev .when{color:var(--muted);font-size:.65rem}
-.ev .sys{display:inline-block;padding:1px 6px;border-radius:99px;border:1px solid var(--line);font-size:.62rem;margin-right:4px}
-.sys.main,.sys.trade_dev{color:var(--green)}.sys.legal,.sys.risk{color:var(--yellow)}.sys.openclaw{color:var(--purple)}.sys.grok{color:var(--accent)}
+.banner{background:#121821;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.pill{display:inline-block;font-size:.68rem;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);margin:2px 4px 2px 0}
+.pill.bad{color:var(--red);border-color:#633}.pill.warn{color:var(--yellow);border-color:#664}.pill.ok{color:var(--green);border-color:#2a5}
+.row{display:flex;justify-content:space-between;gap:8px;margin:5px 0;font-size:.8rem}
+.label{color:var(--muted)}.val{font-weight:600;text-align:right}
+.map{position:relative;min-height:360px;background:#0f131a;border-radius:12px;border:1px solid var(--line)}
+svg.flows{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;width:112px;padding:7px;border-radius:10px;border:1px solid var(--line);background:#1a2030;font-size:.65rem;text-align:center;transform:translate(-50%,-50%)}
+.node b{display:block;font-size:.7rem}.node .role{color:var(--muted);font-size:.6rem}
+.node.live{border-color:#2a5}.node.gate{border-color:#856}.node.cloud{border-color:#3d7eff}.node.cron{border-color:#b388ff}
+.feed{max-height:380px;overflow:auto}.ev{display:grid;grid-template-columns:70px 1fr;gap:6px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.7rem}
+.ev .when{color:var(--muted);font-size:.62rem}
+.sys{display:inline-block;padding:1px 6px;border-radius:99px;border:1px solid var(--line);font-size:.6rem;margin-right:4px}
+.bn{padding:8px;border-radius:10px;border:1px solid var(--line);margin:6px 0;font-size:.75rem}
+.bn.blocker{border-color:#833;background:#1a1010}.bn.high{border-color:#664}.bn.med,.bn.gate{opacity:.95}
+.tp{font-size:.72rem;padding:6px 0;border-bottom:1px solid var(--line)}.tp b{display:block}
 .footer{margin-top:12px;color:var(--muted);font-size:.68rem}
 </style>
 </head>
 <body>
-<h1>Ops map</h1>
-<div class="sub"><a href="./">Duel board</a> · live systems · <span id="updated">…</span></div>
-<div class="banner">
-  <span class="pill on" id="stakes">Winner stays · loser goes</span>
-  <span class="pill" id="leader">leader —</span>
-  <span class="pill" id="ends">ends —</span>
-</div>
-<div class="layout">
-  <div class="card">
-    <div class="label" style="color:var(--muted);font-size:.78rem;margin-bottom:8px">How work flows</div>
-    <div class="map" id="map">
-      <svg class="flows" id="flows"></svg>
-    </div>
-  </div>
-  <div class="card">
-    <div style="color:var(--muted);font-size:.78rem;margin-bottom:8px">Recent activity</div>
-    <div class="feed" id="feed"></div>
+<h1>Control tower</h1>
+<div class="sub"><a href="./">Duel</a> · touchpoints · bottlenecks · cadence · strategy · <span id="updated">…</span></div>
+<div class="banner" id="friday"></div>
+<div class="grid two">
+  <div class="card"><h2>System map</h2><div class="map" id="map"><svg class="flows" id="flows"></svg></div></div>
+  <div class="card"><h2>Bottlenecks</h2><div id="bottlenecks"></div>
+    <h2 style="margin-top:14px">Confidence</h2><div id="conf"></div>
+    <h2 style="margin-top:14px">Cadence</h2><div id="cadence"></div>
   </div>
 </div>
-<div class="footer" id="disclaimer">Paper ops visualization. Fake money. No personal data.</div>
+<div class="grid two" style="margin-top:10px">
+  <div class="card"><h2>Touchpoints</h2><div id="touch"></div></div>
+  <div class="card"><h2>Strategy</h2><div id="strat"></div></div>
+</div>
+<div class="card" style="margin-top:10px"><h2>Activity</h2><div class="feed" id="feed"></div></div>
+<div class="footer" id="disclaimer">Paper control tower. Fake money.</div>
 <script>
-const POS={
-  openclaw:[18,22], paper_local:[18,48], trade_local:[18,74],
-  main:[50,28], trade_dev:[50,62],
-  legal:[78,22], risk:[78,48], pnl:[78,74],
-  vercel:[50,90], grok:[82,90]
-};
+const POS={openclaw:[16,20],paper_local:[16,45],trade_local:[16,70],main:[48,25],trade_dev:[48,55],legal:[80,18],risk:[80,42],pnl:[80,66],vercel:[48,88],grok:[80,88]};
 const $=id=>document.getElementById(id);
 async function load(){
   let d;
-  try{
-    const r=await fetch('/api/paper-desk',{cache:'no-store'});
-    const j=await r.json();
-    const b=j.board||j;
-    if(b && b.ops) d=b.ops;
-  }catch(e){}
-  if(!d){
-    try{d=await (await fetch('data/activity.json?t='+Date.now(),{cache:'no-store'})).json()}
-    catch(e){ $('updated').textContent='offline'; return }
-  }
+  try{const j=await (await fetch('/api/paper-desk',{cache:'no-store'})).json(); const b=j.board||j; if(b&&b.ops) d=b.ops;}catch(e){}
+  if(!d){try{d=await (await fetch('data/activity.json?t='+Date.now(),{cache:'no-store'})).json()}catch(e){$('updated').textContent='offline';return}}
   $('updated').textContent='upd '+(d.updated_at||'—');
-  if(d.disclaimer) $('disclaimer').textContent=d.disclaimer;
-  const du=d.duel||{};
-  $('stakes').textContent=du.stakes||'Winner stays · loser goes';
-  $('leader').textContent='leader '+(du.leader||'—')+' · main '+(du.main_return_pct??'—')+'% · td '+(du.trade_dev_return_pct??'—')+'%';
-  $('ends').textContent='ends '+String(du.ends_at||'').slice(0,16).replace('T',' ');
-  const map=$('map');
-  [...map.querySelectorAll('.node')].forEach(n=>n.remove());
-  (d.systems||[]).forEach(s=>{
-    const [x,y]=POS[s.id]||[50,50];
-    const el=document.createElement('div');
-    el.className='node '+(s.status||'')+(s.status==='live'?' pulse':'');
-    el.style.left=x+'%'; el.style.top=y+'%';
-    el.innerHTML=`<b>${s.name}</b><div class="role">${s.role}</div>`;
-    map.appendChild(el);
-  });
-  const svg=$('flows');
-  const W=map.clientWidth||600, H=map.clientHeight||340;
-  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  svg.innerHTML='';
-  (d.flows||[]).forEach(f=>{
-    const a=POS[f.from], b=POS[f.to]; if(!a||!b) return;
-    const x1=a[0]/100*W, y1=a[1]/100*H, x2=b[0]/100*W, y2=b[1]/100*H;
-    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
-    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
-    line.setAttribute('stroke','#3d7eff55'); line.setAttribute('stroke-width','1.5');
-    svg.appendChild(line);
-  });
-  const feed=$('feed');
-  feed.innerHTML=(d.events||[]).map(e=>{
-    const when=String(e.ts||'').replace('T',' ').slice(5,19);
-    return `<div class="ev"><div class="when">${when}</div><div><span class="sys ${e.system}">${e.system}</span><b>${e.label||e.kind}</b><div style="color:var(--muted)">${e.detail||''}</div></div></div>`;
-  }).join('')||'<div class="when">No events yet</div>';
+  if(d.disclaimer)$('disclaimer').textContent=d.disclaimer;
+  const fr=(d.strategy||{}).friday_live||{};
+  $('friday').innerHTML=`<b>Friday live target ${fr.target||'—'}</b><br><span class="pill ${fr.possible_under_current_gate?'ok':'bad'}">${fr.possible_under_current_gate?'possible':'blocked under current gate'}</span><div style="margin-top:6px;font-size:.78rem;color:var(--muted)">${fr.why||''}</div><div style="margin-top:6px;font-size:.75rem">${(fr.paths||[]).map(p=>'• '+p).join('<br>')}</div>`;
+  $('bottlenecks').innerHTML=(d.bottlenecks||[]).map(b=>`<div class="bn ${b.severity}"><b>${b.severity}</b> — ${b.text}</div>`).join('')||'—';
+  const c=d.confidence||{}, bars=c.bars||{};
+  $('conf').innerHTML=`<div class="row"><span class="label">Score</span><span class="val">${c.score??'—'}/80</span></div>
+    <div class="row"><span class="label">Closed</span><span class="val">${bars.trades_closed??0}</span></div>
+    <div class="row"><span class="label">Expectancy</span><span class="val">${bars.expectancy_ok?'OK':'FAIL'}</span></div>
+    <div class="row"><span class="label">Day span</span><span class="val">${bars.days_span??0}/10</span></div>
+    <div class="row"><span class="label">LIVE-READY</span><span class="val">no</span></div>`;
+  const cad=d.cadence||{};
+  $('cadence').innerHTML=`<div class="row"><span class="label">OpenClaw ticks/day</span><span class="val">${cad.openclaw_ticks_per_weekday??'—'}</span></div>
+    <div class="row"><span class="label">Local scans/day</span><span class="val">${cad.local_scans_per_weekday??'—'}</span></div>
+    <div class="row"><span class="label">Main fills logged</span><span class="val">${cad.main_fills_logged??0}</span></div>
+    <div class="row"><span class="label">TD fills logged</span><span class="val">${cad.trade_dev_fills_logged??0}</span></div>
+    <div class="row"><span class="label">Rec. closes/day</span><span class="val">${cad.recommended_closes_per_day??'—'}</span></div>
+    <div class="row"><span class="label">Days to Friday</span><span class="val">${cad.days_to_friday??'—'}</span></div>`;
+  $('touch').innerHTML=(d.touchpoints||[]).map(t=>`<div class="tp"><b>${t.name}</b><span class="label">${t.freq} · ${t.who}</span></div>`).join('');
+  const s=d.strategy||{}, m=s.main||{}, td=s.trade_dev||{};
+  $('strat').innerHTML=`<div class="pill ok">Duel: ${s.duel||''}</div>
+    <p style="font-size:.78rem"><b>Main $${m.book}</b> (${m.caps})<br>${m.edges}<br><span class="label">${m.cadence_target}</span></p>
+    <p style="font-size:.78rem"><b>Trade Dev $${td.book}</b> (${td.caps})<br>${td.edges}<br><span class="label">${td.cadence_target}</span></p>`;
+  const map=$('map'); [...map.querySelectorAll('.node')].forEach(n=>n.remove());
+  (d.systems||[]).forEach(s=>{const [x,y]=POS[s.id]||[50,50]; const el=document.createElement('div'); el.className='node '+(s.status||''); el.style.left=x+'%'; el.style.top=y+'%'; el.innerHTML=`<b>${s.name}</b><div class="role">${s.role}</div>`; map.appendChild(el);});
+  const svg=$('flows'), W=map.clientWidth||600, H=map.clientHeight||360; svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.innerHTML='';
+  (d.flows||[]).forEach(f=>{const a=POS[f.from],b=POS[f.to]; if(!a||!b)return; const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',a[0]/100*W); line.setAttribute('y1',a[1]/100*H); line.setAttribute('x2',b[0]/100*W); line.setAttribute('y2',b[1]/100*H);
+    line.setAttribute('stroke','#3d7eff55'); line.setAttribute('stroke-width','1.5'); svg.appendChild(line);});
+  $('feed').innerHTML=(d.events||[]).map(e=>`<div class="ev"><div class="when">${String(e.ts||'').replace('T',' ').slice(5,19)}</div><div><span class="sys">${e.system}</span><b>${e.label||e.kind}</b><div class="label">${e.detail||''}</div></div></div>`).join('')||'—';
 }
-load(); setInterval(load,5000); addEventListener('resize', load);
+load(); setInterval(load,5000); addEventListener('resize',load);
 </script>
 </body>
 </html>

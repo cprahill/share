@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T08:33:21-0500",
+  "updated_at": "2026-09-05T08:34:40-0500",
   "duel": {
     "leader": "trade_dev",
     "main_return_pct": -0.4378,
@@ -7,28 +7,42 @@
     "ends_at": "2026-09-10T16:00:00-05:00",
     "stakes": "Winner stays \u00b7 loser goes"
   },
+  "confidence": {
+    "score": 52,
+    "live_ready": false,
+    "bars": {
+      "trades_closed": 1,
+      "expectancy_ok": false,
+      "max_dd_ok": true,
+      "days_span": 0,
+      "mistakes_clear_7d": true,
+      "thesis_complete": true,
+      "venue_legal_pass": true
+    },
+    "next": "1 closed / 3 open \u00b7 equity $199.91 \u00b7 need +expectancy \u00b7 \u226510d \u00b7 LIVE-READY \u226580 + YES"
+  },
   "systems": [
     {
       "id": "openclaw",
       "name": "OpenClaw backbone",
-      "role": "marks \u00b7 duel \u00b7 publish (0 LLM)",
+      "role": "marks \u00b7 duel \u00b7 publish",
       "status": "live"
     },
     {
       "id": "paper_local",
-      "name": "OpenClaw paper-desk",
-      "role": "local Ollama proposals",
+      "name": "OC paper-desk",
+      "role": "local proposals",
       "status": "cron"
     },
     {
       "id": "trade_local",
-      "name": "OpenClaw trade-dev",
-      "role": "local Ollama edge hunt",
+      "name": "OC trade-dev",
+      "role": "local edge hunt",
       "status": "cron"
     },
     {
       "id": "main",
-      "name": "Main Paper Desk",
+      "name": "Main Desk",
       "role": "$200 fills",
       "status": "live"
     },
@@ -41,31 +55,31 @@
     {
       "id": "legal",
       "name": "Legal",
-      "role": "venue stamps",
+      "role": "stamps",
       "status": "gate"
     },
     {
       "id": "risk",
       "name": "Risk",
-      "role": "size / gate stamps",
+      "role": "stamps",
       "status": "gate"
     },
     {
       "id": "pnl",
-      "name": "P&L Runner",
-      "role": "scores \u00b7 MTM",
+      "name": "P&L",
+      "role": "score \u00b7 MTM",
       "status": "live"
     },
     {
       "id": "vercel",
-      "name": "Vercel board",
-      "role": "public duel UI",
+      "name": "Vercel",
+      "role": "public UI",
       "status": "live"
     },
     {
       "id": "grok",
       "name": "Grok Bot",
-      "role": "route \u00b7 hot wash \u00b7 YES",
+      "role": "route \u00b7 hot wash",
       "status": "cloud"
     }
   ],
@@ -88,32 +102,32 @@
     {
       "from": "trade_local",
       "to": "trade_dev",
-      "label": "edge draft"
+      "label": "draft"
     },
     {
       "from": "paper_local",
       "to": "main",
-      "label": "action draft"
+      "label": "draft"
     },
     {
       "from": "trade_dev",
       "to": "legal",
-      "label": "stamp ask"
+      "label": "ask"
     },
     {
       "from": "trade_dev",
       "to": "risk",
-      "label": "stamp ask"
+      "label": "ask"
     },
     {
       "from": "legal",
       "to": "trade_dev",
-      "label": "PASS/HOLD"
+      "label": "PASS"
     },
     {
       "from": "risk",
       "to": "trade_dev",
-      "label": "PASS/HOLD"
+      "label": "PASS"
     },
     {
       "from": "main",
@@ -141,6 +155,135 @@
       "label": "route"
     }
   ],
+  "touchpoints": [
+    {
+      "id": "prices",
+      "name": "Public prices",
+      "freq": "every 30m (OpenClaw tick)",
+      "who": "backbone.py"
+    },
+    {
+      "id": "propose_main",
+      "name": "Main action proposal",
+      "freq": "weekdays 10:15 CT",
+      "who": "OpenClaw paper-desk (local)"
+    },
+    {
+      "id": "propose_td",
+      "name": "Trade Dev edge proposal",
+      "freq": "weekdays 10:05 CT",
+      "who": "OpenClaw trade-dev (local)"
+    },
+    {
+      "id": "stamp",
+      "name": "Legal + Risk stamp",
+      "freq": "per new edge",
+      "who": "cloud seats"
+    },
+    {
+      "id": "fill_main",
+      "name": "Main fill",
+      "freq": "after stamp/signal",
+      "who": "Paper Desk"
+    },
+    {
+      "id": "fill_td",
+      "name": "Trade Dev fill",
+      "freq": "after dual PASS",
+      "who": "Trade Dev"
+    },
+    {
+      "id": "pnl",
+      "name": "P&L / confidence",
+      "freq": "after fills",
+      "who": "P&L Runner"
+    },
+    {
+      "id": "publish",
+      "name": "Public board publish",
+      "freq": "on tick/EOD change",
+      "who": "backbone \u2192 Vercel KV"
+    },
+    {
+      "id": "duel",
+      "name": "Duel score",
+      "freq": "every tick + Thu hot wash",
+      "who": "backbone + Grok hot wash"
+    },
+    {
+      "id": "yes",
+      "name": "Live unlock",
+      "freq": "once",
+      "who": "Christopher YES"
+    }
+  ],
+  "bottlenecks": [
+    {
+      "id": "expectancy",
+      "severity": "high",
+      "text": "Expectancy \u2264 0 after fees \u2014 required for LIVE-READY"
+    },
+    {
+      "id": "days_span",
+      "severity": "blocker",
+      "text": "Trading-day span 0/10 \u2014 cannot hit by Fri Sep 11 under current gate"
+    },
+    {
+      "id": "closes",
+      "severity": "high",
+      "text": "Closed trades 1 (need many more for score; +2 pts each cap 30)"
+    },
+    {
+      "id": "score",
+      "severity": "high",
+      "text": "Confidence 52/80"
+    },
+    {
+      "id": "yes",
+      "severity": "gate",
+      "text": "Christopher YES + wallet connect still required even at 100"
+    },
+    {
+      "id": "stamp_latency",
+      "severity": "med",
+      "text": "New edges wait Legal+Risk dual PASS before fill"
+    }
+  ],
+  "cadence": {
+    "openclaw_ticks_per_weekday": 14,
+    "local_scans_per_weekday": 2,
+    "main_fills_logged": 5,
+    "trade_dev_fills_logged": 2,
+    "main_closed": 1,
+    "trade_dev_closed": 0,
+    "days_to_friday": 6,
+    "recommended_closes_per_day": 3
+  },
+  "strategy": {
+    "main": {
+      "book": 200,
+      "caps": "$20/name \u00b7 $50 gross",
+      "edges": "A1 VWAP MR \u00b7 A2 Kalshi Fed/CPI \u00b7 A3 sports panic journal \u00b7 A4 notes \u00b7 Scout E1\u2013E5",
+      "cadence_target": "2\u20134 paper decisions/day weekdays; prefer closes over open pile-up"
+    },
+    "trade_dev": {
+      "book": 100,
+      "caps": "$10/name \u00b7 $25 gross",
+      "edges": "Non-obvious legal (TD1 weather settlement delay, TD6 payrolls first-print, \u2026)",
+      "cadence_target": "1\u20132 stamped clips/day; append lessons every close"
+    },
+    "duel": "Return % thru Thu 2026-09-10 16:00 CT \u2014 winner stays / loser goes \u2014 paper money real stakes",
+    "friday_live": {
+      "target": "2026-09-11",
+      "possible_under_current_gate": false,
+      "why": "\u226510 trading days required; from now only ~4 weekdays remain before Friday",
+      "paths": [
+        "A) Keep gate \u2014 Fri = optimized paper + hot-wash report; live after day-span met",
+        "B) Dest MICRO-LIVE Fri \u2014 tiny size after Thu hot wash + YES + Legal venue PASS (explicit exception)",
+        "C) Soften days_span only with your dest (not recommended without Risk/Legal)"
+      ]
+    }
+  },
   "events": [
     {
       "ts": "2026-09-05T08:06:21-05:00",
@@ -157,24 +300,24 @@
       "detail": "px=0.19 $8.0"
     },
     {
-      "ts": "2026-09-05",
+      "ts": "2026-09-05T00:00:00",
       "system": "trade_dev",
       "kind": "lesson",
-      "label": "TDF001 FILLED TD1 weather_settlement_delay KXHIGHNY-26SEP05-B81.5 @0.19 \u00d742.1053 ($8 +",
+      "label": "TDF001 FILLED TD1 weather_settlement_delay KXHIGHNY-26SEP05-B81.5 @0.19 \u00d742.1053 ($8 +$0.01 fee) kalshi_de",
       "detail": ""
     },
     {
-      "ts": "2026-09-05",
+      "ts": "2026-09-05T00:00:00",
       "system": "trade_dev",
       "kind": "lesson",
-      "label": "DUEL STAKES LOCKED \u2014 winner stays / loser seat+book sunset after hot wash. Thru 2026-0",
+      "label": "DUEL STAKES LOCKED \u2014 winner stays / loser seat+book sunset after hot wash. Thru 2026-09-10 16:00 CT return",
       "detail": ""
     },
     {
-      "ts": "2026-09-05",
+      "ts": "2026-09-05T00:00:00",
       "system": "trade_dev",
       "kind": "lesson",
-      "label": "TDF002 FILLED TD6 payrolls_initial_print_finality KXPAYROLLS-26SEP-T100000 @0.25 \u00d732 (",
+      "label": "TDF002 FILLED TD6 payrolls_initial_print_finality KXPAYROLLS-26SEP-T100000 @0.25 \u00d732 ($8 +$0.01 fee) kalsh",
       "detail": ""
     },
     {
@@ -223,30 +366,30 @@
       "ts": "2026-09-04T23:14:48-0500",
       "system": "legal",
       "kind": "stamp",
-      "label": "OFFER-R1-2026-09-04",
-      "detail": "Legal PASS file"
+      "label": "LEGAL-STAMP-OFFER-R1-2026-09-04",
+      "detail": "Legal stamp"
     },
     {
-      "ts": "2026-09-04",
+      "ts": "2026-09-04T00:00:00",
       "system": "trade_dev",
       "kind": "lesson",
       "label": "Book opened. Caps $10/$25. Risk book PASS. No fills yet.",
       "detail": ""
     },
     {
-      "ts": "2026-09-04",
+      "ts": "2026-09-04T00:00:00",
       "system": "trade_dev",
       "kind": "lesson",
-      "label": "Edges filed `TRADE-DEV-EDGES-2026-09-04.md` (TD1\u2013TD5). Top pick TD1 weather_settlement",
+      "label": "Edges filed `TRADE-DEV-EDGES-2026-09-04.md` (TD1\u2013TD5). Top pick TD1 weather_settlement_delay awaiting Lega",
       "detail": ""
     },
     {
-      "ts": "2026-09-04",
+      "ts": "2026-09-04T00:00:00",
       "system": "trade_dev",
       "kind": "lesson",
       "label": "Continued hunt \u2192 TD6\u2013TD9 appended. TD1 still hold for Legal (Risk PASS).",
       "detail": ""
     }
   ],
-  "disclaimer": "Ops map of paper trading systems. Fake money. No personal data."
+  "disclaimer": "Control tower for paper duel. Fake money. Friday live blocked by day-span unless you dest an exception."
 }
