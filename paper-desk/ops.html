@@ -62,8 +62,16 @@ const POS={
 const $=id=>document.getElementById(id);
 async function load(){
   let d;
-  try{d=await (await fetch('data/activity.json?t='+Date.now(),{cache:'no-store'})).json()}
-  catch(e){ $('updated').textContent='offline'; return }
+  try{
+    const r=await fetch('/api/paper-desk',{cache:'no-store'});
+    const j=await r.json();
+    const b=j.board||j;
+    if(b && b.ops) d=b.ops;
+  }catch(e){}
+  if(!d){
+    try{d=await (await fetch('data/activity.json?t='+Date.now(),{cache:'no-store'})).json()}
+    catch(e){ $('updated').textContent='offline'; return }
+  }
   $('updated').textContent='upd '+(d.updated_at||'—');
   if(d.disclaimer) $('disclaimer').textContent=d.disclaimer;
   const du=d.duel||{};
