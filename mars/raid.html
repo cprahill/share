@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0c0c10" />
 <link rel="manifest" href="./manifest.webmanifest" />
 <link rel="apple-touch-icon" href="./icon-180.png" />
-<link rel="stylesheet" href="hud.css?v=27" />
+<link rel="stylesheet" href="hud.css?v=28" />
 <script>
 (function () {
   var coarse = false, noHover = false;
@@ -134,8 +134,18 @@
     <label for="boot-name">NAME</label>
     <input id="boot-name" type="text" maxlength="4" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="characters" inputmode="text" placeholder="ACE" />
   </div>
+  <div class="paint-label" id="veh-label">VEHICLE</div>
+  <div class="boot-row" id="veh-row">
+    <button type="button" class="boot-btn" data-veh="truck">CYBERTRUCK<span>steel wedge</span></button>
+    <button type="button" class="boot-btn" data-veh="cab">CYBERCAB<span>robotaxi</span></button>
+  </div>
   <div class="paint-label">PAINT</div>
   <div class="paint-row" id="paint-row"></div>
+  <div class="paint-label" id="turbo-label" style="display:none">EXTRA</div>
+  <div class="boot-row" id="turbo-row" style="display:none">
+    <button type="button" class="boot-btn" data-turbo="off">STOCK<span>boost only</span></button>
+    <button type="button" class="boot-btn" data-turbo="on">TURBO<span>cybertruck kit</span></button>
+  </div>
   <button type="button" class="home-btn menu-back" data-home="back" id="boot-back">BACK</button>
   <div class="boot-row" id="boot-diff">
     <button type="button" class="boot-btn" data-diff="easy">EASY<span>clear course</span></button>
@@ -168,6 +178,6 @@
     <div id="pad-throttle" class="glass pad-hit"><span>GAS</span></div>
   </div>
 </div>
-<script type="module" src="./game-v146.js?v=27"></script>
+<script type="module" src="./game-v147.js?v=40"></script>
 </body>
 </html>
