@@ -249,11 +249,33 @@ const CELLDEF=[ // PAPER CORE + TRAD/DEV totems + 20 mortality swarm agents (rea
 // rings: inner TRAD/DEV, mid SWM 1-8, outer SWM 9-20
 const RINGS=[{rf:0.40,speed:0.0012,idx:[1,2]},{rf:0.66,speed:-0.0009,idx:[3,4,5,6,7,8,9,10]},{rf:0.94,speed:0.0006,idx:[11,12,13,14,15,16,17,18,19,20,21,22]}];
 let cells=[],edges=[],particles=[],cx0=0,cy0=0,rxB=0,ryB=0,cellByName={};
-function layoutHive(){const rect=hC.getBoundingClientRect();HW=rect.width;HH=rect.height;hC.width=HW*dpr;hC.height=HH*dpr;hx.setTransform(dpr,0,0,dpr,0,0);
+function layoutHive(){
+  const parent=hC.parentElement||hC;
+  const rect=parent.getBoundingClientRect();
+  // Size from parent .pb — canvas absolute inset:0 often reports 0×0 before first paint
+  HW=Math.max(0, Math.floor(rect.width)||parent.clientWidth||0);
+  HH=Math.max(0, Math.floor(rect.height)||parent.clientHeight||0);
+  if(HW<40||HH<40){
+    // fallback: center panel / grid
+    const grid=document.getElementById('grid');
+    const gr=grid?grid.getBoundingClientRect():null;
+    if(gr&&gr.width>40){ HW=Math.floor(gr.width*0.62); HH=Math.max(240, Math.floor(gr.height-8)); }
+  }
+  if(HW<40) HW=640; if(HH<40) HH=420; // last-resort so blobs always paint
+  hC.style.width=HW+'px'; hC.style.height=HH+'px';
+  hC.width=Math.max(1,Math.floor(HW*dpr)); hC.height=Math.max(1,Math.floor(HH*dpr));
+  hx.setTransform(dpr,0,0,dpr,0,0);
   cx0=HW/2;cy0=HH*0.55;rxB=HW*0.455;ryB=HH*0.355;SIZE=Math.min(HW,HH)/14.5;
   cells=[{...CELLDEF[0],ring:null,base:0,x:cx0,y:cy0,pulse:R(0,6),pnl:0,hot:0,status:'alive',equity:0,ret:0}];
   RINGS.forEach((rg,ri)=>{if(rg.rot===undefined)rg.rot=R(0,6);rg.idx.forEach((ci,k)=>{const base=k/rg.idx.length*6.2832+ri*0.5;cells.push({...CELLDEF[ci],ring:rg,base,x:0,y:0,pulse:R(0,6),pnl:0,hot:0,status:CELLDEF[ci].status||'alive',equity:CELLDEF[ci].equity||0,ret:CELLDEF[ci].ret||0});});});
-  posUpdate();cellByName={};cells.forEach(c=>cellByName[c.t]=c);buildEdges();}
+  posUpdate();cellByName={};cells.forEach(c=>cellByName[c.t]=c);buildEdges(); window.cells=cells; window.cellByName=cellByName;
+  // debug chip until stable
+  try{
+    let chip=document.getElementById('hive-debug');
+    if(!chip){ chip=document.createElement('div'); chip.id='hive-debug'; chip.style.cssText='position:absolute;right:8px;bottom:8px;z-index:8;font:10px "IBM Plex Mono",monospace;color:#7cffcf;opacity:.7;pointer-events:none'; (hC.parentElement||document.body).appendChild(chip); }
+    chip.textContent=HW+'×'+HH+' · cells '+cells.length;
+  }catch(e){}
+}
 function posUpdate(){cells.forEach(c=>{if(c.ring){const a=c.base+c.ring.rot;c.x=cx0+Math.cos(a)*rxB*c.ring.rf;c.y=cy0+Math.sin(a)*ryB*c.ring.rf;}});}
 function buildEdges(){edges=[];const B=cellByName,E=(a,b,w)=>{if(B[a]&&B[b])edges.push([B[a],B[b],w||1,R(0,6.283)]);};
   const risk=['TRAD','DEV'], sn=cells.filter(c=>c.role==='sn').map(c=>c.t);
@@ -314,7 +336,7 @@ function tpt(a,b,t,off){const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1,nx=
 function tendrilPath(a,b,off){hx.beginPath();hx.moveTo(a.x,a.y);const N=14;for(let i=1;i<=N;i++){const p=tpt(a,b,i/N,off);hx.lineTo(p.x,p.y);}}
 function grok(x,y,r,col){hx.beginPath();hx.arc(x,y,r+2,0,7);hx.fillStyle=col;hx.shadowColor=col;hx.shadowBlur=10;hx.fill();hx.shadowBlur=0;const s=r*1.5;if(hx.roundRect){hx.beginPath();hx.roundRect(x-s/2,y-s/2,s,s,s*.34);}else{hx.beginPath();hx.arc(x,y,s/2,0,7);}hx.fillStyle='#eefaf6';hx.fill();hx.fillStyle='#0b0906';const ex=s*.2;[-ex,ex].forEach(o=>{hx.beginPath();hx.ellipse(x+o,y,s*.075,s*.16,0,0,7);hx.fill();});}
 let hf=0;
-function drawHive(){hf++; if(HW<40||HH<40){ try{layoutHive();}catch(e){} requestAnimationFrame(drawHive); return; } hx.clearRect(0,0,HW,HH);
+function drawHive(){hf++; if(HW<40||HH<40){ try{layoutHive();}catch(e){} } if(HW<40||HH<40){ requestAnimationFrame(drawHive); return; } hx.clearRect(0,0,HW,HH);
   RINGS.forEach(rg=>rg.rot+=rg.speed);posUpdate();
   for(let i=qrings.length-1;i>=0;i--){const q=qrings[i];q.r+=3.4;const m=Math.min(HW,HH)*0.6;hx.beginPath();hx.arc(cx0,cy0,q.r,0,7);hx.strokeStyle=hexRgba('#14f195',Math.max(0,.26-q.r/m*.26));hx.lineWidth=1.4;hx.stroke();if(q.r>m)qrings.splice(i,1);}
   // creep tendrils (organic, undulating: bloom + crisp)
