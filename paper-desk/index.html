@@ -219,7 +219,7 @@ function tick2(){const d=new Date();document.getElementById('clock').textContent
 tick2(); setInterval(tick2,1000);
 function statsTick(){ /* demo stats disabled — paper wire owns ribbon */ }
 /* ticker */
-(function(){const track=document.getElementById('ttrack');let html='';for(let k=0;k<2;k++)TOKENS.forEach(t=>{const p=R(-40,320),cls=p>=0?'up':'down';html+=`<span><span class="sym">${t}</span> <span class="${cls}">${sign(p.toFixed(1))}%</span></span>`;});track.innerHTML=html;let x=0;const w=track.scrollWidth/2;(function loop(){x-=0.6;if(-x>=w)x=0;track.style.transform=`translateX(${x}px)`;requestAnimationFrame(loop);})();})();
+(function(){const track=document.getElementById('ttrack');let html='';for(let k=0;k<2;k++)TOKENS.forEach(t=>{html+=`<span><span class="sym">${t}</span> <span class="dim">PAPER</span></span>`;});track.innerHTML=html;let x=0;const w=track.scrollWidth/2;(function loop(){x-=0.6;if(-x>=w)x=0;track.style.transform=`translateX(${x}px)`;requestAnimationFrame(loop);})();})();
 /* pulse */
 const STAGES=[['NEW MINT','st-new'],['FINAL STRETCH','st-str'],['MIGRATED','st-mig']];
 function pulseRow(){const t=pick(TOKENS),st=pick(STAGES),p=R(-45,270),cls=p>=0?'up':'down';const row=document.createElement('div');row.className='feedrow flash';row.innerHTML=`<span class="sym">${t}</span><span class="stage ${st[1]}">${st[0]}</span><span class="pct ${cls}">${sign(p.toFixed(1))}%</span>`;const f=document.getElementById('pulsefeed');f.prepend(row);while(f.children.length>13)f.lastChild.remove();}
@@ -293,8 +293,8 @@ setInterval(()=>{if(!cells.length)return;const c=cells[RI(1,cells.length-1)];c.h
 setInterval(()=>qrings.push({r:0}),1300);
 let vaultBal=44.28;
 function procLabel(){const r=Math.random();if(r<.25)return['+'+RI(3,44)+'x','#7cffcf'];if(r<.4)return['RUG BLOCKED','#ff5d6c'];const P=[['SNIPE','#7cffcf'],['EXIT','#14b88a'],['FILLED','#14f195'],['LP OK','#3dffb0'],['SCAN','#3dffb0'],['SIZED','#0e9e6e'],['CO-BUY','#14b88a'],['VETO','#ff5d6c']];return pick(P);}
-setInterval(()=>{if(!cells.length)return;const c=cells[RI(1,cells.length-1)];c.hot=Math.max(c.hot||0,1.15);const p=procLabel();alerts.push({cell:c,txt:p[0],col:p[1],t:0});},760);
-setInterval(()=>{const bm=cellByName['VAULT'];if(!bm)return;const sns=['AGENT 01','AGENT 02','AGENT 03','AGENT 04','AGENT 05','AGENT 06','AGENT 07','AGENT 08'];const s=cellByName[pick(sns)];if(s){packets.push({a:s,b:bm,t:0,col:'#7cffcf'});packets.push({a:s,b:bm,t:0,col:'#14f195'});const g=R(.15,1.6);vaultBal+=g;floaters.push({cell:bm,txt:'+'+g.toFixed(2)+' SOL',t:0});}},1250);
+/* fake agent alerts disabled — real board only */
+/* fake SOL floaters disabled — real board only */
 /* scripted run matching the post timeline */
 let runTok='$DANCEDOG',runT=0,runI=0;
 const RTOKS=['$DANCEDOG'];
@@ -354,7 +354,7 @@ function drawHive(){hf++; if(HW<40||HH<40){ try{layoutHive();}catch(e){} } if(HW
     else if(c.role==='mem'){const s=SIZE*0.55,S=s/8,px=(a,b)=>({x:c.x+(a-8)*S,y:c.y+(b-8)*S});const f=[[[8,1.4],[13.6,6],[8,14.6],[2.4,6],'#17d488'],[[8,1.4],[13.6,6],[8,8.3],'#7cffcf'],[[8,1.4],[2.4,6],[8,8.3],'#0e9e6e'],[[2.4,6],[8,8.3],[8,14.6],'#06402a'],[[13.6,6],[8,8.3],[8,14.6],'#14b88a']];hx.save();hx.shadowColor='#0e9e6e';hx.shadowBlur=10;f.forEach(ff=>{hx.beginPath();for(let i=0;i<ff.length-1;i++){const p=px(ff[i][0],ff[i][1]);i?hx.lineTo(p.x,p.y):hx.moveTo(p.x,p.y);}hx.closePath();hx.fillStyle=ff[ff.length-1];hx.fill();});hx.restore();hx.fillStyle='#bff8e0';hx.font='700 9px "IBM Plex Mono"';hx.textAlign='center';hx.fillText('VAULT',c.x,c.y+SIZE*0.5+12);}
     else{grok(c.x,c.y-SIZE*0.06,SIZE*0.34,col);hx.fillStyle='#cfe8e2';hx.font='700 8.5px "IBM Plex Mono"';hx.textAlign='center';hx.fillText(c.t,c.x,c.y+SIZE*0.5+3);
       hx.fillStyle=dead?'#ff5d6c':'#7cffcf';hx.font='600 7px "IBM Plex Mono"';
-      var sub=dead?'DEAD':(c.equity!=null?'$'+Number(c.equity).toFixed(2):(c.ret!=null?((c.ret>0?'+':'')+Number(c.ret).toFixed(1)+'%'):''));
+      var sub=dead?'DEAD':(c.role==='risk'?(c.equity!=null?('lane $'+Number(c.equity).toFixed(2)):''):(c.equity!=null?((c.cash!=null?('$'+Number(c.cash).toFixed(2)+'c/'):'')+('$'+Number(c.equity).toFixed(2)+'e')):''));
       if(sub) hx.fillText(sub,c.x,c.y+SIZE*0.5+12);
     }
   });
@@ -406,7 +406,7 @@ requestAnimationFrame(drawHive);
     if(n!=null && !isNaN(Number(n))) return money(Number(n));
     var q=f.qty!=null?Number(f.qty):null, px=f.px!=null?Number(f.px):null;
     if(q!=null && px!=null && !isNaN(q) && !isNaN(px)) return money(q*px);
-    if(px!=null && !isNaN(px)) return 'px '+px;
+    // never show raw market px as funds (BTC ~80k / Kalshi cents confusion)
     return '';
   }
   function pnl(n){
@@ -420,7 +420,7 @@ requestAnimationFrame(drawHive);
   }
   function el(id){return document.getElementById(id)}
   async function fetchBoard(){
-    var urls=['/api/paper-desk','data/board.json?t='+Date.now()];
+    var urls=['data/board.json?t='+Date.now(),'/api/paper-desk'];
     for(var i=0;i<urls.length;i++){
       try{
         var r=await fetch(urls[i],{cache:'no-store'});
@@ -450,7 +450,8 @@ requestAnimationFrame(drawHive);
       if(!a){ c.status='missing'; return; }
       var was=prev[c.t];
       c.status=a.status||'alive';
-      c.equity=a.equity!=null?a.equity:(a.cash_usd!=null?a.cash_usd:0);
+      c.equity=a.equity!=null?a.equity:(a.cash_usd!=null?a.cash_usd:0); // equity_usd dollars only
+      c.cash=a.cash_usd!=null?a.cash_usd:null;
       c.ret=a.return_pct!=null?a.return_pct:0;
       c.pnl=c.ret;
       c.col=(c.status==='dead')?'#ff5d6c':(c.ret>=0?'#7cffcf':'#cf8383');
@@ -546,10 +547,10 @@ requestAnimationFrame(drawHive);
     // Action log = chronological real fills all lanes
     var actions=[];
     (main.recent_fills||[]).forEach(function(f){
-      actions.push({ts:f.ts,lane:'TRAD',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · '+(fillDollar(f)||('px '+(f.px!=null?f.px:'')))});
+      actions.push({ts:f.ts,lane:'TRAD',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · '+(fillDollar(f)||'')});
     });
     (td.recent_fills||[]).forEach(function(f){
-      actions.push({ts:f.ts,lane:'DEV',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · '+(fillDollar(f)||('px '+(f.px!=null?f.px:'')))});
+      actions.push({ts:f.ts,lane:'DEV',sym:f.symbol,side:f.side,detail:(f.edge||f.venue||'')+' · '+(fillDollar(f)||'')});
     });
     (sw.agents||[]).forEach(function(a){
       (a.fills||[]).forEach(function(f){
