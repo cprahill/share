@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-05T16:28:15-0500",
+  "updated_at": "2026-09-05T16:41:51-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
-    "leader": "tie",
+    "leader": "trade_dev",
     "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
-    "main_return_pct": 0.0,
-    "trade_dev_return_pct": 0.0,
-    "swarm_return_pct": 0.0,
+    "main_return_pct": -0.0171,
+    "trade_dev_return_pct": -0.01,
+    "swarm_return_pct": -0.06,
     "timeline": "Sat RESET \u2192 Thu hot wash",
     "mode": "3-group mortality \u00b7 20\u00d7$5 swarm",
     "reset_at": null
@@ -15,13 +15,13 @@
   "main": {
     "label": "Main Desk",
     "mode": "PAPER",
-    "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
-    "equity_usd": 100.0,
-    "day_pnl_usd": 0.0,
-    "total_pnl_usd": 0.0,
-    "return_pct": 0.0,
-    "open_positions": 0,
+    "starting_cash_usd": 100,
+    "cash_usd": 81.9799,
+    "equity_usd": 99.9829,
+    "day_pnl_usd": -0.02,
+    "total_pnl_usd": -0.0171,
+    "return_pct": -0.0171,
+    "open_positions": 2,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -29,21 +29,80 @@
     "confidence": {
       "score": 0,
       "live_ready": false,
-      "next": "RESET \u00b7 $100 book \u00b7 mistake gate ON \u00b7 paper only"
+      "next": "Sat kick fills open \u00b7 weekday crons still for cadence"
     },
-    "recent_fills": [],
-    "open": []
+    "recent_fills": [
+      {
+        "id": "F002",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "buy",
+        "qty": 0.01168543,
+        "px": 770.19,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "id": "F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 0.00011271,
+        "px": 79851.885,
+        "edge": "sat-kick",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 0.00011271,
+        "avg": 79851.885,
+        "mark": 79877.235,
+        "upnl": 0.0029,
+        "notional": 9.003,
+        "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.01168543,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0,
+        "notional": 9,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      }
+    ]
   },
   "trade_dev": {
     "label": "Trade Dev",
     "mode": "PAPER",
-    "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
-    "equity_usd": 100.0,
-    "day_pnl_usd": 0.0,
-    "total_pnl_usd": 0.0,
-    "return_pct": 0.0,
-    "open_positions": 0,
+    "starting_cash_usd": 100,
+    "cash_usd": 91.99,
+    "equity_usd": 99.99,
+    "day_pnl_usd": -0.01,
+    "total_pnl_usd": -0.01,
+    "return_pct": -0.01,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -53,249 +112,627 @@
       "live_ready": false,
       "next": "RESET clean \u00b7 paper only"
     },
-    "recent_fills": [],
-    "open": []
+    "recent_fills": [
+      {
+        "id": "TDF001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "side": "buy",
+        "qty": 16,
+        "px": 0.5,
+        "edge": "TD1",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
+          "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
+          "https://nextpredict.io/market-news/industry/kalshi-reins-weather-market-rules-manipulation-concerns/",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "qty": 16,
+        "avg": 0.5,
+        "mark": 0.5,
+        "upnl": 0,
+        "notional": 8,
+        "edge": "TD1",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      }
+    ]
   },
   "swarm": {
     "label": "SWARM",
-    "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
-    "equity_usd": 100.0,
-    "total_pnl_usd": 0.0,
-    "return_pct": 0.0,
-    "open_positions": 0,
-    "open": [],
-    "recent_fills": [],
+    "starting_cash_usd": 100,
+    "cash_usd": 99.94,
+    "equity_usd": 99.94,
+    "total_pnl_usd": -0.06,
+    "return_pct": -0.06,
+    "open_positions": 12,
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 5.64e-06,
+        "avg": 79851.885,
+        "mark": 79851.885,
+        "upnl": 0,
+        "notional": 0.4504,
+        "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.00058427,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0,
+        "notional": 0.45,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "QQQ",
+        "qty": 0.0006259,
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0,
+        "notional": 0.45,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00018118,
+        "avg": 2483.715,
+        "mark": 2483.715,
+        "upnl": 0,
+        "notional": 0.45,
+        "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "GLD",
+        "qty": 0.00098336,
+        "avg": 406.77,
+        "mark": 406.77,
+        "upnl": 0,
+        "notional": 0.4,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "IWM",
+        "qty": 0.00135131,
+        "avg": 296.01,
+        "mark": 296.01,
+        "upnl": 0,
+        "notional": 0.4,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/IWM/",
+        "urls": [
+          "https://finance.yahoo.com/quote/IWM/"
+        ]
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "qty": 1,
+        "avg": 0.5,
+        "mark": 0.5,
+        "upnl": 0,
+        "notional": 0.5,
+        "edge": "sat-kick",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "BIL",
+        "qty": 0.00437397,
+        "avg": 91.45,
+        "mark": 91.45,
+        "upnl": 0,
+        "notional": 0.4,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/BIL/",
+        "urls": [
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 4.38e-06,
+        "avg": 79851.885,
+        "mark": 79851.885,
+        "upnl": 0,
+        "notional": 0.3498,
+        "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.00045443,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0,
+        "notional": 0.35,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B75.5",
+        "qty": 1.9565,
+        "avg": 0.23,
+        "mark": 0.23,
+        "upnl": 0,
+        "notional": 0.45,
+        "edge": "sat-kick",
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "QQQ",
+        "qty": 0.00048681,
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0,
+        "notional": 0.35,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      }
+    ],
+    "recent_fills": [
+      {
+        "id": "SWM-01-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 5.64e-06,
+        "px": 79851.885,
+        "edge": "sat-kick",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-02-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "buy",
+        "qty": 0.00058427,
+        "px": 770.19,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "id": "SWM-03-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "QQQ",
+        "side": "buy",
+        "qty": 0.0006259,
+        "px": 718.96,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      },
+      {
+        "id": "SWM-04-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00018118,
+        "px": 2483.715,
+        "edge": "sat-kick",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-05-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "GLD",
+        "side": "buy",
+        "qty": 0.00098336,
+        "px": 406.77,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
+      },
+      {
+        "id": "SWM-06-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "IWM",
+        "side": "buy",
+        "qty": 0.00135131,
+        "px": 296.01,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/IWM/",
+        "urls": [
+          "https://finance.yahoo.com/quote/IWM/"
+        ]
+      },
+      {
+        "id": "SWM-07-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
+        "side": "buy",
+        "qty": 1,
+        "px": 0.5,
+        "edge": "sat-kick",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
+          "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "id": "SWM-08-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "BIL",
+        "side": "buy",
+        "qty": 0.00437397,
+        "px": 91.45,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/BIL/",
+        "urls": [
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
+      },
+      {
+        "id": "SWM-09-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 4.38e-06,
+        "px": 79851.885,
+        "edge": "sat-kick",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-10-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "buy",
+        "qty": 0.00045443,
+        "px": 770.19,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "id": "SWM-11-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B75.5",
+        "side": "buy",
+        "qty": 1.9565,
+        "px": 0.23,
+        "edge": "sat-kick",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
+          "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "id": "SWM-12-F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "QQQ",
+        "side": "buy",
+        "qty": 0.00048681,
+        "px": 718.96,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
+      }
+    ],
     "agents": [
       {
         "id": "SWM-01",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-02",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-03",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-04",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-05",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-06",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-07",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-08",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-09",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-10",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-11",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-12",
-        "equity": 5.0,
+        "equity": 4.995,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": -0.1,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-13",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-14",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-15",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-16",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-17",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-18",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-19",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       },
       {
         "id": "SWM-20",
-        "equity": 5.0,
+        "equity": 5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
-        "return_pct": 0.0,
-        "starting_cash_usd": 5.0
+        "return_pct": 0,
+        "starting_cash_usd": 5
       }
     ],
     "living": 20,
     "dead": 0,
     "mr": {
       "label": "Swarm MR",
-      "starting_cash_usd": 0.0,
-      "cash_usd": 0.0,
-      "equity_usd": 0.0,
-      "total_pnl_usd": 0.0,
+      "starting_cash_usd": 0,
+      "cash_usd": 0,
+      "equity_usd": 0,
+      "total_pnl_usd": 0,
       "return_pct": 0,
       "open_positions": 0,
       "alive": false,
@@ -306,10 +743,10 @@
     },
     "event": {
       "label": "Swarm Event",
-      "starting_cash_usd": 0.0,
-      "cash_usd": 0.0,
-      "equity_usd": 0.0,
-      "total_pnl_usd": 0.0,
+      "starting_cash_usd": 0,
+      "cash_usd": 0,
+      "equity_usd": 0,
+      "total_pnl_usd": 0,
       "return_pct": 0,
       "open_positions": 0,
       "alive": false,
@@ -319,8 +756,8 @@
       "recent_fills": []
     },
     "competition": "ACTIVE",
-    "pool_usd": 100.0,
-    "seed_usd": 5.0
+    "pool_usd": 100,
+    "seed_usd": 5
   },
   "grok": {
     "via": "grok-cli",
@@ -406,13 +843,13 @@
   "paper": {
     "label": "Main Desk",
     "mode": "PAPER",
-    "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
-    "equity_usd": 100.0,
-    "day_pnl_usd": 0.0,
-    "total_pnl_usd": 0.0,
-    "return_pct": 0.0,
-    "open_positions": 0,
+    "starting_cash_usd": 100,
+    "cash_usd": 81.9799,
+    "equity_usd": 99.9829,
+    "day_pnl_usd": -0.02,
+    "total_pnl_usd": -0.0171,
+    "return_pct": -0.0171,
+    "open_positions": 2,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -420,17 +857,76 @@
     "confidence": {
       "score": 0,
       "live_ready": false,
-      "next": "RESET \u00b7 $100 book \u00b7 mistake gate ON \u00b7 paper only"
+      "next": "Sat kick fills open \u00b7 weekday crons still for cadence"
     },
-    "recent_fills": [],
-    "open": []
+    "recent_fills": [
+      {
+        "id": "F002",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "buy",
+        "qty": 0.01168543,
+        "px": 770.19,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
+      {
+        "id": "F001",
+        "ts": "2026-09-05T16:41:40-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 0.00011271,
+        "px": 79851.885,
+        "edge": "sat-kick",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 0.00011271,
+        "avg": 79851.885,
+        "mark": 79877.235,
+        "upnl": 0.0029,
+        "notional": 9.003,
+        "edge": "sat-kick",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "stocks",
+        "symbol": "SPY",
+        "qty": 0.01168543,
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0,
+        "notional": 9,
+        "edge": "sat-kick",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      }
+    ]
   },
   "signals": {
     "main": "green",
-    "trade_dev": "green",
+    "trade_dev": "yellow",
     "swarm": "green",
     "grok": "green",
-    "duel": "yellow"
+    "duel": "green"
   },
   "disclaimer": "Paper trading trial demo only. Fake money, real competition. Not financial advice. No live funds. No personal data."
 }
