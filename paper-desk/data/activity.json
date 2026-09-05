@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T15:08:00-0500",
+  "updated_at": "2026-09-05T15:13:58-0500",
   "duel": {
     "leader": "trade_dev",
     "main_return_pct": -0.4378,
@@ -524,25 +524,63 @@
       "id": "TD1",
       "keep": true,
       "note": "Weather settlement-delay on demo NYC high. Hold through prelim.",
-      "next": "Wait official determination; no add-on size."
+      "next": "Wait official determination; no add-on size.",
+      "url": "https://demo.kalshi.co/",
+      "links": [
+        {
+          "label": "demo",
+          "href": "https://demo.kalshi.co/"
+        },
+        {
+          "label": "rules",
+          "href": "https://help.kalshi.com/en/articles/13823837-weather-markets"
+        },
+        {
+          "label": "NWS",
+          "href": "https://www.weather.gov/climate/"
+        }
+      ]
     },
     {
       "id": "TD2",
       "keep": false,
       "note": "KILL \u2014 combo books thin / zero MVE.",
-      "next": "Do not reopen."
+      "next": "Do not reopen.",
+      "url": "https://docs.kalshi.com/getting_started/demo_env"
     },
     {
       "id": "TD4",
       "keep": true,
       "note": "BIL $7 after routine ~3x bill covers. Gross $23/$25.",
-      "next": "Journal next bill print; no SHY yet."
+      "next": "Journal next bill print; no SHY yet.",
+      "url": "https://www.treasurydirect.gov/auctions/announcements-data-results/",
+      "links": [
+        {
+          "label": "auctions",
+          "href": "https://www.treasurydirect.gov/auctions/announcements-data-results/"
+        },
+        {
+          "label": "BIL",
+          "href": "https://finance.yahoo.com/quote/BIL/"
+        }
+      ]
     },
     {
       "id": "TD6",
       "keep": true,
       "note": "Sep NFP first-print ladder. Grade BLS first sentence only.",
-      "next": "Hold to close window; never regrade revisions."
+      "next": "Hold to close window; never regrade revisions.",
+      "url": "https://www.bls.gov/news.release/empsit.htm",
+      "links": [
+        {
+          "label": "BLS",
+          "href": "https://www.bls.gov/news.release/empsit.htm"
+        },
+        {
+          "label": "terms",
+          "href": "https://kalshi-public-docs.s3.amazonaws.com/contract_terms/PAYROLLS.pdf"
+        }
+      ]
     }
   ],
   "disclaimer": "Control tower for paper duel. Fake money. Friday live blocked by day-span unless you dest an exception."

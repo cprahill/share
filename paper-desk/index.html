@@ -20,6 +20,11 @@ h2{font-size:.82rem;margin:0 0 8px;color:var(--gold);font-weight:650;letter-spac
 .nav{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
 .nav a{color:var(--gold);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:.72rem}
 .nav a:hover,.nav a.on{background:#1e1830;border-color:var(--gold)}
+a{color:var(--gold)}a.plain{text-decoration:none}a.plain:hover{text-decoration:underline}
+table a, .exp a, .feed a{color:var(--gold);text-decoration:none}table a:hover,.exp a:hover{text-decoration:underline}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.links a{font-size:.68rem;border:1px solid var(--line);border-radius:99px;padding:2px 8px;text-decoration:none}
+.links a:hover{border-color:var(--gold)}
+.jump{color:inherit;text-decoration:none}.jump:hover .val,.jump:hover .label{color:var(--gold)}
 .scream{border:1px solid #5a4a22;background:#16120a;color:var(--yellow);border-radius:12px;padding:8px 12px;font:700 11px/1.3 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
 .banner{background:linear-gradient(120deg,#1a1628,#14121c);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
 .banner .stakes{font-size:.88rem;font-weight:650}
@@ -79,9 +84,9 @@ section{margin-top:14px}
   <div class="meta">return % · ends <span id="ends">Thu 2026-09-10 16:00 CT</span>
     <span class="leader" id="leader-pill">—</span>
   </div>
-  <div class="row" style="margin-top:8px"><span class="label">TRADITIONAL Main</span><span class="val" id="main-rp">—</span></div>
-  <div class="row"><span class="label">CUTTING Trade Dev</span><span class="val" id="td-rp">—</span></div>
-  <div class="row"><span class="label">SWARM Event+MR</span><span class="val" id="sw-rp">—</span></div>
+  <a class="jump row" href="#card-main" style="margin-top:8px"><span class="label">TRADITIONAL Main</span><span class="val" id="main-rp">—</span></a>
+  <a class="jump row" href="#card-td"><span class="label">CUTTING Trade Dev</span><span class="val" id="td-rp">—</span></a>
+  <a class="jump row" href="#card-sw"><span class="label">SWARM Event+MR</span><span class="val" id="sw-rp">—</span></a>
   <div class="tl">
     <span>Thu Trial</span><span>Fri Mend</span><span>Sat Crown</span>
   </div>
@@ -162,7 +167,7 @@ section{margin-top:14px}
 
 <section id="tape">
   <div class="card" style="padding:10px 12px">
-    <div style="font-weight:600;font-size:.85rem;margin-bottom:2px">Snoop Dogg — Paper'd Up</div>
+    <div style="font-weight:600;font-size:.85rem;margin-bottom:2px"><a class="plain" href="https://www.youtube.com/watch?v=-bXxs_UvhVI" target="_blank" rel="noopener">Snoop Dogg — Paper'd Up</a></div>
     <div class="label" style="margin:0 0 6px">Full track · compact</div>
     <iframe title="Paper'd Up — Snoop Dogg" src="https://www.youtube.com/embed/-bXxs_UvhVI?rel=0" width="100%" height="152" style="width:100%;height:152px;border:0;border-radius:10px;display:block;background:#000" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     <a href="https://open.spotify.com/track/5zwBaiUIrUi25qEKV0Kswe" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#1DB954;color:#041;font-weight:700;font-size:.75rem;padding:8px 12px;border-radius:99px;text-decoration:none">Also on Spotify</a>
@@ -182,6 +187,36 @@ const $=id=>document.getElementById(id);
 function money(n){n=Number(n)||0;return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:2})}
 function pct(n){n=Number(n)||0;return (n>=0?'+':'')+n.toFixed(3)+'%'}
 function cls(n){return (Number(n)||0)>=0?'pos':'neg'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function safeUrl(u){
+  try{
+    const x=new URL(String(u||''));
+    if(x.protocol!=='http:'&&x.protocol!=='https:') return '';
+    const h=x.hostname.toLowerCase();
+    if(h==='localhost'||h.endsWith('.local')||h==='127.0.0.1') return '';
+    return x.href;
+  }catch(e){return ''}
+}
+function venueHref(row){
+  const u=safeUrl(row.url||row.evidence_url||(row.urls&&row.urls[0]));
+  if(u) return u;
+  const s=String(row.symbol||'');
+  const v=String(row.venue||'').toLowerCase();
+  if(s.startsWith('KX')||v.includes('kalshi')){
+    const series=s.split('-')[0].toLowerCase();
+    const ev=s.split('-').slice(0,2).join('-').toLowerCase();
+    return 'https://kalshi.com/markets/'+series+'/'+ev;
+  }
+  if(s.includes('BTC')) return 'https://www.coinbase.com/price/bitcoin';
+  if(/^[A-Z]{1,5}$/.test(s)) return 'https://finance.yahoo.com/quote/'+s+'/';
+  return '';
+}
+function a(href, text){
+  const u=safeUrl(href);
+  const t=esc(text);
+  if(!u) return t;
+  return `<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`;
+}
 async function fetchJson(urls){
   for(const u of urls){
     try{const r=await fetch(u,{cache:'no-store'}); if(!r.ok) throw 0; const j=await r.json(); if(j && !j.empty) return j;}catch(e){}
@@ -190,11 +225,14 @@ async function fetchJson(urls){
 }
 function fillOpen(el, rows){
   rows=rows||[];
-  el.innerHTML=rows.length?rows.map(o=>`<tr><td>${o.symbol||''}</td><td>${o.qty??''}</td><td class="${cls(o.upnl)}">${o.upnl??''}</td></tr>`).join(''):'<tr><td colspan="3" class="label">Flat</td></tr>';
+  el.innerHTML=rows.length?rows.map(o=>`<tr><td>${a(venueHref(o), o.symbol||'')}</td><td>${esc(o.qty??'')}</td><td class="${cls(o.upnl)}">${esc(o.upnl??'')}</td></tr>`).join(''):'<tr><td colspan="3" class="label">Flat</td></tr>';
 }
 function fillFills(el, rows){
   rows=rows||[];
-  el.innerHTML=rows.length?rows.slice(0,8).map(f=>`<tr><td>${f.id||''}</td><td>${f.symbol||''}</td><td>${f.edge||f.side||''}</td><td>${f.px??''}</td></tr>`).join(''):'<tr><td colspan="4" class="label">None</td></tr>';
+  el.innerHTML=rows.length?rows.slice(0,8).map(f=>{
+    const href=venueHref(f);
+    return `<tr><td>${a(href, f.id||'')}</td><td>${a(href, f.symbol||'')}</td><td>${esc(f.edge||f.side||'')}</td><td>${esc(f.px??'')}</td></tr>`;
+  }).join(''):'<tr><td colspan="4" class="label">None</td></tr>';
 }
 function bookOf(b, key){
   if(key==='main') return b.main||b.paper||{};
@@ -239,7 +277,11 @@ function render(b, ops){
   $('sw-dd').style.background=dd>80? 'var(--red)': 'var(--gold)';
 
   const exps=b.experiments||ops.experiments||[];
-  $('exp-list').innerHTML=exps.length?exps.map(e=>`<div class="exp"><b>${e.id||''}</b><span class="pill ${e.keep?'keep':'drop'}">${e.keep?'KEEP':'KILL'}</span><div>${e.note||''}</div><div class="label">${e.next||''}</div></div>`).join(''):'<div class="label">No experiment notes yet</div>';
+  $('exp-list').innerHTML=exps.length?exps.map(e=>{
+    const links=(e.links||[]).map(l=>a(l.href, l.label||'src')).filter(Boolean);
+    if(!links.length && e.url) links.push(a(e.url,'source'));
+    return `<div class="exp">${a(e.url, e.id||'')}<span class="pill ${e.keep?'keep':'drop'}">${e.keep?'KEEP':'KILL'}</span><div>${esc(e.note||'')}</div><div class="label">${esc(e.next||'')}</div>${links.length?`<div class="links">${links.join('')}</div>`:''}</div>`;
+  }).join(''):'<div class="label">No experiment notes yet</div>';
 
   const g=b.grok||ops.grok||{};
   const desk=g.desk||{};
@@ -256,7 +298,12 @@ function render(b, ops){
     {id:'trade_local',name:'trade-dev',role:'local',status:'cron'},
     {id:'grok',name:'Grok CLI',role:'stamps',status:'wired'}
   ];
-  $('systems').innerHTML=systems.map(s=>`<div class="chip"><b>${s.name}</b><div class="role">${s.role||''} · ${s.status||''}</div></div>`).join('');
+  const sysHref={vercel:'https://baja-board.vercel.app/paper-desk',grok:'#grok',trade_dev:'#card-td',main:'#card-main',trade_local:'#experiments',paper_local:'#card-main'};
+  $('systems').innerHTML=systems.map(s=>{
+    const href=sysHref[s.id];
+    const name=href? (String(href).startsWith('http')? a(href,s.name): `<a class="plain" href="${esc(href)}">${esc(s.name)}</a>`) : esc(s.name);
+    return `<div class="chip"><b>${name}</b><div class="role">${esc(s.role||'')} · ${esc(s.status||'')}</div></div>`;
+  }).join('');
   $('bottlenecks').innerHTML=(ops.bottlenecks||[]).map(x=>`<div class="bn ${x.severity||''}"><b>${x.severity||''}</b> — ${x.text}</div>`).join('')||'<div class="label">—</div>';
   const c=(ops.confidence||main.confidence||{}), bars=c.bars||{};
   $('conf').innerHTML=`<div class="row"><span class="label">Score</span><span class="val">${c.score??'—'}/80</span></div>
