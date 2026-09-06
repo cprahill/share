@@ -15,7 +15,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
   font-family:"IBM Plex Mono",ui-monospace,monospace;}
-.app{height:100%;display:grid;grid-template-rows:42px 36px minmax(160px,34%) minmax(260px,1fr);gap:8px;padding:8px 10px 10px;}
+.app{height:100%;display:grid;grid-template-rows:42px 36px 1fr minmax(170px,22%);gap:8px;padding:8px 10px 10px;}
 header{
   display:flex;align-items:center;gap:16px;padding:0 8px;
   border-bottom:1px solid var(--line);
@@ -28,9 +28,7 @@ header{
 @keyframes blink{50%{opacity:.35}}
 .kpis{margin-left:auto;display:flex;gap:22px;font-size:11px;color:var(--muted)}
 .kpis strong{display:block;color:#fff;font-family:"Space Grotesk",sans-serif;font-size:14px}
-.top,.bot{display:grid;gap:8px;min-height:0}
-.top{grid-template-columns:1.15fr 1.2fr .95fr}
-.bot{grid-template-columns:.78fr 1.5fr .72fr}
+.bot{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;min-height:0}
 .panel{
   background:var(--panel);border:1px solid var(--line);border-radius:4px;
   padding:10px 12px 8px;min-height:0;overflow:hidden;position:relative;
@@ -114,19 +112,19 @@ header{
 .looprow{display:flex;gap:3px;margin-top:10px}
 .looprow i{flex:1;height:14px;background:#152033}
 .looprow i.on{background:var(--violet)}
-.feed{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;font-size:11px;height:calc(100% - 22px);overflow:auto;-webkit-overflow-scrolling:touch;align-content:start}
+.feed{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;font-size:11px;flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;align-content:start}
 .feed div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .feed .t{color:var(--muted);margin-right:6px}
 .feed .tag{margin-right:6px;font-size:10px;letter-spacing:.08em}
 .feed .tag.ok{color:var(--cyan)} .feed .tag.hot{color:var(--gold)}
 .feed .tag.warn{color:var(--warn)} .feed .tag.bad{color:var(--pink)}
-.docs{display:grid;grid-template-columns:1fr 1fr;gap:16px;height:calc(100% - 22px);overflow:auto;font-size:11px;line-height:1.45}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;min-height:0;overflow:auto;font-size:11px;line-height:1.45}
 .docs h4{margin:0 0 6px;font-family:"Barlow Condensed",sans-serif;letter-spacing:.16em;color:var(--gold);font-size:12px}
 .docs ul{margin:0;padding-left:16px;color:var(--text)}
 .docs li{margin-bottom:3px}
-.legend{margin-top:8px;font-size:10px;color:var(--muted);letter-spacing:.04em;line-height:1.5}
+.legend{margin-top:8px;flex-shrink:0;font-size:10px;color:var(--muted);letter-spacing:.04em;line-height:1.5}
 .legend i{display:inline-block;width:8px;height:8px;margin:0 4px 0 10px;vertical-align:middle}
-.bot{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;min-height:0}
+.bot .panel{display:flex;flex-direction:column;min-height:0}
 
 /* mobile align — stack columns; .app scrolls. Build look unchanged. */
 @media (max-width:900px){
@@ -135,7 +133,7 @@ header{
     height:100dvh!important;max-height:100dvh!important;
     overflow-x:hidden!important;overflow-y:scroll!important;
     -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;
-    grid-template-rows:auto auto minmax(160px,28vh) auto!important;
+    grid-template-rows:auto auto minmax(220px,38vh) auto!important;
     gap:8px;padding:8px 8px calc(16px + env(safe-area-inset-bottom,0px));
   }
   header{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 12px;height:auto;padding:8px}
@@ -148,7 +146,7 @@ header{
   .tokleg{flex-wrap:wrap;white-space:normal;width:100%}
   .mesh{min-height:220px;height:38vh;max-height:42vh;width:100%;overflow:hidden}
   .mesh canvas{width:100%!important;height:100%!important;max-width:100%}
-  .bot{grid-template-columns:1fr!important;height:auto!important;min-height:55vh}
+  .bot{grid-template-columns:1fr!important;height:auto!important}
   .bot .panel{min-height:180px;height:auto;overflow:visible}
   .docs{grid-template-columns:1fr!important;height:auto!important;overflow:visible}
   .feed{grid-template-columns:1fr!important;height:auto!important;overflow:visible!important}
@@ -173,6 +171,7 @@ header{
       <div>MASTER<strong id="kMaster">0</strong></div>
       <div>C DESK PAPER<strong id="kEq">—</strong></div>
       <div>AGENTS / HUMANS<strong id="kAg">0 / 1</strong></div>
+      <div>AGE<strong id="kAge">—</strong></div>
       <div>CLOCK<strong id="kClk">--:--:--</strong></div>
     </div>
   </header>
@@ -386,8 +385,26 @@ function drawNodes(){
     }
   });
 }
+let lastSpawn=0;
+function keepJobs(ts){
+  if(!S) return;
+  if(ts-lastSpawn<1600) return;
+  if(jobs.filter(j=>!j.dead).length>=3) return;
+  lastSpawn=ts;
+  const Pths=pathMap();
+  const pulse=(S.pulse||[]);
+  let key='first';
+  if(pulse.includes('imsg')) key='imsg';
+  else if(pulse.includes('bot')||pulse.includes('build')) key='first';
+  else if(pulse.includes('paper')||pulse.includes('oc')) key='clock';
+  const path=(Pths[key]||FALLBACK.first).filter(n=>N[n]);
+  if(path.length<2) return;
+  jobs.push({path, t:0, v:0.0038, col:COL[path[0]]||COL.build});
+}
 function frame(ts){
   T=ts/1000;
+  if(W<20||H<20) resize();
+  keepJobs(ts);
   X.clearRect(0,0,W,H);
   drawWires(); drawJobs(); drawNodes();
   requestAnimationFrame(frame);
@@ -404,6 +421,17 @@ function donut(p,c,label,sub){
 function render(){
   if(!S) return;
   const work=(S.room&&S.room.working)||[];
+  const liveEl=document.querySelector('.live');
+  const ageMs=S.updated_at? (Date.now()-Date.parse(S.updated_at)) : 9e9;
+  const ageS=Math.max(0, Math.floor(ageMs/1000));
+  const fresh=ageS<45 || S.mesh_live;
+  const example=/example/i.test(S.scream||'') && !S.mesh_live;
+  if(liveEl){
+    liveEl.innerHTML=example?'<b></b>EXAMPLE':(fresh?'<b></b>LIVE':'<b></b>STALE');
+    liveEl.style.color=example||!fresh?'var(--warn)':'';
+  }
+  const kAge=document.getElementById('kAge');
+  if(kAge) kAge.textContent=ageS<90? ageS+'s' : (ageS<3600? Math.floor(ageS/60)+'m' : Math.floor(ageS/3600)+'h');
   document.getElementById('kMaster').textContent=(S.master||[]).length;
   const ocList=(S.room&&S.room.oc_agents)||[];
   document.getElementById('kAg').textContent=`OC ${ocList.length} · BOT ${(S.room&&S.room.bots)||0}`;
@@ -457,11 +485,29 @@ function render(){
     jobs.push({path, t:0, v:0.004, col:COL[path[0]]||'#3ce7ff'});
   });
 }
+function stateUrl(){
+  let p=location.pathname||'/';
+  if(/\/[^/]+\.[A-Za-z0-9]+$/.test(p)) p=p.replace(/[^/]+$/,'');
+  else if(!p.endsWith('/')) p=p+'/';
+  return p+'state.json?t='+Date.now();
+}
 async function boot(){
-  try{
-    S=await (await fetch('state.json?t='+Date.now(),{cache:'no-store'})).json();
-    resize(); render();
-  }catch(e){}
+  const urls=[];
+  if(/vercel\.app|github\.io/.test(location.host)) urls.push('/api/state?t='+Date.now());
+  urls.push(stateUrl());
+  let lastErr=null;
+  for(const u of urls){
+    try{
+      const r=await fetch(u,{cache:'no-store'});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      S=await r.json();
+      if(!S || typeof S!=='object') throw new Error('bad json');
+      resize(); render();
+      return;
+    }catch(e){ lastErr=e; }
+  }
+  const b=document.getElementById('mbanner');
+  if(b) b.textContent='STATE FAIL · '+lastErr;
 }
 function clock(){
   const d=new Date();

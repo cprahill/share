@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T22:53:44-05:00",
+  "updated_at": "2026-09-06T07:44:08-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -35,21 +35,21 @@
   "net_worth": {
     "label": "AI team paper",
     "source": "wallets (backbone 2-book until C0)",
-    "start": 300.0,
-    "equity": 329.134,
-    "pnl": -20.7617,
-    "return_pct": 9.7113,
-    "leader": "cutting",
-    "leader_name": "CUTTING",
+    "start": 200.0,
+    "equity": 200.0,
+    "pnl": 0,
+    "return_pct": 0.0,
+    "leader": "traditional",
+    "leader_name": "TRADITIONAL",
     "groups": [
       {
         "id": "traditional",
         "name": "TRADITIONAL",
         "model": "gemma4:12b",
-        "pnl": -15.4328,
-        "return_pct": -7.7164,
-        "open": 4,
-        "dd_pct": 7.72,
+        "pnl": 0.0,
+        "return_pct": 0.0,
+        "open": 0,
+        "dd_pct": 0.0,
         "die_line": 15.0,
         "alive": true
       },
@@ -57,10 +57,10 @@
         "id": "cutting",
         "name": "CUTTING",
         "model": "qwen3.6:27b",
-        "pnl": -5.3289,
-        "return_pct": -5.3289,
-        "open": 3,
-        "dd_pct": 5.33,
+        "pnl": 0.0,
+        "return_pct": 0.0,
+        "open": 0,
+        "dd_pct": 0.0,
         "die_line": 15.0,
         "alive": true
       },
@@ -70,7 +70,7 @@
         "model": "host+wallets",
         "pnl": 0.0,
         "return_pct": 0.0,
-        "open": 1,
+        "open": 0,
         "dd_pct": 0.0,
         "die_line": 15.0,
         "alive": false
@@ -101,16 +101,16 @@
   ],
   "tokens": {
     "window": "24h",
-    "total": 235631281,
+    "total": 260485086,
     "models": [
       {
         "id": "gemma",
         "label": "GEMMA 12B",
         "color": "#3dff9a",
-        "prompt": 284826,
-        "completion": 1081,
-        "total": 285907,
-        "calls": 39,
+        "prompt": 154459,
+        "completion": 792,
+        "total": 155251,
+        "calls": 25,
         "last_prompt": 6079,
         "meter": "openclaw",
         "note": "OpenClaw session usage.input/output",
@@ -120,10 +120,10 @@
         "id": "qwen",
         "label": "QWEN 27B",
         "color": "#3ce7ff",
-        "prompt": 140467,
-        "completion": 940,
-        "total": 141407,
-        "calls": 19,
+        "prompt": 203074,
+        "completion": 1633,
+        "total": 204707,
+        "calls": 24,
         "last_prompt": 10304,
         "meter": "openclaw",
         "note": "OpenClaw session usage.input/output",
@@ -133,14 +133,14 @@
         "id": "build",
         "label": "GROK BUILD",
         "color": "#ffb020",
-        "prompt": 234000128,
-        "completion": 1203839,
-        "total": 235203967,
-        "calls": 1131,
-        "last_prompt": 398810,
+        "prompt": 258799674,
+        "completion": 1325454,
+        "total": 260125128,
+        "calls": 1267,
+        "last_prompt": 225681,
         "meter": "unified",
         "note": "sum of per-call prompt+completion (context re-sent each loop)",
-        "pct": 99.8
+        "pct": 99.9
       },
       {
         "id": "bot",
@@ -178,7 +178,7 @@
       {
         "id": "build402",
         "level": "ok",
-        "label": "credit 57%"
+        "label": "credit 63%"
       },
       {
         "id": "zombies",
@@ -193,7 +193,7 @@
       {
         "id": "oc_desk",
         "level": "ok",
-        "label": "paper-desk ollama/gemma4:12b sess=4"
+        "label": "paper-desk ollama/gemma4:12b sess=7"
       },
       {
         "id": "oc_td",
@@ -207,13 +207,13 @@
       },
       {
         "id": "tick",
-        "level": "warn",
-        "label": "tick age 101m"
+        "level": "ok",
+        "label": "tick 8m"
       },
       {
         "id": "build_sess",
-        "level": "bad",
-        "label": "prompt_tokens 508506"
+        "level": "ok",
+        "label": "0 sess"
       },
       {
         "id": "ladder_bot",
@@ -244,7 +244,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "king-poll beat 15s",
+      "doing": "king-poll beat 10s",
       "working": true
     },
     "gemma": {
@@ -263,7 +263,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "paper-desk 4 sess \u00b7 idle",
+      "doing": "paper-desk 7 sess \u00b7 idle",
       "working": false
     },
     "qwen": {
@@ -282,8 +282,8 @@
         "build"
       ],
       "probes": [],
-      "doing": "trade-dev 10 sess \u00b7 unused",
-      "working": false
+      "doing": "trade-dev 14 sess \u00b7 live",
+      "working": true
     },
     "openclaw": {
       "title": "OpenClaw",
@@ -291,7 +291,7 @@
       "why": "Grok directs it. Do not replace. Seats are live agents.list \u2014 not dests, not Grok Bots.",
       "active": "LIVE",
       "token": "script",
-      "health": "warn",
+      "health": "ok",
       "feeds": [
         "paper",
         "verify"
@@ -313,6 +313,21 @@
       "doing": "gateway \u00b7 26 agents",
       "working": true
     },
+    "imsg": {
+      "title": "iMessage",
+      "role": "human in+out",
+      "why": "One socket. Through OpenClaw. No bodies on this board.",
+      "active": "quiet",
+      "token": "script",
+      "health": "ok",
+      "feeds": [
+        "openclaw"
+      ],
+      "fed_by": [],
+      "probes": [],
+      "doing": "quiet",
+      "working": false
+    },
     "build": {
       "title": "Grok Build",
       "role": "conductor + dest code",
@@ -330,7 +345,7 @@
       "probes": [
         {
           "k": "credit",
-          "v": "57.0"
+          "v": "63.0"
         },
         {
           "k": "block",
@@ -481,7 +496,7 @@
       ],
       "probes": [],
       "doing": "ask.py :8787",
-      "working": false
+      "working": true
     },
     "paper": {
       "title": "C Desk",
@@ -489,7 +504,7 @@
       "why": "3-group Trial. Desk UI is dest C :8791.",
       "active": "backbone cron weekdays 9\u201315",
       "token": "script",
-      "health": "warn",
+      "health": "ok",
       "feeds": [
         "verify"
       ],
@@ -613,21 +628,25 @@
       "working": true,
       "line": "job in"
     },
+    "imsg": {
+      "working": false,
+      "line": "quiet"
+    },
     "pack": {
       "working": false,
       "line": "pack first ok"
     },
     "host": {
       "working": true,
-      "line": "king-poll beat 15s"
+      "line": "king-poll beat 10s"
     },
     "gemma": {
       "working": false,
-      "line": "paper-desk 4 sess \u00b7 idle"
+      "line": "paper-desk 7 sess \u00b7 idle"
     },
     "qwen": {
-      "working": false,
-      "line": "trade-dev 10 sess \u00b7 unused"
+      "working": true,
+      "line": "trade-dev 14 sess \u00b7 live"
     },
     "build": {
       "working": false,
@@ -650,7 +669,7 @@
       "line": "Grok Build only"
     },
     "twin": {
-      "working": false,
+      "working": true,
       "line": "ask.py :8787"
     },
     "paper": {
@@ -672,10 +691,22 @@
   },
   "feed": [
     {
-      "t": "22:49:30",
-      "tag": "BUILD",
-      "line": "running \u00b7 dest first",
+      "t": "07:44:08",
+      "tag": "BOT",
+      "line": "LIVE \u00b7 23 bots",
       "tone": "hot"
+    },
+    {
+      "t": "07:44:08",
+      "tag": "IMSG",
+      "line": "quiet",
+      "tone": "ok"
+    },
+    {
+      "t": "01:18:39",
+      "tag": "BUILD",
+      "line": "monitor \u00b7 dest first",
+      "tone": "ok"
     },
     {
       "t": "21:07:45",
@@ -690,7 +721,7 @@
       "tone": "ok"
     },
     {
-      "t": "21:11:45",
+      "t": "07:35:20",
       "tag": "TICK",
       "line": "--publish leader swarm",
       "tone": "ok"
@@ -708,21 +739,15 @@
       "tone": "ok"
     },
     {
-      "t": "22:53:44",
+      "t": "07:44:08",
       "tag": "ZOMBIES",
       "line": "woke block,kitchen,portal,retro,stranger",
       "tone": "bad"
     },
     {
-      "t": "22:53:44",
+      "t": "07:44:08",
       "tag": "LOCK",
       "line": "LOCK still block+first",
-      "tone": "bad"
-    },
-    {
-      "t": "22:53:44",
-      "tag": "BUILD_SE",
-      "line": "prompt_tokens 508506",
       "tone": "bad"
     }
   ],
@@ -733,8 +758,8 @@
     "risk_label": "woke block,kitchen,portal,retro,stranger",
     "review_pct": 100,
     "review_label": "pass",
-    "ttft_ms": 1059,
-    "credit_pct": 57.0,
+    "ttft_ms": 6802,
+    "credit_pct": 63.0,
     "block": false
   },
   "dests": [
@@ -760,8 +785,8 @@
       "id": "twin",
       "name": "B TWIN",
       "kind": "legacy",
-      "pill": "IDLE",
-      "tone": "warn",
+      "pill": "HOT",
+      "tone": "hot",
       "line": "ask.py :8787",
       "health": "warn"
     },
@@ -769,10 +794,10 @@
       "id": "paper",
       "name": "C DESK",
       "kind": "finance",
-      "pill": "IDLE",
-      "tone": "warn",
+      "pill": "ARMED",
+      "tone": "ok",
       "line": "desk :8791",
-      "health": "warn"
+      "health": "ok"
     },
     {
       "id": "portal",
@@ -819,6 +844,10 @@
     {
       "id": "oc",
       "text": "gateway \u00b7 26 agents"
+    },
+    {
+      "id": "qwen",
+      "text": "trade-dev 14 sess \u00b7 live"
     }
   ],
   "room": {
@@ -827,26 +856,28 @@
     "working": [
       "in",
       "host",
+      "qwen",
       "bot",
-      "oc"
+      "oc",
+      "twin"
     ],
     "oc_agents": [
-      {
-        "id": "paper-desk",
-        "name": "paper-desk",
-        "model": "gemma",
-        "sess": 4,
-        "age_s": 2559,
-        "working": false,
-        "silent": false,
-        "tone": "idle"
-      },
       {
         "id": "trade-dev",
         "name": "trade-dev",
         "model": "qwen",
-        "sess": 10,
-        "age_s": 9153,
+        "sess": 14,
+        "age_s": 30,
+        "working": true,
+        "silent": false,
+        "tone": "hot"
+      },
+      {
+        "id": "paper-desk",
+        "name": "paper-desk",
+        "model": "gemma",
+        "sess": 7,
+        "age_s": 492,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -856,7 +887,7 @@
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 9312,
+        "age_s": 41136,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -865,8 +896,8 @@
         "id": "swarm-event",
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
-        "sess": 4,
-        "age_s": 9283,
+        "sess": 7,
+        "age_s": 523,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -886,7 +917,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 14094,
+        "age_s": 45918,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -946,7 +977,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 4,
-        "age_s": 14001,
+        "age_s": 45824,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -996,7 +1027,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13970,
+        "age_s": 45794,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1076,7 +1107,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13965,
+        "age_s": 45789,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1086,7 +1117,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 367,
-        "age_s": 49607,
+        "age_s": 81431,
         "working": false,
         "silent": true,
         "tone": "warn"
