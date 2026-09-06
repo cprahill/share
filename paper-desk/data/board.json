@@ -1,16 +1,17 @@
 {
-  "updated_at": "2026-09-06T16:00:04-0500",
+  "updated_at": "2026-09-06T16:00:10-0500",
   "duel": {
-    "ends_at": "2026-09-10T16:00:00-05:00",
+    "ends_at": "2026-09-11T16:00:00-04:00",
     "metric": "return_pct",
-    "leader": "trade_dev",
-    "stakes": "ONE PRINT paper \u00b7 live DENY until YES",
+    "leader": "main",
+    "stakes": "$500 \u2192 $2,500 min \u00b7 $5k stretch \u00b7 live DENY until YES",
     "main_return_pct": -5.134,
     "trade_dev_return_pct": 0,
     "swarm_return_pct": 0,
-    "timeline": "Sat RESET \u2192 Thu hot wash",
+    "timeline": "Labor Day \u2192 Friday close",
     "mode": "ONE PRINT",
-    "reset_at": null
+    "reset_at": null,
+    "friday_close": "2026-09-11T16:00:00-04:00"
   },
   "main": {
     "label": "ONE PRINT",
