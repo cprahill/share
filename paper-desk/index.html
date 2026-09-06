@@ -415,9 +415,13 @@ function layoutHive(){
   hC.width=Math.max(1,Math.floor(HW*dpr)); hC.height=Math.max(1,Math.floor(HH*dpr));
   hx.setTransform(dpr,0,0,dpr,0,0);
   cx0=HW/2;cy0=HH*0.44;rxB=HW*0.44;ryB=HH*0.34;SIZE=Math.min(HW,HH)/15.2;
-  cells=[{...CELLDEF[0],ring:null,base:0,x:cx0,y:cy0,pulse:R(0,6),pnl:0,hot:0,status:'alive',equity:0,ret:0}];
-  RINGS.forEach((rg,ri)=>{if(rg.rot===undefined)rg.rot=R(0,6);rg.idx.forEach((ci,k)=>{const base=k/rg.idx.length*6.2832+ri*0.5;cells.push({...CELLDEF[ci],ring:rg,base,x:0,y:0,pulse:R(0,6),pnl:0,hot:0,status:CELLDEF[ci].status||'alive',equity:CELLDEF[ci].equity||0,ret:CELLDEF[ci].ret||0});});});
+  if(!cells.length){
+    cells=[{...CELLDEF[0],ring:null,base:0,x:cx0,y:cy0,pulse:R(0,6),pnl:0,hot:0,status:'alive',equity:0,ret:0}];
+    RINGS.forEach((rg,ri)=>{if(rg.rot===undefined)rg.rot=R(0,6);rg.idx.forEach((ci,k)=>{const base=k/rg.idx.length*6.2832+ri*0.5;cells.push({...CELLDEF[ci],ring:rg,base,x:0,y:0,pulse:R(0,6),pnl:0,hot:0,status:CELLDEF[ci].status||'alive',equity:CELLDEF[ci].equity||0,ret:CELLDEF[ci].ret||0});});});
+  }
   posUpdate();cellByName={};cells.forEach(c=>cellByName[c.t]=c);buildEdges(); window.cells=cells; window.cellByName=cellByName;
+  window.__hiveNeedsMortality=true;
+  if(window.applyMortality && window.__lastBoard && window.__lastBoard.swarm){ try{ window.applyMortality(window.__lastBoard.swarm.agents||[]); window.__hiveNeedsMortality=false; }catch(e){} }
   // debug chip until stable
   try{
     let chip=document.getElementById('hive-debug');
@@ -588,12 +592,14 @@ requestAnimationFrame(drawHive);
     if(lane==='trade_dev'||lane==='DEV') return '<span style="color:#3dffb0">DEV</span>';
     return '<span style="color:#7cffcf">SWARM</span>';
   }
-  function applyMortality(agents){
-    if(!agents||!agents.length||!window.cells) return;
+  function applyMortality(agents){ window.applyMortality=applyMortality;
+    if(!agents||!agents.length) return;
+    if(!cells||!cells.length){ if(window.cells) cells=window.cells; }
+    if(!cells||!cells.length) return;
     var map={};
     agents.forEach(function(a){ map[a.id]=a; });
     var prev=window.__mortalityPrev||{};
-    window.cells.forEach(function(c){
+    cells.forEach(function(c){
       if(c.role!=='sn') return;
       var a=map[c.t]||map[c.agentId];
       if(!a){ c.status='missing'; return; }
@@ -613,10 +619,15 @@ requestAnimationFrame(drawHive);
       if(was===undefined && a.generation>0){ c.hot=1.6; }
       prev[c.t]=c.status;
     });
-    // purge dead from hive rings
-    if(window.cells) window.cells=window.cells.filter(function(c){ return !c._clear; });
+    // purge dead from the SAME array drawHive paints (not a detached window.cells copy)
+    cells = cells.filter(function(c){ return !c._clear; });
+    window.cells = cells;
+    cellByName = {};
+    cells.forEach(function(c){ cellByName[c.t]=c; });
+    window.cellByName = cellByName;
+    try{ buildEdges(); }catch(e){}
     // TRAD/DEV totems from lanes
-    window.cells.forEach(function(c){
+    cells.forEach(function(c){
       if(c.lane==='main' && window.__lastBoard && window.__lastBoard.main){
         var m=window.__lastBoard.main;
         c.equity=m.equity_usd; c.ret=m.return_pct;
