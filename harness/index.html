@@ -15,7 +15,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
   font-family:"IBM Plex Mono",ui-monospace,monospace;}
-.app{height:100%;display:grid;grid-template-rows:42px 36px 1fr minmax(170px,22%);gap:8px;padding:8px 10px 10px;}
+.app{height:100%;display:grid;grid-template-rows:42px 36px minmax(160px,34%) minmax(260px,1fr);gap:8px;padding:8px 10px 10px;}
 header{
   display:flex;align-items:center;gap:16px;padding:0 8px;
   border-bottom:1px solid var(--line);
@@ -133,7 +133,7 @@ header{
     height:100dvh!important;max-height:100dvh!important;
     overflow-x:hidden!important;overflow-y:scroll!important;
     -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;
-    grid-template-rows:auto auto minmax(220px,38vh) auto!important;
+    grid-template-rows:auto auto minmax(160px,28vh) auto!important;
     gap:8px;padding:8px 8px calc(16px + env(safe-area-inset-bottom,0px));
   }
   header{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 12px;height:auto;padding:8px}
@@ -146,7 +146,7 @@ header{
   .tokleg{flex-wrap:wrap;white-space:normal;width:100%}
   .mesh{min-height:220px;height:38vh;max-height:42vh;width:100%;overflow:hidden}
   .mesh canvas{width:100%!important;height:100%!important;max-width:100%}
-  .bot{grid-template-columns:1fr!important;height:auto!important}
+  .bot{grid-template-columns:1fr!important;height:auto!important;min-height:55vh}
   .bot .panel{min-height:180px;height:auto;overflow:visible}
   .docs{grid-template-columns:1fr!important;height:auto!important;overflow:visible}
   .feed{grid-template-columns:1fr!important;height:auto!important;overflow:visible!important}

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T07:44:31-05:00",
+  "updated_at": "2026-09-06T07:46:31-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -101,7 +101,7 @@
   ],
   "tokens": {
     "window": "24h",
-    "total": 260485086,
+    "total": 260494837,
     "models": [
       {
         "id": "gemma",
@@ -120,10 +120,10 @@
         "id": "qwen",
         "label": "QWEN 27B",
         "color": "#3ce7ff",
-        "prompt": 203074,
-        "completion": 1633,
-        "total": 204707,
-        "calls": 24,
+        "prompt": 212641,
+        "completion": 1817,
+        "total": 214458,
+        "calls": 25,
         "last_prompt": 10304,
         "meter": "openclaw",
         "note": "OpenClaw session usage.input/output",
@@ -208,7 +208,7 @@
       {
         "id": "tick",
         "level": "ok",
-        "label": "tick 9m"
+        "label": "tick 11m"
       },
       {
         "id": "build_sess",
@@ -244,7 +244,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "king-poll beat 13s",
+      "doing": "king-poll beat 12s",
       "working": true
     },
     "gemma": {
@@ -282,7 +282,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "trade-dev 14 sess \u00b7 live",
+      "doing": "trade-dev 13 sess \u00b7 live",
       "working": true
     },
     "openclaw": {
@@ -638,7 +638,7 @@
     },
     "host": {
       "working": true,
-      "line": "king-poll beat 13s"
+      "line": "king-poll beat 12s"
     },
     "gemma": {
       "working": false,
@@ -646,7 +646,7 @@
     },
     "qwen": {
       "working": true,
-      "line": "trade-dev 14 sess \u00b7 live"
+      "line": "trade-dev 13 sess \u00b7 live"
     },
     "build": {
       "working": false,
@@ -691,13 +691,13 @@
   },
   "feed": [
     {
-      "t": "07:44:31",
+      "t": "07:46:31",
       "tag": "BOT",
       "line": "LIVE \u00b7 23 bots",
       "tone": "hot"
     },
     {
-      "t": "07:44:31",
+      "t": "07:46:31",
       "tag": "IMSG",
       "line": "quiet",
       "tone": "ok"
@@ -739,13 +739,13 @@
       "tone": "ok"
     },
     {
-      "t": "07:44:31",
+      "t": "07:46:31",
       "tag": "ZOMBIES",
       "line": "woke block,kitchen,portal,retro,stranger",
       "tone": "bad"
     },
     {
-      "t": "07:44:31",
+      "t": "07:46:31",
       "tag": "LOCK",
       "line": "LOCK still block+first",
       "tone": "bad"
@@ -847,7 +847,7 @@
     },
     {
       "id": "qwen",
-      "text": "trade-dev 14 sess \u00b7 live"
+      "text": "trade-dev 13 sess \u00b7 live"
     }
   ],
   "room": {
@@ -866,8 +866,8 @@
         "id": "trade-dev",
         "name": "trade-dev",
         "model": "qwen",
-        "sess": 14,
-        "age_s": 53,
+        "sess": 13,
+        "age_s": 9,
         "working": true,
         "silent": false,
         "tone": "hot"
@@ -877,7 +877,7 @@
         "name": "paper-desk",
         "model": "gemma",
         "sess": 7,
-        "age_s": 515,
+        "age_s": 635,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -887,7 +887,7 @@
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 41159,
+        "age_s": 41279,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -897,7 +897,7 @@
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
         "sess": 7,
-        "age_s": 547,
+        "age_s": 667,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -917,7 +917,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45941,
+        "age_s": 46061,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -977,7 +977,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45847,
+        "age_s": 45967,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1027,7 +1027,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45817,
+        "age_s": 45937,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1107,7 +1107,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45812,
+        "age_s": 45932,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1117,7 +1117,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 367,
-        "age_s": 81454,
+        "age_s": 81574,
         "working": false,
         "silent": true,
         "tone": "warn"
