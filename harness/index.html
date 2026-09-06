@@ -15,7 +15,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
   font-family:"IBM Plex Mono",ui-monospace,monospace;}
-.app{height:100%;display:grid;grid-template-rows:42px 40px auto auto minmax(160px,24%) minmax(220px,34%) 1fr auto;gap:8px;padding:8px 10px 10px;}
+.app{height:100%;display:grid;grid-template-rows:42px 36px 1fr minmax(170px,22%);gap:8px;padding:8px 10px 10px;}
 header{
   display:flex;align-items:center;gap:16px;padding:0 8px;
   border-bottom:1px solid var(--line);
@@ -120,223 +120,20 @@ header{
 .feed .tag{margin-right:6px;font-size:10px;letter-spacing:.08em}
 .feed .tag.ok{color:var(--cyan)} .feed .tag.hot{color:var(--gold)}
 .feed .tag.warn{color:var(--warn)} .feed .tag.bad{color:var(--pink)}
-.tonight .hero{font-size:36px}
-
-.links{display:flex;flex-wrap:wrap;gap:10px 16px;padding:4px 8px;font-size:10px;color:var(--muted);border-top:1px solid var(--line)}
-.links a{color:var(--cyan);text-decoration:none;letter-spacing:.06em}
-.links a:hover{text-decoration:underline}
-.scream{font-size:10px;letter-spacing:.12em;color:var(--gold);margin-left:10px}
-
-/* touch / wrap helpers (desktop-safe) */
-a,button,.pill,.ln,.oc-seats .s,.links a{
-  -webkit-tap-highlight-color:rgba(60,231,255,.22);
-  touch-action:manipulation;
-}
-.ph{flex-wrap:wrap;gap:4px 8px;align-items:baseline}
-.ph span{overflow-wrap:anywhere;word-break:break-word}
-.links span,.links a{overflow-wrap:anywhere;word-break:break-word}
-
-
-.ladder{display:flex;flex-wrap:wrap;gap:8px 14px;padding:4px 12px;align-items:center;
-  background:var(--panel);border:1px solid var(--line);border-radius:4px;
-  font-size:10px;letter-spacing:.1em;color:var(--muted)}
-.ladder b{color:var(--mint);font-family:"Barlow Condensed",sans-serif;letter-spacing:.16em;margin-right:4px}
-.ladder .hop{color:var(--text)}
-.ladder .hop.ship{color:var(--gold);opacity:.8}
-.ladder .sep{color:#2a3a4e;margin:0 2px}
-.lessons{font-size:10px;line-height:1.4;padding:6px 10px;border:1px solid #3a2a10;background:#100c08;
-  color:var(--gold);border-radius:4px;max-height:72px;overflow:auto}
-.lessons div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lessons .cut{color:#ffb020}
-
-/* —— mobile / narrow (~390px phones + tablets) —— */
-html{overflow-x:hidden}
-@media (max-width:900px){
-  /* iOS: body scroll fails with CRT shell — .app IS the scroller (paper-desk lesson) */
-  html,body{
-    height:100%!important;max-height:100dvh!important;
-    overflow:hidden!important;position:fixed!important;inset:0;
-    -webkit-text-size-adjust:100%;
-  }
-  body{font-size:13px}
-  .app{
-    height:100%!important;height:100dvh!important;
-    max-height:100dvh!important;
-    display:flex;flex-direction:column;
-    gap:10px;
-    padding:calc(8px + env(safe-area-inset-top,0px))
-           calc(10px + env(safe-area-inset-right,0px))
-           calc(12px + env(safe-area-inset-bottom,0px))
-           calc(10px + env(safe-area-inset-left,0px));
-    max-width:100%;
-    overflow-x:hidden!important;
-    overflow-y:scroll!important;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior-y:contain;
-  }
-  header{
-    flex-wrap:wrap;align-items:flex-start;gap:8px 12px;
-    padding:6px 4px 10px;row-gap:10px;
-  }
-  .brand{font-size:16px;letter-spacing:.14em}
-  .sub{
-    flex:1 1 100%;order:5;line-height:1.45;
-    white-space:normal;overflow-wrap:anywhere;
-  }
-  .live{margin-left:0}
-  .kpis{
-    margin-left:0;flex:1 1 100%;
-    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px 12px;
-  }
-  .kpis>div{
-    padding:8px 10px;border:1px solid var(--line);border-radius:3px;
-    background:rgba(8,16,28,.55);min-width:0;
-  }
-  .kpis strong{font-size:15px;overflow-wrap:anywhere}
-  .tokbar{
-    flex-direction:column;align-items:stretch;gap:8px;
-    padding:10px 12px;min-width:0;
-  }
-  .tokbar .ph{min-width:0!important}
-  .tokstack{width:100%;height:14px;flex:none}
-  .tokleg{
-    flex-wrap:wrap;gap:8px 12px;white-space:normal;
-    line-height:1.4;max-width:100%;
-  }
-  .tokleg span{overflow-wrap:anywhere}
-  .top,.bot{
-    display:flex;flex-direction:column;gap:10px;
-    min-height:0;min-width:0;
-  }
-  .panel{
-    min-height:0;overflow:visible;
-    padding:12px 12px 10px;
-  }
-  .hero{font-size:32px}
-  .tonight .hero{font-size:28px}
-  .tokrow{
-    grid-template-columns:minmax(72px,88px) 1fr minmax(48px,64px);
-    gap:10px;font-size:11px;padding:4px 0;
-  }
-  .tokrow b{overflow-wrap:anywhere;white-space:normal}
-  .launches{height:auto;overflow:visible;gap:8px}
-  .ln{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    grid-template-areas:
-      "name pill"
-      "wave kind";
-    gap:6px 10px;align-items:center;
-    padding:10px 10px;min-height:44px;
-    border:1px solid #152033;border-radius:3px;
-    background:rgba(8,16,28,.4);
-  }
-  .ln b{grid-area:name;font-size:13px;overflow-wrap:anywhere;white-space:normal}
-  .ln .wave{grid-area:wave;width:100%;max-width:160px;height:20px}
-  .ln .pill{
-    grid-area:pill;justify-self:end;
-    padding:6px 10px;min-height:32px;display:inline-flex;align-items:center;
-    font-size:10px;white-space:normal;text-align:center;max-width:100%;
-  }
-  .ln .pct{grid-area:kind;text-align:left;overflow-wrap:anywhere}
-  .gates{
-    height:auto;flex-wrap:wrap;justify-content:center;
-    gap:12px;padding:8px 0;
-  }
-  .donut{width:84px;height:84px}
-  .donut em{font-size:14px}
-  .gmeta{
-    flex-wrap:wrap;gap:6px 12px;line-height:1.4;
-  }
-  .gmeta span{overflow-wrap:anywhere}
-  .mesh{
-    min-height:42vh;height:42vh;flex:none;
-  }
-  .mbanner{
-    left:8px;right:8px;transform:none;width:auto;
-    text-align:center;white-space:normal;line-height:1.35;
-    font-size:10px;letter-spacing:.14em;padding:6px 10px;
-  }
-  .call{
-    white-space:normal;max-width:46vw;overflow-wrap:anywhere;
-    line-height:1.3;padding:5px 8px;
-  }
-  .oc-seats{
-    grid-template-columns:1fr;gap:0;
-    max-height:none;overflow:visible;margin:4px 0 10px;
-  }
-  .oc-seats .s{
-    grid-template-columns:minmax(0,1fr) auto auto;
-    gap:8px;padding:10px 6px;min-height:40px;
-    font-size:11px;align-items:flex-start;
-  }
-  .oc-seats .s b{
-    white-space:normal;overflow:visible;text-overflow:unset;
-    overflow-wrap:anywhere;line-height:1.3;
-  }
-  .oc-seats .s .m{overflow-wrap:anywhere;max-width:40vw}
-  .room-grid{grid-template-columns:repeat(8,1fr);gap:4px}
-  .room-grid b{min-height:18px}
-  .looprow{gap:4px;margin-top:8px}
-  .looprow i{height:18px;min-height:18px}
-  .feed{
-    display:flex;flex-direction:column;gap:0;
-    height:auto;max-height:none;overflow:visible;
-    font-size:12px;
-  }
-  .feed div{
-    white-space:normal;overflow:visible;text-overflow:unset;
-    overflow-wrap:anywhere;word-break:break-word;
-    line-height:1.45;padding:10px 6px;min-height:40px;
-    border-bottom:1px solid #152033;
-  }
-  .feed .t{display:inline-block;margin-right:8px}
-  .feed .tag{display:inline-block;margin-right:8px}
-  .delta{overflow-wrap:anywhere;line-height:1.4}
-  .links{
-    flex-direction:column;align-items:flex-start;gap:8px;
-    padding:10px 4px calc(8px + env(safe-area-inset-bottom,0px));
-  }
-  .links a{
-    padding:8px 4px;min-height:36px;display:inline-flex;align-items:center;
-    font-size:11px;
-  }
-  .scream{margin-left:0;line-height:1.4;overflow-wrap:anywhere}
-  .spark{display:none}
-}
-
-  .app::after{content:"";display:block;height:calc(16px + env(safe-area-inset-bottom,0px));flex:none}
-  .ladder,.lessons{flex:none}
-  .ladder{display:flex;flex-wrap:wrap;gap:6px 10px;padding:6px 10px;font-size:10px;letter-spacing:.08em;
-    background:var(--panel);border:1px solid var(--line);border-radius:4px;color:var(--muted)}
-  .ladder b{color:var(--mint);font-family:"Barlow Condensed",sans-serif;letter-spacing:.14em}
-  .ladder .hop{color:var(--text)} .ladder .hop.ship{color:var(--gold);opacity:.75}
-  .ladder .hop.money{color:var(--muted);text-decoration:line-through;opacity:.45}
-  .lessons{font-size:10px;line-height:1.45;padding:8px 10px;border:1px solid #3a2a10;background:#120e08;
-    color:var(--gold);border-radius:4px}
-  .lessons div{margin:3px 0;overflow-wrap:anywhere}
-
-@media (max-width:420px){
-  .brand{font-size:15px}
-  .hero{font-size:28px}
-  .tonight .hero{font-size:24px}
-  .kpis{grid-template-columns:1fr 1fr;gap:6px}
-  .kpis strong{font-size:14px}
-  .mesh{min-height:38vh;height:38vh}
-  .donut{width:76px;height:76px}
-  .donut em{inset:10px;font-size:13px}
-  .room-grid{grid-template-columns:repeat(6,1fr)}
-  .tokrow{grid-template-columns:minmax(64px,76px) 1fr minmax(40px,56px);font-size:10px}
-  .ln{padding:10px 8px}
-}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:16px;height:calc(100% - 22px);overflow:auto;font-size:11px;line-height:1.45}
+.docs h4{margin:0 0 6px;font-family:"Barlow Condensed",sans-serif;letter-spacing:.16em;color:var(--gold);font-size:12px}
+.docs ul{margin:0;padding-left:16px;color:var(--text)}
+.docs li{margin-bottom:3px}
+.legend{margin-top:8px;font-size:10px;color:var(--muted);letter-spacing:.04em;line-height:1.5}
+.legend i{display:inline-block;width:8px;height:8px;margin:0 4px 0 10px;vertical-align:middle}
+.bot{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;min-height:0}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="brand">HARNESS <i>//</i> DIRECT SoT</div>
-    <div class="sub">MODELS · RUNTIME · PROJECTS  ·  HOST=scripts  ·  SoT=source of truth  ·  PAPER≠live</div>
+    <div class="brand">HARNESS <i>//</i> GROK BUILD</div>
+    <div class="sub">Build ═ Bot · iMessage in/out · lessons + 1st principles before ship</div>
     <div class="live"><b></b>MESH</div>
     <div class="kpis">
       <div>MASTER<strong id="kMaster">0</strong></div>
@@ -350,118 +147,82 @@ html{overflow-x:hidden}
     <div class="tokstack" id="tokstack"></div>
     <div class="tokleg" id="tokleg"></div>
   </div>
-  <div class="ladder" id="ladder"></div>
-  <div class="lessons" id="lessons"></div>
-  <section class="top">
-    <article class="panel" id="spine">
-      <div class="ph">THE SPINE <span>CHEAPEST-FIRST · 24H</span></div>
-      <div class="hero" id="spineHero">—</div>
-      <div class="delta" id="spineDelta"></div>
-      <div class="bars" id="spineBars"></div>
-    </article>
-    <article class="panel">
-      <div class="ph">DESTS <span>FIRST · A BAJA · B TWIN · C DESK</span></div>
-      <div class="launches" id="dests"></div>
-    </article>
-    <article class="panel">
-      <div class="ph">THE GATE <span>PACK then REVIEW · no pass no send</span></div>
-      <div class="gates" id="gates"></div>
-      <div class="gmeta" id="gmeta"></div>
-    </article>
-  </section>
   <section class="mesh">
-    <div class="mbanner" id="mbanner">GROK AGENT MESH</div>
+    <div class="mbanner" id="mbanner">HARNESS</div>
     <canvas id="c"></canvas>
     <div id="calls"></div>
   </section>
   <section class="bot">
     <article class="panel">
-      <div class="ph">THE ROOM <span id="roomHead">OPENCLAW SEATS</span></div>
-      <div class="oc-seats" id="ocseats"></div>
-      <div class="ph">GROK BOT <span id="botHead">CLOUD</span></div>
-      <div class="room-grid" id="room"></div>
-      <div class="ph" style="margin-top:8px">LOOP</div>
-      <div class="looprow" id="loop"></div>
+      <div class="ph">LIVING DOCS <span>quality · reliability · optimization · apply before ship</span></div>
+      <div class="docs">
+        <div>
+          <h4>LESSONS</h4>
+          <ul id="lessons"></ul>
+        </div>
+        <div>
+          <h4>1ST PRINCIPLES</h4>
+          <ul id="principles"></ul>
+        </div>
+      </div>
     </article>
     <article class="panel">
-      <div class="ph">FLOOR FEED <span>EVERYTHING THE HARNESS SEES</span></div>
+      <div class="ph">LOG <span>what just happened</span></div>
       <div class="feed" id="feed"></div>
-    </article>
-    <article class="panel tonight">
-      <div class="ph">C DESK <span>PAPER · NOT LIVE</span></div>
-      <div class="hero" id="tonight">—</div>
-      <div class="delta" id="tonightSub"></div>
+      <div class="legend">
+        <i style="background:#ffb020"></i>Grok Build/Bot
+        <i style="background:#8b7cff"></i>wired together
+        <i style="background:#3dffc7"></i>OpenClaw / local
+        <i style="background:#3ce7ff"></i>iMessage in+out
+        <i style="background:#fff"></i>verify/test
+        <i style="background:#ff4d8d"></i>clone to MASTER
+      </div>
     </article>
   </section>
-  <div class="links" id="links">
-    <a href="../paper-desk/">PAPER-DESK</a>
-    <a href="https://cprahill.github.io/share/harness/">GITHUB.IO</a>
-    <span>OC-TEAM · Mini local (desk 4 of 26)</span>
-    <span title="OpenBot UI is Mini-local only">OPENBOT :3010 · local Mini · often down w/o CopilotKit key</span>
-    <span class="scream" id="scream"></span>
-  </div>
 </div>
 <script>
 const C=document.getElementById('c'), X=C.getContext('2d');
 let W=0,H=0,T=0,S=null,jobs=[],seen=new Set();
 const COL={
-  imsg:'#3ce7ff', host:'#6d7d93', gemma:'#3dff9a', qwen:'#3ce7ff',
+  imsg:'#3ce7ff', gemma:'#3dff9a', qwen:'#3ce7ff',
   build:'#ffb020', bot:'#8b7cff', oc:'#3dffc7', first:'#d7e6f5', baja:'#ff6a3d',
   twin:'#7ed0ff', paper:'#ffe08a', review:'#ffb020', verify:'#ffffff', master:'#ff4d8d'
 };
-const BANDS=[
-  {y:.08,label:'MODELS  ·  HOST=0-LLM scripts  ·  GEMMA/QWEN/BOT/BUILD'},
-  {y:.38,label:'RUNTIME  ·  OPENCLAW peer mesh  ·  REVIEW / VERIFY'},
-  {y:.70,label:'PROJECTS  ·  PAPER SoT = books (source of truth)  ·  BAJA / TWIN / FIRST'}
-];
 const N={
-  host:{x:.10,y:.18,label:'HOST', kind:'script'},
-  gemma:{x:.28,y:.18,label:'GEMMA', kind:'ai'},
-  qwen:{x:.46,y:.18,label:'QWEN', kind:'ai'},
-  bot:{x:.64,y:.18,label:'BOT', kind:'ai'},
-  build:{x:.82,y:.18,label:'BUILD', kind:'ai'},
-  imsg:{x:.12,y:.48,label:'IMSG', kind:'in'},
-  oc:{x:.38,y:.48,label:'OPENCLAW', kind:'gate'},
-  review:{x:.64,y:.48,label:'REVIEW', kind:'gate'},
-  verify:{x:.86,y:.48,label:'VERIFY', kind:'gate'},
-  paper:{x:.18,y:.80,label:'PAPER SoT', kind:'dest'},
-  baja:{x:.40,y:.80,label:'BAJA', kind:'dest'},
-  twin:{x:.58,y:.80,label:'TWIN', kind:'dest'},
-  first:{x:.76,y:.80,label:'FIRST', kind:'dest'},
-  master:{x:.92,y:.80,label:'MASTER', kind:'gate'}
+  gemma:{x:.16,y:.18,label:'GEMMA', kind:'ai'},
+  qwen:{x:.16,y:.82,label:'QWEN', kind:'ai'},
+  imsg:{x:.06,y:.50,label:'IMSG', kind:'in'},
+  oc:{x:.18,y:.50,label:'OPENCLAW', kind:'gate'},
+  build:{x:.36,y:.36,label:'BUILD', kind:'ai'},
+  bot:{x:.36,y:.64,label:'BOT', kind:'ai'},
+  review:{x:.54,y:.50,label:'REVIEW', kind:'gate'},
+  verify:{x:.68,y:.50,label:'VERIFY', kind:'gate'},
+  first:{x:.84,y:.18,label:'FIRST', kind:'dest'},
+  baja:{x:.84,y:.38,label:'BAJA', kind:'dest'},
+  twin:{x:.84,y:.62,label:'TWIN', kind:'dest'},
+  paper:{x:.84,y:.82,label:'C DESK', kind:'dest'},
+  master:{x:.96,y:.50,label:'MASTER', kind:'gate'}
 };
-/* DIRECT SoT defaults — sync keys with state.paths (no Build→Bot money hop) */
 const FALLBACK={
-  script:['host','paper','verify','master'],
-  cheap:['oc','gemma','paper','verify','master'],
-  cut:['oc','qwen','paper','verify','master'],
-  swarm:['oc','gemma','paper','verify','master'],
-  stamp:['bot','review','verify','master'],
-  ship:['build','oc','verify','master'],
-  peer_cloud:['build','bot','oc','verify','master'],
-  imsg:['imsg','oc','verify','master'],
-  peer:['oc','review','paper','verify','master'],
-  /* aliases for older event.path names */
-  first:['build','review','first','verify','master'],
-  baja:['build','review','baja','verify','master'],
-  code:['build','review','first','verify','master'],
-  local:['oc','gemma','paper','verify','master'],
-  cloud:['bot','review','verify','master'],
-  clock:['host','paper','verify','master']
+  first:['build','bot','review','verify','first','master'],
+  clock:['oc','review','verify','paper','master'],
+  baja:['build','bot','review','verify','baja','master'],
+  cheap:['oc','review','verify','paper','master'],
+  local:['gemma','oc','review','verify','paper','master'],
+  cut:['qwen','oc','review','verify','twin','master'],
+  cloud:['bot','build','review','verify','master'],
+  imsg:['imsg','oc','imsg'],
+  code:['build','bot','review','verify','first','master']
 };
-/* Direct money/SoT edges first; Build/Review only for ship/stamp — not money hops */
 const WIRES=[
-  ['imsg','oc'],
-  ['host','paper'],
-  ['oc','gemma'],['oc','qwen'],['oc','paper'],
-  ['gemma','paper'],['qwen','paper'],
-  ['build','oc'],['oc','build'],
-  ['build','bot'],['bot','build'],
-  ['bot','oc'],['oc','bot'],
-  ['bot','review'],['build','review'],['build','baja'],
-  ['review','verify'],['review','first'],
-  ['paper','verify'],['twin','verify'],['first','verify'],['baja','verify'],
-  ['verify','master']
+  ['imsg','oc'],['oc','imsg'],
+  ['gemma','oc'],['qwen','oc'],
+  ['build','bot'],
+  ['build','review'],['bot','review'],['oc','review'],
+  ['review','verify'],
+  ['verify','first'],['verify','baja'],['verify','twin'],['verify','paper'],
+  ['verify','master'],
+  ['first','master'],['baja','master'],['twin','master'],['paper','master']
 ];
 function pathMap(){
   const o={...FALLBACK};
@@ -505,14 +266,28 @@ function round(x,y,w,h,r){
   X.arcTo(x,y+h,x,y,r); X.arcTo(x,y,x+w,y,r); X.closePath();
 }
 function drawWires(){
+  // Build ═ Bot — one conductor pair
+  const Gb=P('build'), Bt=P('bot');
+  const pairOn=isWork('build')||isWork('bot');
+  X.setLineDash([]);
+  [[-4,COL.build],[4,COL.bot]].forEach(([off,col])=>{
+    X.beginPath(); X.moveTo(Gb.x+off, Gb.y); X.lineTo(Bt.x+off, Bt.y);
+    X.strokeStyle=hexA(col, pairOn?.85:.4); X.lineWidth=pairOn?3.2:2; X.shadowColor=col; X.shadowBlur=10; X.stroke();
+  });
+  X.shadowBlur=0;
+  X.font='700 9px Barlow Condensed,sans-serif';
+  X.fillStyle=hexA('#ffb020',.8); X.textAlign='left';
+  X.fillText('WIRED', Gb.x+14, (Gb.y+Bt.y)/2);
   WIRES.forEach(([a,b])=>{
+    if((a==='build'&&b==='bot')||(a==='bot'&&b==='build')) return;
     const A=P(a), B=P(b);
     const on=isWork(a)||isWork(b);
+    const twoWay=a==='imsg'||b==='imsg';
     X.beginPath();
-    const mx=(A.x+B.x)/2, my=(A.y+B.y)/2 + (A.y<H*.5?-18:18);
+    const mx=(A.x+B.x)/2, my=(A.y+B.y)/2 + (A.y<H*.5?-12:12);
     X.moveTo(A.x,A.y); X.quadraticCurveTo(mx, my, B.x, B.y);
-    X.setLineDash([3,6]);
-    X.strokeStyle=hexA(COL[a]||'#3ce7ff', on?.55:.18);
+    X.setLineDash(twoWay?[]:[3,6]);
+    X.strokeStyle=hexA(COL[a]||'#3ce7ff', on?.55:.2);
     X.lineWidth=on?1.8:1.1; X.stroke(); X.setLineDash([]);
   });
 }
@@ -550,31 +325,36 @@ function drawNodes(){
       X.strokeStyle=hexA(col,.45); X.lineWidth=1.2; X.stroke();
     }
     if(kind==='in') drawIntake(p.x,p.y,col,on);
-    else if(kind==='script'){ /* host 0-LLM */
-      X.save(); X.shadowColor=col; X.shadowBlur=on?12:4;
-      X.fillStyle=hexA('#0b1520',.95); X.strokeStyle=col; X.lineWidth=on?2:1.3;
-      round(p.x-14,p.y-10,28,20,3); X.fill(); X.stroke(); X.shadowBlur=0;
-      X.fillStyle=col; X.font='700 9px Barlow Condensed,sans-serif'; X.textAlign='center'; X.textBaseline='middle';
-      X.fillText('0LLM',p.x,p.y); X.restore();
-    } else botFace(p.x,p.y,col,on || id==='review');
+    else botFace(p.x,p.y,col,on || id==='review');
     X.font='600 10px Barlow Condensed,sans-serif';
     X.textAlign='center'; X.textBaseline='top';
     X.fillStyle=on?'#fff':hexA('#d7e6f5',.8);
     X.fillText(N[id].label, p.x, p.y+18);
+    if(id==='review'){
+      X.font='600 8px IBM Plex Mono,monospace';
+      X.fillStyle=hexA('#ffb020',.75);
+      X.fillText('LESSONS + 1ST PRINCIPLES', p.x, p.y+30);
+    }
+    if(id==='verify'){
+      X.font='600 8px IBM Plex Mono,monospace';
+      X.fillStyle=hexA('#fff',.6);
+      X.fillText('APPLY · TEST', p.x, p.y+30);
+    }
+    if(id==='master'){
+      X.font='600 8px IBM Plex Mono,monospace';
+      X.fillStyle=hexA('#ff4d8d',.75);
+      X.fillText('CLONE', p.x, p.y+30);
+    }
+    if(id==='imsg'){
+      X.font='600 8px IBM Plex Mono,monospace';
+      X.fillStyle=hexA('#3ce7ff',.75);
+      X.fillText('IN + OUT', p.x, p.y+30);
+    }
   });
 }
 function frame(ts){
   T=ts/1000;
   X.clearRect(0,0,W,H);
-  BANDS.forEach(function(b){
-    X.save();
-    X.font='600 10px "IBM Plex Mono",monospace';
-    X.fillStyle='rgba(200,220,210,.38)';
-    X.fillText(b.label, 12, Math.max(14, b.y*H));
-    X.strokeStyle='rgba(20,241,149,.10)';
-    X.beginPath(); X.moveTo(12, Math.max(14,b.y*H)+8); X.lineTo(W-12, Math.max(14,b.y*H)+8); X.stroke();
-    X.restore();
-  });
   drawWires(); drawJobs(); drawNodes();
   requestAnimationFrame(frame);
 }
@@ -589,126 +369,43 @@ function donut(p,c,label,sub){
 }
 function render(){
   if(!S) return;
-  const nw=S.net_worth||{};
-  const g=S.gate||{};
-  const doing=S.doing||{};
   const work=(S.room&&S.room.working)||[];
   document.getElementById('kMaster').textContent=(S.master||[]).length;
-  document.getElementById('kEq').textContent=(nw.equity!=null)?nw.equity.toFixed(2):'—';
   const ocList=(S.room&&S.room.oc_agents)||[];
   document.getElementById('kAg').textContent=`OC ${ocList.length} · BOT ${(S.room&&S.room.bots)||0}`;
-  const build=doing.build||{};
-  document.getElementById('spineHero').innerHTML=`${work.length}<small>LIVE</small>`;
-  const packOk=(S.health&&S.health.probes||[]).find(p=>p.id==='pack');
-  const el=document.getElementById('spineDelta');
-  el.className='delta '+(packOk&&packOk.level==='ok'?'up':'dn');
-  el.textContent=(packOk&&packOk.label)||'';
+  const nw=S.net_worth||{};
+  document.getElementById('kEq').textContent=(nw.equity!=null)?nw.equity.toFixed(2):'—';
   const toks=(S.tokens&&S.tokens.models)||[];
   const tokTotal=(S.tokens&&S.tokens.total)||0;
-  const tokKnown=!(S.tokens&&S.tokens.known===false);
   const fmtT=n=>{
-    if(n==null||n===''||Number.isNaN(Number(n))) return '—';
-    n=Number(n);
+    n=Number(n)||0;
     if(n>=1e6) return (n/1e6).toFixed(1)+'M';
     if(n>=1e3) return (n/1e3).toFixed(1)+'k';
     return String(n);
   };
-  if(!tokKnown){
-    document.getElementById('tokstack').innerHTML='<i style="width:100%;background:#1b2738;opacity:.5" title="unknown"></i>';
-    document.getElementById('tokleg').innerHTML=`<span>${(S.tokens&&S.tokens.note)||'token 24h unknown — not inventing'}</span>`;
-    document.getElementById('spineBars').innerHTML=toks.map(m=>`
-      <div class="tokrow">
-        <b>${m.label}</b>
-        <div class="track"><i style="width:0%;background:${m.color}"></i></div>
-        <span>—</span>
-      </div>`).join('');
-  } else {
   document.getElementById('tokstack').innerHTML=toks.map(m=>{
+    if(m.meter==='none') return '';
     const w=tokTotal? Math.max(m.total?1.2:0, (m.total/tokTotal)*100) : 0;
     return `<i style="width:${w}%;background:${m.color||'#3ce7ff'};opacity:${m.total?1:.25}" title="${m.label} ${fmtT(m.total)}"></i>`;
   }).join('');
-  document.getElementById('tokleg').innerHTML=toks.map(m=>
-    `<span><i style="display:inline-block;width:8px;height:8px;background:${m.color};margin-right:5px"></i>${m.label} <b>${fmtT(m.total)}</b></span>`
-  ).join('') + `<span>Σ <b>${fmtT(tokTotal)}</b></span>`;
-  const mxT=Math.max(1,...toks.map(m=>m.total||0));
-  document.getElementById('spineBars').innerHTML=toks.map(m=>`
-    <div class="tokrow">
-      <b>${m.label}</b>
-      <div class="track"><i style="width:${(100*(m.total||0)/mxT)}%;background:${m.color}"></i></div>
-      <span>${fmtT(m.total)}</span>
-    </div>`).join('');
-  }
-  document.getElementById('dests').innerHTML=(S.dests||[]).slice(0,8).map(d=>`
-    <div class="ln">
-      <b>${d.name}</b>
-      ${sinePath(d.tone)}
-      <div class="pill ${d.tone}">${d.pill}</div>
-      <div class="pct ${d.tone==='bad'?'dn':d.tone==='hot'?'up':''}">${d.kind}</div>
-    </div>`).join('');
-  document.getElementById('gates').innerHTML=
-    donut(g.pack_pct||0,'#3ce7ff',(g.pack_pct||0)+'%','PACK')+
-    donut(g.review_pct||0,'#ffb020',(g.review_pct||0)+'%','REVIEW')+
-    donut(g.credit_pct==null?0:Math.min(100,g.credit_pct),'#3dffc7',g.credit_pct==null?'—':(Math.round(g.credit_pct)+'%'),'CREDIT');
-  document.getElementById('gmeta').innerHTML=`<span>${g.pack_label||'pack'}</span><span>${g.review_label||'no handoff'}</span><span>${g.block?'402 BLOCK':'402 clear'}</span>`;
-  const nBots=(S.room&&S.room.bots)||0;
-  const botLive=!!(S.room&&S.room.bot_live);
-  document.getElementById('roomHead').textContent=`OPENCLAW · ${ocList.length} SEATS`;
-  document.getElementById('ocseats').innerHTML=ocList.map(a=>{
-    const cls=a.silent?'silent':(a.working?'hot':'');
-    const pill=a.silent?'SILENT':(a.working?'HOT':'IDLE');
-    return `<div class="s ${cls}" title="${a.id} ${a.model}">
-      <b>${(a.id||'').toUpperCase()}</b>
-      <span class="m">${a.model||''}</span>
-      <span>${pill}</span>
-    </div>`;
-  }).join('');
-  const ops=['host','gemma','qwen','bot','build','oc','paper','review','first','verify'];
-  let cells='';
-  ops.forEach(id=>{
-    const on=isWork(id);
-    cells+=`<b class="${on?'hot':''}" title="${id}"></b>`;
-  });
-  for(let i=0;i<nBots;i++) cells+=`<b class="bot ${botLive?'on':''}"></b>`;
-  document.getElementById('botHead').textContent=nBots?`${nBots} CLOUD`:'CLOUD SPARSE · 0';
-  document.getElementById('room').innerHTML=cells;
-  const loop=S.loop||[];
-  document.getElementById('loop').innerHTML=loop.map((x,i)=>`<i class="${i===(S.loop_now||0)?'on':''}" title="${x}"></i>`).join('');
+  document.getElementById('tokleg').innerHTML=toks.map(m=>{
+    const n=m.meter==='none'?'n/a':fmtT(m.total);
+    return `<span title="${m.note||''}"><i style="display:inline-block;width:8px;height:8px;background:${m.color};margin-right:5px"></i>${m.label} <b>${n}</b></span>`;
+  }).join('') + `<span>Σ <b>${fmtT(tokTotal)}</b></span>`;
+  const docs=S.docs||{};
+  document.getElementById('lessons').innerHTML=(docs.lessons||[]).map(x=>`<li>${x}</li>`).join('')||'<li>LESSONS.md empty</li>';
+  document.getElementById('principles').innerHTML=(docs.principles||[]).map(x=>`<li>${x}</li>`).join('')||'<li>PRINCIPLES.md empty</li>';
   const feed=S.feed||[];
-  document.getElementById('feed').innerHTML=feed.slice(-16).reverse().map(r=>{
-    const t=r.t||((r.at||'').slice(11,19))||'';
-    const tag=r.tag||(r.who||'LOG').toUpperCase();
-    const tone=r.tone||'hot';
-    return `<div><span class="t">${t}</span><span class="tag ${tone}">${tag}</span>${r.line||''}</div>`;
-  }).join('');
-  const pnl=nw.pnl||0;
-  const tn=document.getElementById('tonight');
-  tn.textContent=(pnl>=0?'+':'')+pnl.toFixed(2);
-  tn.style.color=pnl>=0?'#3dff9a':'#ff3864';
-  document.getElementById('tonightSub').textContent=`PAPER start ${nw.start||0} · eq ${(nw.equity!=null)?Number(nw.equity).toFixed(2):'—'} · ${nw.source||''} · not live`;
-  const sc=document.getElementById('scream'); if(sc) sc.textContent=S.scream||'';
-  const banner=document.getElementById('mbanner');
-  banner.textContent=`DIRECT SoT · OC ${ocList.length} · HOST›GEMMA›QWEN›BOT›BUILD · Build≠money · PAPER≠LIVE`;
-  const lad=document.getElementById('ladder');
-  if(lad){
-    const hops=(S.ladder||[]).slice().sort((a,b)=>(a.n||0)-(b.n||0));
-    lad.innerHTML='<b>LADDER</b>'+(hops.length?hops.map((h,i)=>{
-      const ship=h.path==='build'?' ship':'';
-      return (i?'<span class="sep">›</span>':'')+`<span class="hop${ship}" title="${(h.note||'').replace(/"/g,'')}">${(h.path||'').toUpperCase()}</span>`;
-    }).join(''):'<span class="hop">host › gemma › qwen › bot › build</span>');
-  }
-  const les=document.getElementById('lessons');
-  if(les){
-    const bits=[];
-    (S.callouts||[]).forEach(c=>{ if(c&&c.text) bits.push(`<div class="cut">⚡ ${c.text}</div>`); });
-    (S.lessons||[]).forEach(L=>{ if(L) bits.push(`<div>· ${L}</div>`); });
-    les.innerHTML=bits.slice(0,5).join('')||'<div>· DIRECT SoT · no Build→Bot money hop</div>';
-  }
+  document.getElementById('feed').innerHTML=feed.slice(-12).reverse().map(r=>
+    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}">${r.tag}</span>${r.line}</div>`
+  ).join('');
+  document.getElementById('mbanner').textContent=
+    `BUILD ═ BOT · REVIEW loads lessons + 1st principles · VERIFY tests · then dest · clone MASTER`;
   const calls=document.getElementById('calls');
   calls.innerHTML='';
   (S.callouts||[]).forEach(c=>{
-    const id=c.id||(c.level==='hard'?'paper':null);
-    if(!id||!N[id]) return;
-    const p=P(id);
+    if(!N[c.id]) return;
+    const p=P(c.id);
     const el2=document.createElement('div');
     el2.className='call';
     el2.textContent=c.text;
@@ -719,11 +416,11 @@ function render(){
   const Pths=pathMap();
   (S.events||[]).forEach(e=>{
     if(!e||!e.id||seen.has(e.id)) return;
-    const key=e.path==='code'?'ship':(e.path==='local'?'cheap':(e.path==='cloud'?'stamp':e.path));
+    const key=e.path==='code'?'first':e.path;
     const path=(Pths[key]||[]).filter(n=>N[n]);
     if(path.length<2) return;
     seen.add(e.id);
-    jobs.push({path, t:0, v:0.004, col:COL[path[1]]||'#3ce7ff'});
+    jobs.push({path, t:0, v:0.004, col:COL[path[0]]||'#3ce7ff'});
   });
 }
 async function boot(){
