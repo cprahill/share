@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T08:25:01-05:00",
+  "updated_at": "2026-09-06T15:33:27-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -35,19 +35,19 @@
   "net_worth": {
     "label": "AI team paper",
     "source": "wallets (backbone 2-book until C0)",
-    "start": 200.0,
-    "equity": 199.9984,
-    "pnl": -0.0016,
-    "return_pct": -0.0008,
-    "leader": "cutting",
-    "leader_name": "CUTTING",
+    "start": 300.0,
+    "equity": 354.5559,
+    "pnl": -3.592,
+    "return_pct": 18.1853,
+    "leader": "traditional",
+    "leader_name": "TRADITIONAL",
     "groups": [
       {
         "id": "traditional",
         "name": "TRADITIONAL",
         "model": "gemma4:12b",
-        "pnl": -0.0016,
-        "return_pct": -0.0016,
+        "pnl": -0.0001,
+        "return_pct": -0.0001,
         "open": 1,
         "dd_pct": 0.0,
         "die_line": 15.0,
@@ -57,10 +57,10 @@
         "id": "cutting",
         "name": "CUTTING",
         "model": "qwen3.6:27b",
-        "pnl": 0.0,
-        "return_pct": 0.0,
+        "pnl": -3.5919,
+        "return_pct": -3.5919,
         "open": 1,
-        "dd_pct": 0.0,
+        "dd_pct": 3.59,
         "die_line": 15.0,
         "alive": true
       },
@@ -70,7 +70,7 @@
         "model": "host+wallets",
         "pnl": 0.0,
         "return_pct": 0.0,
-        "open": 0,
+        "open": 1,
         "dd_pct": 0.0,
         "die_line": 15.0,
         "alive": false
@@ -80,7 +80,7 @@
   "ladder": [
     {
       "path": "host",
-      "n": 1
+      "n": 3
     },
     {
       "path": "gemma",
@@ -92,55 +92,55 @@
     },
     {
       "path": "build",
-      "n": 1
+      "n": 5
     },
     {
       "path": "bot",
-      "n": 0
+      "n": 1
     }
   ],
   "tokens": {
     "window": "24h",
-    "total": 265802084,
+    "total": 168688370,
     "models": [
       {
         "id": "gemma",
         "label": "GEMMA 12B",
         "color": "#3dff9a",
-        "prompt": 816166,
-        "completion": 5859,
-        "total": 822025,
-        "calls": 133,
+        "prompt": 1000354,
+        "completion": 6916,
+        "total": 1007270,
+        "calls": 154,
         "last_prompt": 6120,
         "meter": "openclaw",
         "note": "OpenClaw session usage.input/output",
-        "pct": 0.3
+        "pct": 0.6
       },
       {
         "id": "qwen",
         "label": "QWEN 27B",
         "color": "#3ce7ff",
-        "prompt": 212641,
-        "completion": 1817,
-        "total": 214458,
-        "calls": 25,
+        "prompt": 491058,
+        "completion": 5131,
+        "total": 496189,
+        "calls": 54,
         "last_prompt": 10304,
         "meter": "openclaw",
         "note": "OpenClaw session usage.input/output",
-        "pct": 0.1
+        "pct": 0.3
       },
       {
         "id": "build",
         "label": "GROK BUILD",
         "color": "#ffb020",
-        "prompt": 263396763,
-        "completion": 1368838,
-        "total": 264765601,
-        "calls": 1306,
-        "last_prompt": 308210,
+        "prompt": 166457145,
+        "completion": 727766,
+        "total": 167184911,
+        "calls": 739,
+        "last_prompt": 59177,
         "meter": "unified",
         "note": "sum of per-call prompt+completion (context re-sent each loop)",
-        "pct": 99.6
+        "pct": 99.1
       },
       {
         "id": "bot",
@@ -163,7 +163,7 @@
       {
         "id": "master",
         "level": "ok",
-        "label": "MASTER 2 lines"
+        "label": "MASTER 9 lines"
       },
       {
         "id": "pack",
@@ -173,17 +173,17 @@
       {
         "id": "handoff",
         "level": "ok",
-        "label": "review grok-build\u2192first-architect"
+        "label": "review grok-bot\u2192grok-build"
       },
       {
         "id": "build402",
         "level": "ok",
-        "label": "credit 63%"
+        "label": "credit 80%"
       },
       {
         "id": "zombies",
-        "level": "bad",
-        "label": "woke block,kitchen,portal,retro,stranger"
+        "level": "ok",
+        "label": "Park Law clock"
       },
       {
         "id": "lock",
@@ -193,7 +193,7 @@
       {
         "id": "oc_desk",
         "level": "ok",
-        "label": "paper-desk ollama/gemma4:12b sess=7"
+        "label": "paper-desk ollama/gemma4:12b sess=10"
       },
       {
         "id": "oc_td",
@@ -208,12 +208,12 @@
       {
         "id": "tick",
         "level": "ok",
-        "label": "tick 0m"
+        "label": "tick 3m"
       },
       {
         "id": "build_sess",
         "level": "bad",
-        "label": "prompt_tokens 308210"
+        "label": "prompt_tokens 399042"
       },
       {
         "id": "ladder_bot",
@@ -244,7 +244,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "tick --publish 13s",
+      "doing": "king-poll beat 10s",
       "working": true
     },
     "gemma": {
@@ -263,7 +263,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "paper-desk 7 sess \u00b7 idle",
+      "doing": "paper-desk 10 sess \u00b7 idle",
       "working": false
     },
     "qwen": {
@@ -282,7 +282,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "trade-dev 13 sess \u00b7 unused",
+      "doing": "trade-dev 28 sess \u00b7 unused",
       "working": false
     },
     "openclaw": {
@@ -310,14 +310,14 @@
           "v": "26"
         }
       ],
-      "doing": "tick --publish \u00b7 26 agents",
+      "doing": "\u2190 Build crew-seq",
       "working": true
     },
     "imsg": {
       "title": "iMessage",
       "role": "human in+out",
       "why": "One socket. Through OpenClaw. No bodies on this board.",
-      "active": "last 602s ago",
+      "active": "last 4h ago",
       "token": "script",
       "health": "ok",
       "feeds": [
@@ -325,7 +325,7 @@
       ],
       "fed_by": [],
       "probes": [],
-      "doing": "last 602s ago",
+      "doing": "last 4h ago",
       "working": false
     },
     "build": {
@@ -345,21 +345,21 @@
       "probes": [
         {
           "k": "credit",
-          "v": "63.0"
+          "v": "80.0"
         },
         {
           "k": "block",
           "v": "False"
         }
       ],
-      "doing": "first \u00b7 running",
+      "doing": "conductor \u2192 OpenClaw",
       "working": true
     },
     "bot": {
       "title": "Grok Bot",
       "role": "cloud sparse",
       "why": "ALLOW: stamps, Thu hot-wash, YES. Wires into OpenClaw. Household never.",
-      "active": "LIVE",
+      "active": "LIVE \u00b7 23 bots",
       "token": "bot",
       "health": "ok",
       "feeds": [
@@ -450,7 +450,7 @@
       "title": "MASTER",
       "role": "shared spine",
       "why": "One jsonl every operator writes. EMPTY is an alarm.",
-      "active": "2 lines",
+      "active": "LIVE",
       "token": "file",
       "health": "ok",
       "feeds": [
@@ -460,8 +460,8 @@
         "verify"
       ],
       "probes": [],
-      "doing": "2 lines",
-      "working": false
+      "doing": "9 lines",
+      "working": true
     },
     "baja": {
       "title": "A Baja",
@@ -502,7 +502,7 @@
       "title": "C Desk",
       "role": "Finance ACTIVE",
       "why": "3-group Trial. Desk UI is dest C :8791.",
-      "active": "LIVE",
+      "active": "backbone cron weekdays 9\u201315",
       "token": "script",
       "health": "ok",
       "feeds": [
@@ -515,21 +515,20 @@
       ],
       "probes": [],
       "doing": "desk :8791",
-      "working": true
+      "working": false
     }
   },
   "paths": {
     "first": {
       "nodes": [
         "build",
-        "bot",
         "review",
         "verify",
         "first",
         "master"
       ],
       "dest": "first",
-      "why": "Build\u2194Bot \u2192 REVIEW (lessons+principles) \u2192 VERIFY \u2192 First \u2192 MASTER."
+      "why": "Build \u2192 REVIEW (lessons+principles) \u2192 VERIFY \u2192 First \u2192 MASTER. Bot is not on this hop."
     },
     "clock": {
       "nodes": [
@@ -545,14 +544,25 @@
     "baja": {
       "nodes": [
         "build",
-        "bot",
         "review",
         "verify",
         "baja",
         "master"
       ],
       "dest": "baja",
-      "why": "Grok pair \u2192 REVIEW \u2192 VERIFY \u2192 Baja \u2192 MASTER."
+      "why": "Grok Build only \u2192 REVIEW \u2192 VERIFY \u2192 Baja \u2192 MASTER. Bot silent."
+    },
+    "crew": {
+      "nodes": [
+        "build",
+        "oc",
+        "review",
+        "verify",
+        "paper",
+        "master"
+      ],
+      "dest": "paper",
+      "why": "Build conductor \u2192 OpenClaw seats \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 MASTER."
     },
     "cheap": {
       "nodes": [
@@ -592,13 +602,12 @@
     "cloud": {
       "nodes": [
         "bot",
-        "build",
         "review",
         "verify",
         "master"
       ],
       "dest": "first",
-      "why": "Bot wired to Build, then REVIEW \u2192 VERIFY \u2192 MASTER."
+      "why": "Bot ALLOW only (stamp / hot-wash / YES) \u2192 REVIEW \u2192 VERIFY \u2192 MASTER."
     },
     "imsg": {
       "nodes": [
@@ -620,24 +629,29 @@
   },
   "events": [
     {
-      "id": "build-2026-09-06T13:20:43.484Z",
+      "id": "build-2026-09-06T20:26:38.829Z",
       "path": "first",
       "op": "build",
       "dest": "first"
     },
     {
-      "id": "tick-2026-09-06T08:24:48-0500",
-      "path": "cheap",
-      "op": "host",
+      "id": "crew-2026-09-06T15:33:22-05:00",
+      "path": "crew",
+      "op": "build",
       "dest": "paper"
+    },
+    {
+      "id": "master-2026-09-06T15:33:27-05:00-crew-wire-visible",
+      "path": "first",
+      "op": "build",
+      "dest": "first"
     }
   ],
   "pulse": [
-    "bot",
     "build",
     "first",
+    "master",
     "oc",
-    "paper",
     "verify"
   ],
   "doing": {
@@ -647,7 +661,7 @@
     },
     "imsg": {
       "working": false,
-      "line": "last 602s ago"
+      "line": "last 4h ago"
     },
     "pack": {
       "working": true,
@@ -655,19 +669,19 @@
     },
     "host": {
       "working": true,
-      "line": "tick --publish 13s"
+      "line": "king-poll beat 10s"
     },
     "gemma": {
       "working": false,
-      "line": "paper-desk 7 sess \u00b7 idle"
+      "line": "paper-desk 10 sess \u00b7 idle"
     },
     "qwen": {
       "working": false,
-      "line": "trade-dev 13 sess \u00b7 unused"
+      "line": "trade-dev 28 sess \u00b7 unused"
     },
     "build": {
       "working": true,
-      "line": "first \u00b7 running"
+      "line": "conductor \u2192 OpenClaw"
     },
     "bot": {
       "working": true,
@@ -675,7 +689,7 @@
     },
     "oc": {
       "working": true,
-      "line": "tick --publish \u00b7 26 agents"
+      "line": "\u2190 Build crew-seq"
     },
     "first": {
       "working": true,
@@ -690,7 +704,7 @@
       "line": "ask.py :8787"
     },
     "paper": {
-      "working": true,
+      "working": false,
       "line": "desk :8791"
     },
     "review": {
@@ -703,44 +717,50 @@
     },
     "master": {
       "working": false,
-      "line": "2 lines"
+      "line": "9 lines"
     }
   },
   "feed": [
     {
-      "t": "08:25:01",
+      "t": "15:33:27",
       "tag": "BOT",
       "line": "LIVE \u00b7 23 bots",
       "tone": "hot"
     },
     {
-      "t": "08:14:58",
+      "t": "10:59:47",
       "tag": "IMSG",
-      "line": "last 602s ago",
+      "line": "last 4h ago",
       "tone": "ok"
     },
     {
-      "t": "08:24:56",
+      "t": "15:33:12",
       "tag": "BUILD",
-      "line": "running \u00b7 dest first",
+      "line": "planning \u00b7 dest first",
       "tone": "hot"
     },
     {
-      "t": "07:53:58",
+      "t": "15:25:13",
       "tag": "PACK",
       "line": "first exit 0 ok",
       "tone": "ok"
     },
     {
-      "t": "21:07:45",
+      "t": "08:55:47",
       "tag": "REVIEW",
-      "line": "grok-build \u2192 first-architect pass",
+      "line": "grok-bot \u2192 grok-build pass",
       "tone": "ok"
     },
     {
-      "t": "08:24:48",
+      "t": "15:33:22",
+      "tag": "CREW",
+      "line": "BUILD \u2192 OC crew-seq",
+      "tone": "hot"
+    },
+    {
+      "t": "15:30:03",
       "tag": "TICK",
-      "line": "--publish leader trade_dev",
+      "line": "--tick leader main",
       "tone": "ok"
     },
     {
@@ -756,33 +776,69 @@
       "tone": "ok"
     },
     {
-      "t": "08:25:01",
-      "tag": "ZOMBIES",
-      "line": "woke block,kitchen,portal,retro,stranger",
-      "tone": "bad"
+      "t": "08:50:27",
+      "tag": "BUILD",
+      "line": "first edit locks_outrank disk LESSONS outrank chat; pack injects dest locks; twin loads OPERATING-PROFILE",
+      "tone": "ok"
     },
     {
-      "t": "08:25:01",
+      "t": "08:53:40",
+      "tag": "BUILD",
+      "line": "paper handoff handoff_review",
+      "tone": "ok"
+    },
+    {
+      "t": "08:54:52",
+      "tag": "BUILD",
+      "line": "first edit crew_contract pack injects CREW.md; OC paper-desk ACK CREW",
+      "tone": "ok"
+    },
+    {
+      "t": "08:55:47",
+      "tag": "BOT",
+      "line": "first stamp stamp: crew alignment complete \u2014 CREW.md packs, twin profile live, OC ACK CREW, Baja locks in pack, MC :8790",
+      "tone": "ok"
+    },
+    {
+      "t": "14:05:23",
+      "tag": "HOST",
+      "line": "first lesson oc_learned_master",
+      "tone": "ok"
+    },
+    {
+      "t": "14:25:40",
+      "tag": "BUILD",
+      "line": "first edit crew-seq host sequencer: existing OC seats only, cloud deny, twin keepalive, baja lock check, paper rotate weekday",
+      "tone": "ok"
+    },
+    {
+      "t": "15:33:27",
+      "tag": "BUILD",
+      "line": "first edit crew_map_shows_build_oc",
+      "tone": "ok"
+    },
+    {
+      "t": "15:33:27",
       "tag": "LOCK",
       "line": "LOCK still block+first",
       "tone": "bad"
     },
     {
-      "t": "08:25:01",
+      "t": "15:33:27",
       "tag": "BUILD_SE",
-      "line": "prompt_tokens 308210",
+      "line": "prompt_tokens 399042",
       "tone": "bad"
     }
   ],
   "gate": {
     "pack_pct": 100,
     "pack_label": "pack-slice ok",
-    "risk_pct": 72,
-    "risk_label": "woke block,kitchen,portal,retro,stranger",
+    "risk_pct": 8,
+    "risk_label": "Park Law clock",
     "review_pct": 100,
     "review_label": "pass",
-    "ttft_ms": 25722,
-    "credit_pct": 63.0,
+    "ttft_ms": 8761,
+    "credit_pct": 80.0,
     "block": false
   },
   "dests": [
@@ -817,8 +873,8 @@
       "id": "paper",
       "name": "C DESK",
       "kind": "finance",
-      "pill": "HOT",
-      "tone": "hot",
+      "pill": "ARMED",
+      "tone": "ok",
       "line": "desk :8791",
       "health": "ok"
     },
@@ -862,15 +918,15 @@
   "callouts": [
     {
       "id": "build",
-      "text": "first \u00b7 running"
+      "text": "conductor \u2192 OpenClaw"
+    },
+    {
+      "id": "oc",
+      "text": "\u2190 Build crew-seq"
     },
     {
       "id": "bot",
       "text": "LIVE \u00b7 23 bots \u2192 OpenClaw"
-    },
-    {
-      "id": "oc",
-      "text": "tick --publish \u00b7 26 agents"
     },
     {
       "id": "first",
@@ -892,7 +948,6 @@
       "bot",
       "oc",
       "first",
-      "paper",
       "verify"
     ],
     "oc_agents": [
@@ -900,8 +955,8 @@
         "id": "paper-desk",
         "name": "paper-desk",
         "model": "gemma",
-        "sess": 7,
-        "age_s": 253,
+        "sess": 10,
+        "age_s": 3991,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -910,8 +965,8 @@
         "id": "trade-dev",
         "name": "trade-dev",
         "model": "qwen",
-        "sess": 13,
-        "age_s": 2319,
+        "sess": 28,
+        "age_s": 4042,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -920,8 +975,8 @@
         "id": "swarm-mr",
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
-        "sess": 4,
-        "age_s": 43589,
+        "sess": 10,
+        "age_s": 18457,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -930,8 +985,8 @@
         "id": "swarm-event",
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
-        "sess": 7,
-        "age_s": 2976,
+        "sess": 10,
+        "age_s": 5162,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -951,7 +1006,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 48371,
+        "age_s": 74076,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -971,7 +1026,7 @@
         "name": "critic",
         "model": "gemma",
         "sess": 4,
-        "age_s": 1244,
+        "age_s": 26950,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -991,7 +1046,7 @@
         "name": "first-architect",
         "model": "gemma",
         "sess": 7,
-        "age_s": 1063,
+        "age_s": 26769,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1011,7 +1066,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 10,
-        "age_s": 796,
+        "age_s": 26502,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1021,7 +1076,7 @@
         "name": "memory-keeper",
         "model": "gemma",
         "sess": 4,
-        "age_s": 771,
+        "age_s": 26477,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1061,7 +1116,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 13,
-        "age_s": 733,
+        "age_s": 26439,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1141,7 +1196,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 48242,
+        "age_s": 73948,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1151,7 +1206,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 371,
-        "age_s": 694,
+        "age_s": 26400,
         "working": false,
         "silent": true,
         "tone": "warn"
@@ -1169,31 +1224,35 @@
     "first_path",
     "grok_conductor",
     "handoff_review",
-    "docs_govern"
+    "docs_govern",
+    "locks_outrank",
+    "one_crew"
   ],
   "docs": {
     "lessons": [
-      "`grok_conductor` Grok Build directs Gemma / Qwen / Bot / OpenClaw. Bot wires into OpenClaw. Pack is a gate, not a mind.",
-      "`handoff_review` AI-to-AI pass goes through handoff-review.py. Refuse \u2192 no send. iMessage is human \u2192 OpenClaw, not this ",
-      "`docs_govern` REVIEW loads living LESSONS + PRINCIPLES (quality, reliability, optimization). Apply, verify, test, then s",
-      "2026-09-05: Public share harness = mirror Build :8790. Always keep live state.json + mobile .app scroller when copying. ",
       "2026-09-06: Harness UI \u2014 map is the board. Slim header. No dual doc dump. Desktop+mobile one ship.",
+      "`locks_outrank` Disk LESSONS outrank chat dest. Baja recut without playable/LESSONS.md = fail. Extra ribbon hulls = fail",
+      "`one_crew` Build / Bot / OpenClaw / Gemma / Qwen are one ladder. Not silos. Twin loads OPERATING-PROFILE.",
+      "`crew_contract` Every pack injects CREW.md. Handoff refuses if CREW.md missing. He is the system; seats are his hands.",
       "Context: Christopher \u2014 game adjustments drop old locks and revive mistakes; system feels compartmentalized.",
       "Lesson: Locks on disk outrank chat impulse. Build/Grok/OpenClaw/Gemma/Qwen are one ladder, not silos.",
-      "Do instead: Before game/Baja/harness edit \u2014 read LESSONS+PASS. Rebuild harness accurate to live state.json then improve "
+      "Do instead: Before game/Baja/harness edit \u2014 read LESSONS+PASS. Rebuild harness accurate to live state.json then improve ",
+      "`oc_learn` logged by log-job."
     ],
     "principles": [
       "Hash moved or it is a miss. Existing file \u2260 done.",
-      "Pack = dest + NOW names + lessons \u226420 + job. Encyclopedia = refuse.",
+      "Pack = dest + NOW names + DEST-LOCKS + lessons \u226420 + job. Encyclopedia = refuse.",
       "Do not invent dests. Park Law: A Baja \u00b7 B Twin \u00b7 C Paper. First is always-on.",
+      "Disk locks outrank chat. Recuts that drop old rules and revive mistakes are a fail.",
       "Fail closed. Pack refuse, 402, or review refuse = no send.",
       "Twin is ask.py. Household never Grok Bot. Baja is Grok Build only.",
       "iMessage is the only human socket \u2014 in and out, through OpenClaw. One node.",
       "Less dumb \u2192 delete \u2192 simplify \u2192 accelerate \u2192 automate last.",
       "Ladder: script > Gemma 12b > Qwen 27b > Grok Build > Grok Bot.",
+      "0 new Grok Bots. Swarm = existing OpenClaw seats sequenced by host `crew-seq.py`. Cloud deny except Bot stamp.",
       "Grok Build and Grok Bot are one conductor pair. After ship: one MASTER line. Next pack reads the tail."
     ],
-    "lessons_n": 15,
+    "lessons_n": 19,
     "principles_file": true,
     "lessons_file": true
   },
@@ -1217,6 +1276,76 @@
       "path": "build",
       "verified": true,
       "job_id": "harness-wire-first"
+    },
+    {
+      "t": "2026-09-06T08:50:27-05:00",
+      "op": "build",
+      "action": "edit",
+      "lesson": "locks_outrank disk LESSONS outrank chat; pack injects dest locks; twin loads OPERATING-PROFILE",
+      "dest": "first",
+      "path": "build",
+      "verified": true,
+      "job_id": "build-first-7-0500"
+    },
+    {
+      "t": "2026-09-06T08:53:40-05:00",
+      "op": "build",
+      "action": "handoff",
+      "lesson": "handoff_review",
+      "dest": "paper",
+      "path": "build",
+      "verified": true,
+      "job_id": "handoff-paper-desk"
+    },
+    {
+      "t": "2026-09-06T08:54:52-05:00",
+      "op": "build",
+      "action": "edit",
+      "lesson": "crew_contract pack injects CREW.md; OC paper-desk ACK CREW",
+      "dest": "first",
+      "path": "build",
+      "verified": true,
+      "job_id": "build-first-2-0500"
+    },
+    {
+      "t": "2026-09-06T08:55:47-05:00",
+      "op": "bot",
+      "action": "stamp",
+      "lesson": "stamp: crew alignment complete \u2014 CREW.md packs, twin profile live, OC ACK CREW, Baja locks in pack, MC :8790",
+      "dest": "first",
+      "path": "bot",
+      "verified": true,
+      "job_id": "stamp-crew-2026-09-06"
+    },
+    {
+      "t": "2026-09-06T14:05:23-05:00",
+      "op": "host",
+      "action": "lesson",
+      "lesson": "oc_learned_master",
+      "dest": "first",
+      "path": "script",
+      "verified": true,
+      "job_id": "oc-learn-master"
+    },
+    {
+      "t": "2026-09-06T14:25:40-05:00",
+      "op": "build",
+      "action": "edit",
+      "lesson": "crew-seq host sequencer: existing OC seats only, cloud deny, twin keepalive, baja lock check, paper rotate weekday",
+      "dest": "first",
+      "path": "script",
+      "verified": true,
+      "job_id": "crew-seq-2026-09-06"
+    },
+    {
+      "t": "2026-09-06T15:33:27-05:00",
+      "op": "build",
+      "action": "edit",
+      "lesson": "crew_map_shows_build_oc",
+      "dest": "first",
+      "path": "build",
+      "verified": true,
+      "job_id": "crew-wire-visible"
     }
   ]
 }

@@ -32,6 +32,7 @@ header{
   padding:3px 8px;border:1px solid var(--line);border-radius:2px;color:var(--muted);
 }
 .chip.paper{color:var(--gold);border-color:#5a4318}
+.chip.crew{color:var(--mint);border-color:#1e5a4a}
 .live{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.16em;color:var(--green)}
 .live b{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);display:block;animation:blink 1.6s infinite}
 @keyframes blink{50%{opacity:.35}}
@@ -74,6 +75,7 @@ header{
 .feed .tag{margin-right:8px;font-size:10px;letter-spacing:.08em}
 .feed .tag.ok{color:var(--cyan)} .feed .tag.hot{color:var(--gold)}
 .feed .tag.warn{color:var(--gold)} .feed .tag.bad{color:var(--pink)}
+.feed .tag.crew{color:var(--mint)}
 .docs{font-size:12px;line-height:1.5;flex:1;min-height:0;overflow:auto;margin:0;padding-left:16px;color:var(--text)}
 .docs li{margin-bottom:4px}
 
@@ -109,6 +111,7 @@ header{
   <header>
     <div class="brand">HARNESS <i>//</i> BUILD</div>
     <div class="chip paper" id="scream">PAPER</div>
+    <div class="chip" id="crewchip">CREW</div>
     <div class="live"><b></b>LIVE</div>
     <div class="tok" title="tokens 24h">
       <div class="tokstack" id="tokstack"></div>
@@ -160,20 +163,22 @@ const N={
   master:{x:.97,y:.50,label:'MASTER', kind:'gate'}
 };
 const FALLBACK={
-  first:['build','bot','review','verify','first','master'],
+  first:['build','review','verify','first','master'],
+  crew:['build','oc','review','verify','paper','master'],
   clock:['oc','review','verify','paper','master'],
-  baja:['build','bot','review','verify','baja','master'],
+  baja:['build','review','verify','baja','master'],
   cheap:['oc','review','verify','paper','master'],
   local:['gemma','oc','review','verify','paper','master'],
   cut:['qwen','oc','review','verify','twin','master'],
-  cloud:['bot','build','review','verify','master'],
+  cloud:['bot','review','verify','master'],
   imsg:['imsg','oc','imsg'],
-  code:['build','bot','review','verify','first','master']
+  code:['build','review','verify','first','master']
 };
 const WIRES=[
   ['imsg','oc'],['oc','imsg'],
   ['gemma','oc'],['qwen','oc'],
   ['build','bot'],
+  ['build','oc'],['oc','build'],
   ['build','review'],['bot','review'],['oc','review'],
   ['review','verify'],
   ['verify','first'],['verify','baja'],['verify','twin'],['verify','paper'],
@@ -222,16 +227,26 @@ function round(x,y,w,h,r){
   X.arcTo(x,y+h,x,y,r); X.arcTo(x,y,x+w,y,r); X.closePath();
 }
 function drawWires(){
-  const Gb=P('build'), Bt=P('bot');
+  const Gb=P('build'), Bt=P('bot'), Oc=P('oc');
   const pairOn=isWork('build')||isWork('bot');
+  const crewOn=isWork('build')||isWork('oc');
   X.setLineDash([]);
   [[-3,COL.build],[3,COL.bot]].forEach(([off,col])=>{
     X.beginPath(); X.moveTo(Gb.x+off, Gb.y); X.lineTo(Bt.x+off, Bt.y);
     X.strokeStyle=hexA(col, pairOn?.8:.32); X.lineWidth=pairOn?2.8:1.6; X.shadowColor=col; X.shadowBlur=8; X.stroke();
   });
+  [[-2,COL.build],[2,COL.oc]].forEach(([off,col])=>{
+    X.beginPath(); X.moveTo(Gb.x+off, Gb.y); X.lineTo(Oc.x+off, Oc.y);
+    X.strokeStyle=hexA(col, crewOn?.9:.4); X.lineWidth=crewOn?3:1.8; X.shadowColor=col; X.shadowBlur=crewOn?14:6; X.stroke();
+  });
   X.shadowBlur=0;
+  X.font='700 12px Barlow Condensed,sans-serif';
+  X.fillStyle=hexA('#3dffc7', crewOn?1:.5);
+  X.textAlign='center';
+  X.fillText('BUILD ═ OC', (Gb.x+Oc.x)/2, (Gb.y+Oc.y)/2 - 10);
   WIRES.forEach(([a,b])=>{
     if((a==='build'&&b==='bot')||(a==='bot'&&b==='build')) return;
+    if((a==='build'&&b==='oc')||(a==='oc'&&b==='build')) return;
     const A=P(a), B=P(b);
     const on=isWork(a)||isWork(b);
     const twoWay=a==='imsg'||b==='imsg';
@@ -287,18 +302,25 @@ function drawNodes(){
 let lastSpawn=0;
 function keepJobs(ts){
   if(!S) return;
-  if(ts-lastSpawn<1800) return;
-  if(jobs.filter(j=>!j.dead).length>=2) return;
+  if(ts-lastSpawn<900) return;
+  const liveN=jobs.filter(j=>!j.dead).length;
+  if(liveN>=4) return;
   lastSpawn=ts;
   const Pths=pathMap();
   const pulse=(S.pulse||[]);
+  const crewOn=pulse.includes('build')&&pulse.includes('oc');
+  if(crewOn){
+    jobs.push({path:['build','oc'], t:0, v:0.008, col:COL.build});
+    jobs.push({path:['oc','build'], t:0, v:0.008, col:COL.oc});
+  }
   let key='first';
-  if(pulse.includes('imsg')) key='imsg';
-  else if(pulse.includes('bot')||pulse.includes('build')) key='first';
+  if(crewOn) key='crew';
+  else if(pulse.includes('imsg')) key='imsg';
+  else if(pulse.includes('build')) key=pulse.includes('baja')?'baja':'first';
+  else if(pulse.includes('bot')) key='cloud';
   else if(pulse.includes('paper')||pulse.includes('oc')) key='clock';
   const path=(Pths[key]||FALLBACK.first).filter(n=>N[n]);
-  if(path.length<2) return;
-  jobs.push({path, t:0, v:0.0038, col:COL[path[0]]||COL.build});
+  if(path.length>=2 && liveN<3) jobs.push({path, t:0, v:0.0038, col:COL[path[0]]||COL.build});
 }
 function frame(ts){
   T=ts/1000;
@@ -341,12 +363,27 @@ function render(){
   const docs=S.docs||{};
   document.getElementById('lessons').innerHTML=(docs.lessons||[]).slice(0,6).map(x=>`<li>${x}</li>`).join('')||'<li>LESSONS.md empty</li>';
   document.getElementById('feed').innerHTML=(S.feed||[]).slice(-12).reverse().map(r=>
-    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}">${r.tag}</span>${r.line}</div>`
+    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}${r.tag==='CREW'?' crew':''}">${r.tag}</span>${r.line}</div>`
   ).join('');
-  document.getElementById('mbanner').textContent='BUILD ═ BOT';
+  const pulse=(S.pulse||[]);
+  const crew=pulse.includes('build')&&pulse.includes('oc');
+  const pair=pulse.includes('build')&&pulse.includes('bot');
+  document.getElementById('mbanner').textContent=crew
+    ?'BUILD ═ OPENCLAW · packets on the wire'
+    :(pair?'BUILD ═ BOT · ALLOW only':'BUILD → REVIEW · Bot only ALLOW jobs');
+  const chip=document.getElementById('crewchip');
+  if(chip){
+    chip.textContent=crew?'BUILD ═ OC':'CREW';
+    chip.className=crew?'chip crew':'chip';
+  }
   const calls=document.getElementById('calls');
   calls.innerHTML='';
-  (S.callouts||[]).slice(0,3).forEach(c=>{
+  let callList=(S.callouts||[]).slice();
+  if(crew){
+    const want=['build','oc'];
+    callList=[...callList.filter(c=>want.includes(c.id)), ...callList.filter(c=>!want.includes(c.id)&&c.id!=='bot')];
+  }
+  callList.slice(0,3).forEach(c=>{
     if(!N[c.id]) return;
     const p=P(c.id);
     const el2=document.createElement('div');
