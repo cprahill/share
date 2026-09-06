@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T07:40:54-0500",
+  "updated_at": "2026-09-06T08:19:19-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
@@ -10,18 +10,18 @@
     "swarm_return_pct": 0.0,
     "timeline": "Sat RESET \u2192 Thu hot wash",
     "mode": "3-group mortality \u00b7 20\u00d7$5 swarm",
-    "reset_at": "2026-09-06T07:40:54-0500"
+    "reset_at": null
   },
   "main": {
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
+    "cash_usd": 92.0,
     "equity_usd": 100.0,
     "day_pnl_usd": 0.0,
     "total_pnl_usd": 0.0,
     "return_pct": 0.0,
-    "open_positions": 0,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -31,19 +31,52 @@
       "live_ready": false,
       "next": "hard reset baseline \u2014 0 closes"
     },
-    "recent_fills": [],
-    "open": []
+    "recent_fills": [
+      {
+        "id": "F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 0.00010019,
+        "px": 79847.965,
+        "notional_usd": 8.0,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 0.00010019,
+        "avg": 79847.965,
+        "mark": 79847.965,
+        "upnl": 0.0,
+        "notional": 8.0,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ]
   },
   "trade_dev": {
     "label": "Trade Dev",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
+    "cash_usd": 92.0,
     "equity_usd": 100.0,
     "day_pnl_usd": 0.0,
     "total_pnl_usd": 0.0,
     "return_pct": 0.0,
-    "open_positions": 0,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -53,38 +86,328 @@
       "live_ready": false,
       "next": "Paper only"
     },
-    "recent_fills": [],
-    "open": []
+    "recent_fills": [
+      {
+        "id": "TDF001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00320634,
+        "px": 2495.055,
+        "notional_usd": 8.0,
+        "edge": "TD-wknd-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00320634,
+        "avg": 2495.055,
+        "mark": 2495.055,
+        "upnl": 0.0,
+        "notional": 8.0,
+        "edge": "TD-wknd-crypto",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ]
   },
   "swarm": {
     "label": "SWARM",
     "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
+    "cash_usd": 96.25,
     "equity_usd": 100.0,
     "total_pnl_usd": 0.0,
     "return_pct": 0.0,
-    "open_positions": 0,
-    "open": [],
-    "recent_fills": [],
+    "open_positions": 8,
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.0001002,
+        "avg": 2495.055,
+        "mark": 2495.055,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "wknd-turtle-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00469704,
+        "avg": 106.45,
+        "mark": 106.45,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "wknd-bal-crypto",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00030059,
+        "avg": 2495.055,
+        "mark": 2495.055,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "wknd-degen-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.0001002,
+        "avg": 2495.055,
+        "mark": 2495.055,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "wknd-turtle-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00469704,
+        "avg": 106.45,
+        "mark": 106.45,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "wknd-bal-crypto",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00030059,
+        "avg": 2495.055,
+        "mark": 2495.055,
+        "upnl": 0.0,
+        "notional": 0.75,
+        "edge": "wknd-degen-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.0001002,
+        "avg": 2495.055,
+        "mark": 2495.055,
+        "upnl": 0.0,
+        "notional": 0.25,
+        "edge": "wknd-turtle-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00469704,
+        "avg": 106.45,
+        "mark": 106.45,
+        "upnl": 0.0,
+        "notional": 0.5,
+        "edge": "wknd-bal-crypto",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
+    "recent_fills": [
+      {
+        "id": "SWM-01-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.0001002,
+        "px": 2495.055,
+        "notional_usd": 0.25,
+        "agent_id": "SWM-01",
+        "edge": "wknd-turtle-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-02-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "side": "buy",
+        "qty": 0.00469704,
+        "px": 106.45,
+        "notional_usd": 0.5,
+        "agent_id": "SWM-02",
+        "edge": "wknd-bal-crypto",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-03-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00030059,
+        "px": 2495.055,
+        "notional_usd": 0.75,
+        "agent_id": "SWM-03",
+        "edge": "wknd-degen-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-04-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.0001002,
+        "px": 2495.055,
+        "notional_usd": 0.25,
+        "agent_id": "SWM-04",
+        "edge": "wknd-turtle-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-05-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "side": "buy",
+        "qty": 0.00469704,
+        "px": 106.45,
+        "notional_usd": 0.5,
+        "agent_id": "SWM-05",
+        "edge": "wknd-bal-crypto",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-06-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00030059,
+        "px": 2495.055,
+        "notional_usd": 0.75,
+        "agent_id": "SWM-06",
+        "edge": "wknd-degen-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-07-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.0001002,
+        "px": 2495.055,
+        "notional_usd": 0.25,
+        "agent_id": "SWM-07",
+        "edge": "wknd-turtle-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-08-F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "side": "buy",
+        "qty": 0.00469704,
+        "px": 106.45,
+        "notional_usd": 0.5,
+        "agent_id": "SWM-08",
+        "edge": "wknd-bal-crypto",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
     "agents": [
       {
         "id": "SWM-01",
-        "equity": 5.0,
-        "cash_usd": 5.0,
+        "equity": 5.000005,
+        "cash_usd": 4.75,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": 0.0,
+        "return_pct": 0.0001,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "turtle"
       },
       {
         "id": "SWM-02",
         "equity": 5.0,
-        "cash_usd": 5.0,
+        "cash_usd": 4.5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
@@ -92,41 +415,41 @@
         "died_at": null,
         "return_pct": 0.0,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "balanced"
       },
       {
         "id": "SWM-03",
-        "equity": 5.0,
-        "cash_usd": 5.0,
+        "equity": 4.999989,
+        "cash_usd": 4.25,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": 0.0,
+        "return_pct": -0.0002,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "degen"
       },
       {
         "id": "SWM-04",
-        "equity": 5.0,
-        "cash_usd": 5.0,
+        "equity": 5.000005,
+        "cash_usd": 4.75,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": 0.0,
+        "return_pct": 0.0001,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "turtle"
       },
       {
         "id": "SWM-05",
         "equity": 5.0,
-        "cash_usd": 5.0,
+        "cash_usd": 4.5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
@@ -134,41 +457,41 @@
         "died_at": null,
         "return_pct": 0.0,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "balanced"
       },
       {
         "id": "SWM-06",
-        "equity": 5.0,
-        "cash_usd": 5.0,
+        "equity": 4.999989,
+        "cash_usd": 4.25,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": 0.0,
+        "return_pct": -0.0002,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "degen"
       },
       {
         "id": "SWM-07",
-        "equity": 5.0,
-        "cash_usd": 5.0,
+        "equity": 5.000005,
+        "cash_usd": 4.75,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": 0.0,
+        "return_pct": 0.0001,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "turtle"
       },
       {
         "id": "SWM-08",
         "equity": 5.0,
-        "cash_usd": 5.0,
+        "cash_usd": 4.5,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
@@ -176,7 +499,7 @@
         "died_at": null,
         "return_pct": 0.0,
         "starting_cash_usd": 5.0,
-        "open_positions": 0,
+        "open_positions": 1,
         "risk_allele": "balanced"
       },
       {
@@ -468,12 +791,12 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 100.0,
+    "cash_usd": 92.0,
     "equity_usd": 100.0,
     "day_pnl_usd": 0.0,
     "total_pnl_usd": 0.0,
     "return_pct": 0.0,
-    "open_positions": 0,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -483,12 +806,45 @@
       "live_ready": false,
       "next": "hard reset baseline \u2014 0 closes"
     },
-    "recent_fills": [],
-    "open": []
+    "recent_fills": [
+      {
+        "id": "F001",
+        "ts": "2026-09-06T08:19:17-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 0.00010019,
+        "px": 79847.965,
+        "notional_usd": 8.0,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ],
+    "open": [
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 0.00010019,
+        "avg": 79847.965,
+        "mark": 79847.965,
+        "upnl": 0.0,
+        "notional": 8.0,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      }
+    ]
   },
   "signals": {
     "main": "yellow",
-    "trade_dev": "green",
+    "trade_dev": "yellow",
     "swarm": "green",
     "grok": "green",
     "duel": "yellow"
