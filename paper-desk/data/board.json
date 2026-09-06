@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T09:02:32-0500",
+  "updated_at": "2026-09-06T09:02:34-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
@@ -7,7 +7,7 @@
     "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
     "main_return_pct": -0.0024,
     "trade_dev_return_pct": 0.0,
-    "swarm_return_pct": -0.0044,
+    "swarm_return_pct": -0.0032,
     "timeline": "Sat RESET \u2192 Thu hot wash",
     "mode": "3-group mortality \u00b7 20\u00d7$5 swarm",
     "reset_at": null
