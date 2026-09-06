@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Paper Desk · GROKDESK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Azeret+Mono:wght@600;700&display=swap" rel="stylesheet">
@@ -150,6 +150,124 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
   font-family:'Azeret Mono',monospace;font-size:min(18vw,140px);font-weight:700;
   letter-spacing:.35em;color:rgba(246,184,75,.045);transform:rotate(-18deg);user-select:none}
 
+
+/* —— mobile / narrow —— */
+html{overflow-x:hidden}
+#paper-strip{flex-wrap:wrap;row-gap:6px}
+#paper-strip .pd-lanes{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;flex:1;min-width:0}
+#paper-strip .pd-lane{display:inline-flex;align-items:baseline;gap:6px;min-width:0}
+#paper-strip .pd-lane .pd-k{color:var(--dim);font-weight:700;letter-spacing:1px;font-size:10px}
+#paper-strip .pd-lane b{font-weight:700;overflow-wrap:anywhere;word-break:break-word}
+.trow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:baseline;padding:4px 8px;border-bottom:1px solid rgba(20,241,149,.08);font-size:10px}
+.trow .t-tm{min-width:52px;flex:none}
+.trow .t-sym{color:#cfe8e2;font-weight:600}
+.trow .t-detail{color:var(--dim);flex:1 1 140px;min-width:0;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.feedrow{flex-wrap:wrap}
+.feedrow .pct{white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+.ftabs .ft,.htabs span,#foot .fk{-webkit-tap-highlight-color:rgba(20,241,149,.25);touch-action:manipulation}
+
+@media (max-width:900px){
+  html,body{height:auto;min-height:100%}
+  body{overflow-x:hidden;overflow-y:auto;font-size:13px;-webkit-text-size-adjust:100%}
+  #stage{
+    position:relative;inset:auto;width:100%;min-height:100dvh;height:auto;
+    grid-template-rows:auto auto auto auto auto auto;
+    overflow-x:hidden;
+  }
+  #cmdbar{
+    flex-wrap:wrap;align-items:center;height:auto;min-height:40px;
+    padding:8px 10px;gap:8px;row-gap:8px;
+  }
+  #brand{flex:1 1 auto;min-width:0}
+  #brand .tag{font-size:9px;letter-spacing:1px}
+  #cmd{order:5;flex:1 1 100%;min-height:36px;height:auto;padding:6px 10px}
+  .ftabs{flex-wrap:wrap;gap:6px}
+  .ftabs .ft{
+    padding:8px 12px;min-height:36px;display:inline-flex;align-items:center;
+    font-size:12px;
+  }
+  #clock,#solpx,.live{flex:none}
+  #ribbon{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #ribbon .cell{padding:8px 10px;min-width:0}
+  #ribbon .k{font-size:9px}
+  #ribbon .v{font-size:14px;overflow-wrap:anywhere}
+  #paper-strip{
+    flex-direction:column;align-items:stretch;gap:8px;padding:8px 10px;
+  }
+  #paper-strip .pd-lanes{
+    display:grid;grid-template-columns:1fr;gap:6px;width:100%;
+  }
+  #paper-strip .pd-lane{
+    display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+    padding:8px 10px;border:1px solid var(--line);border-radius:3px;
+    background:rgba(5,16,11,.55);
+  }
+  #paper-strip .pd-lane .pd-k{font-size:11px;color:#f6b84b;letter-spacing:1.5px}
+  #paper-strip .pd-lane b{font-size:12.5px;line-height:1.35;white-space:normal}
+  #paper-strip .sep{display:none}
+  #paper-strip #pd_note{font-size:10px}
+  #tickertape{max-width:100%}
+  #grid{
+    display:grid;grid-template-columns:1fr;grid-template-rows:auto auto;
+    height:auto;min-height:0;padding:8px;gap:8px;max-width:100%;
+  }
+  .center{grid-column:1;grid-row:1;min-height:40vh;min-width:0}
+  .center .pb{min-height:40vh}
+  .hivetitle{top:10px;left:12px;right:12px}
+  .hivetitle .k{font-size:10px;letter-spacing:4px}
+  .hivetitle b{font-size:26px;letter-spacing:3px}
+  .ph{padding:8px 10px;gap:8px;flex-wrap:wrap;align-items:flex-start}
+  .ph .t{font-size:11px}
+  .htabs{flex-wrap:wrap;gap:6px}
+  .htabs span{
+    padding:7px 10px;min-height:32px;display:inline-flex;align-items:center;
+    font-size:11px;
+  }
+  .cockpit{
+    grid-column:1;grid-row:2;
+    display:grid;grid-template-columns:1fr;grid-template-rows:none;
+    gap:8px;min-height:0;min-width:0;
+  }
+  .cockpit>.panel{min-height:180px;min-width:0}
+  .cockpit>.panel.mini{min-height:150px}
+  .cockpit>.panel .pb{overflow:auto;-webkit-overflow-scrolling:touch}
+  .tape,.feed{overflow:auto;-webkit-overflow-scrolling:touch}
+  .taperow,.feedrow,.agent,.trow{
+    padding:8px 10px;min-height:40px;gap:8px;align-items:flex-start;
+  }
+  .taperow{flex-wrap:wrap}
+  .taperow .tm,.taperow .side,.taperow .ag{width:auto;min-width:0}
+  .taperow .amt{white-space:normal;overflow-wrap:anywhere;flex:1 1 100%}
+  .feedrow .sym{width:auto;min-width:56px}
+  .feedrow .pct{margin-left:0;flex:1 1 100%;text-align:left}
+  .agent{flex-wrap:wrap}
+  .agent .id{width:auto}
+  .agent .pnl{margin-left:auto}
+  .postbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:11px}
+  .postbl th,.postbl td{padding:8px;white-space:normal}
+  #foot{
+    flex-wrap:wrap;height:auto;min-height:40px;row-gap:0;
+  }
+  #foot .fk{
+    padding:10px 12px;min-height:40px;font-size:11px;
+  }
+  #foot .tagline{padding:8px 12px;flex:1 1 100%}
+  #paper-badge{
+    top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    right:10px;font-size:12px;padding:6px 10px;
+  }
+  .vig{box-shadow:inset 0 0 120px rgba(0,0,0,.55)}
+}
+
+@media (max-width:420px){
+  #ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #brand .tag{display:none}
+  #solpx span.dim{display:none}
+  .hivetitle b{font-size:22px;letter-spacing:2px}
+  .center .pb,#hive,.center{min-height:42vh}
+  #paper-strip .pd-lanes{gap:8px}
+}
+
 </style>
 </head>
 <body>
@@ -174,9 +292,11 @@ body{background:var(--bg);color:var(--cream);font-family:'IBM Plex Mono',monospa
   </div>
   <div id="paper-strip">
   <span class="lab">PAPER</span>
-  <span>TRAD <b id="pd_trad">—</b></span><span class="sep">·</span>
-  <span>DEV <b id="pd_dev">—</b></span><span class="sep">·</span>
-  <span>SWARM <b id="pd_swarm">—</b></span><span class="sep">·</span>
+  <div class="pd-lanes">
+    <div class="pd-lane"><span class="pd-k">TRAD</span><b id="pd_trad">—</b></div>
+    <div class="pd-lane"><span class="pd-k">DEV</span><b id="pd_dev">—</b></div>
+    <div class="pd-lane"><span class="pd-k">SWARM</span><b id="pd_swarm">—</b></div>
+  </div>
   <span class="dim" id="pd_note">board.json · not live money</span>
 </div>
   <div id="tickertape"><span class="tag">SOL·DESK</span><div style="overflow:hidden;flex:1"><div id="ttrack"></div></div></div>
@@ -489,12 +609,12 @@ requestAnimationFrame(drawHive);
       return;
     }
     tape.innerHTML=items.slice(0,40).map(function(it){
-      return '<div class="trow" style="display:flex;gap:8px;padding:4px 6px;border-bottom:1px solid rgba(20,241,149,.08);font-size:10px">'
-        +'<span class="dim" style="min-width:58px">'+esc((it.ts||'').slice(11,19))+'</span>'
+      return '<div class="trow">'
+        +'<span class="dim t-tm">'+esc((it.ts||'').slice(11,19))+'</span>'
         +laneTag(it.lane)
-        +'<span style="color:#cfe8e2">'+esc(it.sym)+'</span>'
+        +'<span class="t-sym">'+esc(it.sym)+'</span>'
         +'<span class="'+(it.side==='sell'?'down':'up')+'">'+(it.side||'').toUpperCase()+'</span>'
-        +'<span class="dim">'+esc(it.detail)+'</span>'
+        +'<span class="t-detail">'+esc(it.detail)+'</span>'
         +'</div>';
     }).join('');
   }
