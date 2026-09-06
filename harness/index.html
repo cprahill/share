@@ -336,7 +336,7 @@ html{overflow-x:hidden}
 <div class="app">
   <header>
     <div class="brand">HARNESS <i>//</i> DIRECT SoT</div>
-    <div class="sub">Build↔OC · Build↔Bot · seat→SoT · host›gemma›qwen›bot›build · PAPER ≠ live</div>
+    <div class="sub">MODELS · RUNTIME · PROJECTS  ·  HOST=scripts  ·  SoT=source of truth  ·  PAPER≠live</div>
     <div class="live"><b></b>MESH</div>
     <div class="kpis">
       <div>MASTER<strong id="kMaster">0</strong></div>
@@ -409,21 +409,26 @@ const COL={
   build:'#ffb020', bot:'#8b7cff', oc:'#3dffc7', first:'#d7e6f5', baja:'#ff6a3d',
   twin:'#7ed0ff', paper:'#ffe08a', review:'#ffb020', verify:'#ffffff', master:'#ff4d8d'
 };
+const BANDS=[
+  {y:.08,label:'MODELS  ·  HOST=0-LLM scripts  ·  GEMMA/QWEN/BOT/BUILD'},
+  {y:.38,label:'RUNTIME  ·  OPENCLAW peer mesh  ·  REVIEW / VERIFY'},
+  {y:.70,label:'PROJECTS  ·  PAPER SoT = books (source of truth)  ·  BAJA / TWIN / FIRST'}
+];
 const N={
-  host:{x:.08,y:.26,label:'HOST', kind:'script'},
-  gemma:{x:.22,y:.26,label:'GEMMA', kind:'ai'},
-  qwen:{x:.36,y:.26,label:'QWEN', kind:'ai'},
-  bot:{x:.52,y:.26,label:'BOT', kind:'ai'},
-  build:{x:.68,y:.18,label:'BUILD', kind:'ai'},
-  baja:{x:.88,y:.18,label:'BAJA', kind:'dest'},
-  review:{x:.68,y:.50,label:'REVIEW', kind:'gate'},
-  imsg:{x:.08,y:.76,label:'IMSG', kind:'in'},
-  oc:{x:.24,y:.76,label:'OPENCLAW', kind:'gate'},
-  paper:{x:.46,y:.72,label:'SoT', kind:'dest'},
-  twin:{x:.62,y:.76,label:'TWIN', kind:'dest'},
-  first:{x:.76,y:.76,label:'FIRST', kind:'dest'},
-  verify:{x:.88,y:.50,label:'VERIFY', kind:'gate'},
-  master:{x:.94,y:.76,label:'MASTER', kind:'gate'}
+  host:{x:.10,y:.18,label:'HOST', kind:'script'},
+  gemma:{x:.28,y:.18,label:'GEMMA', kind:'ai'},
+  qwen:{x:.46,y:.18,label:'QWEN', kind:'ai'},
+  bot:{x:.64,y:.18,label:'BOT', kind:'ai'},
+  build:{x:.82,y:.18,label:'BUILD', kind:'ai'},
+  imsg:{x:.12,y:.48,label:'IMSG', kind:'in'},
+  oc:{x:.38,y:.48,label:'OPENCLAW', kind:'gate'},
+  review:{x:.64,y:.48,label:'REVIEW', kind:'gate'},
+  verify:{x:.86,y:.48,label:'VERIFY', kind:'gate'},
+  paper:{x:.18,y:.80,label:'PAPER SoT', kind:'dest'},
+  baja:{x:.40,y:.80,label:'BAJA', kind:'dest'},
+  twin:{x:.58,y:.80,label:'TWIN', kind:'dest'},
+  first:{x:.76,y:.80,label:'FIRST', kind:'dest'},
+  master:{x:.92,y:.80,label:'MASTER', kind:'gate'}
 };
 /* DIRECT SoT defaults — sync keys with state.paths (no Build→Bot money hop) */
 const FALLBACK={
@@ -561,6 +566,15 @@ function drawNodes(){
 function frame(ts){
   T=ts/1000;
   X.clearRect(0,0,W,H);
+  BANDS.forEach(function(b){
+    X.save();
+    X.font='600 10px "IBM Plex Mono",monospace';
+    X.fillStyle='rgba(200,220,210,.38)';
+    X.fillText(b.label, 12, Math.max(14, b.y*H));
+    X.strokeStyle='rgba(20,241,149,.10)';
+    X.beginPath(); X.moveTo(12, Math.max(14,b.y*H)+8); X.lineTo(W-12, Math.max(14,b.y*H)+8); X.stroke();
+    X.restore();
+  });
   drawWires(); drawJobs(); drawNodes();
   requestAnimationFrame(frame);
 }
