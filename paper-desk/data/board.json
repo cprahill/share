@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-05T19:03:58-0500",
+  "updated_at": "2026-09-05T20:23:27-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
-    "leader": "swarm",
+    "leader": "trade_dev",
     "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
-    "main_return_pct": -7.1562,
-    "trade_dev_return_pct": -7.629,
-    "swarm_return_pct": -0.2099,
+    "main_return_pct": -7.7388,
+    "trade_dev_return_pct": -0.05,
+    "swarm_return_pct": -0.2025,
     "timeline": "Sat RESET \u2192 Thu hot wash",
     "mode": "3-group mortality \u00b7 20\u00d7$5 swarm",
     "reset_at": null
@@ -16,15 +16,15 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
-    "cash_usd": 142.6875,
-    "equity_usd": 185.6875,
+    "cash_usd": 145.6545,
+    "equity_usd": 184.5224,
     "day_pnl_usd": -14.3125,
-    "total_pnl_usd": -14.3125,
-    "return_pct": -7.1562,
+    "total_pnl_usd": -15.4776,
+    "return_pct": -7.7388,
     "open_positions": 3,
     "live_wallets": false,
     "gate": {
-      "open": false
+      "open": true
     },
     "confidence": {
       "score": 39,
@@ -32,6 +32,38 @@
       "next": "2 closed \u00b7 eq $185.69 \u00b7 ret -7.1562% \u00b7 GATE CLOSED (L001) \u00b7 DD 7.2%"
     },
     "recent_fills": [
+      {
+        "id": "F009",
+        "ts": "2026-09-05T20:21:54-05:00",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00601394,
+        "px": 2494.205,
+        "notional_usd": 14.999999,
+        "edge": "weekend_liquid",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "F008",
+        "ts": "2026-09-05T20:21:54-05:00",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "sell",
+        "qty": 0.02337086,
+        "px": 770.19,
+        "notional_usd": 18.000003,
+        "pnl": -0.036,
+        "edge": "cleanup",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
       {
         "id": "F007",
         "ts": "2026-09-05T18:18:18-05:00",
@@ -45,6 +77,7 @@
         "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
         "urls": [
           "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
         ]
       },
@@ -62,6 +95,7 @@
         "url": "https://api.weather.gov/stations/KNYC/observations",
         "urls": [
           "https://api.weather.gov/stations/KNYC/observations",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
@@ -79,6 +113,8 @@
         "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
         "urls": [
           "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
+          "https://www.weather.gov/climate/",
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
@@ -112,6 +148,7 @@
         "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
         "urls": [
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
           "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
         ]
       },
@@ -124,6 +161,7 @@
         "qty": 0.02337086,
         "px": 770.19,
         "notional_usd": 18.000003,
+        "pnl": -0.036,
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
@@ -148,18 +186,6 @@
     ],
     "open": [
       {
-        "venue": "stocks",
-        "symbol": "SPY",
-        "qty": 0.02337086,
-        "avg": 770.19,
-        "mark": 770.19,
-        "upnl": 0.0,
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
         "venue": "kalshi_demo",
         "symbol": "KXFEDDECISION-26SEP-H0",
         "qty": 20.4082,
@@ -177,26 +203,39 @@
         "symbol": "KXHIGHNY-26SEP06-B73.5",
         "qty": 28.3019,
         "avg": 0.53,
-        "mark": 0.53,
-        "upnl": 0.0,
+        "mark": 0.49,
+        "upnl": -1.1321,
         "edge": "E3",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
         "urls": [
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
         ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00601394,
+        "avg": 2494.205,
+        "mark": 2494.205,
+        "upnl": 0.0,
+        "edge": "weekend_liquid",
+        "url": "https://www.coinbase.com/price/ethereum",
+        "urls": [
+          "https://www.coinbase.com/price/ethereum",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       }
-    ],
-    "operator": "openclaw"
+    ]
   },
   "trade_dev": {
     "label": "Trade Dev",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
     "cash_usd": 75.95,
-    "equity_usd": 92.371,
+    "equity_usd": 99.95,
     "day_pnl_usd": -7.629,
-    "total_pnl_usd": -7.629,
-    "return_pct": -7.629,
+    "total_pnl_usd": -0.05,
+    "return_pct": -0.05,
     "open_positions": 3,
     "live_wallets": false,
     "gate": {
@@ -342,826 +381,814 @@
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
         ]
       }
-    ],
-    "operator": "openclaw"
+    ]
   },
   "swarm": {
     "label": "SWARM",
     "starting_cash_usd": 100.0,
-    "cash_usd": 74.298543,
-    "equity_usd": 99.646796,
-    "total_pnl_usd": -0.353204,
-    "return_pct": -0.3532,
+    "cash_usd": 74.2985,
+    "equity_usd": 99.7975,
+    "total_pnl_usd": -0.2025,
+    "return_pct": -0.2025,
     "open_positions": 57,
     "open": [
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 5.64e-06,
-        "avg_px": 79851.885,
-        "mark_px": 79793.39,
-        "notional_usd": 0.450013,
-        "unrealized_pnl_usd": -0.00033,
-        "fill_ids": [
-          "SWM-01-F001"
-        ],
+        "avg": 79851.885,
+        "mark": 79924.775,
+        "upnl": 0.000411,
+        "notional": 0.450776,
         "edge": "sat-kick",
-        "agent_id": "SWM-01"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00010081,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": -4.4e-05,
-        "fill_ids": [
-          "SWM-01-F002"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.001292,
+        "notional": 0.251281,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-01"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SPY",
         "venue": "stocks",
+        "symbol": "SPY",
         "qty": 0.00058427,
-        "avg_px": 770.19,
-        "mark_px": 770.19,
-        "notional_usd": 0.449999,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-02-F001"
-        ],
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.449999,
         "edge": "sat-kick",
-        "agent_id": "SWM-02"
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
-        "symbol": "TLT",
         "venue": "stocks",
+        "symbol": "TLT",
         "qty": 0.00608199,
-        "avg_px": 82.21,
-        "mark_px": 82.21,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-02-F002"
-        ],
+        "avg": 82.21,
+        "mark": 82.21,
+        "upnl": 0.0,
+        "notional": 0.5,
         "edge": "sat-night-live",
-        "agent_id": "SWM-02"
+        "url": "https://finance.yahoo.com/quote/TLT/",
+        "urls": [
+          "https://finance.yahoo.com/quote/TLT/"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00012098,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.3,
-        "unrealized_pnl_usd": -5.3e-05,
-        "fill_ids": [
-          "SWM-02-F003"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.00155,
+        "notional": 0.301557,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-02"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "QQQ",
         "venue": "stocks",
+        "symbol": "QQQ",
         "qty": 0.0006259,
-        "avg_px": 718.96,
-        "mark_px": 718.96,
-        "notional_usd": 0.449997,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-03-F001"
-        ],
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0.0,
+        "notional": 0.449997,
         "edge": "sat-kick",
-        "agent_id": "SWM-03"
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 9.4e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79840.585,
-        "notional_usd": 0.750501,
-        "unrealized_pnl_usd": 0.000595,
-        "fill_ids": [
-          "SWM-03-F003"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.001387,
+        "notional": 0.751293,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-03"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "KXFEDDECISION-28JAN-H0",
         "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-28JAN-H0",
         "qty": 1.19047619,
-        "avg_px": 0.63,
-        "mark_px": 0.63,
-        "notional_usd": 0.75,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-03-F005"
-        ],
+        "avg": 0.63,
+        "mark": 0.615,
+        "upnl": -0.017857,
+        "notional": 0.732143,
         "edge": "fast-grab-kalshi",
-        "operator": "openclaw",
-        "agent_id": "SWM-03"
+        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-28jan",
+        "urls": [
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-28jan"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00018118,
-        "avg_px": 2483.715,
-        "mark_px": 2479.37,
-        "notional_usd": 0.449302,
-        "unrealized_pnl_usd": -0.000787,
-        "fill_ids": [
-          "SWM-04-F001"
-        ],
+        "avg": 2483.715,
+        "mark": 2492.62,
+        "upnl": 0.001613,
+        "notional": 0.451613,
         "edge": "sat-kick",
-        "agent_id": "SWM-04"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 3.13e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79793.39,
-        "notional_usd": 0.2497,
-        "unrealized_pnl_usd": 5e-05,
-        "fill_ids": [
-          "SWM-04-F002"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.000462,
+        "notional": 0.250165,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-04"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "GLD",
         "venue": "stocks",
+        "symbol": "GLD",
         "qty": 0.00098336,
-        "avg_px": 406.77,
-        "mark_px": 406.77,
-        "notional_usd": 0.400001,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-05-F001"
-        ],
+        "avg": 406.77,
+        "mark": 406.77,
+        "upnl": 0.0,
+        "notional": 0.400001,
         "edge": "sat-kick",
-        "agent_id": "SWM-05"
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
       },
       {
-        "symbol": "BIL",
         "venue": "stocks",
+        "symbol": "BIL",
         "qty": 0.00546747,
-        "avg_px": 91.45,
-        "mark_px": 91.45,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-05-F002"
-        ],
+        "avg": 91.45,
+        "mark": 91.45,
+        "upnl": 0.0,
+        "notional": 0.5,
         "edge": "sat-night-live",
-        "agent_id": "SWM-05"
+        "url": "https://finance.yahoo.com/quote/BIL/",
+        "urls": [
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00014114,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.35,
-        "unrealized_pnl_usd": -6.1e-05,
-        "fill_ids": [
-          "SWM-05-F003"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.001809,
+        "notional": 0.351808,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-05"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "IWM",
         "venue": "stocks",
+        "symbol": "IWM",
         "qty": 0.00135131,
-        "avg_px": 296.01,
-        "mark_px": 296.01,
-        "notional_usd": 0.400001,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-06-F001"
-        ],
+        "avg": 296.01,
+        "mark": 296.01,
+        "upnl": 0.0,
+        "notional": 0.400001,
         "edge": "sat-kick",
-        "agent_id": "SWM-06"
+        "url": "https://finance.yahoo.com/quote/IWM/",
+        "urls": [
+          "https://finance.yahoo.com/quote/IWM/"
+        ]
       },
       {
-        "symbol": "SOL-USD",
         "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00726709,
-        "avg_px": 103.205,
-        "mark_px": 103.175,
-        "notional_usd": 0.749782,
-        "unrealized_pnl_usd": -0.000218,
-        "fill_ids": [
-          "SWM-06-F003"
-        ],
+        "avg": 103.205,
+        "mark": 103.515,
+        "upnl": 0.002253,
+        "notional": 0.752253,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-06"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "FARTCOIN",
         "venue": "pumpfun_paper",
+        "symbol": "FARTCOIN",
         "qty": 4.36808387,
-        "avg_px": 0.1717,
-        "mark_px": 0.1717,
-        "notional_usd": 0.75,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-06-F005"
-        ],
+        "avg": 0.1717,
+        "mark": 0.1717,
+        "upnl": 0.0,
+        "notional": 0.75,
         "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "agent_id": "SWM-06"
+        "url": "https://finance.yahoo.com/",
+        "urls": [
+          "https://finance.yahoo.com/"
+        ]
       },
       {
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
         "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
         "qty": 1.0,
-        "avg_px": 0.5,
-        "mark_px": 0.52,
-        "notional_usd": 0.52,
-        "unrealized_pnl_usd": 0.02,
-        "fill_ids": [
-          "SWM-07-F001"
-        ],
+        "avg": 0.5,
+        "mark": 0.485,
+        "upnl": -0.015,
+        "notional": 0.485,
         "edge": "sat-kick",
-        "agent_id": "SWM-07"
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 2.88e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79793.39,
-        "notional_usd": 0.2298,
-        "unrealized_pnl_usd": 4.6e-05,
-        "fill_ids": [
-          "SWM-07-F002"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.000425,
+        "notional": 0.230183,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-07"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
+        "venue": "stocks",
         "symbol": "BIL",
-        "venue": "stocks",
         "qty": 0.00437397,
-        "avg_px": 91.45,
-        "mark_px": 91.45,
-        "notional_usd": 0.4,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-08-F001"
-        ],
+        "avg": 91.45,
+        "mark": 91.45,
+        "upnl": 0.0,
+        "notional": 0.4,
         "edge": "sat-kick",
-        "agent_id": "SWM-08"
+        "url": "https://finance.yahoo.com/quote/BIL/",
+        "urls": [
+          "https://finance.yahoo.com/quote/BIL/"
+        ]
       },
       {
+        "venue": "stocks",
         "symbol": "IWM",
-        "venue": "stocks",
         "qty": 0.00168913,
-        "avg_px": 296.01,
-        "mark_px": 296.01,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-08-F002"
-        ],
+        "avg": 296.01,
+        "mark": 296.01,
+        "upnl": 0.0,
+        "notional": 0.499999,
         "edge": "sat-night-live",
-        "agent_id": "SWM-08"
+        "url": "https://finance.yahoo.com/quote/IWM/",
+        "urls": [
+          "https://finance.yahoo.com/quote/IWM/"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00014114,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.35,
-        "unrealized_pnl_usd": -6.1e-05,
-        "fill_ids": [
-          "SWM-08-F003"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.001809,
+        "notional": 0.351808,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-08"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 4.38e-06,
-        "avg_px": 79851.885,
-        "mark_px": 79840.585,
-        "notional_usd": 0.349702,
-        "unrealized_pnl_usd": -4.9e-05,
-        "fill_ids": [
-          "SWM-09-F001"
-        ],
+        "avg": 79851.885,
+        "mark": 79924.775,
+        "upnl": 0.000319,
+        "notional": 0.350071,
         "edge": "sat-kick",
-        "agent_id": "SWM-09"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SOL-USD",
         "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00726709,
-        "avg_px": 103.205,
-        "mark_px": 103.175,
-        "notional_usd": 0.749782,
-        "unrealized_pnl_usd": -0.000218,
-        "fill_ids": [
-          "SWM-09-F003"
-        ],
+        "avg": 103.205,
+        "mark": 103.515,
+        "upnl": 0.002253,
+        "notional": 0.752253,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-09"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "FARTCOIN",
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
         "venue": "pumpfun_paper",
+        "symbol": "FARTCOIN",
         "qty": 0.88011696,
-        "avg_px": 0.171,
-        "mark_px": 0.171,
-        "notional_usd": 0.1505,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-09-F004"
-        ],
+        "avg": 0.171,
+        "mark": 0.171,
+        "upnl": 0.0,
+        "notional": 0.1505,
         "edge": "pumpfun-paper-explore",
-        "agent_id": "SWM-09"
+        "url": "https://finance.yahoo.com/",
+        "urls": [
+          "https://finance.yahoo.com/"
+        ]
       },
       {
+        "venue": "pumpfun_paper",
         "symbol": "memestonk",
-        "venue": "pumpfun_paper",
         "qty": 3881.98757764,
-        "avg_px": 0.0001932,
-        "mark_px": 0.0001932,
-        "notional_usd": 0.75,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-09-F006"
-        ],
+        "avg": 0.0001932,
+        "mark": 0.0001932,
+        "upnl": 0.0,
+        "notional": 0.75,
         "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "mint": "CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump",
-        "agent_id": "SWM-09"
+        "url": "https://finance.yahoo.com/",
+        "urls": [
+          "https://finance.yahoo.com/"
+        ]
       },
       {
-        "symbol": "SPY",
         "venue": "stocks",
+        "symbol": "SPY",
         "qty": 0.00045443,
-        "avg_px": 770.19,
-        "mark_px": 770.19,
-        "notional_usd": 0.349997,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-10-F001"
-        ],
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.349997,
         "edge": "sat-kick",
-        "agent_id": "SWM-10"
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 3.13e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79793.39,
-        "notional_usd": 0.2497,
-        "unrealized_pnl_usd": 5e-05,
-        "fill_ids": [
-          "SWM-10-F002"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.000462,
+        "notional": 0.250165,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-10"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
+        "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP06-B75.5",
-        "venue": "kalshi_demo",
         "qty": 1.9565,
-        "avg_px": 0.23,
-        "mark_px": 0.26,
-        "notional_usd": 0.50869,
-        "unrealized_pnl_usd": 0.058695,
-        "fill_ids": [
-          "SWM-11-F001"
-        ],
+        "avg": 0.23,
+        "mark": 0.335,
+        "upnl": 0.205433,
+        "notional": 0.655428,
         "edge": "sat-kick",
-        "agent_id": "SWM-11"
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
       },
       {
-        "symbol": "SPY",
         "venue": "stocks",
+        "symbol": "SPY",
         "qty": 0.00064919,
-        "avg_px": 770.19,
-        "mark_px": 770.19,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-11-F002"
-        ],
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.5,
         "edge": "sat-night-live",
-        "agent_id": "SWM-11"
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 9.731e-05,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.2413,
-        "unrealized_pnl_usd": -4.2e-05,
-        "fill_ids": [
-          "SWM-11-F003"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.001247,
+        "notional": 0.242557,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-11"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "QQQ",
         "venue": "stocks",
+        "symbol": "QQQ",
         "qty": 0.00048681,
-        "avg_px": 718.96,
-        "mark_px": 718.96,
-        "notional_usd": 0.349997,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-12-F001"
-        ],
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0.0,
+        "notional": 0.349997,
         "edge": "sat-kick",
-        "agent_id": "SWM-12"
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
       },
       {
-        "symbol": "GLD",
         "venue": "stocks",
+        "symbol": "GLD",
         "qty": 0.00184379,
-        "avg_px": 406.77,
-        "mark_px": 406.77,
-        "notional_usd": 0.749998,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-12-F002"
-        ],
+        "avg": 406.77,
+        "mark": 406.77,
+        "upnl": 0.0,
+        "notional": 0.749998,
         "edge": "sat-night-live",
-        "agent_id": "SWM-12"
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
       },
       {
+        "venue": "kalshi_demo",
         "symbol": "KXFEDDECISION-28JAN-H0",
-        "venue": "kalshi_demo",
         "qty": 1.19047619,
-        "avg_px": 0.63,
-        "mark_px": 0.63,
-        "notional_usd": 0.75,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-12-F005"
-        ],
+        "avg": 0.63,
+        "mark": 0.615,
+        "upnl": -0.017857,
+        "notional": 0.732143,
         "edge": "fast-grab-kalshi",
-        "operator": "openclaw",
-        "agent_id": "SWM-12"
+        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-28jan",
+        "urls": [
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-28jan"
+        ]
       },
       {
+        "venue": "crypto",
         "symbol": "BTC-USD",
-        "venue": "crypto",
         "qty": 3.13e-06,
-        "avg_px": 79775.395,
-        "mark_px": 79793.39,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": 5.6e-05,
-        "fill_ids": [
-          "SWM-13-F001"
-        ],
+        "avg": 79775.395,
+        "mark": 79924.775,
+        "upnl": 0.000468,
+        "notional": 0.250165,
         "edge": "sat-night-live",
-        "agent_id": "SWM-13"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SPY",
         "venue": "stocks",
+        "symbol": "SPY",
         "qty": 0.0003246,
-        "avg_px": 770.19,
-        "mark_px": 770.19,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-13-F002"
-        ],
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.250004,
         "edge": "A1-VWAP-MR-paper",
-        "agent_id": "SWM-13"
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00010081,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": -4.4e-05,
-        "fill_ids": [
-          "SWM-13-F003"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.001292,
+        "notional": 0.251281,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-13"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SPY",
         "venue": "stocks",
+        "symbol": "SPY",
         "qty": 0.00064919,
-        "avg_px": 770.19,
-        "mark_px": 770.19,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-14-F001"
-        ],
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.5,
         "edge": "sat-night-live",
-        "agent_id": "SWM-14"
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00020163,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": -8.8e-05,
-        "fill_ids": [
-          "SWM-14-F002"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.002584,
+        "notional": 0.502587,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-14"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
+        "venue": "crypto",
         "symbol": "SOL-USD",
-        "venue": "crypto",
         "qty": 0.00242236,
-        "avg_px": 103.205,
-        "mark_px": 103.12,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": -0.000206,
-        "fill_ids": [
-          "SWM-14-F003"
-        ],
+        "avg": 103.205,
+        "mark": 103.515,
+        "upnl": 0.000751,
+        "notional": 0.250751,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-14"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "ETH-USD",
         "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00030248,
-        "avg_px": 2479.535,
-        "mark_px": 2481.065,
-        "notional_usd": 0.750473,
-        "unrealized_pnl_usd": 0.000463,
-        "fill_ids": [
-          "SWM-15-F001"
-        ],
+        "avg": 2479.535,
+        "mark": 2492.62,
+        "upnl": 0.003958,
+        "notional": 0.753968,
         "edge": "sat-night-live",
-        "agent_id": "SWM-15"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SOL-USD",
         "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00726709,
-        "avg_px": 103.205,
-        "mark_px": 103.175,
-        "notional_usd": 0.749782,
-        "unrealized_pnl_usd": -0.000218,
-        "fill_ids": [
-          "SWM-15-F002"
-        ],
+        "avg": 103.205,
+        "mark": 103.515,
+        "upnl": 0.002253,
+        "notional": 0.752253,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-15"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "FARTCOIN",
         "venue": "pumpfun_paper",
+        "symbol": "FARTCOIN",
         "qty": 2.91057076,
-        "avg_px": 0.1717,
-        "mark_px": 0.1717,
-        "notional_usd": 0.499745,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-15-F005"
-        ],
+        "avg": 0.1717,
+        "mark": 0.1717,
+        "upnl": 0.0,
+        "notional": 0.499745,
         "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "agent_id": "SWM-15"
+        "url": "https://finance.yahoo.com/",
+        "urls": [
+          "https://finance.yahoo.com/"
+        ]
       },
       {
-        "symbol": "SOL-USD",
         "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.0024226,
-        "avg_px": 103.195,
-        "mark_px": 103.12,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": -0.000182,
-        "fill_ids": [
-          "SWM-16-F001"
-        ],
+        "avg": 103.195,
+        "mark": 103.515,
+        "upnl": 0.000775,
+        "notional": 0.250775,
         "edge": "sat-night-live",
-        "agent_id": "SWM-16"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "QQQ",
         "venue": "stocks",
+        "symbol": "QQQ",
         "qty": 0.00034772,
-        "avg_px": 718.96,
-        "mark_px": 718.96,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-16-F002"
-        ],
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0.0,
+        "notional": 0.249997,
         "edge": "A1-VWAP-MR-paper",
-        "agent_id": "SWM-16"
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 3.13e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79793.39,
-        "notional_usd": 0.2497,
-        "unrealized_pnl_usd": 5e-05,
-        "fill_ids": [
-          "SWM-16-F003"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.000462,
+        "notional": 0.250165,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-16"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
+        "venue": "stocks",
         "symbol": "QQQ",
-        "venue": "stocks",
         "qty": 0.00069545,
-        "avg_px": 718.96,
-        "mark_px": 718.96,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-17-F001"
-        ],
+        "avg": 718.96,
+        "mark": 718.96,
+        "upnl": 0.0,
+        "notional": 0.500001,
         "edge": "sat-night-live",
-        "agent_id": "SWM-17"
+        "url": "https://finance.yahoo.com/quote/QQQ/",
+        "urls": [
+          "https://finance.yahoo.com/quote/QQQ/"
+        ]
       },
       {
+        "venue": "crypto",
         "symbol": "ETH-USD",
-        "venue": "crypto",
         "qty": 0.00020163,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": -8.8e-05,
-        "fill_ids": [
-          "SWM-17-F002"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.002584,
+        "notional": 0.502587,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-17"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SOL-USD",
         "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00242236,
-        "avg_px": 103.205,
-        "mark_px": 103.12,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": -0.000206,
-        "fill_ids": [
-          "SWM-17-F003"
-        ],
+        "avg": 103.205,
+        "mark": 103.515,
+        "upnl": 0.000751,
+        "notional": 0.250751,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-17"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
         "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP06-B73.5",
         "qty": 1.4151,
-        "avg_px": 0.53,
-        "mark_px": 0.46,
-        "notional_usd": 0.650946,
-        "unrealized_pnl_usd": -0.099057,
-        "fill_ids": [
-          "SWM-18-F001"
-        ],
+        "avg": 0.53,
+        "mark": 0.485,
+        "upnl": -0.06368,
+        "notional": 0.686323,
         "edge": "sat-night-live",
-        "agent_id": "SWM-18"
+        "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+        "urls": [
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
       },
       {
-        "symbol": "BTC-USD",
         "venue": "crypto",
+        "symbol": "BTC-USD",
         "qty": 6.27e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79840.585,
-        "notional_usd": 0.5006,
-        "unrealized_pnl_usd": 0.000397,
-        "fill_ids": [
-          "SWM-18-F003"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.000925,
+        "notional": 0.501128,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-18"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "FARTCOIN",
         "venue": "pumpfun_paper",
+        "symbol": "FARTCOIN",
         "qty": 4.36808387,
-        "avg_px": 0.1717,
-        "mark_px": 0.1717,
-        "notional_usd": 0.75,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-18-F005"
-        ],
+        "avg": 0.1717,
+        "mark": 0.1717,
+        "upnl": 0.0,
+        "notional": 0.75,
         "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "agent_id": "SWM-18"
+        "url": "https://finance.yahoo.com/",
+        "urls": [
+          "https://finance.yahoo.com/"
+        ]
       },
       {
+        "venue": "stocks",
         "symbol": "TLT",
-        "venue": "stocks",
         "qty": 0.00304099,
-        "avg_px": 82.21,
-        "mark_px": 82.21,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-19-F001"
-        ],
+        "avg": 82.21,
+        "mark": 82.21,
+        "upnl": 0.0,
+        "notional": 0.25,
         "edge": "sat-night-live",
-        "agent_id": "SWM-19"
+        "url": "https://finance.yahoo.com/quote/TLT/",
+        "urls": [
+          "https://finance.yahoo.com/quote/TLT/"
+        ]
       },
       {
+        "venue": "stocks",
         "symbol": "SPY",
-        "venue": "stocks",
         "qty": 0.0003246,
-        "avg_px": 770.19,
-        "mark_px": 770.19,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-19-F002"
-        ],
+        "avg": 770.19,
+        "mark": 770.19,
+        "upnl": 0.0,
+        "notional": 0.250004,
         "edge": "A1-VWAP-MR-paper",
-        "agent_id": "SWM-19"
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
       },
       {
+        "venue": "crypto",
         "symbol": "BTC-USD",
-        "venue": "crypto",
         "qty": 3.13e-06,
-        "avg_px": 79777.265,
-        "mark_px": 79793.39,
-        "notional_usd": 0.2497,
-        "unrealized_pnl_usd": 5e-05,
-        "fill_ids": [
-          "SWM-19-F003"
-        ],
+        "avg": 79777.265,
+        "mark": 79924.775,
+        "upnl": 0.000462,
+        "notional": 0.250165,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-19"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "GLD",
         "venue": "stocks",
+        "symbol": "GLD",
         "qty": 0.0012292,
-        "avg_px": 406.77,
-        "mark_px": 406.77,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": 0.0,
-        "fill_ids": [
-          "SWM-20-F001"
-        ],
+        "avg": 406.77,
+        "mark": 406.77,
+        "upnl": 0.0,
+        "notional": 0.500002,
         "edge": "sat-night-live",
-        "agent_id": "SWM-20"
+        "url": "https://finance.yahoo.com/quote/GLD/",
+        "urls": [
+          "https://finance.yahoo.com/quote/GLD/"
+        ]
       },
       {
+        "venue": "crypto",
         "symbol": "ETH-USD",
-        "venue": "crypto",
         "qty": 0.00020163,
-        "avg_px": 2479.805,
-        "mark_px": 2479.37,
-        "notional_usd": 0.5,
-        "unrealized_pnl_usd": -8.8e-05,
-        "fill_ids": [
-          "SWM-20-F002"
-        ],
+        "avg": 2479.805,
+        "mark": 2492.62,
+        "upnl": 0.002584,
+        "notional": 0.502587,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-20"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       },
       {
-        "symbol": "SOL-USD",
         "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00242236,
-        "avg_px": 103.205,
-        "mark_px": 103.12,
-        "notional_usd": 0.25,
-        "unrealized_pnl_usd": -0.000206,
-        "fill_ids": [
-          "SWM-20-F003"
-        ],
+        "avg": 103.205,
+        "mark": 103.515,
+        "upnl": 0.000751,
+        "notional": 0.250751,
         "edge": "holiday-sizeup-live",
-        "agent_id": "SWM-20"
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       }
     ],
     "recent_fills": [
@@ -1274,6 +1301,7 @@
         "px": 103.195,
         "notional_usd": 0.75,
         "agent_id": "SWM-03",
+        "pnl": -0.004782,
         "edge": "sat-night-live",
         "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
         "urls": [
@@ -1296,6 +1324,42 @@
         "urls": [
           "https://api.coinbase.com/v2/prices/BTC-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-03-F004",
+        "ts": "2026-09-05T19:03:58-0500",
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "side": "sell",
+        "qty": 0.00726779,
+        "px": 103.225,
+        "notional_usd": 0.750218,
+        "agent_id": "SWM-03",
+        "pnl": -0.004782,
+        "edge": "fast-grab-rotate",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "SWM-03-F005",
+        "ts": "2026-09-05T19:03:58-0500",
+        "venue": "kalshi_demo",
+        "symbol": "KXFEDDECISION-28JAN-H0",
+        "side": "buy",
+        "qty": 1.19047619,
+        "px": 0.63,
+        "notional_usd": 0.75,
+        "agent_id": "SWM-03",
+        "edge": "fast-grab-kalshi",
+        "url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXFEDDECISION-28JAN-H0",
+        "urls": [
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXFEDDECISION-28JAN-H0",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&series_ticker=KXFEDDECISION",
+          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-28jan"
         ]
       },
       {
@@ -1331,1892 +1395,293 @@
           "https://api.coinbase.com/v2/prices/BTC-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
         ]
-      },
-      {
-        "id": "SWM-05-F001",
-        "ts": "2026-09-05T16:41:40-0500",
-        "venue": "stocks",
-        "symbol": "GLD",
-        "side": "buy",
-        "qty": 0.00098336,
-        "px": 406.77,
-        "notional_usd": 0.4,
-        "agent_id": "SWM-05",
-        "edge": "sat-kick",
-        "url": "https://finance.yahoo.com/quote/GLD/",
-        "urls": [
-          "https://finance.yahoo.com/quote/GLD/"
-        ]
-      },
-      {
-        "id": "SWM-05-F002",
-        "ts": "2026-09-05T18:25:57-0500",
-        "venue": "stocks",
-        "symbol": "BIL",
-        "side": "buy",
-        "qty": 0.00546747,
-        "px": 91.45,
-        "notional_usd": 0.5,
-        "agent_id": "SWM-05",
-        "edge": "sat-night-live",
-        "url": "https://finance.yahoo.com/quote/BIL/",
-        "urls": [
-          "https://finance.yahoo.com/quote/BIL/"
-        ]
-      },
-      {
-        "id": "SWM-03-F004",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "crypto",
-        "symbol": "SOL-USD",
-        "side": "sell",
-        "qty": 0.00726779,
-        "px": 103.225,
-        "fees_sim": 0.005,
-        "notional_usd": 0.750218,
-        "thesis": "Fast-grab rotate SWM-03: close near-mark SOL-USD @103.225 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-        "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "pnl": -0.004782,
-        "status": "closed",
-        "closes": "SWM-03-F002",
-        "agent_id": "SWM-03",
-        "edge": "fast-grab-rotate",
-        "operator": "openclaw",
-        "live": false
-      },
-      {
-        "id": "SWM-03-F005",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "kalshi_demo",
-        "symbol": "KXFEDDECISION-28JAN-H0",
-        "side": "buy",
-        "qty": 1.19047619,
-        "px": 0.63,
-        "fees_sim": 0.005,
-        "notional_usd": 0.75,
-        "thesis": "Fast-grab Kalshi demo SWM-03: YES Fed Jan-28 hold (H0) @ ask 0.63. Live Kalshi ask. Degen $0.75/$2. PAPER only \u2014 no live $. Not advice.",
-        "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXFEDDECISION-28JAN-H0",
-        "pnl": null,
-        "status": "open",
-        "agent_id": "SWM-03",
-        "edge": "fast-grab-kalshi",
-        "operator": "openclaw",
-        "quote_asof": "2026-09-05T19:03:58-0500",
-        "live": false,
-        "evidence_url_2": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&series_ticker=KXFEDDECISION",
-        "yes_ask": 0.63,
-        "yes_bid": 0.6
-      },
-      {
-        "id": "SWM-06-F004",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "sell",
-        "qty": 9.4e-06,
-        "px": 79856.985,
-        "fees_sim": 0.005,
-        "notional_usd": 0.750656,
-        "thesis": "Fast-grab rotate SWM-06: close near-mark BTC-USD @79856.985 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-        "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "pnl": -0.004233,
-        "status": "closed",
-        "closes": "SWM-06-F002",
-        "agent_id": "SWM-06",
-        "edge": "fast-grab-rotate",
-        "operator": "openclaw",
-        "live": false
-      },
-      {
-        "id": "SWM-06-F005",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "pumpfun_paper",
-        "symbol": "FARTCOIN",
-        "side": "buy",
-        "qty": 4.36808387,
-        "px": 0.1717,
-        "fees_sim": 0.005,
-        "notional_usd": 0.75,
-        "thesis": "Fast-grab pump.fun paper SWM-06: FARTCOIN @0.1717 DexScreener raydium liq~$8003064. Cross pump API mint. Degen $0.75/$2. PAPER \u2014 no wallet/SOL. Legal HOLD live. Not advice.",
-        "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-        "pnl": null,
-        "status": "open",
-        "agent_id": "SWM-06",
-        "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "quote_asof": "2026-09-05T19:03:58-0500",
-        "live": false,
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
-      },
-      {
-        "id": "SWM-09-F005",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "side": "sell",
-        "qty": 0.00030248,
-        "px": 2480.565,
-        "fees_sim": 0.005,
-        "notional_usd": 0.750321,
-        "thesis": "Fast-grab rotate SWM-09: close near-mark ETH-USD @2480.565 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-        "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-        "pnl": -0.004688,
-        "status": "closed",
-        "closes": "SWM-09-F002",
-        "agent_id": "SWM-09",
-        "edge": "fast-grab-rotate",
-        "operator": "openclaw",
-        "live": false
-      },
-      {
-        "id": "SWM-09-F006",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "pumpfun_paper",
-        "symbol": "memestonk",
-        "side": "buy",
-        "qty": 3881.98757764,
-        "px": 0.0001932,
-        "fees_sim": 0.005,
-        "notional_usd": 0.75,
-        "thesis": "Fast-grab pump.fun paper SWM-09: memestonk @0.0001932 DexScreener pumpswap liq~$42480. Degen residual after ETH rotate. PAPER \u2014 no wallet. Not advice.",
-        "evidence_url": "https://dexscreener.com/solana/bw4vqqxvaij7ncqqxitnymakbf3nsskbfhrriehaom8w",
-        "pnl": null,
-        "status": "open",
-        "agent_id": "SWM-09",
-        "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "quote_asof": "2026-09-05T19:03:58-0500",
-        "live": false,
-        "mint": "CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump",
-        "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump",
-        "evidence_url_3": "https://pump.fun/coin/CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump"
-      },
-      {
-        "id": "SWM-12-F004",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "crypto",
-        "symbol": "SOL-USD",
-        "side": "sell",
-        "qty": 0.00726709,
-        "px": 103.225,
-        "fees_sim": 0.005,
-        "notional_usd": 0.750145,
-        "thesis": "Fast-grab rotate SWM-12: close near-mark SOL-USD @103.225 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-        "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "pnl": -0.004855,
-        "status": "closed",
-        "closes": "SWM-12-F003",
-        "agent_id": "SWM-12",
-        "edge": "fast-grab-rotate",
-        "operator": "openclaw",
-        "live": false
-      },
-      {
-        "id": "SWM-12-F005",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "kalshi_demo",
-        "symbol": "KXFEDDECISION-28JAN-H0",
-        "side": "buy",
-        "qty": 1.19047619,
-        "px": 0.63,
-        "fees_sim": 0.005,
-        "notional_usd": 0.75,
-        "thesis": "Fast-grab Kalshi demo SWM-12: YES Fed Jan-28 H0 @ ask 0.63 live. Event ladder (not weather). Degen caps. PAPER. Not advice.",
-        "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXFEDDECISION-28JAN-H0",
-        "pnl": null,
-        "status": "open",
-        "agent_id": "SWM-12",
-        "edge": "fast-grab-kalshi",
-        "operator": "openclaw",
-        "quote_asof": "2026-09-05T19:03:58-0500",
-        "live": false,
-        "evidence_url_2": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&series_ticker=KXFEDDECISION",
-        "yes_ask": 0.63,
-        "yes_bid": 0.6
-      },
-      {
-        "id": "SWM-15-F004",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "sell",
-        "qty": 6.27e-06,
-        "px": 79856.985,
-        "fees_sim": 0.005,
-        "notional_usd": 0.500703,
-        "thesis": "Fast-grab rotate SWM-15: close near-mark BTC-USD @79856.985 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-        "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "pnl": -0.0045,
-        "status": "closed",
-        "closes": "SWM-15-F003",
-        "agent_id": "SWM-15",
-        "edge": "fast-grab-rotate",
-        "operator": "openclaw",
-        "live": false
-      },
-      {
-        "id": "SWM-15-F005",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "pumpfun_paper",
-        "symbol": "FARTCOIN",
-        "side": "buy",
-        "qty": 2.91057076,
-        "px": 0.1717,
-        "fees_sim": 0.005,
-        "notional_usd": 0.499745,
-        "thesis": "Fast-grab pump.fun paper SWM-15: FARTCOIN @0.1717 live DexScreener. Rotate BTC hold-to-mark \u2192 degen tape. PAPER no wallet. Not advice.",
-        "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-        "pnl": null,
-        "status": "open",
-        "agent_id": "SWM-15",
-        "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "quote_asof": "2026-09-05T19:03:58-0500",
-        "live": false,
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
-      },
-      {
-        "id": "SWM-18-F004",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "crypto",
-        "symbol": "SOL-USD",
-        "side": "sell",
-        "qty": 0.00726709,
-        "px": 103.225,
-        "fees_sim": 0.005,
-        "notional_usd": 0.750145,
-        "thesis": "Fast-grab rotate SWM-18: close near-mark SOL-USD @103.225 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-        "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "pnl": -0.004855,
-        "status": "closed",
-        "closes": "SWM-18-F002",
-        "agent_id": "SWM-18",
-        "edge": "fast-grab-rotate",
-        "operator": "openclaw",
-        "live": false
-      },
-      {
-        "id": "SWM-18-F005",
-        "ts": "2026-09-05T19:03:58-0500",
-        "venue": "pumpfun_paper",
-        "symbol": "FARTCOIN",
-        "side": "buy",
-        "qty": 4.36808387,
-        "px": 0.1717,
-        "fees_sim": 0.005,
-        "notional_usd": 0.75,
-        "thesis": "Fast-grab pump.fun paper SWM-18: FARTCOIN @0.1717 live. No 2nd weather (Risk HOLD until settle on KXHIGHNY). PAPER no wallet. Not advice.",
-        "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-        "pnl": null,
-        "status": "open",
-        "agent_id": "SWM-18",
-        "edge": "fast-grab-pumpfun",
-        "operator": "openclaw",
-        "quote_asof": "2026-09-05T19:03:58-0500",
-        "live": false,
-        "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-        "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
       }
     ],
     "agents": [
       {
         "id": "SWM-01",
-        "equity": 4.98958,
+        "equity": 4.991657,
         "cash_usd": 4.2896,
         "status": "alive",
-        "return_pct": -0.2084,
-        "open_positions": 2,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "grok",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.1669,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-01-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 5.64e-06,
-            "px": 79851.885,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4504,
-            "thesis": "Sat kick swarm SWM-01: liquid BTC. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-01",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-01-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00010081,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Holiday size-up SWM-01: ETH-USD @2479.805 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-01",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-02",
-        "equity": 4.984953,
+        "equity": 4.986556,
         "cash_usd": 3.735,
         "status": "alive",
-        "return_pct": -0.3009,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2689,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-02-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.00058427,
-            "px": 770.19,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-02: SPY ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-02",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-02-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "TLT",
-            "side": "buy",
-            "qty": 0.00608199,
-            "px": 82.21,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-02: TLT @82.21 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/TLT/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-02",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-02-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00012098,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.3,
-            "thesis": "Holiday size-up SWM-02: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-02",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-03",
-        "equity": 4.975816,
+        "equity": 4.958751,
         "cash_usd": 3.025318,
         "status": "alive",
-        "return_pct": -0.4837,
-        "open_positions": 3,
-        "risk_allele": "degen",
-        "edge_pref": "event_spike",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.825,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-03-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "QQQ",
-            "side": "buy",
-            "qty": 0.0006259,
-            "px": 718.96,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-03: QQQ ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-03",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-03-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00726779,
-            "px": 103.195,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Sat night paper open SWM-03: SOL-USD @103.195 live. Allele degen cap $0.75/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": -0.004782,
-            "status": "closed",
-            "agent_id": "SWM-03",
-            "edge": "sat-night-live",
-            "closed_by": "SWM-03-F004"
-          },
-          {
-            "id": "SWM-03-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 9.4e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.7499,
-            "thesis": "Holiday size-up SWM-03: BTC-USD @79777.265 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-03",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-03-F004",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "sell",
-            "qty": 0.00726779,
-            "px": 103.225,
-            "fees_sim": 0.005,
-            "notional_usd": 0.750218,
-            "thesis": "Fast-grab rotate SWM-03: close near-mark SOL-USD @103.225 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": -0.004782,
-            "status": "closed",
-            "closes": "SWM-03-F002",
-            "agent_id": "SWM-03",
-            "edge": "fast-grab-rotate",
-            "operator": "openclaw",
-            "live": false
-          },
-          {
-            "id": "SWM-03-F005",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXFEDDECISION-28JAN-H0",
-            "side": "buy",
-            "qty": 1.19047619,
-            "px": 0.63,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Fast-grab Kalshi demo SWM-03: YES Fed Jan-28 hold (H0) @ ask 0.63. Live Kalshi ask. Degen $0.75/$2. PAPER only \u2014 no live $. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXFEDDECISION-28JAN-H0",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-03",
-            "edge": "fast-grab-kalshi",
-            "operator": "openclaw",
-            "quote_asof": "2026-09-05T19:03:58-0500",
-            "live": false,
-            "evidence_url_2": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&series_ticker=KXFEDDECISION",
-            "yes_ask": 0.63,
-            "yes_bid": 0.6
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-04",
-        "equity": 4.989266,
+        "equity": 4.992077,
         "cash_usd": 4.2903,
         "status": "alive",
-        "return_pct": -0.2147,
-        "open_positions": 2,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.1585,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-04-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00018118,
-            "px": 2483.715,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-04: ETH spot. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-04",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-04-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 3.13e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.2497,
-            "thesis": "Holiday size-up SWM-04: BTC-USD @79777.265 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-04",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-05",
-        "equity": 4.98494,
+        "equity": 4.98681,
         "cash_usd": 3.735,
         "status": "alive",
-        "return_pct": -0.3012,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2638,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-05-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "GLD",
-            "side": "buy",
-            "qty": 0.00098336,
-            "px": 406.77,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4,
-            "thesis": "Sat kick swarm SWM-05: GLD. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/GLD/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-05",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-05-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "BIL",
-            "side": "buy",
-            "qty": 0.00546747,
-            "px": 91.45,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-05: BIL @91.45 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/BIL/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-05",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-05-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00014114,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.35,
-            "thesis": "Holiday size-up SWM-05: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-05",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-06",
-        "equity": 4.975439,
+        "equity": 4.97791,
         "cash_usd": 3.075656,
         "status": "alive",
-        "return_pct": -0.4912,
-        "open_positions": 3,
-        "risk_allele": "degen",
-        "edge_pref": "event_spike",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.4418,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-06-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "IWM",
-            "side": "buy",
-            "qty": 0.00135131,
-            "px": 296.01,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4,
-            "thesis": "Sat kick swarm SWM-06: IWM. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/IWM/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-06",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-06-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 9.4e-06,
-            "px": 79775.395,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Sat night paper open SWM-06: BTC-USD @79775.395 live. Allele degen cap $0.75/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": -0.004233,
-            "status": "closed",
-            "agent_id": "SWM-06",
-            "edge": "sat-night-live",
-            "closed_by": "SWM-06-F004"
-          },
-          {
-            "id": "SWM-06-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00726709,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Holiday size-up SWM-06: SOL-USD @103.205 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-06",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-06-F004",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "sell",
-            "qty": 9.4e-06,
-            "px": 79856.985,
-            "fees_sim": 0.005,
-            "notional_usd": 0.750656,
-            "thesis": "Fast-grab rotate SWM-06: close near-mark BTC-USD @79856.985 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": -0.004233,
-            "status": "closed",
-            "closes": "SWM-06-F002",
-            "agent_id": "SWM-06",
-            "edge": "fast-grab-rotate",
-            "operator": "openclaw",
-            "live": false
-          },
-          {
-            "id": "SWM-06-F005",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "pumpfun_paper",
-            "symbol": "FARTCOIN",
-            "side": "buy",
-            "qty": 4.36808387,
-            "px": 0.1717,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Fast-grab pump.fun paper SWM-06: FARTCOIN @0.1717 DexScreener raydium liq~$8003064. Cross pump API mint. Degen $0.75/$2. PAPER \u2014 no wallet/SOL. Legal HOLD live. Not advice.",
-            "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-06",
-            "edge": "fast-grab-pumpfun",
-            "operator": "openclaw",
-            "quote_asof": "2026-09-05T19:03:58-0500",
-            "live": false,
-            "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-07",
-        "equity": 5.010005,
+        "equity": 4.975383,
         "cash_usd": 4.2602,
         "status": "alive",
-        "return_pct": 0.2001,
-        "open_positions": 2,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "grok",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.4923,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-07-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXHIGHNY-26SEP06-B73.5",
-            "side": "buy",
-            "qty": 1.0,
-            "px": 0.5,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat kick swarm SWM-07: Kalshi demo 73-74F; NWS Sun 74F. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-07",
-            "edge": "sat-kick",
-            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-            "stamps": {
-              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
-              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
-            }
-          },
-          {
-            "id": "SWM-07-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 2.88e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.2298,
-            "thesis": "Holiday size-up SWM-07: BTC-USD @79777.265 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-07",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-08",
-        "equity": 4.984937,
+        "equity": 4.986807,
         "cash_usd": 3.735,
         "status": "alive",
-        "return_pct": -0.3013,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2639,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-08-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "BIL",
-            "side": "buy",
-            "qty": 0.00437397,
-            "px": 91.45,
-            "fees_sim": 0.005,
-            "notional_usd": 0.4,
-            "thesis": "Sat kick swarm SWM-08: BIL T-bill ETF. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/BIL/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-08",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-08-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "IWM",
-            "side": "buy",
-            "qty": 0.00168913,
-            "px": 296.01,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-08: IWM @296.01 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/IWM/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-08",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-08-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00014114,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.35,
-            "thesis": "Holiday size-up SWM-08: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-08",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-09",
-        "equity": 4.970005,
+        "equity": 4.972844,
         "cash_usd": 2.970021,
         "status": "alive",
-        "return_pct": -0.5999,
-        "open_positions": 4,
-        "risk_allele": "degen",
-        "edge_pref": "event_spike",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.5431,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-09-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 4.38e-06,
-            "px": 79851.885,
-            "fees_sim": 0.005,
-            "notional_usd": 0.3498,
-            "thesis": "Sat kick swarm SWM-09: BTC lean. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-09",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-09-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00030248,
-            "px": 2479.535,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Sat night paper open SWM-09: ETH-USD @2479.535 live. Allele degen cap $0.75/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": -0.004688,
-            "status": "closed",
-            "agent_id": "SWM-09",
-            "edge": "sat-night-live",
-            "closed_by": "SWM-09-F005"
-          },
-          {
-            "id": "SWM-09-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00726709,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Holiday size-up SWM-09: SOL-USD @103.205 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-09",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-09-F004",
-            "ts": "2026-09-05T18:30:54-0500",
-            "venue": "pumpfun_paper",
-            "symbol": "FARTCOIN",
-            "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "side": "buy",
-            "qty": 0.88011696,
-            "px": 0.171,
-            "fees_sim": 0.005,
-            "notional_usd": 0.1505,
-            "thesis": "Pump.fun PAPER explore SWM-09: FARTCOIN @0.171 DexScreener Raydium (liq~$7,988,206). Cross-check pump.fun API usd_mc\u2248171,421,341 \u2192 px_est\u22480.1714249576041717. Allele degen residual gross room $0.1505 \u2192 clip $0.1505 (per_name\u2264$0.75 gross\u2264$2). PAPER ONLY \u2014 no wallet/SOL/on-chain. Legal HOLD live. Not advice.",
-            "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-            "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "quote_asof": "2026-09-05T18:30:54-0500",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-09",
-            "edge": "pumpfun-paper-explore",
-            "live": false
-          },
-          {
-            "id": "SWM-09-F005",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "sell",
-            "qty": 0.00030248,
-            "px": 2480.565,
-            "fees_sim": 0.005,
-            "notional_usd": 0.750321,
-            "thesis": "Fast-grab rotate SWM-09: close near-mark ETH-USD @2480.565 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": -0.004688,
-            "status": "closed",
-            "closes": "SWM-09-F002",
-            "agent_id": "SWM-09",
-            "edge": "fast-grab-rotate",
-            "operator": "openclaw",
-            "live": false
-          },
-          {
-            "id": "SWM-09-F006",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "pumpfun_paper",
-            "symbol": "memestonk",
-            "side": "buy",
-            "qty": 3881.98757764,
-            "px": 0.0001932,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Fast-grab pump.fun paper SWM-09: memestonk @0.0001932 DexScreener pumpswap liq~$42480. Degen residual after ETH rotate. PAPER \u2014 no wallet. Not advice.",
-            "evidence_url": "https://dexscreener.com/solana/bw4vqqxvaij7ncqqxitnymakbf3nsskbfhrriehaom8w",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-09",
-            "edge": "fast-grab-pumpfun",
-            "operator": "openclaw",
-            "quote_asof": "2026-09-05T19:03:58-0500",
-            "live": false,
-            "mint": "CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump",
-            "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump",
-            "evidence_url_3": "https://pump.fun/coin/CYAQyGC9Nc9RV5MiSiJxdE8utWZtdjtt3tKe1Uvjpump"
-          }
-        ]
+        "open_positions": 4,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-10",
-        "equity": 4.990051,
+        "equity": 4.990462,
         "cash_usd": 4.3903,
         "status": "alive",
-        "return_pct": -0.199,
-        "open_positions": 2,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.1908,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-10-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.00045443,
-            "px": 770.19,
-            "fees_sim": 0.005,
-            "notional_usd": 0.35,
-            "thesis": "Sat kick swarm SWM-10: SPY lean. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-10",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-10-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 3.13e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.2497,
-            "thesis": "Holiday size-up SWM-10: BTC-USD @79777.265 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-10",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 2,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-11",
-        "equity": 5.043657,
+        "equity": 5.191684,
         "cash_usd": 3.7937,
         "status": "alive",
-        "return_pct": 0.8731,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "grok",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": 3.8337,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-11-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXHIGHNY-26SEP06-B75.5",
-            "side": "buy",
-            "qty": 1.9565,
-            "px": 0.23,
-            "fees_sim": 0.005,
-            "notional_usd": 0.45,
-            "thesis": "Sat kick swarm SWM-11: Kalshi demo 75-76F (OTM vs NWS 74) \u2014 tiny contrary paper. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B75.5",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-11",
-            "edge": "sat-kick",
-            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-            "stamps": {
-              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
-              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
-            }
-          },
-          {
-            "id": "SWM-11-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.00064919,
-            "px": 770.19,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-11: SPY @770.19 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-11",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-11-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 9.731e-05,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.2413,
-            "thesis": "Holiday size-up SWM-11: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-11",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-12",
-        "equity": 4.97514,
+        "equity": 4.957283,
         "cash_usd": 3.125145,
         "status": "alive",
-        "return_pct": -0.4972,
-        "open_positions": 3,
-        "risk_allele": "degen",
-        "edge_pref": "event_spike",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.8543,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-12-F001",
-            "ts": "2026-09-05T16:41:40-0500",
-            "venue": "stocks",
-            "symbol": "QQQ",
-            "side": "buy",
-            "qty": 0.00048681,
-            "px": 718.96,
-            "fees_sim": 0.005,
-            "notional_usd": 0.35,
-            "thesis": "Sat kick swarm SWM-12: QQQ lean. Cap \u2264$0.50/name. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-12",
-            "edge": "sat-kick"
-          },
-          {
-            "id": "SWM-12-F002",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "GLD",
-            "side": "buy",
-            "qty": 0.00184379,
-            "px": 406.77,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Sat night paper open SWM-12: GLD @406.77 live. Allele degen cap $0.75/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/GLD/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-12",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-12-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00726709,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Holiday size-up SWM-12: SOL-USD @103.205 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": -0.004855,
-            "status": "closed",
-            "agent_id": "SWM-12",
-            "edge": "holiday-sizeup-live",
-            "closed_by": "SWM-12-F004"
-          },
-          {
-            "id": "SWM-12-F004",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "sell",
-            "qty": 0.00726709,
-            "px": 103.225,
-            "fees_sim": 0.005,
-            "notional_usd": 0.750145,
-            "thesis": "Fast-grab rotate SWM-12: close near-mark SOL-USD @103.225 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": -0.004855,
-            "status": "closed",
-            "closes": "SWM-12-F003",
-            "agent_id": "SWM-12",
-            "edge": "fast-grab-rotate",
-            "operator": "openclaw",
-            "live": false
-          },
-          {
-            "id": "SWM-12-F005",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXFEDDECISION-28JAN-H0",
-            "side": "buy",
-            "qty": 1.19047619,
-            "px": 0.63,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Fast-grab Kalshi demo SWM-12: YES Fed Jan-28 H0 @ ask 0.63 live. Event ladder (not weather). Degen caps. PAPER. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXFEDDECISION-28JAN-H0",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-12",
-            "edge": "fast-grab-kalshi",
-            "operator": "openclaw",
-            "quote_asof": "2026-09-05T19:03:58-0500",
-            "live": false,
-            "evidence_url_2": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&series_ticker=KXFEDDECISION",
-            "yes_ask": 0.63,
-            "yes_bid": 0.6
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-13",
-        "equity": 4.988702,
+        "equity": 4.990449,
         "cash_usd": 4.239,
         "status": "alive",
-        "return_pct": -0.226,
-        "open_positions": 3,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.191,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-13-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 3.13e-06,
-            "px": 79775.395,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Sat night paper open SWM-13: BTC-USD @79775.395 live. Allele turtle cap $0.25/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-13",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-13-F002",
-            "ts": "2026-09-05T18:25:30-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.0003246,
-            "px": 770.19,
-            "fees_sim": 0.001,
-            "notional_usd": 0.25,
-            "thesis": "A1 turtle: SPY last Yahoo regularMarket $770.19 (Fri close \u22120.39%). Paper \u2264$0.25/name. Weekend mark; Mon VWAP. Not advice.",
-            "evidence_url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?interval=1d&range=5d",
-            "quote_asof": "2026-09-04T20:00:00Z regularMarket last (weekend; session closed)",
-            "pnl": null,
-            "edge": "A1-VWAP-MR-paper"
-          },
-          {
-            "id": "SWM-13-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00010081,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Holiday size-up SWM-13: ETH-USD @2479.805 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-13",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-14",
-        "equity": 4.984709,
+        "equity": 4.988337,
         "cash_usd": 3.735,
         "status": "alive",
-        "return_pct": -0.3058,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2333,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-14-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.00064919,
-            "px": 770.19,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-14: SPY @770.19 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/SPY/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-14",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-14-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00020163,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Holiday size-up SWM-14: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-14",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-14-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00242236,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Holiday size-up SWM-14: SOL-USD @103.205 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-14",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-15",
-        "equity": 4.975758,
+        "equity": 4.981724,
         "cash_usd": 2.975758,
         "status": "alive",
-        "return_pct": -0.4848,
-        "open_positions": 3,
-        "risk_allele": "degen",
-        "edge_pref": "event_spike",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.3655,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-15-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00030248,
-            "px": 2479.535,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Sat night paper open SWM-15: ETH-USD @2479.535 live. Allele degen cap $0.75/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-15",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-15-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00726709,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Holiday size-up SWM-15: SOL-USD @103.205 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-15",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-15-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 6.27e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5002,
-            "thesis": "Holiday size-up SWM-15: BTC-USD @79777.265 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": -0.0045,
-            "status": "closed",
-            "agent_id": "SWM-15",
-            "edge": "holiday-sizeup-live",
-            "closed_by": "SWM-15-F004"
-          },
-          {
-            "id": "SWM-15-F004",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "sell",
-            "qty": 6.27e-06,
-            "px": 79856.985,
-            "fees_sim": 0.005,
-            "notional_usd": 0.500703,
-            "thesis": "Fast-grab rotate SWM-15: close near-mark BTC-USD @79856.985 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": -0.0045,
-            "status": "closed",
-            "closes": "SWM-15-F003",
-            "agent_id": "SWM-15",
-            "edge": "fast-grab-rotate",
-            "operator": "openclaw",
-            "live": false
-          },
-          {
-            "id": "SWM-15-F005",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "pumpfun_paper",
-            "symbol": "FARTCOIN",
-            "side": "buy",
-            "qty": 2.91057076,
-            "px": 0.1717,
-            "fees_sim": 0.005,
-            "notional_usd": 0.499745,
-            "thesis": "Fast-grab pump.fun paper SWM-15: FARTCOIN @0.1717 live DexScreener. Rotate BTC hold-to-mark \u2192 degen tape. PAPER no wallet. Not advice.",
-            "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-15",
-            "edge": "fast-grab-pumpfun",
-            "operator": "openclaw",
-            "quote_asof": "2026-09-05T19:03:58-0500",
-            "live": false,
-            "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-16",
-        "equity": 4.988869,
+        "equity": 4.990237,
         "cash_usd": 4.2393,
         "status": "alive",
-        "return_pct": -0.2226,
-        "open_positions": 3,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.1953,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-16-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.0024226,
-            "px": 103.195,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Sat night paper open SWM-16: SOL-USD @103.195 live. Allele turtle cap $0.25/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-16",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-16-F002",
-            "ts": "2026-09-05T18:25:30-0500",
-            "venue": "stocks",
-            "symbol": "QQQ",
-            "side": "buy",
-            "qty": 0.00034772,
-            "px": 718.96,
-            "fees_sim": 0.001,
-            "notional_usd": 0.25,
-            "thesis": "A1 turtle: QQQ last Yahoo regularMarket $718.96 (Fri +0.18%). Paper \u2264$0.25/name. Weekend mark; Mon VWAP. Not advice.",
-            "evidence_url": "https://query1.finance.yahoo.com/v8/finance/chart/QQQ?interval=1d&range=5d",
-            "quote_asof": "2026-09-04T20:00:00Z regularMarket last (weekend; session closed)",
-            "pnl": null,
-            "edge": "A1-VWAP-MR-paper"
-          },
-          {
-            "id": "SWM-16-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 3.13e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.2497,
-            "thesis": "Holiday size-up SWM-16: BTC-USD @79777.265 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-16",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-17",
-        "equity": 4.98471,
+        "equity": 4.988338,
         "cash_usd": 3.735,
         "status": "alive",
-        "return_pct": -0.3058,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2332,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-17-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "QQQ",
-            "side": "buy",
-            "qty": 0.00069545,
-            "px": 718.96,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-17: QQQ @718.96 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/QQQ/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-17",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-17-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00020163,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Holiday size-up SWM-17: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-17",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-17-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00242236,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Holiday size-up SWM-17: SOL-USD @103.205 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-17",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       },
       {
         "id": "SWM-18",
-        "equity": 4.876491,
+        "equity": 4.912397,
         "cash_usd": 2.974945,
         "status": "alive",
-        "return_pct": -2.4702,
-        "open_positions": 3,
-        "risk_allele": "degen",
-        "edge_pref": "event_spike",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -1.7521,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-18-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "kalshi_demo",
-            "symbol": "KXHIGHNY-26SEP06-B73.5",
-            "side": "buy",
-            "qty": 1.4151,
-            "px": 0.53,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Sat night paper open SWM-18: KXHIGHNY-26SEP06-B73.5 @0.53 live. Allele degen cap $0.75/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP06-B73.5",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-18",
-            "edge": "sat-night-live",
-            "evidence_url_2": "https://api.weather.gov/gridpoints/OKX/33,42/forecast",
-            "stamps": {
-              "legal": "LEGAL-STAMP-SWARM-EVENT-WX-2026-09-05.md",
-              "risk": "paper/swarm/RISK-STAMP-SWARM-EVENT-WX-2026-09-05.md"
-            }
-          },
-          {
-            "id": "SWM-18-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00726709,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Holiday size-up SWM-18: SOL-USD @103.205 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": -0.004855,
-            "status": "closed",
-            "agent_id": "SWM-18",
-            "edge": "holiday-sizeup-live",
-            "closed_by": "SWM-18-F004"
-          },
-          {
-            "id": "SWM-18-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 6.27e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5002,
-            "thesis": "Holiday size-up SWM-18: BTC-USD @79777.265 live Coinbase/Kalshi. Allele degen per_name\u2264$0.75 gross\u2264$2.0. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-18",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-18-F004",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "sell",
-            "qty": 0.00726709,
-            "px": 103.225,
-            "fees_sim": 0.005,
-            "notional_usd": 0.750145,
-            "thesis": "Fast-grab rotate SWM-18: close near-mark SOL-USD @103.225 live to free degen gross for Kalshi/pump paper clip. Allele degen $0.75/$2 die20%. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": -0.004855,
-            "status": "closed",
-            "closes": "SWM-18-F002",
-            "agent_id": "SWM-18",
-            "edge": "fast-grab-rotate",
-            "operator": "openclaw",
-            "live": false
-          },
-          {
-            "id": "SWM-18-F005",
-            "ts": "2026-09-05T19:03:58-0500",
-            "venue": "pumpfun_paper",
-            "symbol": "FARTCOIN",
-            "side": "buy",
-            "qty": 4.36808387,
-            "px": 0.1717,
-            "fees_sim": 0.005,
-            "notional_usd": 0.75,
-            "thesis": "Fast-grab pump.fun paper SWM-18: FARTCOIN @0.1717 live. No 2nd weather (Risk HOLD until settle on KXHIGHNY). PAPER no wallet. Not advice.",
-            "evidence_url": "https://dexscreener.com/solana/bzc9nzfmqkxr6fz1dbph7bdf9broyef6pnzesp7v5iiw",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-18",
-            "edge": "fast-grab-pumpfun",
-            "operator": "openclaw",
-            "quote_asof": "2026-09-05T19:03:58-0500",
-            "live": false,
-            "mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_2": "https://frontend-api-v3.pump.fun/coins/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
-            "evidence_url_3": "https://pump.fun/coin/9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "degen"
       },
       {
         "id": "SWM-19",
-        "equity": 4.989057,
+        "equity": 4.989468,
         "cash_usd": 4.2393,
         "status": "alive",
-        "return_pct": -0.2189,
-        "open_positions": 3,
-        "risk_allele": "turtle",
-        "edge_pref": "mean_reversion_slow",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2106,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-19-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "TLT",
-            "side": "buy",
-            "qty": 0.00304099,
-            "px": 82.21,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Sat night paper open SWM-19: TLT @82.21 live. Allele turtle cap $0.25/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/TLT/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-19",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-19-F002",
-            "ts": "2026-09-05T18:25:30-0500",
-            "venue": "stocks",
-            "symbol": "SPY",
-            "side": "buy",
-            "qty": 0.0003246,
-            "px": 770.19,
-            "fees_sim": 0.001,
-            "notional_usd": 0.25,
-            "thesis": "A1 turtle: SPY last Yahoo regularMarket $770.19. Paper \u2264$0.25/name allele cap. Source chart API. Not advice.",
-            "evidence_url": "https://query1.finance.yahoo.com/v8/finance/chart/SPY?interval=1d&range=5d",
-            "quote_asof": "2026-09-04T20:00:00Z regularMarket last (weekend; session closed)",
-            "pnl": null,
-            "edge": "A1-VWAP-MR-paper"
-          },
-          {
-            "id": "SWM-19-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "BTC-USD",
-            "side": "buy",
-            "qty": 3.13e-06,
-            "px": 79777.265,
-            "fees_sim": 0.005,
-            "notional_usd": 0.2497,
-            "thesis": "Holiday size-up SWM-19: BTC-USD @79777.265 live Coinbase/Kalshi. Allele turtle per_name\u2264$0.25 gross\u2264$0.75. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-19",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "turtle"
       },
       {
         "id": "SWM-20",
-        "equity": 4.984711,
+        "equity": 4.988339,
         "cash_usd": 3.735,
         "status": "alive",
-        "return_pct": -0.3058,
-        "open_positions": 3,
-        "risk_allele": "balanced",
-        "edge_pref": "liquid_mix",
-        "operator": "openclaw",
+        "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-05T16:24:04-0500",
         "died_at": null,
+        "return_pct": -0.2332,
         "starting_cash_usd": 5.0,
-        "fills": [
-          {
-            "id": "SWM-20-F001",
-            "ts": "2026-09-05T18:25:57-0500",
-            "venue": "stocks",
-            "symbol": "GLD",
-            "side": "buy",
-            "qty": 0.0012292,
-            "px": 406.77,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Sat night paper open SWM-20: GLD @406.77 live. Allele balanced cap $0.5/name. NWS Sun=74F. PAPER. Not advice.",
-            "evidence_url": "https://finance.yahoo.com/quote/GLD/",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-20",
-            "edge": "sat-night-live"
-          },
-          {
-            "id": "SWM-20-F002",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "ETH-USD",
-            "side": "buy",
-            "qty": 0.00020163,
-            "px": 2479.805,
-            "fees_sim": 0.005,
-            "notional_usd": 0.5,
-            "thesis": "Holiday size-up SWM-20: ETH-USD @2479.805 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-20",
-            "edge": "holiday-sizeup-live"
-          },
-          {
-            "id": "SWM-20-F003",
-            "ts": "2026-09-05T18:27:18-0500",
-            "venue": "crypto",
-            "symbol": "SOL-USD",
-            "side": "buy",
-            "qty": 0.00242236,
-            "px": 103.205,
-            "fees_sim": 0.005,
-            "notional_usd": 0.25,
-            "thesis": "Holiday size-up SWM-20: SOL-USD @103.205 live Coinbase/Kalshi. Allele balanced per_name\u2264$0.5 gross\u2264$1.25. NWS={'Sunday': 74, 'Labor Day': 78, 'Tuesday': 80, 'Wednesday': 84, 'Thursday': 85, 'Friday': 76, 'Saturday': 77}. PAPER. Not advice.",
-            "evidence_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-            "pnl": null,
-            "status": "open",
-            "agent_id": "SWM-20",
-            "edge": "holiday-sizeup-live"
-          }
-        ]
+        "open_positions": 3,
+        "risk_allele": "balanced"
       }
     ],
     "living": 20,
     "dead": 0,
+    "births": 0,
     "mr": {
       "label": "Swarm MR",
       "starting_cash_usd": 0.0,
@@ -3232,17 +1697,56 @@
       "recent_fills": []
     },
     "event": {
-      "equity_usd": 29.8076,
-      "return_pct": -0.6413,
-      "open_positions": 19,
-      "mtm_at": "2026-09-05T18:59:00-0500",
-      "lane": "event_spike",
-      "alive": true
+      "label": "Swarm Event",
+      "starting_cash_usd": 0.0,
+      "cash_usd": 44.99,
+      "equity_usd": 49.8957,
+      "total_pnl_usd": -50.1043,
+      "return_pct": 0,
+      "open_positions": 1,
+      "alive": false,
+      "parked": true,
+      "lane": "calendar/event \u00b7 pool slice via agents",
+      "open": [
+        {
+          "venue": "kalshi_demo",
+          "symbol": "KXHIGHNY-26SEP06-B73.5",
+          "qty": 9.434,
+          "avg": 0.53,
+          "mark": 0.52,
+          "upnl": -0.09434,
+          "notional": 4.90568,
+          "edge": "E3-event",
+          "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
+          "urls": [
+            "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+          ]
+        }
+      ],
+      "recent_fills": [
+        {
+          "id": "SWME001",
+          "ts": "2026-09-05T18:22:22-0500",
+          "venue": "kalshi_demo",
+          "symbol": "KXHIGHNY-26SEP06-B73.5",
+          "side": "buy",
+          "qty": 9.434,
+          "px": 0.53,
+          "notional_usd": 5.0,
+          "edge": "E3-event",
+          "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "urls": [
+            "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+            "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP06",
+            "https://www.weather.gov/climate/",
+            "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+          ]
+        }
+      ]
     },
     "competition": "ACTIVE",
-    "pool_usd": 99.646796,
-    "seed_usd": 5.0,
-    "updated_at": "2026-09-05T19:03:58-0500"
+    "pool_usd": 100.0,
+    "seed_usd": 5.0
   },
   "grok": {
     "via": "grok-cli",
@@ -3253,8 +1757,7 @@
     "next": "Lean TD gross ($23/$25) until a close. Mon 10:20 CT grok_wire cron. No live.",
     "jobs_done": [
       "desk-pulse"
-    ],
-    "operator_note": "hive glow: grok=#14f195 openclaw=#f5c542 loss=#ff5d6c"
+    ]
   },
   "experiments": [
     {
@@ -3330,17 +1833,15 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
-    "cash_usd": 142.6875,
-    "equity_usd": 183.7064,
+    "cash_usd": 145.6545,
+    "equity_usd": 184.5224,
     "day_pnl_usd": -14.3125,
-    "total_pnl_usd": -16.2936,
-    "return_pct": -7.1562,
+    "total_pnl_usd": -15.4776,
+    "return_pct": -7.7388,
     "open_positions": 3,
     "live_wallets": false,
     "gate": {
-      "open": false,
-      "blocked_reason": "day_pause until Risk clear",
-      "last_mistake_id": "M001"
+      "open": true
     },
     "confidence": {
       "score": 39,
@@ -3348,6 +1849,38 @@
       "next": "2 closed \u00b7 eq $185.69 \u00b7 ret -7.1562% \u00b7 GATE CLOSED (L001) \u00b7 DD 7.2%"
     },
     "recent_fills": [
+      {
+        "id": "F009",
+        "ts": "2026-09-05T20:21:54-05:00",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.00601394,
+        "px": 2494.205,
+        "notional_usd": 14.999999,
+        "edge": "weekend_liquid",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "F008",
+        "ts": "2026-09-05T20:21:54-05:00",
+        "venue": "stocks",
+        "symbol": "SPY",
+        "side": "sell",
+        "qty": 0.02337086,
+        "px": 770.19,
+        "notional_usd": 18.000003,
+        "pnl": -0.036,
+        "edge": "cleanup",
+        "url": "https://finance.yahoo.com/quote/SPY/",
+        "urls": [
+          "https://finance.yahoo.com/quote/SPY/"
+        ]
+      },
       {
         "id": "F007",
         "ts": "2026-09-05T18:18:18-05:00",
@@ -3361,6 +1894,7 @@
         "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
         "urls": [
           "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
         ]
       },
@@ -3378,6 +1912,7 @@
         "url": "https://api.weather.gov/stations/KNYC/observations",
         "urls": [
           "https://api.weather.gov/stations/KNYC/observations",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
@@ -3395,6 +1930,8 @@
         "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
         "urls": [
           "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
+          "https://www.weather.gov/climate/",
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
         ]
       },
@@ -3428,6 +1965,7 @@
         "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
         "urls": [
           "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
           "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
         ]
       },
@@ -3440,6 +1978,7 @@
         "qty": 0.02337086,
         "px": 770.19,
         "notional_usd": 18.000003,
+        "pnl": -0.036,
         "url": "https://finance.yahoo.com/quote/SPY/",
         "urls": [
           "https://finance.yahoo.com/quote/SPY/"
@@ -3464,18 +2003,6 @@
     ],
     "open": [
       {
-        "venue": "stocks",
-        "symbol": "SPY",
-        "qty": 0.02337086,
-        "avg": 770.19,
-        "mark": 770.19,
-        "upnl": 0.0,
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
         "venue": "kalshi_demo",
         "symbol": "KXFEDDECISION-26SEP-H0",
         "qty": 20.4082,
@@ -3493,12 +2020,26 @@
         "symbol": "KXHIGHNY-26SEP06-B73.5",
         "qty": 28.3019,
         "avg": 0.53,
-        "mark": 0.46,
-        "upnl": -1.9811,
+        "mark": 0.49,
+        "upnl": -1.1321,
         "edge": "E3",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep06",
         "urls": [
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00601394,
+        "avg": 2494.205,
+        "mark": 2494.205,
+        "upnl": 0.0,
+        "edge": "weekend_liquid",
+        "url": "https://www.coinbase.com/price/ethereum",
+        "urls": [
+          "https://www.coinbase.com/price/ethereum",
+          "https://www.coinbase.com/price/bitcoin"
         ]
       }
     ]
