@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T22:48:41-05:00",
+  "updated_at": "2026-09-05T22:53:44-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -101,7 +101,7 @@
   ],
   "tokens": {
     "window": "24h",
-    "total": 233641048,
+    "total": 235631281,
     "models": [
       {
         "id": "gemma",
@@ -133,11 +133,11 @@
         "id": "build",
         "label": "GROK BUILD",
         "color": "#ffb020",
-        "prompt": 232010594,
-        "completion": 1203140,
-        "total": 233213734,
-        "calls": 1126,
-        "last_prompt": 396614,
+        "prompt": 234000128,
+        "completion": 1203839,
+        "total": 235203967,
+        "calls": 1131,
+        "last_prompt": 398810,
         "meter": "unified",
         "note": "sum of per-call prompt+completion (context re-sent each loop)",
         "pct": 99.8
@@ -208,7 +208,7 @@
       {
         "id": "tick",
         "level": "warn",
-        "label": "tick age 96m"
+        "label": "tick age 101m"
       },
       {
         "id": "build_sess",
@@ -317,7 +317,7 @@
       "title": "Grok Build",
       "role": "conductor + dest code",
       "why": "Puppet master: host / Gemma / Qwen / Bot / OpenClaw. First path is independent. Circuit-break 402.",
-      "active": "LIVE",
+      "active": "ok",
       "token": "build",
       "health": "ok",
       "feeds": [
@@ -337,8 +337,8 @@
           "v": "False"
         }
       ],
-      "doing": "first \u00b7 running",
-      "working": true
+      "doing": "idle \u00b7 last dest first",
+      "working": false
     },
     "bot": {
       "title": "Grok Bot",
@@ -370,7 +370,7 @@
       "title": "First",
       "role": "always-on",
       "why": "Not a dest. Harness / pack / log-job. Independent BUILD\u2192VERIFY hop.",
-      "active": "LIVE",
+      "active": "pack-slice + log-job",
       "token": "script",
       "health": "ok",
       "feeds": [
@@ -381,8 +381,8 @@
         "host"
       ],
       "probes": [],
-      "doing": "harness job in-flight \u2192 VERIFY",
-      "working": true
+      "doing": "pack first ok",
+      "working": false
     },
     "review": {
       "title": "REVIEW",
@@ -413,7 +413,7 @@
       "title": "VERIFY",
       "role": "proof",
       "why": "Hash moved or it is a miss. Existing file \u2260 done. Every path lands here.",
-      "active": "LIVE",
+      "active": "hash-unchanged = fail",
       "token": "script",
       "health": "ok",
       "feeds": [
@@ -428,8 +428,8 @@
         "review"
       ],
       "probes": [],
-      "doing": "in-flight first",
-      "working": true
+      "doing": "PASS first edit",
+      "working": false
     },
     "master": {
       "title": "MASTER",
@@ -603,20 +603,10 @@
       "why": "Next job reads MASTER tail (pack is a gate, not a station)."
     }
   },
-  "events": [
-    {
-      "id": "build-2026-09-06T03:48:33.191Z",
-      "path": "first",
-      "op": "build",
-      "dest": "first"
-    }
-  ],
+  "events": [],
   "pulse": [
     "bot",
-    "build",
-    "first",
-    "oc",
-    "verify"
+    "oc"
   ],
   "doing": {
     "in": {
@@ -624,8 +614,8 @@
       "line": "job in"
     },
     "pack": {
-      "working": true,
-      "line": "harness job in-flight \u2192 VERIFY"
+      "working": false,
+      "line": "pack first ok"
     },
     "host": {
       "working": true,
@@ -640,8 +630,8 @@
       "line": "trade-dev 10 sess \u00b7 unused"
     },
     "build": {
-      "working": true,
-      "line": "first \u00b7 running"
+      "working": false,
+      "line": "idle \u00b7 last dest first"
     },
     "bot": {
       "working": true,
@@ -652,8 +642,8 @@
       "line": "gateway \u00b7 26 agents"
     },
     "first": {
-      "working": true,
-      "line": "harness job in-flight \u2192 VERIFY"
+      "working": false,
+      "line": "pack first ok"
     },
     "baja": {
       "working": false,
@@ -672,8 +662,8 @@
       "line": "waiting for AI-to-AI pass"
     },
     "verify": {
-      "working": true,
-      "line": "in-flight first"
+      "working": false,
+      "line": "PASS first edit"
     },
     "master": {
       "working": false,
@@ -682,7 +672,7 @@
   },
   "feed": [
     {
-      "t": "22:48:33",
+      "t": "22:49:30",
       "tag": "BUILD",
       "line": "running \u00b7 dest first",
       "tone": "hot"
@@ -718,19 +708,19 @@
       "tone": "ok"
     },
     {
-      "t": "22:48:41",
+      "t": "22:53:44",
       "tag": "ZOMBIES",
       "line": "woke block,kitchen,portal,retro,stranger",
       "tone": "bad"
     },
     {
-      "t": "22:48:41",
+      "t": "22:53:44",
       "tag": "LOCK",
       "line": "LOCK still block+first",
       "tone": "bad"
     },
     {
-      "t": "22:48:41",
+      "t": "22:53:44",
       "tag": "BUILD_SE",
       "line": "prompt_tokens 508506",
       "tone": "bad"
@@ -743,7 +733,7 @@
     "risk_label": "woke block,kitchen,portal,retro,stranger",
     "review_pct": 100,
     "review_label": "pass",
-    "ttft_ms": 2248,
+    "ttft_ms": 1059,
     "credit_pct": 57.0,
     "block": false
   },
@@ -752,9 +742,9 @@
       "id": "first",
       "name": "FIRST",
       "kind": "always-on",
-      "pill": "HOT",
-      "tone": "hot",
-      "line": "harness job in-flight \u2192 VERIFY",
+      "pill": "ARMED",
+      "tone": "ok",
+      "line": "pack first ok",
       "health": "ok"
     },
     {
@@ -823,24 +813,12 @@
   ],
   "callouts": [
     {
-      "id": "build",
-      "text": "first \u00b7 running"
-    },
-    {
       "id": "bot",
       "text": "LIVE \u00b7 23 bots \u2192 OpenClaw"
     },
     {
       "id": "oc",
       "text": "gateway \u00b7 26 agents"
-    },
-    {
-      "id": "first",
-      "text": "harness job in-flight \u2192 VERIFY"
-    },
-    {
-      "id": "verify",
-      "text": "in-flight first"
     }
   ],
   "room": {
@@ -848,13 +826,9 @@
     "bot_live": true,
     "working": [
       "in",
-      "pack",
       "host",
-      "build",
       "bot",
-      "oc",
-      "first",
-      "verify"
+      "oc"
     ],
     "oc_agents": [
       {
@@ -862,7 +836,7 @@
         "name": "paper-desk",
         "model": "gemma",
         "sess": 4,
-        "age_s": 2256,
+        "age_s": 2559,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -872,7 +846,7 @@
         "name": "trade-dev",
         "model": "qwen",
         "sess": 10,
-        "age_s": 8850,
+        "age_s": 9153,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -882,7 +856,7 @@
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 9009,
+        "age_s": 9312,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -892,7 +866,7 @@
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 8980,
+        "age_s": 9283,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -912,7 +886,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13791,
+        "age_s": 14094,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -972,7 +946,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13697,
+        "age_s": 14001,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1022,7 +996,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13667,
+        "age_s": 13970,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1102,7 +1076,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13662,
+        "age_s": 13965,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1112,7 +1086,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 367,
-        "age_s": 49304,
+        "age_s": 49607,
         "working": false,
         "silent": true,
         "tone": "warn"
