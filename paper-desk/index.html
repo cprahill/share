@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <base href="/paper-desk/">
 <script>
 (function(){try{var t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('paper-desk-theme');
 if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';
@@ -714,10 +715,10 @@ async function fetchJson(urls){
   return null;
 }
 async function load(){
-  let raw=await fetchJson(['data/board.json?t='+Date.now(),'/api/paper-desk']);
+  let raw=await fetchJson(['/paper-desk/data/board.json?t='+Date.now(),'/api/paper-desk','data/board.json?t='+Date.now()]);
   if(!raw){$('age').textContent='offline';$('hb').style.color=css('--siren','#FF536B');return}
   const b=raw.board&&(raw.board.main||raw.board.paper||raw.board.trade_dev||raw.board.swarm)?raw.board:raw;
-  const o=await fetchJson(['data/activity.json?t='+Date.now()])||b.ops||{};
+  const o=await fetchJson(['/paper-desk/data/activity.json?t='+Date.now(),'data/activity.json?t='+Date.now()])||b.ops||{};
   apply(b,o);
 }
 load();setInterval(load,25000);
