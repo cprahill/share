@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T16:00:10-0500",
+  "updated_at": "2026-09-06T16:00:51-0500",
   "duel": {
     "ends_at": "2026-09-11T16:00:00-04:00",
     "metric": "return_pct",
@@ -11,7 +11,7 @@
     "timeline": "Labor Day \u2192 Friday close",
     "mode": "ONE PRINT",
     "reset_at": null,
-    "friday_close": "2026-09-11T16:00:00-04:00"
+    "friday_close": null
   },
   "main": {
     "label": "ONE PRINT",
