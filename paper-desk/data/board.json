@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-06T12:30:03-0500",
+  "updated_at": "2026-09-06T12:50:16-0500",
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
     "leader": "trade_dev",
     "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
-    "main_return_pct": -0.035,
-    "trade_dev_return_pct": -0.0314,
-    "swarm_return_pct": -0.1928,
+    "main_return_pct": -0.021,
+    "trade_dev_return_pct": -0.0082,
+    "swarm_return_pct": -0.1208,
     "timeline": "Sat RESET \u2192 Thu hot wash",
     "mode": "3-group mortality \u00b7 20\u00d7$5 swarm",
     "reset_at": null
@@ -16,11 +16,11 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 79.9573,
-    "equity_usd": 99.965,
+    "cash_usd": 79.9677,
+    "equity_usd": 99.979,
     "day_pnl_usd": 0.0,
-    "total_pnl_usd": -0.035,
-    "return_pct": -0.035,
+    "total_pnl_usd": -0.021,
+    "return_pct": -0.021,
     "open_positions": 4,
     "live_wallets": false,
     "gate": {
@@ -32,6 +32,38 @@
       "next": "hard reset baseline \u2014 0 closes"
     },
     "recent_fills": [
+      {
+        "id": "F104",
+        "ts": "2026-09-06T12:50:12-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 5.018e-05,
+        "px": 79742.245,
+        "notional_usd": 4.0014,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "FC011",
+        "ts": "2026-09-06T12:50:12-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "sell",
+        "qty": 5.031e-05,
+        "px": 79742.245,
+        "notional_usd": 4.0118,
+        "edge": "main-rotate",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
       {
         "id": "F082",
         "ts": "2026-09-06T11:11:25-0500",
@@ -197,26 +229,11 @@
       {
         "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 5.031e-05,
-        "avg": 79646.985,
-        "mark": 79686.495,
-        "upnl": 0.002,
-        "notional": 4.009,
-        "edge": "wknd_crypto_24_7",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
         "qty": 7.529e-05,
         "avg": 79651.765,
-        "mark": 79686.495,
-        "upnl": 0.0026,
-        "notional": 5.9996,
+        "mark": 79742.245,
+        "upnl": 0.0068,
+        "notional": 6.0038,
         "edge": "wknd_crypto_24_7",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -229,9 +246,9 @@
         "symbol": "BTC-USD",
         "qty": 7.518e-05,
         "avg": 79652.235,
-        "mark": 79686.495,
-        "upnl": 0.0026,
-        "notional": 5.9908,
+        "mark": 79742.245,
+        "upnl": 0.0068,
+        "notional": 5.995,
         "edge": "wknd_crypto_24_7",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -244,9 +261,24 @@
         "symbol": "BTC-USD",
         "qty": 5.03e-05,
         "avg": 79663.485,
-        "mark": 79686.495,
-        "upnl": 0.0012,
-        "notional": 4.0082,
+        "mark": 79742.245,
+        "upnl": 0.004,
+        "notional": 4.011,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 5.018e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 4.0015,
         "edge": "wknd_crypto_24_7",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -260,12 +292,12 @@
     "label": "Trade Dev",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 83.9061,
-    "equity_usd": 99.9686,
+    "cash_usd": 79.9275,
+    "equity_usd": 99.9918,
     "day_pnl_usd": 0.0,
-    "total_pnl_usd": -0.0314,
-    "return_pct": -0.0314,
-    "open_positions": 2,
+    "total_pnl_usd": -0.0082,
+    "return_pct": -0.0082,
+    "open_positions": 3,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -435,17 +467,49 @@
           "https://api.coinbase.com/v2/prices/ETH-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
         ]
+      },
+      {
+        "id": "TDFC005",
+        "ts": "2026-09-06T12:50:12-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "sell",
+        "qty": 0.0016131,
+        "px": 2492.985,
+        "notional_usd": 4.0214,
+        "edge": "td-rotate",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "TDF012",
+        "ts": "2026-09-06T12:50:12-0500",
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "side": "buy",
+        "qty": 0.003209,
+        "px": 2492.985,
+        "notional_usd": 8.0,
+        "edge": "TD-wknd-crypto",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
       }
     ],
     "open": [
       {
         "venue": "crypto",
         "symbol": "ETH-USD",
-        "qty": 0.0032262,
+        "qty": 0.0016131,
         "avg": 2479.695,
-        "mark": 2489.39,
-        "upnl": 0.0313,
-        "notional": 8.0313,
+        "mark": 2492.985,
+        "upnl": 0.0214,
+        "notional": 4.0214,
         "edge": "TD-wknd-crypto",
         "url": "https://www.coinbase.com/price/bitcoin",
         "urls": [
@@ -457,9 +521,23 @@
         "symbol": "ETH-USD",
         "qty": 0.0032262,
         "avg": 2479.695,
-        "mark": 2489.39,
-        "upnl": 0.0313,
-        "notional": 8.0313,
+        "mark": 2492.985,
+        "upnl": 0.0429,
+        "notional": 8.0429,
+        "edge": "TD-wknd-crypto",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.003209,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 8.0,
         "edge": "TD-wknd-crypto",
         "url": "https://www.coinbase.com/price/bitcoin",
         "urls": [
@@ -471,11 +549,11 @@
   "swarm": {
     "label": "SWARM",
     "starting_cash_usd": 100.0,
-    "cash_usd": 57.8963,
-    "equity_usd": 99.8072,
-    "total_pnl_usd": -0.1928,
-    "return_pct": -0.1928,
-    "open_positions": 44,
+    "cash_usd": 64.5312,
+    "equity_usd": 99.8792,
+    "total_pnl_usd": -0.1208,
+    "return_pct": -0.1208,
+    "open_positions": 43,
     "open": [
       {
         "venue": "crypto",
@@ -599,40 +677,10 @@
       },
       {
         "venue": "crypto",
-        "symbol": "SOL-USD",
-        "qty": 0.00109997,
-        "avg": 105.73,
-        "mark": 106.005,
-        "upnl": 0.000302,
-        "notional": 0.116602,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79652.235,
-        "mark": 79613.275,
-        "upnl": -0.000978,
-        "notional": 1.999089,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
         "symbol": "ETH-USD",
         "qty": 0.00036659,
         "avg": 2479.695,
-        "mark": 2485.375,
+        "mark": 2492.985,
         "upnl": 0.002082,
         "notional": 0.911114,
         "edge": "wknd-elon-rush",
@@ -647,7 +695,7 @@
         "symbol": "SOL-USD",
         "qty": 0.0025169,
         "avg": 105.765,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.000604,
         "notional": 0.266804,
         "edge": "wknd-elon-rush",
@@ -662,7 +710,7 @@
         "symbol": "ETH-USD",
         "qty": 0.00037414,
         "avg": 2479.695,
-        "mark": 2485.375,
+        "mark": 2492.985,
         "upnl": 0.002125,
         "notional": 0.929878,
         "edge": "wknd-elon-rush",
@@ -677,7 +725,7 @@
         "symbol": "SOL-USD",
         "qty": 0.00265274,
         "avg": 105.815,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.000504,
         "notional": 0.281204,
         "edge": "wknd-elon-rush",
@@ -689,40 +737,10 @@
       },
       {
         "venue": "crypto",
-        "symbol": "SOL-USD",
-        "qty": 0.00109997,
-        "avg": 105.73,
-        "mark": 106.005,
-        "upnl": 0.000302,
-        "notional": 0.116602,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79652.235,
-        "mark": 79613.275,
-        "upnl": -0.000978,
-        "notional": 1.999089,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
         "symbol": "ETH-USD",
         "qty": 0.00036659,
         "avg": 2479.695,
-        "mark": 2485.375,
+        "mark": 2492.985,
         "upnl": 0.002082,
         "notional": 0.911114,
         "edge": "wknd-elon-rush",
@@ -737,7 +755,7 @@
         "symbol": "SOL-USD",
         "qty": 0.0025169,
         "avg": 105.765,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.000604,
         "notional": 0.266804,
         "edge": "wknd-elon-rush",
@@ -749,27 +767,12 @@
       },
       {
         "venue": "crypto",
-        "symbol": "SOL-USD",
-        "qty": 0.00109997,
-        "avg": 105.73,
-        "mark": 106.005,
-        "upnl": 0.000302,
-        "notional": 0.116602,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79652.235,
-        "mark": 79613.275,
-        "upnl": -0.000978,
-        "notional": 1.999089,
+        "qty": 2.508e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 2.0,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -780,9 +783,39 @@
       {
         "venue": "crypto",
         "symbol": "ETH-USD",
+        "qty": 0.00039839,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 0.9932,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00310193,
+        "avg": 106.025,
+        "mark": 106.025,
+        "upnl": 0.0,
+        "notional": 0.3289,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00036659,
         "avg": 2479.695,
-        "mark": 2485.375,
+        "mark": 2492.985,
         "upnl": 0.002082,
         "notional": 0.911114,
         "edge": "wknd-elon-rush",
@@ -797,7 +830,7 @@
         "symbol": "SOL-USD",
         "qty": 0.0025169,
         "avg": 105.765,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.000604,
         "notional": 0.266804,
         "edge": "wknd-elon-rush",
@@ -809,27 +842,12 @@
       },
       {
         "venue": "crypto",
-        "symbol": "SOL-USD",
-        "qty": 0.00109997,
-        "avg": 105.73,
-        "mark": 106.005,
-        "upnl": 0.000302,
-        "notional": 0.116602,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79652.235,
-        "mark": 79613.275,
-        "upnl": -0.000978,
-        "notional": 1.999089,
+        "qty": 2.508e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 2.0,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -840,9 +858,39 @@
       {
         "venue": "crypto",
         "symbol": "ETH-USD",
+        "qty": 0.00039839,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 0.9932,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00310193,
+        "avg": 106.025,
+        "mark": 106.025,
+        "upnl": 0.0,
+        "notional": 0.3289,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
         "qty": 0.00036659,
         "avg": 2479.695,
-        "mark": 2485.375,
+        "mark": 2492.985,
         "upnl": 0.002082,
         "notional": 0.911114,
         "edge": "wknd-elon-rush",
@@ -857,7 +905,7 @@
         "symbol": "SOL-USD",
         "qty": 0.0025169,
         "avg": 105.765,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.000604,
         "notional": 0.266804,
         "edge": "wknd-elon-rush",
@@ -870,11 +918,11 @@
       {
         "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79663.485,
-        "mark": 79613.275,
-        "upnl": -0.001261,
-        "notional": 1.999089,
+        "qty": 2.508e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 2.0,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -885,15 +933,30 @@
       {
         "venue": "crypto",
         "symbol": "ETH-USD",
-        "qty": 0.0006607,
-        "avg": 2479.695,
-        "mark": 2485.375,
-        "upnl": 0.003753,
-        "notional": 1.642087,
+        "qty": 0.00039839,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 0.9932,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
         "urls": [
           "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00310193,
+        "avg": 106.025,
+        "mark": 106.025,
+        "upnl": 0.0,
+        "notional": 0.3289,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
         ]
       },
@@ -902,7 +965,7 @@
         "symbol": "SOL-USD",
         "qty": 0.00696731,
         "avg": 105.815,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.001324,
         "notional": 0.73857,
         "edge": "wknd-elon-rush",
@@ -914,40 +977,10 @@
       },
       {
         "venue": "crypto",
-        "symbol": "SOL-USD",
-        "qty": 0.00696905,
-        "avg": 105.765,
-        "mark": 106.005,
-        "upnl": 0.001673,
-        "notional": 0.738754,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79663.485,
-        "mark": 79613.275,
-        "upnl": -0.001261,
-        "notional": 1.999089,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
         "symbol": "ETH-USD",
         "qty": 0.00049714,
         "avg": 2479.695,
-        "mark": 2485.375,
+        "mark": 2492.985,
         "upnl": 0.002824,
         "notional": 1.235579,
         "edge": "wknd-elon-rush",
@@ -962,7 +995,7 @@
         "symbol": "SOL-USD",
         "qty": 0.00500969,
         "avg": 105.815,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.000952,
         "notional": 0.531052,
         "edge": "wknd-elon-rush",
@@ -975,11 +1008,11 @@
       {
         "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79663.485,
-        "mark": 79613.275,
-        "upnl": -0.001261,
-        "notional": 1.999089,
+        "qty": 2.221e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 1.7709,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -990,11 +1023,11 @@
       {
         "venue": "crypto",
         "symbol": "ETH-USD",
-        "qty": 0.00066072,
-        "avg": 2479.695,
-        "mark": 2485.375,
-        "upnl": 0.003753,
-        "notional": 1.642137,
+        "qty": 0.00030663,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 0.7644,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
         "urls": [
@@ -1005,9 +1038,24 @@
       {
         "venue": "crypto",
         "symbol": "SOL-USD",
+        "qty": 0.00186813,
+        "avg": 106.025,
+        "mark": 106.025,
+        "upnl": 0.0,
+        "notional": 0.1981,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00696756,
         "avg": 105.815,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.001324,
         "notional": 0.738596,
         "edge": "wknd-elon-rush",
@@ -1019,61 +1067,16 @@
       },
       {
         "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79663.485,
-        "mark": 79613.275,
-        "upnl": -0.001261,
-        "notional": 1.999089,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "qty": 0.00066072,
-        "avg": 2479.695,
-        "mark": 2485.375,
-        "upnl": 0.003753,
-        "notional": 1.642137,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
         "symbol": "SOL-USD",
         "qty": 0.00696756,
         "avg": 105.815,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.001324,
         "notional": 0.738596,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
         "urls": [
           "https://api.coinbase.com/v2/prices/SOL-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "qty": 0.00049706,
-        "avg": 2479.695,
-        "mark": 2485.375,
-        "upnl": 0.002823,
-        "notional": 1.23538,
-        "edge": "wknd-elon-rush",
-        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
           "https://www.coinbase.com/price/bitcoin"
         ]
       },
@@ -1082,7 +1085,7 @@
         "symbol": "SOL-USD",
         "qty": 0.00501395,
         "avg": 105.765,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.001203,
         "notional": 0.531504,
         "edge": "wknd-elon-rush",
@@ -1095,11 +1098,11 @@
       {
         "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 2.511e-05,
-        "avg": 79663.485,
-        "mark": 79613.275,
-        "upnl": -0.001261,
-        "notional": 1.999089,
+        "qty": 2.508e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 2.0,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -1110,11 +1113,11 @@
       {
         "venue": "crypto",
         "symbol": "ETH-USD",
-        "qty": 0.00066067,
-        "avg": 2479.695,
-        "mark": 2485.375,
-        "upnl": 0.003753,
-        "notional": 1.642013,
+        "qty": 0.00054169,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 1.3504,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
         "urls": [
@@ -1125,11 +1128,71 @@
       {
         "venue": "crypto",
         "symbol": "SOL-USD",
+        "qty": 0.00573157,
+        "avg": 106.025,
+        "mark": 106.025,
+        "upnl": 0.0,
+        "notional": 0.6077,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
         "qty": 0.00696702,
         "avg": 105.815,
-        "mark": 106.005,
+        "mark": 106.025,
         "upnl": 0.001324,
         "notional": 0.738539,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 2.508e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 2.0,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "ETH-USD",
+        "qty": 0.00049695,
+        "avg": 2492.985,
+        "mark": 2492.985,
+        "upnl": 0.0,
+        "notional": 1.2389,
+        "edge": "wknd-elon-rush",
+        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "SOL-USD",
+        "qty": 0.00492866,
+        "avg": 106.025,
+        "mark": 106.025,
+        "upnl": 0.0,
+        "notional": 0.5226,
         "edge": "wknd-elon-rush",
         "url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
         "urls": [
@@ -1487,142 +1550,142 @@
       },
       {
         "id": "SWM-11",
-        "equity": 4.98306,
-        "cash_usd": 0.478369,
+        "equity": 4.992061,
+        "cash_usd": 2.597321,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3388,
+        "return_pct": -0.1588,
         "starting_cash_usd": 5.0,
-        "open_positions": 6,
+        "open_positions": 4,
         "risk_allele": "elon_rush"
       },
       {
         "id": "SWM-12",
-        "equity": 4.980429,
-        "cash_usd": 1.68682,
+        "equity": 4.986471,
+        "cash_usd": 0.483715,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3914,
+        "return_pct": -0.2706,
         "starting_cash_usd": 5.0,
-        "open_positions": 4,
+        "open_positions": 5,
         "risk_allele": "elon_rush"
       },
       {
         "id": "SWM-13",
-        "equity": 4.980429,
-        "cash_usd": 1.68682,
+        "equity": 4.986471,
+        "cash_usd": 0.483715,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3914,
+        "return_pct": -0.2706,
         "starting_cash_usd": 5.0,
-        "open_positions": 4,
+        "open_positions": 5,
         "risk_allele": "elon_rush"
       },
       {
         "id": "SWM-14",
-        "equity": 4.980429,
-        "cash_usd": 1.68682,
+        "equity": 4.986471,
+        "cash_usd": 0.483715,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3914,
+        "return_pct": -0.2706,
         "starting_cash_usd": 5.0,
-        "open_positions": 4,
+        "open_positions": 5,
         "risk_allele": "elon_rush"
       },
       {
         "id": "SWM-15",
-        "equity": 4.982947,
-        "cash_usd": 0.603201,
+        "equity": 4.991353,
+        "cash_usd": 4.252644,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3411,
+        "return_pct": -0.1729,
         "starting_cash_usd": 5.0,
-        "open_positions": 3,
+        "open_positions": 1,
         "risk_allele": "elon_rush"
       },
       {
         "id": "SWM-16",
-        "equity": 4.982996,
-        "cash_usd": 0.478521,
+        "equity": 4.990477,
+        "cash_usd": 0.486394,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3401,
+        "return_pct": -0.1905,
+        "starting_cash_usd": 5.0,
+        "open_positions": 5,
+        "risk_allele": "elon_rush"
+      },
+      {
+        "id": "SWM-17",
+        "equity": 4.991452,
+        "cash_usd": 4.252716,
+        "status": "alive",
+        "parent_id": null,
+        "generation": 0,
+        "born_at": "2026-09-06T07:40:54-0500",
+        "died_at": null,
+        "return_pct": -0.171,
+        "starting_cash_usd": 5.0,
+        "open_positions": 1,
+        "risk_allele": "elon_rush"
+      },
+      {
+        "id": "SWM-18",
+        "equity": 4.991452,
+        "cash_usd": 4.252716,
+        "status": "alive",
+        "parent_id": null,
+        "generation": 0,
+        "born_at": "2026-09-06T07:40:54-0500",
+        "died_at": null,
+        "return_pct": -0.171,
+        "starting_cash_usd": 5.0,
+        "open_positions": 1,
+        "risk_allele": "elon_rush"
+      },
+      {
+        "id": "SWM-19",
+        "equity": 4.986854,
+        "cash_usd": 0.4972,
+        "status": "alive",
+        "parent_id": null,
+        "generation": 0,
+        "born_at": "2026-09-06T07:40:54-0500",
+        "died_at": null,
+        "return_pct": -0.2629,
         "starting_cash_usd": 5.0,
         "open_positions": 4,
         "risk_allele": "elon_rush"
       },
       {
-        "id": "SWM-17",
-        "equity": 4.983046,
-        "cash_usd": 0.603223,
-        "status": "alive",
-        "parent_id": null,
-        "generation": 0,
-        "born_at": "2026-09-06T07:40:54-0500",
-        "died_at": null,
-        "return_pct": -0.3391,
-        "starting_cash_usd": 5.0,
-        "open_positions": 3,
-        "risk_allele": "elon_rush"
-      },
-      {
-        "id": "SWM-18",
-        "equity": 4.983046,
-        "cash_usd": 0.603223,
-        "status": "alive",
-        "parent_id": null,
-        "generation": 0,
-        "born_at": "2026-09-06T07:40:54-0500",
-        "died_at": null,
-        "return_pct": -0.3391,
-        "starting_cash_usd": 5.0,
-        "open_positions": 3,
-        "risk_allele": "elon_rush"
-      },
-      {
-        "id": "SWM-19",
-        "equity": 4.983032,
-        "cash_usd": 3.216148,
-        "status": "alive",
-        "parent_id": null,
-        "generation": 0,
-        "born_at": "2026-09-06T07:40:54-0500",
-        "died_at": null,
-        "return_pct": -0.3394,
-        "starting_cash_usd": 5.0,
-        "open_positions": 2,
-        "risk_allele": "elon_rush"
-      },
-      {
         "id": "SWM-20",
-        "equity": 4.982817,
-        "cash_usd": 0.603176,
+        "equity": 4.991148,
+        "cash_usd": 0.491084,
         "status": "alive",
         "parent_id": null,
         "generation": 0,
         "born_at": "2026-09-06T07:40:54-0500",
         "died_at": null,
-        "return_pct": -0.3437,
+        "return_pct": -0.177,
         "starting_cash_usd": 5.0,
-        "open_positions": 3,
+        "open_positions": 4,
         "risk_allele": "elon_rush"
       }
     ],
@@ -1780,11 +1843,11 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 100.0,
-    "cash_usd": 79.9573,
-    "equity_usd": 99.965,
+    "cash_usd": 79.9677,
+    "equity_usd": 99.979,
     "day_pnl_usd": 0.0,
-    "total_pnl_usd": -0.035,
-    "return_pct": -0.035,
+    "total_pnl_usd": -0.021,
+    "return_pct": -0.021,
     "open_positions": 4,
     "live_wallets": false,
     "gate": {
@@ -1796,6 +1859,38 @@
       "next": "hard reset baseline \u2014 0 closes"
     },
     "recent_fills": [
+      {
+        "id": "F104",
+        "ts": "2026-09-06T12:50:12-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "buy",
+        "qty": 5.018e-05,
+        "px": 79742.245,
+        "notional_usd": 4.0014,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "id": "FC011",
+        "ts": "2026-09-06T12:50:12-0500",
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "side": "sell",
+        "qty": 5.031e-05,
+        "px": 79742.245,
+        "notional_usd": 4.0118,
+        "edge": "main-rotate",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
       {
         "id": "F082",
         "ts": "2026-09-06T11:11:25-0500",
@@ -1961,26 +2056,11 @@
       {
         "venue": "crypto",
         "symbol": "BTC-USD",
-        "qty": 5.031e-05,
-        "avg": 79646.985,
-        "mark": 79686.495,
-        "upnl": 0.002,
-        "notional": 4.009,
-        "edge": "wknd_crypto_24_7",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
         "qty": 7.529e-05,
         "avg": 79651.765,
-        "mark": 79686.495,
-        "upnl": 0.0026,
-        "notional": 5.9996,
+        "mark": 79742.245,
+        "upnl": 0.0068,
+        "notional": 6.0038,
         "edge": "wknd_crypto_24_7",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -1993,9 +2073,9 @@
         "symbol": "BTC-USD",
         "qty": 7.518e-05,
         "avg": 79652.235,
-        "mark": 79686.495,
-        "upnl": 0.0026,
-        "notional": 5.9908,
+        "mark": 79742.245,
+        "upnl": 0.0068,
+        "notional": 5.995,
         "edge": "wknd_crypto_24_7",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
@@ -2008,9 +2088,24 @@
         "symbol": "BTC-USD",
         "qty": 5.03e-05,
         "avg": 79663.485,
-        "mark": 79686.495,
-        "upnl": 0.0012,
-        "notional": 4.0082,
+        "mark": 79742.245,
+        "upnl": 0.004,
+        "notional": 4.011,
+        "edge": "wknd_crypto_24_7",
+        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        "urls": [
+          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
+      {
+        "venue": "crypto",
+        "symbol": "BTC-USD",
+        "qty": 5.018e-05,
+        "avg": 79742.245,
+        "mark": 79742.245,
+        "upnl": 0.0,
+        "notional": 4.0015,
         "edge": "wknd_crypto_24_7",
         "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
         "urls": [
