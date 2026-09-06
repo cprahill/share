@@ -15,7 +15,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
   font-family:"IBM Plex Mono",ui-monospace,monospace;}
-.app{height:100%;display:grid;grid-template-rows:42px 40px minmax(190px,26%) minmax(250px,38%) 1fr;gap:8px;padding:8px 10px 10px;}
+.app{height:100%;display:grid;grid-template-rows:42px 40px minmax(190px,26%) minmax(250px,38%) 1fr auto;gap:8px;padding:8px 10px 10px;}
 header{
   display:flex;align-items:center;gap:16px;padding:0 8px;
   border-bottom:1px solid var(--line);
@@ -121,13 +121,18 @@ header{
 .feed .tag.ok{color:var(--cyan)} .feed .tag.hot{color:var(--gold)}
 .feed .tag.warn{color:var(--warn)} .feed .tag.bad{color:var(--pink)}
 .tonight .hero{font-size:36px}
+
+.links{display:flex;flex-wrap:wrap;gap:10px 16px;padding:4px 8px;font-size:10px;color:var(--muted);border-top:1px solid var(--line)}
+.links a{color:var(--cyan);text-decoration:none;letter-spacing:.06em}
+.links a:hover{text-decoration:underline}
+.scream{font-size:10px;letter-spacing:.12em;color:var(--gold);margin-left:10px}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
     <div class="brand">HARNESS <i>//</i> GROK BUILD</div>
-    <div class="sub">iMessage → OpenClaw · pack is a gate · 0 new dests</div>
+    <div class="sub">iMessage → OpenClaw · local-first · pack is a gate · 0 new dests · PAPER ≠ live money</div>
     <div class="live"><b></b>MESH</div>
     <div class="kpis">
       <div>MASTER<strong id="kMaster">0</strong></div>
@@ -182,6 +187,13 @@ header{
       <div class="delta" id="tonightSub"></div>
     </article>
   </section>
+  <div class="links" id="links">
+    <a href="../paper-desk/">PAPER-DESK</a>
+    <a href="https://cprahill.github.io/share/harness/">GITHUB.IO</a>
+    <span>OC-TEAM · Mini local (desk 4 of 26)</span>
+    <span title="OpenBot UI is Mini-local only">OPENBOT :3010 · local Mini · often down w/o CopilotKit key</span>
+    <span class="scream" id="scream"></span>
+  </div>
 </div>
 <script>
 const C=document.getElementById('c'), X=C.getContext('2d');
@@ -352,12 +364,24 @@ function render(){
   el.textContent=(packOk&&packOk.label)||'';
   const toks=(S.tokens&&S.tokens.models)||[];
   const tokTotal=(S.tokens&&S.tokens.total)||0;
+  const tokKnown=!(S.tokens&&S.tokens.known===false);
   const fmtT=n=>{
-    n=Number(n)||0;
+    if(n==null||n===''||Number.isNaN(Number(n))) return '—';
+    n=Number(n);
     if(n>=1e6) return (n/1e6).toFixed(1)+'M';
     if(n>=1e3) return (n/1e3).toFixed(1)+'k';
     return String(n);
   };
+  if(!tokKnown){
+    document.getElementById('tokstack').innerHTML='<i style="width:100%;background:#1b2738;opacity:.5" title="unknown"></i>';
+    document.getElementById('tokleg').innerHTML=`<span>${(S.tokens&&S.tokens.note)||'token 24h unknown — not inventing'}</span>`;
+    document.getElementById('spineBars').innerHTML=toks.map(m=>`
+      <div class="tokrow">
+        <b>${m.label}</b>
+        <div class="track"><i style="width:0%;background:${m.color}"></i></div>
+        <span>—</span>
+      </div>`).join('');
+  } else {
   document.getElementById('tokstack').innerHTML=toks.map(m=>{
     const w=tokTotal? Math.max(m.total?1.2:0, (m.total/tokTotal)*100) : 0;
     return `<i style="width:${w}%;background:${m.color||'#3ce7ff'};opacity:${m.total?1:.25}" title="${m.label} ${fmtT(m.total)}"></i>`;
@@ -372,6 +396,7 @@ function render(){
       <div class="track"><i style="width:${(100*(m.total||0)/mxT)}%;background:${m.color}"></i></div>
       <span>${fmtT(m.total)}</span>
     </div>`).join('');
+  }
   document.getElementById('dests').innerHTML=(S.dests||[]).slice(0,8).map(d=>`
     <div class="ln">
       <b>${d.name}</b>
@@ -382,7 +407,7 @@ function render(){
   document.getElementById('gates').innerHTML=
     donut(g.pack_pct||0,'#3ce7ff',(g.pack_pct||0)+'%','PACK')+
     donut(g.review_pct||0,'#ffb020',(g.review_pct||0)+'%','REVIEW')+
-    donut(Math.min(100,(g.credit_pct||0)),'#3dffc7',Math.round(g.credit_pct||0)+'%','CREDIT');
+    donut(g.credit_pct==null?0:Math.min(100,g.credit_pct),'#3dffc7',g.credit_pct==null?'—':(Math.round(g.credit_pct)+'%'),'CREDIT');
   document.getElementById('gmeta').innerHTML=`<span>${g.pack_label||'pack'}</span><span>${g.review_label||'no handoff'}</span><span>${g.block?'402 BLOCK':'402 clear'}</span>`;
   const nBots=(S.room&&S.room.bots)||0;
   const botLive=!!(S.room&&S.room.bot_live);
@@ -403,7 +428,7 @@ function render(){
     cells+=`<b class="${on?'hot':''}" title="${id}"></b>`;
   });
   for(let i=0;i<nBots;i++) cells+=`<b class="bot ${botLive?'on':''}"></b>`;
-  document.getElementById('botHead').textContent=`${nBots} CLOUD`;
+  document.getElementById('botHead').textContent=nBots?`${nBots} CLOUD`:'CLOUD SPARSE · 0';
   document.getElementById('room').innerHTML=cells;
   const loop=S.loop||[];
   document.getElementById('loop').innerHTML=loop.map((x,i)=>`<i class="${i===(S.loop_now||0)?'on':''}" title="${x}"></i>`).join('');
@@ -415,9 +440,10 @@ function render(){
   const tn=document.getElementById('tonight');
   tn.textContent=(pnl>=0?'+':'')+pnl.toFixed(2);
   tn.style.color=pnl>=0?'#3dff9a':'#ff3864';
-  document.getElementById('tonightSub').textContent=`paper start ${nw.start||0} · ${nw.source||''}`;
+  document.getElementById('tonightSub').textContent=`PAPER start ${nw.start||0} · eq ${(nw.equity!=null)?Number(nw.equity).toFixed(2):'—'} · ${nw.source||''} · not live`;
+  const sc=document.getElementById('scream'); if(sc) sc.textContent=S.scream||'';
   const banner=document.getElementById('mbanner');
-  banner.textContent=`GROK AGENT MESH · ${work.length} WORKING · OPENCLAW ${ocList.length} · IMSG→OC · GEMMA › QWEN › BUILD › BOT`;
+  banner.textContent=`GROK AGENT MESH · OPENCLAW ${ocList.length} · LOCAL-FIRST · IMSG→OC · GEMMA › QWEN › BUILD › BOT · PAPER≠LIVE`;
   const calls=document.getElementById('calls');
   calls.innerHTML='';
   (S.callouts||[]).forEach(c=>{
