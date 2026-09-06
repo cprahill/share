@@ -323,12 +323,12 @@ html{overflow-x:hidden}
   <span class="lab">PAPER</span>
   <div class="pd-lanes">
     <div class="pd-lane"><span class="pd-k">PRINT</span><b id="pd_trad">—</b></div>
-    <div class="pd-lane"><span class="pd-k">NWS</span><b id="pd_dev">—</b></div>
-    <div class="pd-lane"><span class="pd-k">KNYC</span><b id="pd_swarm">—</b></div>
+    <div class="pd-lane"><span class="pd-k">FADE</span><b id="pd_dev">—</b></div>
+    <div class="pd-lane"><span class="pd-k">NWS</span><b id="pd_swarm">—</b></div>
   </div>
   <span class="dim" id="pd_note">board.json · not live money</span>
 </div>
-  <div id="tickertape"><span class="tag">ONE·PRINT</span><div style="overflow:hidden;flex:1"><div id="ttrack"></div></div></div>
+  <div id="tickertape"><span class="tag">PRINT·FADE</span><div style="overflow:hidden;flex:1"><div id="ttrack"></div></div></div>
   <div id="grid">
     <div class="center panel"><div class="ph"><span class="t">THE FLOOR · ONE PRINT</span><span class="htabs"><span class="on">DESK</span><span>FLOWS</span><span>FLOOR</span></span><span class="meta"><span id="hive_live">0</span> LIVE · <span id="hive_dead">0</span> DEAD · <span id="op-legend" style="margin-left:8px;letter-spacing:.06em"><span style="color:#14f195">● Grok</span> <span style="color:#f5c542;margin-left:6px">● OpenClaw</span> <span style="color:#ff5d6c;margin-left:6px">● Loss</span></span></span></div><div class="pb"><div class="hivetitle"><span class="k">$500→$2.5k TRIAL</span><b>PRINT</b></div><canvas id="hive"></canvas></div></div>
     <div class="cockpit">
@@ -715,17 +715,16 @@ requestAnimationFrame(drawHive);
     var dead=sw.dead!=null?sw.dead:(sw.agents||[]).filter(function(a){return a.status==='dead';}).length;
     var n=(sw.agents&&sw.agents.length)||0;
     var ra=el('r_ag'); if(ra) ra.textContent='$2.5k';
-    var hl=el('hive_live'); if(hl) hl.textContent='1';
+    var hl=el('hive_live'); if(hl) hl.textContent='2';
     var hd=el('hive_dead'); if(hd) hd.textContent='0';
     var hu=el('r_human');
     if(hu){ var fri=new Date('2026-09-11T16:00:00-04:00')-Date.now(); hu.textContent=fri>0?Math.floor(fri/3600000)+'h':'CLOSED'; }
     var wr=el('r_wr'); if(wr){ var pr=Number(main.total_pnl_usd)||0; wr.textContent=pct((pr/2000)*100).replace('%','')+'%'; }
     var note=el('pd_note');
     var op=j.one_print||{};
-    if(note) note.textContent=(j.updated_at?('updated '+j.updated_at+' · '):'')+'ONE PRINT · NWS '+(op.nws_f||'—')+'° · KNYC '+(op.knyc_max_f||'—')+'° · LIVE DENY';
-    if(sEl) sEl.textContent=(op.knyc_max_f!=null? (op.knyc_max_f+'°F') : '—');
-    if(dEl) dEl.textContent=(op.nws_f!=null? (op.nws_f+'°F') : '—');
-    applyMortality([{id:'PRINT',status:'alive',equity:main.equity_usd,cash_usd:main.cash_usd,return_pct:main.return_pct,generation:0,operator:'one-print'}]);
+    if(note) note.textContent=(j.updated_at?('updated '+j.updated_at+' · '):'')+'PRINT + FADE · NWS '+(op.nws_f||'—')+'° · KNYC '+(op.knyc_max_f||'—')+'° · LIVE DENY';
+    if(sEl) sEl.textContent=(op.nws_f!=null? (op.nws_f+'°F') : '—');
+    applyMortality([{id:'PRINT',status:'alive',equity:main.equity_usd,cash_usd:main.cash_usd,return_pct:main.return_pct,generation:0,operator:'one-print'},{id:'FADE',status:'alive',equity:td.equity_usd,cash_usd:td.cash_usd,return_pct:td.return_pct,generation:0,operator:'fade'}]);
 
     // Mortality hive
     if(!(j.one_print||main.style)) applyMortality(sw.agents||[]);
