@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T22:41:45-05:00",
+  "updated_at": "2026-09-05T22:42:30-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -80,28 +80,23 @@
   "ladder": [
     {
       "path": "host",
-      "n": 0,
-      "note": "backbone scripts \u00b7 0 LLM"
+      "n": 1
     },
     {
       "path": "gemma",
-      "n": 1,
-      "note": "OpenClaw gemma \u00b7 paper/swarm"
+      "n": 0
     },
     {
       "path": "qwen",
-      "n": 2,
-      "note": "OpenClaw qwen \u00b7 trade-dev"
-    },
-    {
-      "path": "bot",
-      "n": 3,
-      "note": "stamps/YES only \u00b7 sparse"
+      "n": 0
     },
     {
       "path": "build",
-      "n": 4,
-      "note": "dest-gated ship only \u00b7 not money hop"
+      "n": 1
+    },
+    {
+      "path": "bot",
+      "n": 0
     }
   ],
   "tokens": {
@@ -243,14 +238,13 @@
       "feeds": [
         "openclaw",
         "first",
-        "verify",
-        "paper"
+        "verify"
       ],
       "fed_by": [
         "build"
       ],
       "probes": [],
-      "doing": "king-poll beat 2s",
+      "doing": "king-poll beat 7s",
       "working": true
     },
     "gemma": {
@@ -263,12 +257,10 @@
       "feeds": [
         "review",
         "openclaw",
-        "paper",
-        "oc"
+        "paper"
       ],
       "fed_by": [
-        "build",
-        "oc"
+        "build"
       ],
       "probes": [],
       "doing": "paper-desk 4 sess \u00b7 idle",
@@ -284,13 +276,10 @@
       "feeds": [
         "review",
         "openclaw",
-        "twin",
-        "oc",
-        "paper"
+        "twin"
       ],
       "fed_by": [
-        "build",
-        "oc"
+        "build"
       ],
       "probes": [],
       "doing": "trade-dev 10 sess \u00b7 unused",
@@ -335,13 +324,9 @@
         "review",
         "gemma",
         "qwen",
-        "bot",
-        "oc"
-      ],
-      "fed_by": [
-        "oc",
         "bot"
       ],
+      "fed_by": [],
       "probes": [
         {
           "k": "credit",
@@ -363,13 +348,10 @@
       "token": "bot",
       "health": "ok",
       "feeds": [
-        "review",
-        "oc",
-        "build"
+        "review"
       ],
       "fed_by": [
-        "build",
-        "oc"
+        "build"
       ],
       "probes": [
         {
@@ -396,8 +378,7 @@
       ],
       "fed_by": [
         "build",
-        "host",
-        "review"
+        "host"
       ],
       "probes": [],
       "doing": "pack first ok",
@@ -478,8 +459,7 @@
         "verify"
       ],
       "fed_by": [
-        "build",
-        "review"
+        "build"
       ],
       "probes": [],
       "doing": "Grok Build only",
@@ -497,8 +477,7 @@
       ],
       "fed_by": [
         "qwen",
-        "openclaw",
-        "review"
+        "openclaw"
       ],
       "probes": [],
       "doing": "ask.py :8787",
@@ -512,15 +491,12 @@
       "token": "script",
       "health": "warn",
       "feeds": [
-        "verify",
-        "master"
+        "verify"
       ],
       "fed_by": [
         "openclaw",
         "gemma",
-        "qwen",
-        "oc",
-        "host"
+        "qwen"
       ],
       "probes": [],
       "doing": "desk :8791",
@@ -528,112 +504,103 @@
     }
   },
   "paths": {
-    "script": {
+    "first": {
       "nodes": [
-        "host",
-        "paper",
+        "build",
+        "bot",
+        "review",
         "verify",
+        "first",
+        "master"
+      ],
+      "dest": "first",
+      "why": "Build\u2194Bot \u2192 REVIEW (lessons+principles) \u2192 VERIFY \u2192 First \u2192 MASTER."
+    },
+    "clock": {
+      "nodes": [
+        "oc",
+        "review",
+        "verify",
+        "paper",
         "master"
       ],
       "dest": "paper",
-      "why": "0-LLM backbone \u2192 SoT board (fastest)"
+      "why": "0-LLM tick still hits review before C desk."
+    },
+    "baja": {
+      "nodes": [
+        "build",
+        "bot",
+        "review",
+        "verify",
+        "baja",
+        "master"
+      ],
+      "dest": "baja",
+      "why": "Grok pair \u2192 REVIEW \u2192 VERIFY \u2192 Baja \u2192 MASTER."
     },
     "cheap": {
       "nodes": [
         "oc",
-        "gemma",
-        "paper",
+        "review",
         "verify",
+        "paper",
         "master"
       ],
       "dest": "paper",
-      "why": "OpenClaw+gemma \u2192 SoT (no Build, no Bot)"
+      "why": "OpenClaw \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 MASTER."
+    },
+    "local": {
+      "nodes": [
+        "gemma",
+        "oc",
+        "review",
+        "verify",
+        "paper",
+        "master"
+      ],
+      "dest": "paper",
+      "why": "Gemma plugged into OpenClaw, then review/verify before C desk."
     },
     "cut": {
       "nodes": [
-        "oc",
         "qwen",
-        "paper",
-        "verify",
-        "master"
-      ],
-      "dest": "paper",
-      "why": "OpenClaw+qwen trade-dev \u2192 SoT direct"
-    },
-    "swarm": {
-      "nodes": [
         "oc",
-        "gemma",
-        "paper",
+        "review",
         "verify",
+        "twin",
         "master"
       ],
-      "dest": "paper",
-      "why": "swarm-mr/event \u2192 AGENTS.json direct"
+      "dest": "twin",
+      "why": "Qwen plugged into OpenClaw, then review/verify before Twin."
     },
-    "stamp": {
+    "cloud": {
       "nodes": [
         "bot",
+        "build",
         "review",
         "verify",
         "master"
       ],
-      "dest": "paper",
-      "why": "Bot ONLY for Legal/Risk/YES/hot-wash \u2014 not a hop"
-    },
-    "ship": {
-      "nodes": [
-        "build",
-        "oc",
-        "verify",
-        "master"
-      ],
       "dest": "first",
-      "why": "Build\u2194OC direct (dested ship)"
+      "why": "Bot wired to Build, then REVIEW \u2192 VERIFY \u2192 MASTER."
     },
     "imsg": {
       "nodes": [
         "imsg",
         "oc",
-        "verify",
-        "master"
+        "imsg"
       ],
       "dest": "household",
-      "why": "Human iMessage \u2192 OpenClaw"
+      "why": "One iMessage socket. In and out through OpenClaw."
     },
-    "peer": {
+    "back": {
       "nodes": [
-        "oc",
-        "review",
-        "paper",
-        "verify",
-        "master"
-      ],
-      "dest": "paper",
-      "why": "Peer seats call each other via oc-team; Grok conducts"
-    },
-    "ship_stamp": {
-      "nodes": [
-        "build",
-        "oc",
-        "bot",
-        "review",
-        "verify",
-        "master"
+        "master",
+        "verify"
       ],
       "dest": "first",
-      "why": "Build\u2192OC then Bot stamp only when passport/review needed"
-    },
-    "peer_cloud": {
-      "nodes": [
-        "build",
-        "bot",
-        "oc",
-        "verify",
-        "master"
-      ],
-      "dest": "first",
-      "why": "Build\u2194Bot\u2194OC peer mesh"
+      "why": "Next job reads MASTER tail (pack is a gate, not a station)."
     }
   },
   "events": [],
@@ -652,7 +619,7 @@
     },
     "host": {
       "working": true,
-      "line": "king-poll beat 2s"
+      "line": "king-poll beat 7s"
     },
     "gemma": {
       "working": false,
@@ -741,19 +708,19 @@
       "tone": "ok"
     },
     {
-      "t": "22:41:45",
+      "t": "22:42:30",
       "tag": "ZOMBIES",
       "line": "woke block,kitchen,portal,retro,stranger",
       "tone": "bad"
     },
     {
-      "t": "22:41:45",
+      "t": "22:42:30",
       "tag": "LOCK",
       "line": "LOCK still block+first",
       "tone": "bad"
     },
     {
-      "t": "22:41:45",
+      "t": "22:42:30",
       "tag": "BUILD_SE",
       "line": "prompt_tokens 508506",
       "tone": "bad"
@@ -869,7 +836,7 @@
         "name": "paper-desk",
         "model": "gemma",
         "sess": 4,
-        "age_s": 1840,
+        "age_s": 1885,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -879,7 +846,7 @@
         "name": "trade-dev",
         "model": "qwen",
         "sess": 10,
-        "age_s": 8433,
+        "age_s": 8479,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -889,7 +856,7 @@
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 8593,
+        "age_s": 8638,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -899,7 +866,7 @@
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 8563,
+        "age_s": 8609,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -919,7 +886,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13374,
+        "age_s": 13420,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -979,7 +946,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13281,
+        "age_s": 13326,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1029,7 +996,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13250,
+        "age_s": 13296,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1109,7 +1076,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 13245,
+        "age_s": 13291,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1119,7 +1086,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 367,
-        "age_s": 48887,
+        "age_s": 48933,
         "working": false,
         "silent": true,
         "tone": "warn"
@@ -1128,10 +1095,16 @@
   },
   "activity": [],
   "lessons": [
-    "Build connects to OpenClaw direct for dested ship; Bot is stamps/YES only \u2014 not the OC bridge.",
-    "Never route money work Build\u2192Bot\u2192SoT. Seat \u2192 SoT (or 0-LLM script \u2192 SoT).",
-    "Bot conducts + stamps; peers call via oc-team; Build only when dested to ship.",
-    "Wed cut: return% / fills / deaths-births evidence or seat terminates (paper)."
+    "token_waste",
+    "no_change",
+    "invent_dest",
+    "paper_not_live",
+    "pack_first",
+    "baja_lessons",
+    "first_path",
+    "grok_conductor",
+    "handoff_review",
+    "docs_govern"
   ],
   "docs": {
     "lessons": [
