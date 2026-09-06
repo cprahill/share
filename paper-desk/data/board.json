@@ -3,7 +3,7 @@
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
-    "leader": "swarm",
+    "leader": "main",
     "stakes": "3-group Trial \u00b7 winner stays \u00b7 loser goes \u00b7 PAPER",
     "main_return_pct": -7.9169,
     "trade_dev_return_pct": -3.5919,
@@ -16,278 +16,50 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
-    "cash_usd": 134.2006,
-    "equity_usd": 184.1663,
-    "day_pnl_usd": -15.4247,
-    "total_pnl_usd": -15.8337,
-    "return_pct": -7.9169,
-    "open_positions": 4,
+    "cash_usd": 180.0,
+    "equity_usd": 200.0,
+    "day_pnl_usd": 0.0,
+    "total_pnl_usd": 0.0,
+    "return_pct": 0.0,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
     },
     "confidence": {
-      "score": 56,
+      "score": 40,
       "live_ready": false,
-      "next": "3 closed \u00b7 eq $184.58 \u00b7 ret -7.7123% \u00b7 gross $50 \u00b7 produce-or-cut Wed 9/10 \u00b7 LIVE DENY"
+      "next": "ONE PRINT \u00b7 eq $200.0 \u00b7 LIVE DENY \u00b7 Friday attach needs YES"
     },
     "recent_fills": [
       {
-        "id": "F012",
-        "ts": "2026-09-06T14:26:02-05:00",
+        "id": "OP001",
+        "ts": "2026-09-06T15:04:55-0500",
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP07-B79.5",
         "side": "buy",
-        "qty": 31.25,
-        "px": 0.48,
-        "notional_usd": 15.0,
-        "edge": "E3",
-        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-        "urls": [
-          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=25&status=open&series_ticker=KXHIGHNY",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
-        ]
-      },
-      {
-        "id": "F011",
-        "ts": "2026-09-06T14:26:02-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "side": "sell",
-        "qty": 28.3019,
-        "px": 0.48,
-        "notional_usd": 13.584912,
-        "pnl": -1.4437,
-        "edge": "E3",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=25&status=open&series_ticker=KXHIGHNY",
-        "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=25&status=open&series_ticker=KXHIGHNY",
-          "https://api.weather.gov/stations/KNYC/observations",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
-        ]
-      },
-      {
-        "id": "F010",
-        "ts": "2026-09-05T22:10:50-05:00",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "buy",
-        "qty": 0.00012514,
-        "px": 79912.255,
-        "notional_usd": 10.00022,
-        "edge": "produce_cook",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "F009",
-        "ts": "2026-09-05T20:21:54-05:00",
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "side": "buy",
-        "qty": 0.00601394,
-        "px": 2494.205,
-        "notional_usd": 14.999999,
-        "edge": "weekend_liquid",
-        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "F008",
-        "ts": "2026-09-05T20:21:54-05:00",
-        "venue": "stocks",
-        "symbol": "SPY",
-        "side": "sell",
-        "qty": 0.02337086,
-        "px": 770.19,
-        "notional_usd": 18.000003,
-        "pnl": -0.036,
-        "edge": "cleanup",
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
-        "id": "F007",
-        "ts": "2026-09-05T18:18:18-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "side": "buy",
-        "qty": 28.3019,
-        "px": 0.53,
-        "notional_usd": 15.000007,
-        "pnl": -1.4437,
-        "edge": "E3",
-        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-        "urls": [
-          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
-        ]
-      },
-      {
-        "id": "F006",
-        "ts": "2026-09-05T18:18:18-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP05-B81.5",
-        "side": "sell",
-        "qty": 78.9474,
-        "px": 0.01,
-        "notional_usd": 0.789474,
-        "pnl": -14.2263,
-        "edge": "E3",
-        "url": "https://api.weather.gov/stations/KNYC/observations",
-        "urls": [
-          "https://api.weather.gov/stations/KNYC/observations",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
-        ]
-      },
-      {
-        "id": "F005",
-        "ts": "2026-09-04T23:42:05-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP05-B81.5",
-        "side": "buy",
-        "qty": 78.9474,
-        "px": 0.19,
-        "notional_usd": 15.000006,
-        "pnl": -14.2263,
-        "edge": "E3",
-        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-        "urls": [
-          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
-          "https://www.weather.gov/climate/",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
-        ]
-      },
-      {
-        "id": "F004",
-        "ts": "2026-09-04T23:42:05-05:00",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "sell",
-        "qty": 0.00022618,
-        "px": 79551.615,
-        "notional_usd": 17.992984,
-        "pnl": -0.0431,
-        "edge": "capacity",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "F003",
-        "ts": "2026-09-04T23:33:06-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXFEDDECISION-26SEP-H0",
-        "side": "buy",
-        "qty": 20.4082,
+        "qty": 40.8163,
         "px": 0.49,
-        "notional_usd": 10.000018,
-        "edge": "A2",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+        "notional_usd": 20.0,
+        "edge": "one-print",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
         "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
-          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
-          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
-        ]
-      },
-      {
-        "id": "F002",
-        "ts": "2026-09-04T23:25:22-05:00",
-        "venue": "stocks",
-        "symbol": "SPY",
-        "side": "buy",
-        "qty": 0.02337086,
-        "px": 770.19,
-        "notional_usd": 18.000003,
-        "pnl": -0.036,
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
-        "id": "F001",
-        "ts": "2026-09-04T23:25:22-05:00",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "buy",
-        "qty": 0.00022618,
-        "px": 79583.165,
-        "notional_usd": 18.00012,
-        "pnl": -0.0431,
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP07-B79.5",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
         ]
       }
     ],
     "open": [
       {
         "venue": "kalshi_demo",
-        "symbol": "KXFEDDECISION-26SEP-H0",
-        "qty": 20.4082,
+        "symbol": "KXHIGHNY-26SEP07-B79.5",
+        "qty": 40.8163,
         "avg": 0.49,
         "mark": 0.49,
         "upnl": 0.0,
-        "notional": 10.0,
-        "edge": "A2",
-        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep",
-        "urls": [
-          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "qty": 0.00601394,
-        "avg": 2494.205,
-        "mark": 2490.46,
-        "upnl": -0.0225,
-        "notional": 14.9775,
-        "edge": "weekend_liquid",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 0.00012514,
-        "avg": 79912.255,
-        "mark": 79816.325,
-        "upnl": -0.012,
-        "notional": 9.9882,
-        "edge": "produce_cook",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP07-B79.5",
-        "qty": 31.25,
-        "avg": 0.48,
-        "mark": 0.48,
-        "upnl": 0.0,
-        "notional": 15.0,
-        "edge": "E3",
+        "notional": 20.0,
+        "edge": "one-print",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep07",
         "urls": [
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
@@ -1822,278 +1594,50 @@
     "label": "Main Desk",
     "mode": "PAPER",
     "starting_cash_usd": 200.0,
-    "cash_usd": 134.2006,
-    "equity_usd": 184.1663,
-    "day_pnl_usd": -15.4247,
-    "total_pnl_usd": -15.8337,
-    "return_pct": -7.9169,
-    "open_positions": 4,
+    "cash_usd": 180.0,
+    "equity_usd": 200.0,
+    "day_pnl_usd": 0.0,
+    "total_pnl_usd": 0.0,
+    "return_pct": 0.0,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
     },
     "confidence": {
-      "score": 56,
+      "score": 40,
       "live_ready": false,
-      "next": "3 closed \u00b7 eq $184.58 \u00b7 ret -7.7123% \u00b7 gross $50 \u00b7 produce-or-cut Wed 9/10 \u00b7 LIVE DENY"
+      "next": "ONE PRINT \u00b7 eq $200.0 \u00b7 LIVE DENY \u00b7 Friday attach needs YES"
     },
     "recent_fills": [
       {
-        "id": "F012",
-        "ts": "2026-09-06T14:26:02-05:00",
+        "id": "OP001",
+        "ts": "2026-09-06T15:04:55-0500",
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP07-B79.5",
         "side": "buy",
-        "qty": 31.25,
-        "px": 0.48,
-        "notional_usd": 15.0,
-        "edge": "E3",
-        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-        "urls": [
-          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=25&status=open&series_ticker=KXHIGHNY",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
-        ]
-      },
-      {
-        "id": "F011",
-        "ts": "2026-09-06T14:26:02-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "side": "sell",
-        "qty": 28.3019,
-        "px": 0.48,
-        "notional_usd": 13.584912,
-        "pnl": -1.4437,
-        "edge": "E3",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=25&status=open&series_ticker=KXHIGHNY",
-        "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=25&status=open&series_ticker=KXHIGHNY",
-          "https://api.weather.gov/stations/KNYC/observations",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
-        ]
-      },
-      {
-        "id": "F010",
-        "ts": "2026-09-05T22:10:50-05:00",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "buy",
-        "qty": 0.00012514,
-        "px": 79912.255,
-        "notional_usd": 10.00022,
-        "edge": "produce_cook",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "F009",
-        "ts": "2026-09-05T20:21:54-05:00",
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "side": "buy",
-        "qty": 0.00601394,
-        "px": 2494.205,
-        "notional_usd": 14.999999,
-        "edge": "weekend_liquid",
-        "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/ETH-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "F008",
-        "ts": "2026-09-05T20:21:54-05:00",
-        "venue": "stocks",
-        "symbol": "SPY",
-        "side": "sell",
-        "qty": 0.02337086,
-        "px": 770.19,
-        "notional_usd": 18.000003,
-        "pnl": -0.036,
-        "edge": "cleanup",
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
-        "id": "F007",
-        "ts": "2026-09-05T18:18:18-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP06-B73.5",
-        "side": "buy",
-        "qty": 28.3019,
-        "px": 0.53,
-        "notional_usd": 15.000007,
-        "pnl": -1.4437,
-        "edge": "E3",
-        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-        "urls": [
-          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep06"
-        ]
-      },
-      {
-        "id": "F006",
-        "ts": "2026-09-05T18:18:18-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP05-B81.5",
-        "side": "sell",
-        "qty": 78.9474,
-        "px": 0.01,
-        "notional_usd": 0.789474,
-        "pnl": -14.2263,
-        "edge": "E3",
-        "url": "https://api.weather.gov/stations/KNYC/observations",
-        "urls": [
-          "https://api.weather.gov/stations/KNYC/observations",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=15&status=open&series_ticker=KXHIGHNY",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
-        ]
-      },
-      {
-        "id": "F005",
-        "ts": "2026-09-04T23:42:05-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP05-B81.5",
-        "side": "buy",
-        "qty": 78.9474,
-        "px": 0.19,
-        "notional_usd": 15.000006,
-        "pnl": -14.2263,
-        "edge": "E3",
-        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-        "urls": [
-          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXHIGHNY-26SEP05",
-          "https://www.weather.gov/climate/",
-          "https://kalshi.com/markets/kxhighny/kxhighny-26sep05"
-        ]
-      },
-      {
-        "id": "F004",
-        "ts": "2026-09-04T23:42:05-05:00",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "sell",
-        "qty": 0.00022618,
-        "px": 79551.615,
-        "notional_usd": 17.992984,
-        "pnl": -0.0431,
-        "edge": "capacity",
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "id": "F003",
-        "ts": "2026-09-04T23:33:06-05:00",
-        "venue": "kalshi_demo",
-        "symbol": "KXFEDDECISION-26SEP-H0",
-        "side": "buy",
-        "qty": 20.4082,
+        "qty": 40.8163,
         "px": 0.49,
-        "notional_usd": 10.000018,
-        "edge": "A2",
-        "url": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
+        "notional_usd": 20.0,
+        "edge": "one-print",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
         "urls": [
-          "https://api.elections.kalshi.com/trade-api/v2/markets?limit=20&status=open&event_ticker=KXFEDDECISION-26SEP",
-          "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html",
-          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
-        ]
-      },
-      {
-        "id": "F002",
-        "ts": "2026-09-04T23:25:22-05:00",
-        "venue": "stocks",
-        "symbol": "SPY",
-        "side": "buy",
-        "qty": 0.02337086,
-        "px": 770.19,
-        "notional_usd": 18.000003,
-        "pnl": -0.036,
-        "url": "https://finance.yahoo.com/quote/SPY/",
-        "urls": [
-          "https://finance.yahoo.com/quote/SPY/"
-        ]
-      },
-      {
-        "id": "F001",
-        "ts": "2026-09-04T23:25:22-05:00",
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "side": "buy",
-        "qty": 0.00022618,
-        "px": 79583.165,
-        "notional_usd": 18.00012,
-        "pnl": -0.0431,
-        "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-        "urls": [
-          "https://api.coinbase.com/v2/prices/BTC-USD/spot",
-          "https://www.coinbase.com/price/bitcoin"
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP07-B79.5",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
         ]
       }
     ],
     "open": [
       {
         "venue": "kalshi_demo",
-        "symbol": "KXFEDDECISION-26SEP-H0",
-        "qty": 20.4082,
+        "symbol": "KXHIGHNY-26SEP07-B79.5",
+        "qty": 40.8163,
         "avg": 0.49,
         "mark": 0.49,
         "upnl": 0.0,
-        "notional": 10.0,
-        "edge": "A2",
-        "url": "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep",
-        "urls": [
-          "https://kalshi.com/markets/kxfeddecision/kxfeddecision-26sep"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "ETH-USD",
-        "qty": 0.00601394,
-        "avg": 2494.205,
-        "mark": 2490.46,
-        "upnl": -0.0225,
-        "notional": 14.9775,
-        "edge": "weekend_liquid",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "crypto",
-        "symbol": "BTC-USD",
-        "qty": 0.00012514,
-        "avg": 79912.255,
-        "mark": 79816.325,
-        "upnl": -0.012,
-        "notional": 9.9882,
-        "edge": "produce_cook",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      },
-      {
-        "venue": "kalshi_demo",
-        "symbol": "KXHIGHNY-26SEP07-B79.5",
-        "qty": 31.25,
-        "avg": 0.48,
-        "mark": 0.48,
-        "upnl": 0.0,
-        "notional": 15.0,
-        "edge": "E3",
+        "notional": 20.0,
+        "edge": "one-print",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep07",
         "urls": [
           "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
