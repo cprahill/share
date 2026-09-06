@@ -336,7 +336,7 @@ html{overflow-x:hidden}
 <div class="app">
   <header>
     <div class="brand">HARNESS <i>//</i> DIRECT SoT</div>
-    <div class="sub">seat→SoT · host›gemma›qwen›bot›build · Build≠money hop · PAPER ≠ live</div>
+    <div class="sub">Build↔OC · Build↔Bot · seat→SoT · host›gemma›qwen›bot›build · PAPER ≠ live</div>
     <div class="live"><b></b>MESH</div>
     <div class="kpis">
       <div>MASTER<strong id="kMaster">0</strong></div>
@@ -432,7 +432,8 @@ const FALLBACK={
   cut:['oc','qwen','paper','verify','master'],
   swarm:['oc','gemma','paper','verify','master'],
   stamp:['bot','review','verify','master'],
-  ship:['build','review','verify','master'],
+  ship:['build','oc','verify','master'],
+  peer_cloud:['build','bot','oc','verify','master'],
   imsg:['imsg','oc','verify','master'],
   peer:['oc','review','paper','verify','master'],
   /* aliases for older event.path names */
@@ -449,11 +450,13 @@ const WIRES=[
   ['host','paper'],
   ['oc','gemma'],['oc','qwen'],['oc','paper'],
   ['gemma','paper'],['qwen','paper'],
+  ['build','oc'],['oc','build'],
+  ['build','bot'],['bot','build'],
+  ['bot','oc'],['oc','bot'],
   ['bot','review'],['build','review'],['build','baja'],
   ['review','verify'],['review','first'],
   ['paper','verify'],['twin','verify'],['first','verify'],['baja','verify'],
-  ['verify','master'],
-  ['oc','bot']
+  ['verify','master']
 ];
 function pathMap(){
   const o={...FALLBACK};
