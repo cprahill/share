@@ -1,20 +1,18 @@
 {
-  "updated_at": "2026-09-05T20:34:00-05:00",
+  "updated_at": "2026-09-05T22:10:44-05:00",
   "paper": true,
   "live": false,
-  "scream": "PAPER snapshot \u00b7 not live money",
+  "scream": "DIRECT SoT · peer mesh · Build≠money hop · PAPER",
   "master_empty": false,
   "loop": [
-    "learn",
-    "plan",
-    "build",
-    "review",
-    "iterate",
-    "optimize",
-    "master log",
-    "1st principles"
+    "sense",
+    "decide",
+    "act SoT",
+    "reap",
+    "publish",
+    "learn"
   ],
-  "loop_now": 3,
+  "loop_now": 2,
   "park": [
     "Roblox",
     "Gonzo",
@@ -27,11 +25,11 @@
   "benefits": {
     "quality": "verify before PASS",
     "tokens": "script > gemma > qwen > build > bot",
-    "local_first": "locals do what they can \u00b7 cloud only what locals cannot \u00b7 quality fall = fix local (no new cloud bots)",
+    "local_first": "locals do what they can · cloud only what locals cannot · quality fall = fix local (no new cloud bots)",
     "reliability": "402 circuit-break; hash-unchanged = fail; AI-to-AI review",
     "creation": "A Baja Grok Build only",
     "collaboration": "0 new Grok Bots",
-    "collected_note": "$0 live money \u2014 paper books only"
+    "collected_note": "$0 live money — paper books only"
   },
   "net_worth": {
     "label": "AI team PAPER (not live)",
@@ -90,34 +88,34 @@
   "ladder": [
     {
       "path": "host",
-      "n": null,
-      "note": "unknown"
+      "n": 0,
+      "note": "backbone scripts · 0 LLM"
     },
     {
       "path": "gemma",
-      "n": null,
-      "note": "unknown"
+      "n": 1,
+      "note": "OpenClaw gemma · paper/swarm"
     },
     {
       "path": "qwen",
-      "n": null,
-      "note": "unknown"
-    },
-    {
-      "path": "build",
-      "n": null,
-      "note": "unknown"
+      "n": 2,
+      "note": "OpenClaw qwen · trade-dev"
     },
     {
       "path": "bot",
-      "n": null,
-      "note": "unknown"
+      "n": 3,
+      "note": "stamps/YES only · sparse"
+    },
+    {
+      "path": "build",
+      "n": 4,
+      "note": "dest-gated ship only · not money hop"
     }
   ],
   "tokens": {
     "window": "24h",
     "known": false,
-    "note": "not inventing \u2014 no 24h token meter wired",
+    "note": "not inventing — no 24h token meter wired",
     "total": null,
     "models": [
       {
@@ -178,7 +176,7 @@
       {
         "id": "handoff",
         "level": "ok",
-        "label": "review grok-build\u2192first-architect"
+        "label": "review grok-build→first-architect"
       },
       {
         "id": "build402",
@@ -205,8 +203,8 @@
   "nodes": {
     "build": {
       "title": "Grok Build",
-      "role": "conductor",
-      "why": "Directs Gemma / Qwen / Bot / OpenClaw. Dest code + First.",
+      "role": "ship only",
+      "why": "Dest-gated code/PR. NOT on money path. Never a required hop to Bot or SoT.",
       "active": "idle",
       "token": "build",
       "health": "ok",
@@ -214,79 +212,79 @@
         "review"
       ],
       "fed_by": [],
-      "doing": "dest-gated ship",
+      "doing": "idle · dest-gated",
       "working": false,
       "probes": []
     },
     "bot": {
       "title": "Grok Bot",
-      "role": "cloud sparse",
-      "why": "Stamps, hot-wash, YES. Wires into OpenClaw.",
+      "role": "conductor sparse",
+      "why": "Stamps, passport, Wed cut, YES. Reads SoT direct. Does not wait on Build.",
       "active": "sparse",
       "token": "bot",
       "health": "ok",
       "feeds": [
-        "review"
+        "review",
+        "oc"
       ],
       "fed_by": [
-        "build"
+        "oc"
       ],
-      "doing": "cloud thin \u00b7 no invented seats",
-      "working": false,
+      "doing": "conduct · SoT direct",
+      "working": true,
       "probes": []
     },
     "gemma": {
       "title": "Gemma 12b",
-      "role": "cheap local English",
-      "why": "Paper TRADITIONAL + household.",
+      "role": "cheap local",
+      "why": "paper-desk + swarm · writes SoT direct",
       "active": "loaded",
       "token": "gemma",
       "health": "ok",
       "feeds": [
-        "review"
+        "oc",
+        "paper"
       ],
       "fed_by": [
-        "build"
+        "oc"
       ],
-      "doing": "ollama gemma4:12b loaded",
+      "doing": "loaded",
       "working": false,
       "probes": []
     },
     "qwen": {
       "title": "Qwen 27b",
       "role": "local cutting",
-      "why": "Trade-dev CUTTING + twin ask.py.",
+      "why": "trade-dev → WALLET.json direct",
       "active": "idle",
       "token": "qwen",
       "health": "ok",
       "feeds": [
-        "review"
+        "oc",
+        "paper"
       ],
       "fed_by": [
-        "build"
+        "oc"
       ],
-      "doing": "trade-dev model",
+      "doing": "trade-dev",
       "working": false,
       "probes": []
     },
     "review": {
-      "title": "REVIEW",
-      "role": "AI-to-AI gate",
-      "why": "No pass, no send.",
+      "title": "Review",
+      "role": "gate",
+      "why": "Critic/Legal/Risk stamps when needed",
       "active": "idle",
       "token": "script",
       "health": "ok",
       "feeds": [
-        "openclaw",
-        "first"
+        "verify"
       ],
       "fed_by": [
-        "build",
         "bot",
-        "gemma",
-        "qwen"
+        "build"
       ],
-      "doing": "no pass no send",
+      "doing": "on-demand",
       "working": false,
       "probes": []
     },
@@ -304,7 +302,7 @@
         "review",
         "imsg"
       ],
-      "doing": "gateway \u00b7 26 agents",
+      "doing": "gateway · 26 agents",
       "working": true,
       "probes": [
         {
@@ -397,79 +395,127 @@
       "probes": []
     },
     "paper": {
-      "title": "C Desk",
-      "role": "finance dest",
-      "why": "Paper only. Desk UI is dest C.",
-      "active": "PAPER",
+      "title": "Paper SoT",
+      "role": "source of truth",
+      "why": "board.json · AGENTS.json · wallets — all seats read/write here",
+      "active": "hot",
       "token": "script",
       "health": "ok",
       "feeds": [
-        "verify"
+        "verify",
+        "master"
       ],
       "fed_by": [
-        "openclaw"
+        "oc",
+        "gemma",
+        "qwen",
+        "host"
       ],
-      "doing": "paper books",
-      "working": false,
+      "doing": "live paper books",
+      "working": true,
+      "probes": []
+    },
+    "oc": {
+      "title": "OpenClaw",
+      "role": "local runtime",
+      "why": "26 seats · peer ask via oc-team · writes SoT wallets/AGENTS.",
+      "feeds": [
+        "paper",
+        "bot",
+        "gemma",
+        "qwen"
+      ],
+      "fed_by": [
+        "bot",
+        "gemma",
+        "qwen"
+      ],
+      "doing": "gateway · peer mesh",
+      "working": true,
+      "active": "hot",
+      "token": "oc",
+      "health": "ok",
+      "probes": []
+    },
+    "host": {
+      "title": "Host scripts",
+      "role": "0-LLM",
+      "why": "backbone --tick/--publish · weather · reap",
+      "feeds": [
+        "paper"
+      ],
+      "fed_by": [],
+      "doing": "marks+reap",
+      "working": true,
+      "active": "hot",
+      "token": "host",
+      "health": "ok",
       "probes": []
     }
   },
   "paths": {
-    "first": {
+    "script": {
       "nodes": [
-        "build",
-        "review",
-        "first",
-        "verify",
-        "master"
-      ],
-      "dest": "first",
-      "why": "Build \u2192 REVIEW \u2192 First"
-    },
-    "baja": {
-      "nodes": [
-        "build",
-        "review",
-        "baja",
-        "verify",
-        "master"
-      ],
-      "dest": "baja",
-      "why": "Build \u2192 REVIEW \u2192 Baja"
-    },
-    "local": {
-      "nodes": [
-        "gemma",
-        "review",
-        "oc",
+        "host",
         "paper",
         "verify",
         "master"
       ],
       "dest": "paper",
-      "why": "Gemma \u2192 REVIEW \u2192 OpenClaw"
+      "why": "0-LLM backbone → SoT board (fastest)"
     },
-    "cut": {
+    "cheap": {
       "nodes": [
-        "qwen",
-        "review",
-        "twin",
+        "oc",
+        "gemma",
+        "paper",
         "verify",
         "master"
       ],
-      "dest": "twin",
-      "why": "Qwen \u2192 REVIEW \u2192 twin"
+      "dest": "paper",
+      "why": "OpenClaw+gemma → SoT (no Build, no Bot)"
     },
-    "cloud": {
+    "cut": {
+      "nodes": [
+        "oc",
+        "qwen",
+        "paper",
+        "verify",
+        "master"
+      ],
+      "dest": "paper",
+      "why": "OpenClaw+qwen trade-dev → SoT direct"
+    },
+    "swarm": {
+      "nodes": [
+        "oc",
+        "gemma",
+        "paper",
+        "verify",
+        "master"
+      ],
+      "dest": "paper",
+      "why": "swarm-mr/event → AGENTS.json direct"
+    },
+    "stamp": {
       "nodes": [
         "bot",
         "review",
-        "oc",
+        "verify",
+        "master"
+      ],
+      "dest": "paper",
+      "why": "Bot ONLY for Legal/Risk/YES/hot-wash — not a hop"
+    },
+    "ship": {
+      "nodes": [
+        "build",
+        "review",
         "verify",
         "master"
       ],
       "dest": "first",
-      "why": "Bot \u2192 REVIEW \u2192 OpenClaw"
+      "why": "Build ONLY when dested to ship code — not money path"
     },
     "imsg": {
       "nodes": [
@@ -479,76 +525,96 @@
         "master"
       ],
       "dest": "household",
-      "why": "Human iMessage \u2192 OpenClaw"
+      "why": "Human iMessage → OpenClaw"
     },
-    "cheap": {
+    "peer": {
       "nodes": [
         "oc",
+        "review",
         "paper",
         "verify",
         "master"
       ],
       "dest": "paper",
-      "why": "Clock tick"
+      "why": "Peer seats call each other via oc-team; Grok conducts"
     }
   },
   "events": [],
   "pulse": [
-    "oc"
+    "host",
+    "oc",
+    "paper"
   ],
   "doing": {
-    "build": {
-      "working": false,
-      "line": "dest-gated"
-    },
-    "bot": {
-      "working": false,
-      "line": "cloud sparse"
+    "host": {
+      "working": true,
+      "line": "backbone · 0 LLM"
     },
     "oc": {
       "working": true,
-      "line": "gateway \u00b7 26 agents"
+      "line": "peer mesh · 26 seats"
     },
-    "review": {
-      "working": false,
-      "line": "idle"
+    "paper": {
+      "working": true,
+      "line": "SoT books"
     },
-    "first": {
-      "working": false,
-      "line": "always-on"
+    "bot": {
+      "working": true,
+      "line": "conduct · Wed cut live"
     },
     "gemma": {
       "working": false,
-      "line": "gemma4:12b loaded"
+      "line": "gemma4:12b"
     },
     "qwen": {
       "working": false,
       "line": "trade-dev qwen"
+    },
+    "build": {
+      "working": false,
+      "line": "not on money path"
+    },
+    "review": {
+      "working": false,
+      "line": "on-demand"
     }
   },
   "feed": [
     {
+      "t": "22:10:44",
+      "tag": "UI",
+      "line": "pathMap DIRECT · ladder cheapest-first · lessons+Wed cut surfaced",
+      "tone": "ok"
+    },
+    {
+      "t": "22:10:44",
+      "tag": "HARNESS",
+      "line": "Harness rewired: direct SoT paths · Wed produce-or-cut to trade seats",
+      "tone": "hot",
+      "at": "2026-09-05T22:10:44-05:00"
+    },
+    {
       "t": "20:34:01",
       "tag": "OC",
-      "line": "agents list 26 \u00b7 gateway up",
+      "line": "agents list 26 · gateway up",
       "tone": "ok"
     },
     {
       "t": "20:34:02",
       "tag": "PAPER",
-      "line": "DUEL-SCORE eq 384.27 pnl -15.73 \u00b7 not live",
+      "line": "DUEL-SCORE eq 384.27 pnl -15.73 · not live",
       "tone": "ok"
     },
     {
       "t": "20:34:03",
       "tag": "LAW",
-      "line": "local-first \u00b7 no invented token totals",
+      "line": "local-first · no invented token totals",
       "tone": "hot"
     },
     {
       "t": "20:34:04",
       "tag": "WARN",
-      "line": "OpenBot :3010 down \u00b7 needs CopilotKit key",
+      "line": "OpenBot :3010 down · needs CopilotKit key",
       "tone": "warn"
     }
   ],
@@ -597,7 +663,7 @@
       "kind": "finance",
       "pill": "PAPER",
       "tone": "ok",
-      "line": "paper only \u00b7 not live",
+      "line": "paper only · not live",
       "health": "ok"
     },
     {
@@ -612,18 +678,22 @@
   ],
   "callouts": [
     {
-      "id": "oc",
-      "text": "gateway \u00b7 26 agents"
+      "id": "paper",
+      "at": "2026-09-05T22:10:44-05:00",
+      "level": "hard",
+      "text": "Wed 2026-09-10: produce or cut. Trade seats → SoT direct. Build ≠ hop to Bot/SoT."
     },
     {
-      "id": "paper",
-      "text": "PAPER eq 384 \u00b7 not live"
+      "id": "host",
+      "at": "2026-09-05T22:10:44-05:00",
+      "level": "info",
+      "text": "0-LLM host → SoT fastest"
     }
   ],
   "room": {
     "bots": 0,
     "bot_live": false,
-    "bot_note": "cloud sparse \u00b7 0 invented cloud seats",
+    "bot_note": "cloud sparse · 0 invented cloud seats",
     "working": [
       "oc"
     ],
@@ -863,18 +933,13 @@
         "tone": "parked"
       }
     ],
-    "oc_note": "openclaw.json agents.list \u00b7 oc-team list = desk subset (4)"
+    "oc_note": "openclaw.json agents.list · oc-team list = desk subset (4)"
   },
   "activity": [],
   "lessons": [
-    "token_waste",
-    "no_change",
-    "invent_dest",
-    "paper_not_live",
-    "pack_first",
-    "first_path",
-    "handoff_review",
-    "local_first"
+    "Never route money work Build→Bot→SoT. Seat → SoT (or 0-LLM script → SoT).",
+    "Bot conducts + stamps; peers call via oc-team; Build only when dested to ship.",
+    "Wed cut: return% / fills / deaths-births evidence or seat terminates (paper)."
   ],
   "master": [
     {
@@ -903,6 +968,6 @@
     "live_vercel": "https://baja-board.vercel.app/harness",
     "github_io": "https://cprahill.github.io/share/harness/",
     "oc_team": "oc-team list (Mini local)",
-    "openbot": "http://127.0.0.1:3010/ (local Mini only \u00b7 currently down \u00b7 needs CopilotKit key)"
+    "openbot": "http://127.0.0.1:3010/ (local Mini only · currently down · needs CopilotKit key)"
   }
 }

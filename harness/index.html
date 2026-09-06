@@ -15,7 +15,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
   font-family:"IBM Plex Mono",ui-monospace,monospace;}
-.app{height:100%;display:grid;grid-template-rows:42px 40px minmax(190px,26%) minmax(250px,38%) 1fr auto;gap:8px;padding:8px 10px 10px;}
+.app{height:100%;display:grid;grid-template-rows:42px 40px auto auto minmax(160px,24%) minmax(220px,34%) 1fr auto;gap:8px;padding:8px 10px 10px;}
 header{
   display:flex;align-items:center;gap:16px;padding:0 8px;
   border-bottom:1px solid var(--line);
@@ -136,17 +136,32 @@ a,button,.pill,.ln,.oc-seats .s,.links a{
 .ph span{overflow-wrap:anywhere;word-break:break-word}
 .links span,.links a{overflow-wrap:anywhere;word-break:break-word}
 
+
+.ladder{display:flex;flex-wrap:wrap;gap:8px 14px;padding:4px 12px;align-items:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  font-size:10px;letter-spacing:.1em;color:var(--muted)}
+.ladder b{color:var(--mint);font-family:"Barlow Condensed",sans-serif;letter-spacing:.16em;margin-right:4px}
+.ladder .hop{color:var(--text)}
+.ladder .hop.ship{color:var(--gold);opacity:.8}
+.ladder .sep{color:#2a3a4e;margin:0 2px}
+.lessons{font-size:10px;line-height:1.4;padding:6px 10px;border:1px solid #3a2a10;background:#100c08;
+  color:var(--gold);border-radius:4px;max-height:72px;overflow:auto}
+.lessons div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lessons .cut{color:#ffb020}
+
 /* —— mobile / narrow (~390px phones + tablets) —— */
 html{overflow-x:hidden}
 @media (max-width:900px){
+  /* iOS: body scroll fails with CRT shell — .app IS the scroller (paper-desk lesson) */
   html,body{
-    height:auto;min-height:100%;
-    overflow-x:hidden;overflow-y:auto;
+    height:100%!important;max-height:100dvh!important;
+    overflow:hidden!important;position:fixed!important;inset:0;
     -webkit-text-size-adjust:100%;
   }
   body{font-size:13px}
   .app{
-    height:auto;min-height:100dvh;
+    height:100%!important;height:100dvh!important;
+    max-height:100dvh!important;
     display:flex;flex-direction:column;
     gap:10px;
     padding:calc(8px + env(safe-area-inset-top,0px))
@@ -154,7 +169,10 @@ html{overflow-x:hidden}
            calc(12px + env(safe-area-inset-bottom,0px))
            calc(10px + env(safe-area-inset-left,0px));
     max-width:100%;
-    overflow-x:hidden;
+    overflow-x:hidden!important;
+    overflow-y:scroll!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
   }
   header{
     flex-wrap:wrap;align-items:flex-start;gap:8px 12px;
@@ -288,6 +306,17 @@ html{overflow-x:hidden}
   .spark{display:none}
 }
 
+  .app::after{content:"";display:block;height:calc(16px + env(safe-area-inset-bottom,0px));flex:none}
+  .ladder,.lessons{flex:none}
+  .ladder{display:flex;flex-wrap:wrap;gap:6px 10px;padding:6px 10px;font-size:10px;letter-spacing:.08em;
+    background:var(--panel);border:1px solid var(--line);border-radius:4px;color:var(--muted)}
+  .ladder b{color:var(--mint);font-family:"Barlow Condensed",sans-serif;letter-spacing:.14em}
+  .ladder .hop{color:var(--text)} .ladder .hop.ship{color:var(--gold);opacity:.75}
+  .ladder .hop.money{color:var(--muted);text-decoration:line-through;opacity:.45}
+  .lessons{font-size:10px;line-height:1.45;padding:8px 10px;border:1px solid #3a2a10;background:#120e08;
+    color:var(--gold);border-radius:4px}
+  .lessons div{margin:3px 0;overflow-wrap:anywhere}
+
 @media (max-width:420px){
   .brand{font-size:15px}
   .hero{font-size:28px}
@@ -306,8 +335,8 @@ html{overflow-x:hidden}
 <body>
 <div class="app">
   <header>
-    <div class="brand">HARNESS <i>//</i> GROK BUILD</div>
-    <div class="sub">iMessage → OpenClaw · local-first · pack is a gate · 0 new dests · PAPER ≠ live money</div>
+    <div class="brand">HARNESS <i>//</i> DIRECT SoT</div>
+    <div class="sub">seat→SoT · host›gemma›qwen›bot›build · Build≠money hop · PAPER ≠ live</div>
     <div class="live"><b></b>MESH</div>
     <div class="kpis">
       <div>MASTER<strong id="kMaster">0</strong></div>
@@ -321,9 +350,11 @@ html{overflow-x:hidden}
     <div class="tokstack" id="tokstack"></div>
     <div class="tokleg" id="tokleg"></div>
   </div>
+  <div class="ladder" id="ladder"></div>
+  <div class="lessons" id="lessons"></div>
   <section class="top">
     <article class="panel" id="spine">
-      <div class="ph">THE SPINE <span>TOKEN LADDER · 24H</span></div>
+      <div class="ph">THE SPINE <span>CHEAPEST-FIRST · 24H</span></div>
       <div class="hero" id="spineHero">—</div>
       <div class="delta" id="spineDelta"></div>
       <div class="bars" id="spineBars"></div>
@@ -374,43 +405,55 @@ html{overflow-x:hidden}
 const C=document.getElementById('c'), X=C.getContext('2d');
 let W=0,H=0,T=0,S=null,jobs=[],seen=new Set();
 const COL={
-  imsg:'#3ce7ff', gemma:'#3dff9a', qwen:'#3ce7ff',
+  imsg:'#3ce7ff', host:'#6d7d93', gemma:'#3dff9a', qwen:'#3ce7ff',
   build:'#ffb020', bot:'#8b7cff', oc:'#3dffc7', first:'#d7e6f5', baja:'#ff6a3d',
   twin:'#7ed0ff', paper:'#ffe08a', review:'#ffb020', verify:'#ffffff', master:'#ff4d8d'
 };
 const N={
-  gemma:{x:.14,y:.26,label:'GEMMA', kind:'ai'},
-  qwen:{x:.32,y:.26,label:'QWEN', kind:'ai'},
-  bot:{x:.50,y:.26,label:'BOT', kind:'ai'},
-  build:{x:.68,y:.26,label:'BUILD', kind:'ai'},
-  baja:{x:.88,y:.26,label:'BAJA', kind:'dest'},
-  review:{x:.50,y:.50,label:'REVIEW', kind:'gate'},
+  host:{x:.08,y:.26,label:'HOST', kind:'script'},
+  gemma:{x:.22,y:.26,label:'GEMMA', kind:'ai'},
+  qwen:{x:.36,y:.26,label:'QWEN', kind:'ai'},
+  bot:{x:.52,y:.26,label:'BOT', kind:'ai'},
+  build:{x:.68,y:.18,label:'BUILD', kind:'ai'},
+  baja:{x:.88,y:.18,label:'BAJA', kind:'dest'},
+  review:{x:.68,y:.50,label:'REVIEW', kind:'gate'},
   imsg:{x:.08,y:.76,label:'IMSG', kind:'in'},
   oc:{x:.24,y:.76,label:'OPENCLAW', kind:'gate'},
-  paper:{x:.42,y:.76,label:'C DESK', kind:'dest'},
-  twin:{x:.58,y:.76,label:'TWIN', kind:'dest'},
-  first:{x:.72,y:.76,label:'FIRST', kind:'dest'},
+  paper:{x:.46,y:.72,label:'SoT', kind:'dest'},
+  twin:{x:.62,y:.76,label:'TWIN', kind:'dest'},
+  first:{x:.76,y:.76,label:'FIRST', kind:'dest'},
   verify:{x:.88,y:.50,label:'VERIFY', kind:'gate'},
   master:{x:.94,y:.76,label:'MASTER', kind:'gate'}
 };
+/* DIRECT SoT defaults — sync keys with state.paths (no Build→Bot money hop) */
 const FALLBACK={
-  first:['build','review','first','verify','master'],
-  clock:['oc','paper','verify','master'],
-  baja:['build','review','baja','verify','master'],
-  cheap:['oc','paper','verify','master'],
-  local:['gemma','review','oc','paper','verify','master'],
-  cut:['qwen','review','twin','verify','master'],
-  cloud:['bot','review','oc','verify','master'],
+  script:['host','paper','verify','master'],
+  cheap:['oc','gemma','paper','verify','master'],
+  cut:['oc','qwen','paper','verify','master'],
+  swarm:['oc','gemma','paper','verify','master'],
+  stamp:['bot','review','verify','master'],
+  ship:['build','review','verify','master'],
   imsg:['imsg','oc','verify','master'],
-  code:['build','review','first','verify','master']
+  peer:['oc','review','paper','verify','master'],
+  /* aliases for older event.path names */
+  first:['build','review','first','verify','master'],
+  baja:['build','review','baja','verify','master'],
+  code:['build','review','first','verify','master'],
+  local:['oc','gemma','paper','verify','master'],
+  cloud:['bot','review','verify','master'],
+  clock:['host','paper','verify','master']
 };
+/* Direct money/SoT edges first; Build/Review only for ship/stamp — not money hops */
 const WIRES=[
   ['imsg','oc'],
-  ['gemma','review'],['qwen','review'],['bot','review'],['build','review'],
-  ['review','oc'],['review','first'],['review','baja'],['review','paper'],['review','twin'],
-  ['oc','paper'],
+  ['host','paper'],
+  ['oc','gemma'],['oc','qwen'],['oc','paper'],
+  ['gemma','paper'],['qwen','paper'],
+  ['bot','review'],['build','review'],['build','baja'],
+  ['review','verify'],['review','first'],
   ['paper','verify'],['twin','verify'],['first','verify'],['baja','verify'],
-  ['review','verify'],['verify','master']
+  ['verify','master'],
+  ['oc','bot']
 ];
 function pathMap(){
   const o={...FALLBACK};
@@ -499,7 +542,13 @@ function drawNodes(){
       X.strokeStyle=hexA(col,.45); X.lineWidth=1.2; X.stroke();
     }
     if(kind==='in') drawIntake(p.x,p.y,col,on);
-    else botFace(p.x,p.y,col,on || id==='review');
+    else if(kind==='script'){ /* host 0-LLM */
+      X.save(); X.shadowColor=col; X.shadowBlur=on?12:4;
+      X.fillStyle=hexA('#0b1520',.95); X.strokeStyle=col; X.lineWidth=on?2:1.3;
+      round(p.x-14,p.y-10,28,20,3); X.fill(); X.stroke(); X.shadowBlur=0;
+      X.fillStyle=col; X.font='700 9px Barlow Condensed,sans-serif'; X.textAlign='center'; X.textBaseline='middle';
+      X.fillText('0LLM',p.x,p.y); X.restore();
+    } else botFace(p.x,p.y,col,on || id==='review');
     X.font='600 10px Barlow Condensed,sans-serif';
     X.textAlign='center'; X.textBaseline='top';
     X.fillStyle=on?'#fff':hexA('#d7e6f5',.8);
@@ -596,7 +645,7 @@ function render(){
       <span>${pill}</span>
     </div>`;
   }).join('');
-  const ops=['gemma','qwen','build','bot','oc','review','first','verify'];
+  const ops=['host','gemma','qwen','bot','build','oc','paper','review','first','verify'];
   let cells='';
   ops.forEach(id=>{
     const on=isWork(id);
@@ -608,9 +657,12 @@ function render(){
   const loop=S.loop||[];
   document.getElementById('loop').innerHTML=loop.map((x,i)=>`<i class="${i===(S.loop_now||0)?'on':''}" title="${x}"></i>`).join('');
   const feed=S.feed||[];
-  document.getElementById('feed').innerHTML=feed.slice(-16).reverse().map(r=>
-    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}">${r.tag}</span>${r.line}</div>`
-  ).join('');
+  document.getElementById('feed').innerHTML=feed.slice(-16).reverse().map(r=>{
+    const t=r.t||((r.at||'').slice(11,19))||'';
+    const tag=r.tag||(r.who||'LOG').toUpperCase();
+    const tone=r.tone||'hot';
+    return `<div><span class="t">${t}</span><span class="tag ${tone}">${tag}</span>${r.line||''}</div>`;
+  }).join('');
   const pnl=nw.pnl||0;
   const tn=document.getElementById('tonight');
   tn.textContent=(pnl>=0?'+':'')+pnl.toFixed(2);
@@ -618,12 +670,28 @@ function render(){
   document.getElementById('tonightSub').textContent=`PAPER start ${nw.start||0} · eq ${(nw.equity!=null)?Number(nw.equity).toFixed(2):'—'} · ${nw.source||''} · not live`;
   const sc=document.getElementById('scream'); if(sc) sc.textContent=S.scream||'';
   const banner=document.getElementById('mbanner');
-  banner.textContent=`GROK AGENT MESH · OPENCLAW ${ocList.length} · LOCAL-FIRST · IMSG→OC · GEMMA › QWEN › BUILD › BOT · PAPER≠LIVE`;
+  banner.textContent=`DIRECT SoT · OC ${ocList.length} · HOST›GEMMA›QWEN›BOT›BUILD · Build≠money · PAPER≠LIVE`;
+  const lad=document.getElementById('ladder');
+  if(lad){
+    const hops=(S.ladder||[]).slice().sort((a,b)=>(a.n||0)-(b.n||0));
+    lad.innerHTML='<b>LADDER</b>'+(hops.length?hops.map((h,i)=>{
+      const ship=h.path==='build'?' ship':'';
+      return (i?'<span class="sep">›</span>':'')+`<span class="hop${ship}" title="${(h.note||'').replace(/"/g,'')}">${(h.path||'').toUpperCase()}</span>`;
+    }).join(''):'<span class="hop">host › gemma › qwen › bot › build</span>');
+  }
+  const les=document.getElementById('lessons');
+  if(les){
+    const bits=[];
+    (S.callouts||[]).forEach(c=>{ if(c&&c.text) bits.push(`<div class="cut">⚡ ${c.text}</div>`); });
+    (S.lessons||[]).forEach(L=>{ if(L) bits.push(`<div>· ${L}</div>`); });
+    les.innerHTML=bits.slice(0,5).join('')||'<div>· DIRECT SoT · no Build→Bot money hop</div>';
+  }
   const calls=document.getElementById('calls');
   calls.innerHTML='';
   (S.callouts||[]).forEach(c=>{
-    if(!N[c.id]) return;
-    const p=P(c.id);
+    const id=c.id||(c.level==='hard'?'paper':null);
+    if(!id||!N[id]) return;
+    const p=P(id);
     const el2=document.createElement('div');
     el2.className='call';
     el2.textContent=c.text;
@@ -634,7 +702,7 @@ function render(){
   const Pths=pathMap();
   (S.events||[]).forEach(e=>{
     if(!e||!e.id||seen.has(e.id)) return;
-    const key=e.path==='code'?'first':e.path;
+    const key=e.path==='code'?'ship':(e.path==='local'?'cheap':(e.path==='cloud'?'stamp':e.path));
     const path=(Pths[key]||[]).filter(n=>N[n]);
     if(path.length<2) return;
     seen.add(e.id);
