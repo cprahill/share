@@ -599,21 +599,22 @@ requestAnimationFrame(drawHive);
       if(!a){ c.status='missing'; return; }
       var was=prev[c.t];
       c.status=a.status||'alive';
-      c.equity=a.equity!=null?a.equity:(a.cash_usd!=null?a.cash_usd:0); // equity_usd dollars only
+      // Dead cleared from board (OBIT blasts in room; DEAD meta count stays)
+      if(c.status==='dead'){ prev[c.t]='dead'; c._clear=true; return; }
+      c.equity=a.equity!=null?a.equity:(a.cash_usd!=null?a.cash_usd:0);
       c.cash=a.cash_usd!=null?a.cash_usd:null;
       c.ret=a.return_pct!=null?a.return_pct:0;
       c.pnl=c.ret;
       c.operator=a.operator||'openclaw';
-      // operator glow: grok green / openclaw yellow / loss-dead red (mortality)
       var deepLoss=(c.status==='dying')||(Number(c.ret)<=-10);
-      if(c.status==='dead'||deepLoss) c.col='#ff5d6c';
+      if(deepLoss) c.col='#ff5d6c';
       else if(c.operator==='grok') c.col='#14f195';
       else c.col='#f5c542';
-      // real event heat only
-      if(was && was==='alive' && c.status==='dead'){ c.hot=2.2; }
       if(was===undefined && a.generation>0){ c.hot=1.6; }
       prev[c.t]=c.status;
     });
+    // purge dead from hive rings
+    if(window.cells) window.cells=window.cells.filter(function(c){ return !c._clear; });
     // TRAD/DEV totems from lanes
     window.cells.forEach(function(c){
       if(c.lane==='main' && window.__lastBoard && window.__lastBoard.main){
@@ -790,7 +791,7 @@ requestAnimationFrame(drawHive);
     heat.style.display='grid';
     heat.style.gridTemplateColumns='repeat(5,1fr)';
     heat.style.gap='3px';
-    heat.innerHTML=agents.slice(0,20).map(function(a){
+    heat.innerHTML=agents.filter(function(a){return (a.status||"alive")!=="dead";}).slice(0,20).map(function(a){
       var ret=Number(a.return_pct)||0;
       if(ret>0) up++;
       var dead=(a.status==='dead');
