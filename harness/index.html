@@ -128,19 +128,39 @@ header{
 .legend i{display:inline-block;width:8px;height:8px;margin:0 4px 0 10px;vertical-align:middle}
 .bot{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;min-height:0}
 
-/* mobile: .app is the scroller (iOS). Look unchanged. */
+/* mobile align — stack columns; .app scrolls. Build look unchanged. */
 @media (max-width:900px){
-  html,body{height:100%!important;overflow:hidden!important;position:fixed!important;inset:0;width:100%}
-  .app{height:100dvh!important;max-height:100dvh!important;overflow-x:hidden!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;grid-template-rows:auto auto auto auto auto!important}
-  header{flex-wrap:wrap;height:auto}
-  .kpis{flex-wrap:wrap;margin-left:0;width:100%}
-  .mid{grid-template-columns:1fr!important;height:auto!important}
-  .feed,.docs,.launches,.oc-seats{overflow:auto!important;-webkit-overflow-scrolling:touch;height:auto!important;max-height:none}
-  .feed{grid-template-columns:1fr!important}
-  .feed div{white-space:normal;overflow:visible;text-overflow:clip}
+  html,body{height:100%!important;width:100%;overflow:hidden!important;position:fixed!important;inset:0;-webkit-text-size-adjust:100%}
+  .app{
+    height:100dvh!important;max-height:100dvh!important;
+    overflow-x:hidden!important;overflow-y:scroll!important;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;
+    grid-template-rows:auto auto minmax(220px,38vh) auto!important;
+    gap:8px;padding:8px 8px calc(16px + env(safe-area-inset-bottom,0px));
+  }
+  header{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 12px;height:auto;padding:8px}
+  header .brand{flex:1 1 auto}
+  header .sub{flex:1 1 100%;order:3;line-height:1.35;white-space:normal}
+  header .live{order:2}
+  .kpis{order:4;flex:1 1 100%;margin-left:0!important;width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:8px 12px}
+  .tokbar{flex-wrap:wrap;gap:8px;padding:8px}
+  .tokstack{flex:1 1 100%;min-width:0}
+  .tokleg{flex-wrap:wrap;white-space:normal;width:100%}
+  .mesh{min-height:220px;height:38vh;max-height:42vh;width:100%;overflow:hidden}
+  .mesh canvas{width:100%!important;height:100%!important;max-width:100%}
+  .bot{grid-template-columns:1fr!important;height:auto!important}
+  .bot .panel{min-height:180px;height:auto;overflow:visible}
+  .docs{grid-template-columns:1fr!important;height:auto!important;overflow:visible}
+  .feed{grid-template-columns:1fr!important;height:auto!important;overflow:visible!important}
+  .feed div{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35;padding:4px 0}
+  .legend{white-space:normal;line-height:1.6}
+  .oc-seats{grid-template-columns:1fr!important;max-height:none}
+}
+@media (max-width:420px){
+  .mesh{height:34vh;min-height:180px}
+  .app{grid-template-rows:auto auto minmax(180px,34vh) auto!important}
 }
 .feed,.docs,.launches,.oc-seats{overflow:auto;-webkit-overflow-scrolling:touch}
-
 </style>
 </head>
 <body>
