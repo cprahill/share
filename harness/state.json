@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T07:44:08-05:00",
+  "updated_at": "2026-09-06T07:44:31-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -208,7 +208,7 @@
       {
         "id": "tick",
         "level": "ok",
-        "label": "tick 8m"
+        "label": "tick 9m"
       },
       {
         "id": "build_sess",
@@ -244,7 +244,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "king-poll beat 10s",
+      "doing": "king-poll beat 13s",
       "working": true
     },
     "gemma": {
@@ -638,7 +638,7 @@
     },
     "host": {
       "working": true,
-      "line": "king-poll beat 10s"
+      "line": "king-poll beat 13s"
     },
     "gemma": {
       "working": false,
@@ -691,13 +691,13 @@
   },
   "feed": [
     {
-      "t": "07:44:08",
+      "t": "07:44:31",
       "tag": "BOT",
       "line": "LIVE \u00b7 23 bots",
       "tone": "hot"
     },
     {
-      "t": "07:44:08",
+      "t": "07:44:31",
       "tag": "IMSG",
       "line": "quiet",
       "tone": "ok"
@@ -739,13 +739,13 @@
       "tone": "ok"
     },
     {
-      "t": "07:44:08",
+      "t": "07:44:31",
       "tag": "ZOMBIES",
       "line": "woke block,kitchen,portal,retro,stranger",
       "tone": "bad"
     },
     {
-      "t": "07:44:08",
+      "t": "07:44:31",
       "tag": "LOCK",
       "line": "LOCK still block+first",
       "tone": "bad"
@@ -867,7 +867,7 @@
         "name": "trade-dev",
         "model": "qwen",
         "sess": 14,
-        "age_s": 30,
+        "age_s": 53,
         "working": true,
         "silent": false,
         "tone": "hot"
@@ -877,7 +877,7 @@
         "name": "paper-desk",
         "model": "gemma",
         "sess": 7,
-        "age_s": 492,
+        "age_s": 515,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -887,7 +887,7 @@
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
         "sess": 4,
-        "age_s": 41136,
+        "age_s": 41159,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -897,7 +897,7 @@
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
         "sess": 7,
-        "age_s": 523,
+        "age_s": 547,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -917,7 +917,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45918,
+        "age_s": 45941,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -977,7 +977,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45824,
+        "age_s": 45847,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1027,7 +1027,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45794,
+        "age_s": 45817,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1107,7 +1107,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 45789,
+        "age_s": 45812,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1117,7 +1117,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 367,
-        "age_s": 81431,
+        "age_s": 81454,
         "working": false,
         "silent": true,
         "tone": "warn"
