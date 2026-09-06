@@ -573,7 +573,7 @@ requestAnimationFrame(drawHive);
   }
   function el(id){return document.getElementById(id)}
   async function fetchBoard(){
-    var urls=['data/board.json?t='+Date.now(),'/api/paper-desk'];
+    var urls=['/api/paper-desk','data/board.json?t='+Date.now()];
     for(var i=0;i<urls.length;i++){
       try{
         var r=await fetch(urls[i],{cache:'no-store'});
