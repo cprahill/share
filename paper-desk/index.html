@@ -315,8 +315,8 @@ html{overflow-x:hidden}
     <div class="cell"><span class="k">OPEN POS</span><span class="v" id="r_open">0</span></div>
     <div class="cell"><span class="k">WIN RATE</span><span class="v" id="r_wr">0%</span></div>
     <div class="cell"><span class="k">PRINT RET%</span><span class="v" id="r_mpm">0</span></div>
-    <div class="cell"><span class="k">P&L / +500</span><span class="v" id="r_rug">0</span></div>
-    <div class="cell"><span class="k">GOAL +$500 P&L</span><span class="v honey" id="r_ag">0 / 0</span></div>
+    <div class="cell"><span class="k">STRETCH $5k</span><span class="v" id="r_rug">0</span></div>
+    <div class="cell"><span class="k">MIN $2.5k</span><span class="v honey" id="r_ag">0 / 0</span></div>
     <div class="cell"><span class="k">FRI CLOSE</span><span class="v grn" id="r_human">none</span></div>
   </div>
   <div id="paper-strip">
@@ -330,7 +330,7 @@ html{overflow-x:hidden}
 </div>
   <div id="tickertape"><span class="tag">ONE·PRINT</span><div style="overflow:hidden;flex:1"><div id="ttrack"></div></div></div>
   <div id="grid">
-    <div class="center panel"><div class="ph"><span class="t">THE FLOOR · ONE PRINT</span><span class="htabs"><span class="on">DESK</span><span>FLOWS</span><span>FLOOR</span></span><span class="meta"><span id="hive_live">0</span> LIVE · <span id="hive_dead">0</span> DEAD · <span id="op-legend" style="margin-left:8px;letter-spacing:.06em"><span style="color:#14f195">● Grok</span> <span style="color:#f5c542;margin-left:6px">● OpenClaw</span> <span style="color:#ff5d6c;margin-left:6px">● Loss</span></span></span></div><div class="pb"><div class="hivetitle"><span class="k">+$500 PROFIT TRIAL</span><b>PRINT</b></div><canvas id="hive"></canvas></div></div>
+    <div class="center panel"><div class="ph"><span class="t">THE FLOOR · ONE PRINT</span><span class="htabs"><span class="on">DESK</span><span>FLOWS</span><span>FLOOR</span></span><span class="meta"><span id="hive_live">0</span> LIVE · <span id="hive_dead">0</span> DEAD · <span id="op-legend" style="margin-left:8px;letter-spacing:.06em"><span style="color:#14f195">● Grok</span> <span style="color:#f5c542;margin-left:6px">● OpenClaw</span> <span style="color:#ff5d6c;margin-left:6px">● Loss</span></span></span></div><div class="pb"><div class="hivetitle"><span class="k">$500→$2.5k TRIAL</span><b>PRINT</b></div><canvas id="hive"></canvas></div></div>
     <div class="cockpit">
       <div class="panel"><div class="ph"><span class="t">ACTION LOG · REAL</span><span class="meta">BOARD FILLS</span></div><div class="pb"><div class="tape" id="tape"></div></div></div>
       <div class="panel"><div class="ph"><span class="t">OPEN · THE PRINT</span><span class="meta"><span id="op_count">0</span> OPEN</span></div><div class="pb" style="overflow:auto"><table class="postbl"><thead><tr><th>SYMBOL</th><th>ENTRY</th><th>MULT</th><th>PNL</th></tr></thead><tbody id="postbody"></tbody></table></div></div>
@@ -339,7 +339,7 @@ html{overflow-x:hidden}
       <div class="panel mini"><div class="ph"><span class="t">FEATURED · <span id="ch_head_sym">—</span></span><span class="meta">1s</span></div><div class="pb"><div class="chhead"><span class="cs" id="ch_sym">$—</span><span class="cp mono2" id="ch_px">—</span></div><canvas id="chart"></canvas></div></div>
       <div class="panel mini"><div class="ph"><span class="t">RUN-RATE</span><span class="meta">FILLS</span></div><div class="pb"><canvas id="runrate"></canvas></div></div>
       <div class="panel mini"><div class="ph"><span class="t">DEPTH</span><span class="meta">0.3%</span></div><div class="pb"><div class="depth" id="depth"></div></div></div>
-      <div class="panel mini"><div class="ph"><span class="t">HEAT TO +$500</span><span class="meta"><span id="heat_up">0</span>G</span></div><div class="pb"><div class="heat" id="heat"></div></div></div>
+      <div class="panel mini"><div class="ph"><span class="t">HEAT TO $2.5k</span><span class="meta"><span id="heat_up">0</span>G</span></div><div class="pb"><div class="heat" id="heat"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">CORRELATION</span><span class="meta">pnl</span></div><div class="pb"><div class="corr" id="corr"></div></div></div>
       <div class="panel mini"><div class="ph"><span class="t">THROUGHPUT</span><span class="meta">fills</span></div><div class="pb"><div class="thr" id="thr"></div></div></div>
     </div>
@@ -714,12 +714,12 @@ requestAnimationFrame(drawHive);
     var living=sw.living!=null?sw.living:(sw.agents||[]).filter(function(a){return (a.status||'alive')!=='dead';}).length;
     var dead=sw.dead!=null?sw.dead:(sw.agents||[]).filter(function(a){return a.status==='dead';}).length;
     var n=(sw.agents&&sw.agents.length)||0;
-    var ra=el('r_ag'); if(ra) ra.textContent='+$500';
+    var ra=el('r_ag'); if(ra) ra.textContent='$2.5k';
     var hl=el('hive_live'); if(hl) hl.textContent='1';
     var hd=el('hive_dead'); if(hd) hd.textContent='0';
     var hu=el('r_human');
     if(hu){ var fri=new Date('2026-09-11T16:00:00-04:00')-Date.now(); hu.textContent=fri>0?Math.floor(fri/3600000)+'h':'CLOSED'; }
-    var wr=el('r_wr'); if(wr){ var pr=Number(main.total_pnl_usd)||0; wr.textContent=pct((pr/500)*100).replace('%','')+'%'; }
+    var wr=el('r_wr'); if(wr){ var pr=Number(main.total_pnl_usd)||0; wr.textContent=pct((pr/2000)*100).replace('%','')+'%'; }
     var note=el('pd_note');
     var op=j.one_print||{};
     if(note) note.textContent=(j.updated_at?('updated '+j.updated_at+' · '):'')+'ONE PRINT · NWS '+(op.nws_f||'—')+'° · KNYC '+(op.knyc_max_f||'—')+'° · LIVE DENY';
