@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-06T15:33:27-05:00",
+  "updated_at": "2026-09-06T15:44:00-05:00",
   "paper": true,
   "live": false,
   "scream": "PAPER / not live",
@@ -92,7 +92,7 @@
     },
     {
       "path": "build",
-      "n": 5
+      "n": 6
     },
     {
       "path": "bot",
@@ -101,7 +101,7 @@
   ],
   "tokens": {
     "window": "24h",
-    "total": 168688370,
+    "total": 176159714,
     "models": [
       {
         "id": "gemma",
@@ -133,11 +133,11 @@
         "id": "build",
         "label": "GROK BUILD",
         "color": "#ffb020",
-        "prompt": 166457145,
-        "completion": 727766,
-        "total": 167184911,
-        "calls": 739,
-        "last_prompt": 59177,
+        "prompt": 173884100,
+        "completion": 772155,
+        "total": 174656255,
+        "calls": 780,
+        "last_prompt": 127302,
         "meter": "unified",
         "note": "sum of per-call prompt+completion (context re-sent each loop)",
         "pct": 99.1
@@ -163,7 +163,7 @@
       {
         "id": "master",
         "level": "ok",
-        "label": "MASTER 9 lines"
+        "label": "MASTER 10 lines"
       },
       {
         "id": "pack",
@@ -178,7 +178,7 @@
       {
         "id": "build402",
         "level": "ok",
-        "label": "credit 80%"
+        "label": "credit 82%"
       },
       {
         "id": "zombies",
@@ -208,7 +208,7 @@
       {
         "id": "tick",
         "level": "ok",
-        "label": "tick 3m"
+        "label": "tick 13m"
       },
       {
         "id": "build_sess",
@@ -244,7 +244,7 @@
         "build"
       ],
       "probes": [],
-      "doing": "king-poll beat 10s",
+      "doing": "king-poll beat 18s",
       "working": true
     },
     "gemma": {
@@ -345,7 +345,7 @@
       "probes": [
         {
           "k": "credit",
-          "v": "80.0"
+          "v": "82.0"
         },
         {
           "k": "block",
@@ -383,21 +383,60 @@
     },
     "first": {
       "title": "First",
-      "role": "always-on",
-      "why": "Not a dest. Harness / pack / log-job. Independent BUILD\u2192VERIFY hop.",
+      "role": "gate to MASTER",
+      "why": "Not a dest. Review BEFORE pack and AFTER log-job. Every project hops this gate.",
       "active": "LIVE",
       "token": "script",
       "health": "ok",
       "feeds": [
-        "verify"
+        "review",
+        "verify",
+        "master",
+        "baja",
+        "twin",
+        "paper"
       ],
       "fed_by": [
         "build",
-        "host"
+        "host",
+        "locks",
+        "openclaw"
       ],
       "probes": [],
-      "doing": "harness job in-flight \u2192 VERIFY",
+      "doing": "BEFORE \u00b7 pack first",
       "working": true
+    },
+    "locks": {
+      "title": "Locks",
+      "role": "lessons + principles",
+      "why": "Disk LESSONS outrank chat. Injected at First before. Cloned to MASTER after.",
+      "active": "LIVE",
+      "token": "script",
+      "health": "ok",
+      "feeds": [
+        "first"
+      ],
+      "fed_by": [
+        "master"
+      ],
+      "probes": [],
+      "doing": "disk locks outrank chat",
+      "working": true
+    },
+    "park": {
+      "title": "Parked",
+      "role": "projects/PARKED",
+      "why": "portal \u00b7 retro \u00b7 stranger \u00b7 block \u00b7 fury \u00b7 Roblox \u00b7 Gonzo \u00b7 Photos. Do not wake.",
+      "active": "Park Law",
+      "token": "script",
+      "health": "bad",
+      "feeds": [
+        "first"
+      ],
+      "fed_by": [],
+      "probes": [],
+      "doing": "Park Law \u2014 do not wake",
+      "working": false
     },
     "review": {
       "title": "REVIEW",
@@ -454,13 +493,15 @@
       "token": "file",
       "health": "ok",
       "feeds": [
-        "pack"
+        "pack",
+        "locks"
       ],
       "fed_by": [
-        "verify"
+        "verify",
+        "first"
       ],
       "probes": [],
-      "doing": "9 lines",
+      "doing": "10 lines",
       "working": true
     },
     "baja": {
@@ -519,8 +560,10 @@
     }
   },
   "paths": {
-    "first": {
+    "gate": {
       "nodes": [
+        "locks",
+        "first",
         "build",
         "review",
         "verify",
@@ -528,86 +571,113 @@
         "master"
       ],
       "dest": "first",
-      "why": "Build \u2192 REVIEW (lessons+principles) \u2192 VERIFY \u2192 First \u2192 MASTER. Bot is not on this hop."
+      "why": "FIRST before (locks+pack) \u2192 Build \u2192 REVIEW \u2192 VERIFY \u2192 FIRST after \u2192 MASTER."
+    },
+    "first": {
+      "nodes": [
+        "locks",
+        "first",
+        "build",
+        "review",
+        "verify",
+        "first",
+        "master"
+      ],
+      "dest": "first",
+      "why": "First is the gate to MASTER, not a dest. Before and after every hop."
     },
     "clock": {
       "nodes": [
+        "first",
         "oc",
         "review",
         "verify",
         "paper",
+        "first",
         "master"
       ],
       "dest": "paper",
-      "why": "0-LLM tick still hits review before C desk."
+      "why": "0-LLM tick still hits First before C desk, First after \u2192 MASTER."
     },
     "baja": {
       "nodes": [
+        "first",
         "build",
         "review",
         "verify",
         "baja",
+        "first",
         "master"
       ],
       "dest": "baja",
-      "why": "Grok Build only \u2192 REVIEW \u2192 VERIFY \u2192 Baja \u2192 MASTER. Bot silent."
+      "why": "FIRST before \u2192 Grok Build only \u2192 REVIEW \u2192 VERIFY \u2192 Baja \u2192 FIRST after \u2192 MASTER."
     },
     "crew": {
       "nodes": [
+        "first",
         "build",
         "oc",
         "review",
         "verify",
         "paper",
+        "first",
         "master"
       ],
       "dest": "paper",
-      "why": "Build conductor \u2192 OpenClaw seats \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 MASTER."
+      "why": "FIRST before \u2192 Build \u2550 OC \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 FIRST after \u2192 MASTER."
     },
     "cheap": {
       "nodes": [
+        "first",
         "oc",
         "review",
         "verify",
         "paper",
+        "first",
         "master"
       ],
       "dest": "paper",
-      "why": "OpenClaw \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 MASTER."
+      "why": "FIRST before \u2192 OpenClaw \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 FIRST after \u2192 MASTER."
     },
     "local": {
       "nodes": [
+        "first",
         "gemma",
         "oc",
         "review",
         "verify",
         "paper",
+        "first",
         "master"
       ],
       "dest": "paper",
-      "why": "Gemma plugged into OpenClaw, then review/verify before C desk."
+      "why": "FIRST before \u2192 Gemma \u2192 OC \u2192 REVIEW \u2192 VERIFY \u2192 C desk \u2192 FIRST after \u2192 MASTER."
     },
     "cut": {
       "nodes": [
+        "first",
         "qwen",
         "oc",
         "review",
         "verify",
         "twin",
+        "first",
         "master"
       ],
       "dest": "twin",
-      "why": "Qwen plugged into OpenClaw, then review/verify before Twin."
+      "why": "FIRST before \u2192 Qwen \u2192 OC \u2192 REVIEW \u2192 VERIFY \u2192 Twin \u2192 FIRST after \u2192 MASTER."
     },
     "cloud": {
       "nodes": [
+        "first",
         "bot",
         "review",
         "verify",
+        "first",
         "master"
       ],
       "dest": "first",
-      "why": "Bot ALLOW only (stamp / hot-wash / YES) \u2192 REVIEW \u2192 VERIFY \u2192 MASTER."
+      "why": "FIRST before \u2192 Bot ALLOW only \u2192 REVIEW \u2192 VERIFY \u2192 FIRST after \u2192 MASTER."
     },
     "imsg": {
       "nodes": [
@@ -616,33 +686,34 @@
         "imsg"
       ],
       "dest": "household",
-      "why": "One iMessage socket. In and out through OpenClaw."
+      "why": "One iMessage socket. In and out through OpenClaw. Not a project dest."
     },
     "back": {
       "nodes": [
         "master",
-        "verify"
+        "first",
+        "locks"
       ],
       "dest": "first",
-      "why": "Next job reads MASTER tail (pack is a gate, not a station)."
+      "why": "After-gate: next job reads MASTER tail + disk locks."
     }
   },
   "events": [
     {
-      "id": "build-2026-09-06T20:26:38.829Z",
-      "path": "first",
+      "id": "build-2026-09-06T20:39:25.454Z",
+      "path": "gate",
       "op": "build",
       "dest": "first"
     },
     {
-      "id": "crew-2026-09-06T15:33:22-05:00",
+      "id": "crew-2026-09-06T15:43:59-05:00",
       "path": "crew",
       "op": "build",
       "dest": "paper"
     },
     {
-      "id": "master-2026-09-06T15:33:27-05:00-crew-wire-visible",
-      "path": "first",
+      "id": "master-2026-09-06T15:44:00-05:00-first-gate-neural",
+      "path": "gate",
       "op": "build",
       "dest": "first"
     }
@@ -650,6 +721,7 @@
   "pulse": [
     "build",
     "first",
+    "locks",
     "master",
     "oc",
     "verify"
@@ -665,11 +737,11 @@
     },
     "pack": {
       "working": true,
-      "line": "harness job in-flight \u2192 VERIFY"
+      "line": "BEFORE \u00b7 pack first"
     },
     "host": {
       "working": true,
-      "line": "king-poll beat 10s"
+      "line": "king-poll beat 18s"
     },
     "gemma": {
       "working": false,
@@ -693,7 +765,15 @@
     },
     "first": {
       "working": true,
-      "line": "harness job in-flight \u2192 VERIFY"
+      "line": "BEFORE \u00b7 pack first"
+    },
+    "locks": {
+      "working": true,
+      "line": "disk locks outrank chat"
+    },
+    "park": {
+      "working": false,
+      "line": "Park Law \u2014 do not wake"
     },
     "baja": {
       "working": false,
@@ -717,12 +797,12 @@
     },
     "master": {
       "working": false,
-      "line": "9 lines"
+      "line": "10 lines"
     }
   },
   "feed": [
     {
-      "t": "15:33:27",
+      "t": "15:44:00",
       "tag": "BOT",
       "line": "LIVE \u00b7 23 bots",
       "tone": "hot"
@@ -734,13 +814,13 @@
       "tone": "ok"
     },
     {
-      "t": "15:33:12",
+      "t": "15:43:50",
       "tag": "BUILD",
-      "line": "planning \u00b7 dest first",
+      "line": "searching \u00b7 dest first",
       "tone": "hot"
     },
     {
-      "t": "15:25:13",
+      "t": "15:44:00",
       "tag": "PACK",
       "line": "first exit 0 ok",
       "tone": "ok"
@@ -752,10 +832,22 @@
       "tone": "ok"
     },
     {
-      "t": "15:33:22",
+      "t": "15:43:59",
       "tag": "CREW",
       "line": "BUILD \u2192 OC crew-seq",
       "tone": "hot"
+    },
+    {
+      "t": "15:44:00",
+      "tag": "FIRST",
+      "line": "BEFORE \u00b7 pack first",
+      "tone": "hot"
+    },
+    {
+      "t": "15:44:00",
+      "tag": "FIRST",
+      "line": "AFTER \u00b7 first \u2192 MASTER",
+      "tone": "ok"
     },
     {
       "t": "15:30:03",
@@ -818,13 +910,19 @@
       "tone": "ok"
     },
     {
-      "t": "15:33:27",
+      "t": "15:44:00",
+      "tag": "BUILD",
+      "line": "first edit first_gate",
+      "tone": "ok"
+    },
+    {
+      "t": "15:44:00",
       "tag": "LOCK",
       "line": "LOCK still block+first",
       "tone": "bad"
     },
     {
-      "t": "15:33:27",
+      "t": "15:44:00",
       "tag": "BUILD_SE",
       "line": "prompt_tokens 399042",
       "tone": "bad"
@@ -837,24 +935,24 @@
     "risk_label": "Park Law clock",
     "review_pct": 100,
     "review_label": "pass",
-    "ttft_ms": 8761,
-    "credit_pct": 80.0,
+    "ttft_ms": 5913,
+    "credit_pct": 82.0,
     "block": false
   },
   "dests": [
     {
       "id": "first",
       "name": "FIRST",
-      "kind": "always-on",
-      "pill": "HOT",
+      "kind": "gate",
+      "pill": "GATE",
       "tone": "hot",
-      "line": "harness job in-flight \u2192 VERIFY",
+      "line": "BEFORE \u00b7 pack first",
       "health": "ok"
     },
     {
       "id": "baja",
       "name": "A BAJA",
-      "kind": "creative",
+      "kind": "project",
       "pill": "ARMED",
       "tone": "ok",
       "line": "Grok Build only",
@@ -863,7 +961,7 @@
     {
       "id": "twin",
       "name": "B TWIN",
-      "kind": "legacy",
+      "kind": "project",
       "pill": "IDLE",
       "tone": "warn",
       "line": "ask.py :8787",
@@ -872,7 +970,7 @@
     {
       "id": "paper",
       "name": "C DESK",
-      "kind": "finance",
+      "kind": "project",
       "pill": "ARMED",
       "tone": "ok",
       "line": "desk :8791",
@@ -884,7 +982,7 @@
       "kind": "parked",
       "pill": "REJECT",
       "tone": "bad",
-      "line": "Park Law",
+      "line": "Park Law \u00b7 projects/PARKED",
       "health": "bad"
     },
     {
@@ -893,7 +991,7 @@
       "kind": "parked",
       "pill": "REJECT",
       "tone": "bad",
-      "line": "Park Law",
+      "line": "Park Law \u00b7 projects/PARKED",
       "health": "bad"
     },
     {
@@ -902,7 +1000,7 @@
       "kind": "parked",
       "pill": "REJECT",
       "tone": "bad",
-      "line": "Park Law",
+      "line": "Park Law \u00b7 projects/PARKED",
       "health": "bad"
     },
     {
@@ -911,11 +1009,42 @@
       "kind": "parked",
       "pill": "REJECT",
       "tone": "bad",
-      "line": "Park Law",
+      "line": "Park Law \u00b7 projects/PARKED",
+      "health": "bad"
+    },
+    {
+      "id": "roblox",
+      "name": "ROBLOX",
+      "kind": "parked",
+      "pill": "REJECT",
+      "tone": "bad",
+      "line": "Park Law \u00b7 projects/PARKED",
+      "health": "bad"
+    },
+    {
+      "id": "gonzo",
+      "name": "GONZO",
+      "kind": "parked",
+      "pill": "REJECT",
+      "tone": "bad",
+      "line": "Park Law \u00b7 projects/PARKED",
+      "health": "bad"
+    },
+    {
+      "id": "photos",
+      "name": "PHOTOS",
+      "kind": "parked",
+      "pill": "REJECT",
+      "tone": "bad",
+      "line": "Park Law \u00b7 projects/PARKED",
       "health": "bad"
     }
   ],
   "callouts": [
+    {
+      "id": "first",
+      "text": "BEFORE \u00b7 pack first"
+    },
     {
       "id": "build",
       "text": "conductor \u2192 OpenClaw"
@@ -925,16 +1054,16 @@
       "text": "\u2190 Build crew-seq"
     },
     {
-      "id": "bot",
-      "text": "LIVE \u00b7 23 bots \u2192 OpenClaw"
-    },
-    {
-      "id": "first",
-      "text": "harness job in-flight \u2192 VERIFY"
+      "id": "locks",
+      "text": "disk locks outrank chat"
     },
     {
       "id": "verify",
       "text": "in-flight first"
+    },
+    {
+      "id": "bot",
+      "text": "LIVE \u00b7 23 bots \u2192 OpenClaw"
     }
   ],
   "room": {
@@ -948,6 +1077,7 @@
       "bot",
       "oc",
       "first",
+      "locks",
       "verify"
     ],
     "oc_agents": [
@@ -956,7 +1086,7 @@
         "name": "paper-desk",
         "model": "gemma",
         "sess": 10,
-        "age_s": 3991,
+        "age_s": 4624,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -966,7 +1096,7 @@
         "name": "trade-dev",
         "model": "qwen",
         "sess": 28,
-        "age_s": 4042,
+        "age_s": 4675,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -976,7 +1106,7 @@
         "name": "Swarm MR (OpenClaw)",
         "model": "gemma",
         "sess": 10,
-        "age_s": 18457,
+        "age_s": 19090,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -986,7 +1116,7 @@
         "name": "Swarm Event (OpenClaw)",
         "model": "gemma",
         "sess": 10,
-        "age_s": 5162,
+        "age_s": 5795,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1006,7 +1136,7 @@
         "name": "baja",
         "model": "gemma",
         "sess": 4,
-        "age_s": 74076,
+        "age_s": 74710,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1026,7 +1156,7 @@
         "name": "critic",
         "model": "gemma",
         "sess": 4,
-        "age_s": 26950,
+        "age_s": 27583,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1046,7 +1176,7 @@
         "name": "first-architect",
         "model": "gemma",
         "sess": 7,
-        "age_s": 26769,
+        "age_s": 27402,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1066,7 +1196,7 @@
         "name": "local-christopher",
         "model": "gemma",
         "sess": 10,
-        "age_s": 26502,
+        "age_s": 27135,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1076,7 +1206,7 @@
         "name": "memory-keeper",
         "model": "gemma",
         "sess": 4,
-        "age_s": 26477,
+        "age_s": 27110,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1116,7 +1246,7 @@
         "name": "project-first",
         "model": "gemma",
         "sess": 13,
-        "age_s": 26439,
+        "age_s": 27072,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1196,7 +1326,7 @@
         "name": "share-ship",
         "model": "gemma",
         "sess": 4,
-        "age_s": 73948,
+        "age_s": 74581,
         "working": false,
         "silent": false,
         "tone": "idle"
@@ -1206,7 +1336,7 @@
         "name": "Grok",
         "model": "gemma",
         "sess": 371,
-        "age_s": 26400,
+        "age_s": 27033,
         "working": false,
         "silent": true,
         "tone": "warn"
@@ -1222,11 +1352,11 @@
     "pack_first",
     "baja_lessons",
     "first_path",
+    "first_gate",
+    "projects_folder",
     "grok_conductor",
     "handoff_review",
-    "docs_govern",
-    "locks_outrank",
-    "one_crew"
+    "docs_govern"
   ],
   "docs": {
     "lessons": [
@@ -1242,7 +1372,8 @@
     "principles": [
       "Hash moved or it is a miss. Existing file \u2260 done.",
       "Pack = dest + NOW names + DEST-LOCKS + lessons \u226420 + job. Encyclopedia = refuse.",
-      "Do not invent dests. Park Law: A Baja \u00b7 B Twin \u00b7 C Paper. First is always-on.",
+      "Do not invent dests. Park Law: A Baja \u00b7 B Twin \u00b7 C Paper. First is always-on \u2014 the before/after gate to MASTER, not a de",
+      "Projects taxonomy is `projects/` (ACTIVE + PARKED windows). Dest SoT does not move.",
       "Disk locks outrank chat. Recuts that drop old rules and revive mistakes are a fail.",
       "Fail closed. Pack refuse, 402, or review refuse = no send.",
       "Twin is ask.py. Household never Grok Bot. Baja is Grok Build only.",
@@ -1252,7 +1383,7 @@
       "0 new Grok Bots. Swarm = existing OpenClaw seats sequenced by host `crew-seq.py`. Cloud deny except Bot stamp.",
       "Grok Build and Grok Bot are one conductor pair. After ship: one MASTER line. Next pack reads the tail."
     ],
-    "lessons_n": 19,
+    "lessons_n": 21,
     "principles_file": true,
     "lessons_file": true
   },
@@ -1346,6 +1477,16 @@
       "path": "build",
       "verified": true,
       "job_id": "crew-wire-visible"
+    },
+    {
+      "t": "2026-09-06T15:44:00-05:00",
+      "op": "build",
+      "action": "edit",
+      "lesson": "first_gate",
+      "dest": "first",
+      "path": "build",
+      "verified": true,
+      "job_id": "first-gate-neural"
     }
   ]
 }

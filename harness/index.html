@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#070b12; --panel:#0c121c; --line:#1b2738; --muted:#6d7d93;
+  --bg:#03060c; --panel:#070d16; --line:#1a2a3e; --muted:#6d7d93;
   --text:#d7e6f5; --cyan:#3ce7ff; --mint:#3dffc7; --gold:#ffb020;
   --pink:#ff4d8d; --violet:#8b7cff; --green:#3dff9a;
 }
@@ -23,16 +23,17 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:h
 header{
   display:flex;align-items:center;gap:14px;
   padding:0 16px;border-bottom:1px solid var(--line);
-  background:#080e16;
+  background:linear-gradient(90deg,#050a12,#0a1220 40%,#050a12);
 }
-.brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;letter-spacing:.2em;font-size:17px;color:#fff;}
-.brand i{color:var(--cyan);font-style:normal}
+.brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;letter-spacing:.22em;font-size:17px;color:#fff;}
+.brand i{color:var(--cyan);font-style:normal;text-shadow:0 0 12px #3ce7ff88}
 .chip{
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   padding:3px 8px;border:1px solid var(--line);border-radius:2px;color:var(--muted);
 }
 .chip.paper{color:var(--gold);border-color:#5a4318}
-.chip.crew{color:var(--mint);border-color:#1e5a4a}
+.chip.crew{color:var(--mint);border-color:#1e5a4a;box-shadow:0 0 10px #3dffc733}
+.chip.gate{color:var(--cyan);border-color:#1a5a66;box-shadow:0 0 10px #3ce7ff33}
 .live{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.16em;color:var(--green)}
 .live b{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);display:block;animation:blink 1.6s infinite}
 @keyframes blink{50%{opacity:.35}}
@@ -46,18 +47,22 @@ header{
 .tokstack i{height:100%;min-width:0}
 .mesh{
   position:relative;min-height:0;overflow:hidden;
-  background:radial-gradient(1200px 480px at 50% 40%, #0d1828 0%, #070b12 70%);
+  background:
+    radial-gradient(900px 420px at 50% 48%, #10243c 0%, transparent 62%),
+    radial-gradient(600px 280px at 78% 50%, #1a1030 0%, transparent 55%),
+    #03060c;
 }
 .mesh canvas{position:absolute;inset:0;width:100%;height:100%}
 .mbanner{
   position:absolute;left:16px;top:12px;z-index:3;
   font-family:"Barlow Condensed",sans-serif;letter-spacing:.18em;font-size:11px;
-  color:var(--muted);
+  color:var(--cyan);text-shadow:0 0 12px #3ce7ff55;
 }
 .call{
-  position:absolute;z-index:4;transform:translate(-50%,-140%);
-  background:#101820;border:1px solid var(--cyan);color:#e8fff9;
+  position:absolute;z-index:4;transform:translate(-50%,-145%);
+  background:#0a121c;border:1px solid var(--cyan);color:#e8fff9;
   font-size:10px;padding:3px 7px;white-space:nowrap;pointer-events:none;
+  box-shadow:0 0 14px #3ce7ff33;
 }
 .bot{
   display:grid;grid-template-columns:1.2fr .8fr;
@@ -109,8 +114,9 @@ header{
 <body>
 <div class="app">
   <header>
-    <div class="brand">HARNESS <i>//</i> BUILD</div>
+    <div class="brand">HARNESS <i>//</i> NEURAL</div>
     <div class="chip paper" id="scream">PAPER</div>
+    <div class="chip gate" id="gatechip">FIRST GATE</div>
     <div class="chip" id="crewchip">CREW</div>
     <div class="live"><b></b>LIVE</div>
     <div class="tok" title="tokens 24h">
@@ -124,7 +130,7 @@ header{
     </div>
   </header>
   <section class="mesh">
-    <div class="mbanner" id="mbanner">MESH</div>
+    <div class="mbanner" id="mbanner">FIRST GATE</div>
     <canvas id="c"></canvas>
     <div id="calls"></div>
   </section>
@@ -143,48 +149,54 @@ header{
 const C=document.getElementById('c'), X=C.getContext('2d');
 let W=0,H=0,T=0,S=null,jobs=[],seen=new Set();
 const COL={
-  imsg:'#3ce7ff', gemma:'#3dff9a', qwen:'#3ce7ff',
-  build:'#ffb020', bot:'#8b7cff', oc:'#3dffc7', first:'#d7e6f5', baja:'#ff6a3d',
-  twin:'#7ed0ff', paper:'#ffe08a', review:'#ffb020', verify:'#ffffff', master:'#ff4d8d'
+  imsg:'#3ce7ff', gemma:'#3dff9a', qwen:'#3ce7ff', host:'#6d7d93',
+  locks:'#8b7cff', build:'#ffb020', bot:'#8b7cff', oc:'#3dffc7',
+  first:'#3ce7ff', review:'#ffb020', verify:'#ffffff', master:'#ff4d8d',
+  baja:'#ff6a3d', twin:'#7ed0ff', paper:'#ffe08a', park:'#ff4d8d'
 };
 const N={
-  gemma:{x:.14,y:.22,label:'GEMMA', kind:'ai'},
-  qwen:{x:.14,y:.78,label:'QWEN', kind:'ai'},
-  imsg:{x:.05,y:.50,label:'IMSG', kind:'in'},
-  oc:{x:.22,y:.50,label:'OPENCLAW', kind:'gate'},
-  build:{x:.40,y:.34,label:'BUILD', kind:'ai'},
-  bot:{x:.40,y:.66,label:'BOT', kind:'ai'},
-  review:{x:.58,y:.50,label:'REVIEW', kind:'gate'},
-  verify:{x:.72,y:.50,label:'VERIFY', kind:'gate'},
-  first:{x:.88,y:.18,label:'FIRST', kind:'dest'},
-  baja:{x:.88,y:.39,label:'BAJA', kind:'dest'},
-  twin:{x:.88,y:.61,label:'TWIN', kind:'dest'},
-  paper:{x:.88,y:.82,label:'C DESK', kind:'dest'},
-  master:{x:.97,y:.50,label:'MASTER', kind:'gate'}
+  imsg:{x:.04,y:.50,label:'IMSG', kind:'in'},
+  gemma:{x:.16,y:.16,label:'GEMMA', kind:'ai'},
+  host:{x:.16,y:.38,label:'HOST', kind:'ai'},
+  qwen:{x:.16,y:.62,label:'QWEN', kind:'ai'},
+  locks:{x:.16,y:.84,label:'LOCKS', kind:'gate'},
+  build:{x:.32,y:.24,label:'BUILD', kind:'ai'},
+  oc:{x:.32,y:.50,label:'OPENCLAW', kind:'gate'},
+  bot:{x:.32,y:.76,label:'BOT', kind:'ai'},
+  first:{x:.50,y:.50,label:'FIRST', kind:'hex'},
+  review:{x:.64,y:.28,label:'REVIEW', kind:'gate'},
+  verify:{x:.64,y:.72,label:'VERIFY', kind:'gate'},
+  baja:{x:.80,y:.16,label:'A BAJA', kind:'dest'},
+  twin:{x:.80,y:.38,label:'B TWIN', kind:'dest'},
+  paper:{x:.80,y:.60,label:'C DESK', kind:'dest'},
+  park:{x:.80,y:.82,label:'PARKED', kind:'park'},
+  master:{x:.94,y:.50,label:'MASTER', kind:'hex'}
 };
 const FALLBACK={
-  first:['build','review','verify','first','master'],
-  crew:['build','oc','review','verify','paper','master'],
-  clock:['oc','review','verify','paper','master'],
-  baja:['build','review','verify','baja','master'],
-  cheap:['oc','review','verify','paper','master'],
-  local:['gemma','oc','review','verify','paper','master'],
-  cut:['qwen','oc','review','verify','twin','master'],
-  cloud:['bot','review','verify','master'],
-  imsg:['imsg','oc','imsg'],
-  code:['build','review','verify','first','master']
+  gate:['locks','first','build','review','verify','first','master'],
+  first:['locks','first','build','review','verify','first','master'],
+  crew:['first','build','oc','review','verify','paper','first','master'],
+  clock:['first','oc','review','verify','paper','first','master'],
+  baja:['first','build','review','verify','baja','first','master'],
+  cheap:['first','oc','review','verify','paper','first','master'],
+  local:['first','gemma','oc','review','verify','paper','first','master'],
+  cut:['first','qwen','oc','review','verify','twin','first','master'],
+  cloud:['first','bot','review','verify','first','master'],
+  imsg:['imsg','oc','imsg']
 };
 const WIRES=[
   ['imsg','oc'],['oc','imsg'],
-  ['gemma','oc'],['qwen','oc'],
-  ['build','bot'],
-  ['build','oc'],['oc','build'],
-  ['build','review'],['bot','review'],['oc','review'],
-  ['review','verify'],
-  ['verify','first'],['verify','baja'],['verify','twin'],['verify','paper'],
-  ['verify','master'],
-  ['first','master'],['baja','master'],['twin','master'],['paper','master']
+  ['gemma','oc'],['qwen','oc'],['host','oc'],
+  ['build','oc'],['oc','build'],['build','bot'],
+  ['locks','first'],['host','first'],
+  ['build','first'],['oc','first'],['bot','first'],
+  ['first','review'],['first','verify'],['review','verify'],
+  ['first','baja'],['first','twin'],['first','paper'],
+  ['verify','baja'],['verify','twin'],['verify','paper'],
+  ['baja','first'],['twin','first'],['paper','first'],
+  ['first','master'],['park','first']
 ];
+const SPARK=Array.from({length:48},()=>({x:Math.random(),y:Math.random(),v:.001+Math.random()*.002,a:Math.random()*Math.PI*2}));
 function pathMap(){
   const o={...FALLBACK};
   if(S&&S.paths) Object.keys(S.paths).forEach(k=>{ if(S.paths[k].nodes) o[k]=S.paths[k].nodes.filter(n=>N[n]); });
@@ -207,55 +219,138 @@ function resize(){
   C.style.width=W+'px'; C.style.height=H+'px';
   X.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
 }
-function botFace(x,y,col,on){
-  const s=on?16:13;
+function hexagon(x,y,r){
+  X.beginPath();
+  for(let i=0;i<6;i++){
+    const a=Math.PI/6+i*Math.PI/3;
+    const px=x+Math.cos(a)*r, py=y+Math.sin(a)*r;
+    if(i) X.lineTo(px,py); else X.moveTo(px,py);
+  }
+  X.closePath();
+}
+function neuron(x,y,col,on){
+  const r=on?14:11;
   X.save();
-  X.shadowColor=col; X.shadowBlur=on?16:5;
-  X.fillStyle=hexA('#0b1520',.95);
-  X.strokeStyle=col; X.lineWidth=on?2:1.3;
-  round(x-s,y-s,s*2,s*2,4); X.fill(); X.stroke();
+  X.shadowColor=col; X.shadowBlur=on?22:7;
+  X.beginPath(); X.arc(x,y,r,0,Math.PI*2);
+  X.fillStyle=hexA('#050b14',.94); X.fill();
+  X.strokeStyle=col; X.lineWidth=on?2.2:1.2; X.stroke();
   X.shadowBlur=0;
-  X.fillStyle=col;
-  X.beginPath(); X.arc(x-4.5,y-2.5,1.8,0,Math.PI*2); X.arc(x+4.5,y-2.5,1.8,0,Math.PI*2); X.fill();
-  X.beginPath(); X.moveTo(x-4.5,y+4.5); X.quadraticCurveTo(x,y+(on?8:5.5),x+4.5,y+4.5);
-  X.strokeStyle=col; X.lineWidth=1.3; X.stroke();
+  X.globalAlpha=on?0.95:0.4;
+  X.beginPath(); X.arc(x,y,r*0.32,0,Math.PI*2); X.fillStyle=col; X.fill();
+  X.globalAlpha=1;
+  for(let i=0;i<6;i++){
+    const a=T*0.5+i*Math.PI/3;
+    X.beginPath();
+    X.moveTo(x+Math.cos(a)*r, y+Math.sin(a)*r);
+    X.lineTo(x+Math.cos(a)*(r+5.5), y+Math.sin(a)*(r+5.5));
+    X.strokeStyle=hexA(col,on?0.75:0.22); X.lineWidth=1; X.stroke();
+  }
   X.restore();
 }
-function round(x,y,w,h,r){
+function diamond(x,y,s,col,on){
+  X.save();
+  X.shadowColor=col; X.shadowBlur=on?16:5;
   X.beginPath();
-  X.moveTo(x+r,y); X.arcTo(x+w,y,x+w,y+h,r); X.arcTo(x+w,y+h,x,y+h,r);
-  X.arcTo(x,y+h,x,y,r); X.arcTo(x,y,x+w,y,r); X.closePath();
+  X.moveTo(x,y-s); X.lineTo(x+s*0.85,y); X.lineTo(x,y+s); X.lineTo(x-s*0.85,y); X.closePath();
+  X.fillStyle=hexA('#050b14',.94); X.fill();
+  X.strokeStyle=col; X.lineWidth=on?2:1.2; X.stroke();
+  X.restore();
+}
+function drawIntake(x,y,col,on){
+  X.save();
+  X.shadowColor=col; X.shadowBlur=on?12:3;
+  X.beginPath();
+  X.moveTo(x-14,y); X.lineTo(x-3,y-10); X.lineTo(x-3,y-4); X.lineTo(x+12,y-4);
+  X.lineTo(x+12,y+4); X.lineTo(x-3,y+4); X.lineTo(x-3,y+10); X.closePath();
+  X.fillStyle=hexA('#0b1520',.95); X.fill();
+  X.strokeStyle=col; X.lineWidth=on?2:1.3; X.stroke();
+  X.restore();
+}
+function drawHexGate(x,y,col,on,big){
+  const r=big?(on?26:22):(on?16:13);
+  X.save();
+  X.shadowColor=col; X.shadowBlur=on?28:8;
+  hexagon(x,y,r);
+  X.fillStyle=hexA('#050b14',.95); X.fill();
+  X.strokeStyle=col; X.lineWidth=on?2.6:1.5; X.stroke();
+  X.shadowBlur=0;
+  hexagon(x,y,r*0.55);
+  X.strokeStyle=hexA(col,on?0.7:0.25); X.lineWidth=1; X.stroke();
+  X.restore();
+}
+function drawField(){
+  X.save();
+  X.strokeStyle='rgba(60,231,255,0.05)'; X.lineWidth=1;
+  const g=36;
+  for(let x=0;x<W;x+=g){ X.beginPath(); X.moveTo(x,0); X.lineTo(x,H); X.stroke(); }
+  for(let y=0;y<H;y+=g){ X.beginPath(); X.moveTo(0,y); X.lineTo(W,y); X.stroke(); }
+  SPARK.forEach(p=>{
+    p.x+=Math.cos(p.a)*p.v; p.y+=Math.sin(p.a)*p.v;
+    if(p.x<0||p.x>1) p.a=Math.PI-p.a;
+    if(p.y<0||p.y>1) p.a=-p.a;
+    X.fillStyle=hexA('#3ce7ff',0.18+Math.sin(T*2+p.a)*0.08);
+    X.beginPath(); X.arc(p.x*W,p.y*H,1.2,0,Math.PI*2); X.fill();
+  });
+  X.restore();
+}
+function drawProjects(){
+  const ids=['baja','twin','paper','park'];
+  const ps=ids.map(P);
+  const pad=28;
+  const x0=Math.min(...ps.map(p=>p.x))-pad, y0=Math.min(...ps.map(p=>p.y))-pad;
+  const x1=Math.max(...ps.map(p=>p.x))+pad, y1=Math.max(...ps.map(p=>p.y))+22;
+  X.save();
+  X.setLineDash([5,6]);
+  X.strokeStyle=hexA('#3dffc7',.35); X.lineWidth=1.2;
+  X.strokeRect(x0,y0,x1-x0,y1-y0);
+  X.setLineDash([]);
+  X.font='700 11px Barlow Condensed,sans-serif';
+  X.fillStyle=hexA('#3dffc7',.7); X.textAlign='center';
+  X.fillText('PROJECTS', (x0+x1)/2, y0-8);
+  X.restore();
 }
 function drawWires(){
-  const Gb=P('build'), Bt=P('bot'), Oc=P('oc');
+  const Gb=P('build'), Bt=P('bot'), Oc=P('oc'), Ft=P('first'), Ms=P('master');
   const pairOn=isWork('build')||isWork('bot');
   const crewOn=isWork('build')||isWork('oc');
+  const gateOn=isWork('first');
   X.setLineDash([]);
   [[-3,COL.build],[3,COL.bot]].forEach(([off,col])=>{
     X.beginPath(); X.moveTo(Gb.x+off, Gb.y); X.lineTo(Bt.x+off, Bt.y);
-    X.strokeStyle=hexA(col, pairOn?.8:.32); X.lineWidth=pairOn?2.8:1.6; X.shadowColor=col; X.shadowBlur=8; X.stroke();
+    X.strokeStyle=hexA(col, pairOn?.8:.28); X.lineWidth=pairOn?2.6:1.4; X.shadowColor=col; X.shadowBlur=8; X.stroke();
   });
   [[-2,COL.build],[2,COL.oc]].forEach(([off,col])=>{
     X.beginPath(); X.moveTo(Gb.x+off, Gb.y); X.lineTo(Oc.x+off, Oc.y);
-    X.strokeStyle=hexA(col, crewOn?.9:.4); X.lineWidth=crewOn?3:1.8; X.shadowColor=col; X.shadowBlur=crewOn?14:6; X.stroke();
+    X.strokeStyle=hexA(col, crewOn?.9:.38); X.lineWidth=crewOn?3:1.6; X.shadowColor=col; X.shadowBlur=crewOn?14:6; X.stroke();
   });
   X.shadowBlur=0;
-  X.font='700 12px Barlow Condensed,sans-serif';
+  X.font='700 11px Barlow Condensed,sans-serif';
   X.fillStyle=hexA('#3dffc7', crewOn?1:.5);
   X.textAlign='center';
-  X.fillText('BUILD ═ OC', (Gb.x+Oc.x)/2, (Gb.y+Oc.y)/2 - 10);
+  X.fillText('BUILD ═ OC', (Gb.x+Oc.x)/2+18, (Gb.y+Oc.y)/2);
+  [[-3,COL.first],[3,COL.master]].forEach(([off,col])=>{
+    X.beginPath(); X.moveTo(Ft.x+off, Ft.y); X.lineTo(Ms.x+off, Ms.y);
+    X.strokeStyle=hexA(col, gateOn?.95:.45); X.lineWidth=gateOn?3.2:1.8; X.shadowColor=col; X.shadowBlur=gateOn?16:6; X.stroke();
+  });
+  X.shadowBlur=0;
+  X.fillStyle=hexA('#3ce7ff', gateOn?1:.55);
+  X.fillText('GATE', (Ft.x+Ms.x)/2, (Ft.y+Ms.y)/2-10);
   WIRES.forEach(([a,b])=>{
     if((a==='build'&&b==='bot')||(a==='bot'&&b==='build')) return;
     if((a==='build'&&b==='oc')||(a==='oc'&&b==='build')) return;
+    if((a==='first'&&b==='master')||(a==='master'&&b==='first')) return;
     const A=P(a), B=P(b);
     const on=isWork(a)||isWork(b);
-    const twoWay=a==='imsg'||b==='imsg';
+    const park=a==='park'||b==='park';
+    const twoWay=a==='imsg'||b==='imsg'||a==='first'||b==='first';
     X.beginPath();
-    const mx=(A.x+B.x)/2, my=(A.y+B.y)/2 + (A.y<H*.5?-10:10);
+    const mx=(A.x+B.x)/2, my=(A.y+B.y)/2 + (A.y<H*.5?-8:8);
     X.moveTo(A.x,A.y); X.quadraticCurveTo(mx, my, B.x, B.y);
-    X.setLineDash(twoWay?[]:[3,6]);
-    X.strokeStyle=hexA(COL[a]||'#3ce7ff', on?.5:.16);
-    X.lineWidth=on?1.6:1; X.stroke(); X.setLineDash([]);
+    X.setLineDash(twoWay?[]:[3,7]);
+    X.lineDashOffset=park?0:-(T*28);
+    X.strokeStyle=hexA(COL[a]||'#3ce7ff', park?.12:(on?.55:.14));
+    X.lineWidth=on?1.7:1; X.stroke(); X.setLineDash([]); X.lineDashOffset=0;
   });
 }
 function along(path,t){
@@ -270,33 +365,27 @@ function drawJobs(){
   jobs.forEach(j=>{
     j.t+=j.v; if(j.t>=1) j.dead=true;
     const p=along(j.path,j.t);
-    X.beginPath(); X.arc(p.x,p.y,3.8,0,Math.PI*2);
-    X.fillStyle=j.col; X.shadowColor=j.col; X.shadowBlur=12; X.fill(); X.shadowBlur=0;
+    X.beginPath(); X.arc(p.x,p.y,3.6,0,Math.PI*2);
+    X.fillStyle=j.col; X.shadowColor=j.col; X.shadowBlur=14; X.fill(); X.shadowBlur=0;
   });
-}
-function drawIntake(x,y,col,on){
-  X.save();
-  X.shadowColor=col; X.shadowBlur=on?12:3;
-  X.beginPath();
-  X.moveTo(x-14,y); X.lineTo(x-3,y-10); X.lineTo(x-3,y-4); X.lineTo(x+12,y-4);
-  X.lineTo(x+12,y+4); X.lineTo(x-3,y+4); X.lineTo(x-3,y+10); X.closePath();
-  X.fillStyle=hexA('#0b1520',.95); X.fill();
-  X.strokeStyle=col; X.lineWidth=on?2:1.3; X.stroke();
-  X.restore();
 }
 function drawNodes(){
   Object.keys(N).forEach(id=>{
     const p=P(id), on=isWork(id), col=COL[id]||'#3ce7ff', kind=N[id].kind||'ai';
     if(on){
-      X.beginPath(); X.arc(p.x,p.y,22+Math.sin(T*4)*2,0,Math.PI*2);
-      X.strokeStyle=hexA(col,.4); X.lineWidth=1.1; X.stroke();
+      X.beginPath(); X.arc(p.x,p.y,(kind==='hex'?32:22)+Math.sin(T*4)*2,0,Math.PI*2);
+      X.strokeStyle=hexA(col,.35); X.lineWidth=1.1; X.stroke();
     }
     if(kind==='in') drawIntake(p.x,p.y,col,on);
-    else botFace(p.x,p.y,col,on || id==='review');
+    else if(kind==='hex') drawHexGate(p.x,p.y,col,on,id==='first');
+    else if(kind==='dest') diamond(p.x,p.y,on?13:11,col,on);
+    else if(kind==='park') diamond(p.x,p.y,10,col,false);
+    else if(kind==='gate') drawHexGate(p.x,p.y,col,on,false);
+    else neuron(p.x,p.y,col,on);
     X.font='600 10px Barlow Condensed,sans-serif';
     X.textAlign='center'; X.textBaseline='top';
-    X.fillStyle=on?'#fff':hexA('#d7e6f5',.78);
-    X.fillText(N[id].label, p.x, p.y+16);
+    X.fillStyle=on?'#fff':hexA('#d7e6f5', id==='park'?.4:.78);
+    X.fillText(N[id].label, p.x, p.y+(kind==='hex'?26:16));
   });
 }
 let lastSpawn=0;
@@ -309,25 +398,31 @@ function keepJobs(ts){
   const Pths=pathMap();
   const pulse=(S.pulse||[]);
   const crewOn=pulse.includes('build')&&pulse.includes('oc');
+  const gateOn=pulse.includes('first');
   if(crewOn){
     jobs.push({path:['build','oc'], t:0, v:0.008, col:COL.build});
     jobs.push({path:['oc','build'], t:0, v:0.008, col:COL.oc});
   }
-  let key='first';
+  if(gateOn && liveN<3){
+    jobs.push({path:['first','master'], t:0, v:0.007, col:COL.first});
+    jobs.push({path:['locks','first'], t:0, v:0.007, col:COL.locks});
+  }
+  let key='gate';
   if(crewOn) key='crew';
   else if(pulse.includes('imsg')) key='imsg';
-  else if(pulse.includes('build')) key=pulse.includes('baja')?'baja':'first';
+  else if(pulse.includes('baja')) key='baja';
+  else if(pulse.includes('build')) key='gate';
   else if(pulse.includes('bot')) key='cloud';
   else if(pulse.includes('paper')||pulse.includes('oc')) key='clock';
-  const path=(Pths[key]||FALLBACK.first).filter(n=>N[n]);
-  if(path.length>=2 && liveN<3) jobs.push({path, t:0, v:0.0038, col:COL[path[0]]||COL.build});
+  const path=(Pths[key]||FALLBACK.gate).filter(n=>N[n]);
+  if(path.length>=2 && liveN<3) jobs.push({path, t:0, v:0.0036, col:COL[path[0]]||COL.first});
 }
 function frame(ts){
   T=ts/1000;
   if(W<20||H<20) resize();
   keepJobs(ts);
   X.clearRect(0,0,W,H);
-  drawWires(); drawJobs(); drawNodes();
+  drawField(); drawProjects(); drawWires(); drawJobs(); drawNodes();
   requestAnimationFrame(frame);
 }
 function fmtT(n){
@@ -363,26 +458,26 @@ function render(){
   const docs=S.docs||{};
   document.getElementById('lessons').innerHTML=(docs.lessons||[]).slice(0,6).map(x=>`<li>${x}</li>`).join('')||'<li>LESSONS.md empty</li>';
   document.getElementById('feed').innerHTML=(S.feed||[]).slice(-12).reverse().map(r=>
-    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}${r.tag==='CREW'?' crew':''}">${r.tag}</span>${r.line}</div>`
+    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}${r.tag==='CREW'||r.tag==='FIRST'?' crew':''}">${r.tag}</span>${r.line}</div>`
   ).join('');
   const pulse=(S.pulse||[]);
   const crew=pulse.includes('build')&&pulse.includes('oc');
-  const pair=pulse.includes('build')&&pulse.includes('bot');
-  document.getElementById('mbanner').textContent=crew
-    ?'BUILD ═ OPENCLAW · packets on the wire'
-    :(pair?'BUILD ═ BOT · ALLOW only':'BUILD → REVIEW · Bot only ALLOW jobs');
+  const gate=pulse.includes('first');
+  document.getElementById('mbanner').textContent=gate
+    ?(crew?'FIRST GATE · BUILD ═ OPENCLAW → MASTER':'FIRST GATE · before + after → MASTER')
+    :(crew?'BUILD ═ OPENCLAW · via FIRST':'FIRST GATE · lessons on every hop');
   const chip=document.getElementById('crewchip');
   if(chip){
     chip.textContent=crew?'BUILD ═ OC':'CREW';
     chip.className=crew?'chip crew':'chip';
   }
+  const gc=document.getElementById('gatechip');
+  if(gc) gc.className=gate?'chip gate':'chip';
   const calls=document.getElementById('calls');
   calls.innerHTML='';
   let callList=(S.callouts||[]).slice();
-  if(crew){
-    const want=['build','oc'];
-    callList=[...callList.filter(c=>want.includes(c.id)), ...callList.filter(c=>!want.includes(c.id)&&c.id!=='bot')];
-  }
+  const want=['first','build','oc'];
+  callList=[...callList.filter(c=>want.includes(c.id)), ...callList.filter(c=>!want.includes(c.id)&&c.id!=='bot')];
   callList.slice(0,3).forEach(c=>{
     if(!N[c.id]) return;
     const p=P(c.id);
@@ -396,11 +491,11 @@ function render(){
   const Pths=pathMap();
   (S.events||[]).forEach(e=>{
     if(!e||!e.id||seen.has(e.id)) return;
-    const key=e.path==='code'?'first':e.path;
-    const path=(Pths[key]||[]).filter(n=>N[n]);
+    const key=e.path==='code'?'gate':e.path;
+    const path=(Pths[key]||Pths.gate||[]).filter(n=>N[n]);
     if(path.length<2) return;
     seen.add(e.id);
-    jobs.push({path, t:0, v:0.004, col:COL[path[0]]||'#3ce7ff'});
+    jobs.push({path, t:0, v:0.004, col:COL[path[0]]||COL.first});
   });
 }
 function stateUrl(){
