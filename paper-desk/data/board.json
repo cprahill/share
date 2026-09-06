@@ -5,7 +5,7 @@
     "metric": "return_pct",
     "leader": "trade_dev",
     "stakes": "ONE PRINT paper \u00b7 live DENY until YES",
-    "main_return_pct": -0.416,
+    "main_return_pct": -5.134,
     "trade_dev_return_pct": 0,
     "swarm_return_pct": 0,
     "timeline": "Sat RESET \u2192 Thu hot wash",
@@ -17,10 +17,10 @@
     "mode": "PAPER",
     "starting_cash_usd": 500.0,
     "cash_usd": 208.9418,
-    "equity_usd": 497.92,
-    "day_pnl_usd": -1.6513,
-    "total_pnl_usd": -2.08,
-    "return_pct": -0.416,
+    "equity_usd": 474.3299,
+    "day_pnl_usd": -25.2414,
+    "total_pnl_usd": -25.6701,
+    "return_pct": -5.134,
     "open_positions": 1,
     "live_wallets": false,
     "gate": {
@@ -29,7 +29,7 @@
     "confidence": {
       "score": 40,
       "live_ready": false,
-      "next": "ONE PRINT \u00b7 eq $497.92 \u00b7 P&L $-2.08 \u00b7 min $2500 \u00b7 stretch $5000 \u00b7 LIVE DENY"
+      "next": "ONE PRINT \u00b7 eq $474.3299 \u00b7 P&L $-25.6701 \u00b7 min $2500 \u00b7 stretch $5000 \u00b7 LIVE DENY"
     },
     "recent_fills": [
       {
@@ -173,9 +173,9 @@
         "symbol": "KXHIGHNY-26SEP07-B79.5",
         "qty": 589.7514,
         "avg": 0.4928,
-        "mark": 0.49,
-        "upnl": -1.6513,
-        "notional": 288.9782,
+        "mark": 0.45,
+        "upnl": -25.2414,
+        "notional": 265.3881,
         "edge": "one-print",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep07",
         "urls": [
@@ -308,10 +308,10 @@
     "mode": "PAPER",
     "starting_cash_usd": 500.0,
     "cash_usd": 208.9418,
-    "equity_usd": 497.92,
-    "day_pnl_usd": -1.6513,
-    "total_pnl_usd": -2.08,
-    "return_pct": -0.416,
+    "equity_usd": 474.3299,
+    "day_pnl_usd": -25.2414,
+    "total_pnl_usd": -25.6701,
+    "return_pct": -5.134,
     "open_positions": 1,
     "live_wallets": false,
     "gate": {
@@ -320,7 +320,7 @@
     "confidence": {
       "score": 40,
       "live_ready": false,
-      "next": "ONE PRINT \u00b7 eq $497.92 \u00b7 P&L $-2.08 \u00b7 min $2500 \u00b7 stretch $5000 \u00b7 LIVE DENY"
+      "next": "ONE PRINT \u00b7 eq $474.3299 \u00b7 P&L $-25.6701 \u00b7 min $2500 \u00b7 stretch $5000 \u00b7 LIVE DENY"
     },
     "recent_fills": [
       {
@@ -464,9 +464,9 @@
         "symbol": "KXHIGHNY-26SEP07-B79.5",
         "qty": 589.7514,
         "avg": 0.4928,
-        "mark": 0.49,
-        "upnl": -1.6513,
-        "notional": 288.9782,
+        "mark": 0.45,
+        "upnl": -25.2414,
+        "notional": 265.3881,
         "edge": "one-print",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep07",
         "urls": [
