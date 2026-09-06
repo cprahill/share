@@ -3,9 +3,9 @@
   "duel": {
     "ends_at": "2026-09-10T16:00:00-05:00",
     "metric": "return_pct",
-    "leader": "tie",
+    "leader": "trade_dev",
     "stakes": "ONE PRINT paper \u00b7 live DENY until YES",
-    "main_return_pct": -0.0,
+    "main_return_pct": -0.416,
     "trade_dev_return_pct": 0,
     "swarm_return_pct": 0,
     "timeline": "Sat RESET \u2192 Thu hot wash",
@@ -15,12 +15,12 @@
   "main": {
     "label": "ONE PRINT",
     "mode": "PAPER",
-    "starting_cash_usd": 200.0,
-    "cash_usd": 96.0018,
-    "equity_usd": 199.9999,
-    "day_pnl_usd": 0.416,
-    "total_pnl_usd": -0.0001,
-    "return_pct": -0.0,
+    "starting_cash_usd": 500.0,
+    "cash_usd": 215.4218,
+    "equity_usd": 497.92,
+    "day_pnl_usd": -1.6719,
+    "total_pnl_usd": -2.08,
+    "return_pct": -0.416,
     "open_positions": 1,
     "live_wallets": false,
     "gate": {
@@ -29,9 +29,41 @@
     "confidence": {
       "score": 40,
       "live_ready": false,
-      "next": "ONE PRINT \u00b7 eq $199.9999 \u00b7 P&L $-0.0001 \u00b7 goal +$500 profit \u00b7 LIVE DENY"
+      "next": "ONE PRINT \u00b7 eq $497.92 \u00b7 P&L $-2.08 \u00b7 min $2500 \u00b7 stretch $5000 \u00b7 LIVE DENY"
     },
     "recent_fills": [
+      {
+        "id": "OP007",
+        "ts": "2026-09-06T15:58:58-0500",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP07-B79.5",
+        "side": "buy",
+        "qty": 368.5306,
+        "px": 0.49,
+        "notional_usd": 180.58,
+        "edge": "one-print-size",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "urls": [
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP07-B79.5",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
+        ]
+      },
+      {
+        "id": "OP006",
+        "ts": "2026-09-06T15:58:58-0500",
+        "venue": "paper_recap",
+        "symbol": "CASH",
+        "side": "capital_add",
+        "qty": 1,
+        "px": 300.0,
+        "notional_usd": 300.0,
+        "edge": "capital-add",
+        "url": "https://finance.yahoo.com/quote/CASH/",
+        "urls": [
+          "https://finance.yahoo.com/quote/CASH/"
+        ]
+      },
       {
         "id": "OP005",
         "ts": "2026-09-06T15:38:54-0500",
@@ -122,11 +154,11 @@
       {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP07-B79.5",
-        "qty": 207.9963,
-        "avg": 0.498,
-        "mark": 0.5,
-        "upnl": 0.416,
-        "notional": 103.9981,
+        "qty": 576.5269,
+        "avg": 0.4929,
+        "mark": 0.49,
+        "upnl": -1.6719,
+        "notional": 282.4982,
         "edge": "one-print",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep07",
         "urls": [
@@ -257,12 +289,12 @@
   "paper": {
     "label": "ONE PRINT",
     "mode": "PAPER",
-    "starting_cash_usd": 200.0,
-    "cash_usd": 96.0018,
-    "equity_usd": 199.9999,
-    "day_pnl_usd": 0.416,
-    "total_pnl_usd": -0.0001,
-    "return_pct": -0.0,
+    "starting_cash_usd": 500.0,
+    "cash_usd": 215.4218,
+    "equity_usd": 497.92,
+    "day_pnl_usd": -1.6719,
+    "total_pnl_usd": -2.08,
+    "return_pct": -0.416,
     "open_positions": 1,
     "live_wallets": false,
     "gate": {
@@ -271,9 +303,41 @@
     "confidence": {
       "score": 40,
       "live_ready": false,
-      "next": "ONE PRINT \u00b7 eq $199.9999 \u00b7 P&L $-0.0001 \u00b7 goal +$500 profit \u00b7 LIVE DENY"
+      "next": "ONE PRINT \u00b7 eq $497.92 \u00b7 P&L $-2.08 \u00b7 min $2500 \u00b7 stretch $5000 \u00b7 LIVE DENY"
     },
     "recent_fills": [
+      {
+        "id": "OP007",
+        "ts": "2026-09-06T15:58:58-0500",
+        "venue": "kalshi_demo",
+        "symbol": "KXHIGHNY-26SEP07-B79.5",
+        "side": "buy",
+        "qty": 368.5306,
+        "px": 0.49,
+        "notional_usd": 180.58,
+        "edge": "one-print-size",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "urls": [
+          "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+          "https://api.elections.kalshi.com/trade-api/v2/markets/KXHIGHNY-26SEP07-B79.5",
+          "https://kalshi.com/markets/kxhighny/kxhighny-26sep07"
+        ]
+      },
+      {
+        "id": "OP006",
+        "ts": "2026-09-06T15:58:58-0500",
+        "venue": "paper_recap",
+        "symbol": "CASH",
+        "side": "capital_add",
+        "qty": 1,
+        "px": 300.0,
+        "notional_usd": 300.0,
+        "edge": "capital-add",
+        "url": "https://finance.yahoo.com/quote/CASH/",
+        "urls": [
+          "https://finance.yahoo.com/quote/CASH/"
+        ]
+      },
       {
         "id": "OP005",
         "ts": "2026-09-06T15:38:54-0500",
@@ -364,11 +428,11 @@
       {
         "venue": "kalshi_demo",
         "symbol": "KXHIGHNY-26SEP07-B79.5",
-        "qty": 207.9963,
-        "avg": 0.498,
-        "mark": 0.5,
-        "upnl": 0.416,
-        "notional": 103.9981,
+        "qty": 576.5269,
+        "avg": 0.4929,
+        "mark": 0.49,
+        "upnl": -1.6719,
+        "notional": 282.4982,
         "edge": "one-print",
         "url": "https://kalshi.com/markets/kxhighny/kxhighny-26sep07",
         "urls": [
@@ -382,7 +446,7 @@
     "trade_dev": "green",
     "swarm": "green",
     "grok": "green",
-    "duel": "yellow"
+    "duel": "green"
   },
   "disclaimer": "Paper trading trial demo only. Fake money, real competition. Not financial advice. No live funds. No personal data.",
   "one_print": {
