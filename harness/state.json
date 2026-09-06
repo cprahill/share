@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-09-05T22:14:00-05:00",
+  "updated_at": "2026-09-05T22:16:30-05:00",
   "paper": true,
   "live": false,
-  "scream": "Build\u2194OC \u00b7 Build\u2194Bot \u00b7 seat\u2192SoT \u00b7 PAPER",
+  "scream": "MODELS \u00b7 RUNTIME \u00b7 PROJECTS \u00b7 SoT=books \u00b7 HOST=0-LLM",
   "master_empty": false,
   "loop": [
     "sense",
@@ -404,7 +404,7 @@
     "paper": {
       "title": "Paper SoT",
       "role": "source of truth",
-      "why": "board.json \u00b7 AGENTS.json \u00b7 wallets \u2014 all seats read/write here",
+      "why": "Source of truth: board.json \u00b7 AGENTS.json \u00b7 wallets. Not a model.",
       "active": "hot",
       "token": "script",
       "health": "ok",
@@ -450,7 +450,7 @@
     "host": {
       "title": "Host scripts",
       "role": "0-LLM",
-      "why": "backbone --tick/--publish \u00b7 weather \u00b7 reap",
+      "why": "0-LLM Mini scripts (backbone tick/publish/reap). Cheapest rung \u2014 no model.",
       "feeds": [
         "paper"
       ],
