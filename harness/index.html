@@ -128,7 +128,7 @@ header{
 .legend i{display:inline-block;width:8px;height:8px;margin:0 4px 0 10px;vertical-align:middle}
 .bot{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;min-height:0}
 
-/* MOBILE STAGE SCROLL — lesson 2026-09-05: body scroll fails; .app scrolls. No redesign. */
+/* MOBILE STAGE SCROLL — lesson 2026-09-05: .app scrolls. Keep Build look. */
 @media (max-width:900px){
   html,body{height:100%!important;width:100%;overflow:hidden!important;position:fixed!important;inset:0;}
   .app{
@@ -142,13 +142,14 @@ header{
   .kpis{margin-left:0;width:100%;flex-wrap:wrap;gap:10px 16px}
   .mid{grid-template-columns:1fr!important;height:auto!important;min-height:0}
   .panel{min-height:160px;height:auto!important;overflow:visible}
-  .feed{grid-template-columns:1fr!important;height:auto!important;max-height:none;overflow:visible}
+  .feed{grid-template-columns:1fr!important;height:auto!important;max-height:none;overflow:auto!important;-webkit-overflow-scrolling:touch}
   .feed div{white-space:normal;overflow:visible;text-overflow:clip}
-  .oc-seats{max-height:none;grid-template-columns:1fr}
-  .docs{height:auto!important;max-height:none}
-  .launches{height:auto!important}
+  .oc-seats{max-height:none;overflow:auto;-webkit-overflow-scrolling:touch;grid-template-columns:1fr}
+  .docs,.launches{height:auto!important;max-height:none;overflow:auto!important;-webkit-overflow-scrolling:touch}
   canvas, #c{max-width:100%;touch-action:pan-y}
 }
+/* WEB+MOBILE: inner windows scroll (feeds/docs/seats) — consistency */
+.feed,.docs,.launches,.oc-seats{overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 
 </style>
 </head>
