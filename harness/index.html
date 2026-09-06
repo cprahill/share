@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="robots" content="noindex"/>
+<title>HARNESS</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#070b12; --panel:#0c121c; --line:#1b2738; --muted:#6d7d93;
+  --text:#d7e6f5; --cyan:#3ce7ff; --mint:#3dffc7; --gold:#ffb020;
+  --pink:#ff4d8d; --violet:#8b7cff; --green:#3dff9a; --warn:#ffb020; --bad:#ff3864;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;}
+.app{height:100%;display:grid;grid-template-rows:42px 40px minmax(190px,26%) minmax(250px,38%) 1fr;gap:8px;padding:8px 10px 10px;}
+header{
+  display:flex;align-items:center;gap:16px;padding:0 8px;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;letter-spacing:.18em;font-size:18px;color:#fff;}
+.brand i{color:var(--cyan);font-style:normal}
+.sub{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.live{margin-left:8px;display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.16em;color:var(--green)}
+.live b{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);display:block;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.kpis{margin-left:auto;display:flex;gap:22px;font-size:11px;color:var(--muted)}
+.kpis strong{display:block;color:#fff;font-family:"Space Grotesk",sans-serif;font-size:14px}
+.top,.bot{display:grid;gap:8px;min-height:0}
+.top{grid-template-columns:1.15fr 1.2fr .95fr}
+.bot{grid-template-columns:.78fr 1.5fr .72fr}
+.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:10px 12px 8px;min-height:0;overflow:hidden;position:relative;
+}
+.ph{
+  font-family:"Barlow Condensed",sans-serif;font-size:12px;letter-spacing:.2em;
+  color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px;
+}
+.ph span{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.12em}
+.hero{font-family:"Space Grotesk",sans-serif;font-size:42px;font-weight:700;line-height:1;color:#fff;letter-spacing:-.02em}
+.hero small{font-size:18px;color:var(--muted);margin-left:6px}
+.delta{font-size:11px;margin-top:4px}
+.delta.up{color:var(--green)} .delta.dn{color:var(--bad)}
+.bars{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.tokrow{display:grid;grid-template-columns:78px 1fr 64px;gap:8px;align-items:center;font-size:10px}
+.tokrow b{font-family:"Barlow Condensed",sans-serif;letter-spacing:.08em}
+.tokrow .track{height:8px;background:#152033;overflow:hidden}
+.tokrow .track i{display:block;height:100%}
+.tokbar{
+  display:flex;align-items:center;gap:14px;padding:6px 12px;
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+}
+.tokstack{flex:1;height:12px;display:flex;background:#152033;overflow:hidden}
+.tokstack i{height:100%;min-width:0}
+.tokleg{display:flex;gap:14px;font-size:10px;color:var(--muted);white-space:nowrap}
+.tokleg b{color:var(--text);font-weight:600}
+.spark{position:absolute;left:12px;right:12px;bottom:8px;height:70px;pointer-events:none}
+.launches{display:flex;flex-direction:column;gap:4px;height:calc(100% - 22px);overflow:hidden}
+.ln{display:grid;grid-template-columns:64px 1fr 78px 48px;align-items:center;gap:8px;font-size:11px}
+.ln b{font-family:"Barlow Condensed",sans-serif;letter-spacing:.12em;font-weight:600}
+.wave{height:18px}
+.pill{font-size:9px;letter-spacing:.1em;padding:2px 6px;border:1px solid;text-align:center}
+.pill.ok{color:var(--cyan);border-color:var(--cyan)}
+.pill.hot{color:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(255,176,32,.35)}
+.pill.warn{color:var(--warn);border-color:#5a4a20}
+.pill.bad{color:var(--pink);border-color:var(--pink)}
+.pct{text-align:right;color:var(--muted)}
+.pct.up{color:var(--green)} .pct.dn{color:var(--pink)}
+.gates{display:flex;justify-content:space-around;align-items:center;height:58%;gap:6px}
+.donut{
+  width:92px;height:92px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--c) calc(var(--p) * 1%), #182233 0);
+}
+.donut em{
+  position:absolute;inset:12px;border-radius:50%;background:var(--panel);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-style:normal;font-family:"Space Grotesk",sans-serif;font-size:16px;font-weight:700;
+}
+.donut em s{font-size:8px;letter-spacing:.12em;color:var(--muted);text-decoration:none;font-family:"Barlow Condensed",sans-serif}
+.gmeta{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-top:8px}
+.mesh{
+  background:linear-gradient(180deg,#081018 0%,#0a1422 100%);
+  border:1px solid var(--line);border-radius:4px;position:relative;min-height:0;overflow:hidden;
+}
+.mesh canvas{position:absolute;inset:0;width:100%;height:100%}
+.mbanner{
+  position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:3;
+  font-family:"Barlow Condensed",sans-serif;letter-spacing:.22em;font-size:11px;
+  background:#0b1520;border:1px solid #1e3a4a;color:var(--cyan);padding:4px 12px;
+}
+.call{
+  position:absolute;z-index:4;transform:translate(-50%,-130%);
+  background:#101820;border:1px solid var(--cyan);color:#e8fff9;
+  font-size:10px;padding:4px 8px;white-space:nowrap;pointer-events:none;
+  box-shadow:0 0 16px rgba(60,231,255,.2);
+}
+.room-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:4px}
+.room-grid b{display:block;aspect-ratio:1;border-radius:1px;background:#1a2433}
+.room-grid b.on{background:var(--mint);box-shadow:0 0 6px var(--mint)}
+.room-grid b.hot{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.room-grid b.bot{background:#2a1f55}
+.room-grid b.bot.on{background:var(--violet);box-shadow:0 0 6px var(--violet)}
+.oc-seats{display:grid;grid-template-columns:1fr 1fr;gap:1px 12px;max-height:58%;overflow:auto;margin:2px 0 8px}
+.oc-seats .s{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;
+  font-size:10px;padding:2px 0;border-bottom:1px solid #152033;color:var(--muted)}
+.oc-seats .s b{color:var(--text);font-weight:500;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.oc-seats .s.hot b{color:var(--gold)}
+.oc-seats .s.hot{color:var(--gold)}
+.oc-seats .s.silent{opacity:.4}
+.oc-seats .s .m{color:var(--cyan);font-size:9px}
+.looprow{display:flex;gap:3px;margin-top:10px}
+.looprow i{flex:1;height:14px;background:#152033}
+.looprow i.on{background:var(--violet)}
+.feed{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;font-size:11px;height:calc(100% - 22px);overflow:hidden;align-content:start}
+.feed div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed .t{color:var(--muted);margin-right:6px}
+.feed .tag{margin-right:6px;font-size:10px;letter-spacing:.08em}
+.feed .tag.ok{color:var(--cyan)} .feed .tag.hot{color:var(--gold)}
+.feed .tag.warn{color:var(--warn)} .feed .tag.bad{color:var(--pink)}
+.tonight .hero{font-size:36px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">HARNESS <i>//</i> GROK BUILD</div>
+    <div class="sub">iMessage → OpenClaw · pack is a gate · 0 new dests</div>
+    <div class="live"><b></b>MESH</div>
+    <div class="kpis">
+      <div>MASTER<strong id="kMaster">0</strong></div>
+      <div>C DESK PAPER<strong id="kEq">—</strong></div>
+      <div>AGENTS / HUMANS<strong id="kAg">0 / 1</strong></div>
+      <div>CLOCK<strong id="kClk">--:--:--</strong></div>
+    </div>
+  </header>
+  <div class="tokbar">
+    <span class="ph" style="margin:0;min-width:92px">TOKENS 24H</span>
+    <div class="tokstack" id="tokstack"></div>
+    <div class="tokleg" id="tokleg"></div>
+  </div>
+  <section class="top">
+    <article class="panel" id="spine">
+      <div class="ph">THE SPINE <span>TOKEN LADDER · 24H</span></div>
+      <div class="hero" id="spineHero">—</div>
+      <div class="delta" id="spineDelta"></div>
+      <div class="bars" id="spineBars"></div>
+    </article>
+    <article class="panel">
+      <div class="ph">DESTS <span>FIRST · A BAJA · B TWIN · C DESK</span></div>
+      <div class="launches" id="dests"></div>
+    </article>
+    <article class="panel">
+      <div class="ph">THE GATE <span>PACK then REVIEW · no pass no send</span></div>
+      <div class="gates" id="gates"></div>
+      <div class="gmeta" id="gmeta"></div>
+    </article>
+  </section>
+  <section class="mesh">
+    <div class="mbanner" id="mbanner">GROK AGENT MESH</div>
+    <canvas id="c"></canvas>
+    <div id="calls"></div>
+  </section>
+  <section class="bot">
+    <article class="panel">
+      <div class="ph">THE ROOM <span id="roomHead">OPENCLAW SEATS</span></div>
+      <div class="oc-seats" id="ocseats"></div>
+      <div class="ph">GROK BOT <span id="botHead">CLOUD</span></div>
+      <div class="room-grid" id="room"></div>
+      <div class="ph" style="margin-top:8px">LOOP</div>
+      <div class="looprow" id="loop"></div>
+    </article>
+    <article class="panel">
+      <div class="ph">FLOOR FEED <span>EVERYTHING THE HARNESS SEES</span></div>
+      <div class="feed" id="feed"></div>
+    </article>
+    <article class="panel tonight">
+      <div class="ph">C DESK <span>PAPER · NOT LIVE</span></div>
+      <div class="hero" id="tonight">—</div>
+      <div class="delta" id="tonightSub"></div>
+    </article>
+  </section>
+</div>
+<script>
+const C=document.getElementById('c'), X=C.getContext('2d');
+let W=0,H=0,T=0,S=null,jobs=[],seen=new Set();
+const COL={
+  imsg:'#3ce7ff', gemma:'#3dff9a', qwen:'#3ce7ff',
+  build:'#ffb020', bot:'#8b7cff', oc:'#3dffc7', first:'#d7e6f5', baja:'#ff6a3d',
+  twin:'#7ed0ff', paper:'#ffe08a', review:'#ffb020', verify:'#ffffff', master:'#ff4d8d'
+};
+const N={
+  gemma:{x:.14,y:.26,label:'GEMMA', kind:'ai'},
+  qwen:{x:.32,y:.26,label:'QWEN', kind:'ai'},
+  bot:{x:.50,y:.26,label:'BOT', kind:'ai'},
+  build:{x:.68,y:.26,label:'BUILD', kind:'ai'},
+  baja:{x:.88,y:.26,label:'BAJA', kind:'dest'},
+  review:{x:.50,y:.50,label:'REVIEW', kind:'gate'},
+  imsg:{x:.08,y:.76,label:'IMSG', kind:'in'},
+  oc:{x:.24,y:.76,label:'OPENCLAW', kind:'gate'},
+  paper:{x:.42,y:.76,label:'C DESK', kind:'dest'},
+  twin:{x:.58,y:.76,label:'TWIN', kind:'dest'},
+  first:{x:.72,y:.76,label:'FIRST', kind:'dest'},
+  verify:{x:.88,y:.50,label:'VERIFY', kind:'gate'},
+  master:{x:.94,y:.76,label:'MASTER', kind:'gate'}
+};
+const FALLBACK={
+  first:['build','review','first','verify','master'],
+  clock:['oc','paper','verify','master'],
+  baja:['build','review','baja','verify','master'],
+  cheap:['oc','paper','verify','master'],
+  local:['gemma','review','oc','paper','verify','master'],
+  cut:['qwen','review','twin','verify','master'],
+  cloud:['bot','review','oc','verify','master'],
+  imsg:['imsg','oc','verify','master'],
+  code:['build','review','first','verify','master']
+};
+const WIRES=[
+  ['imsg','oc'],
+  ['gemma','review'],['qwen','review'],['bot','review'],['build','review'],
+  ['review','oc'],['review','first'],['review','baja'],['review','paper'],['review','twin'],
+  ['oc','paper'],
+  ['paper','verify'],['twin','verify'],['first','verify'],['baja','verify'],
+  ['review','verify'],['verify','master']
+];
+function pathMap(){
+  const o={...FALLBACK};
+  if(S&&S.paths) Object.keys(S.paths).forEach(k=>{ if(S.paths[k].nodes) o[k]=S.paths[k].nodes.filter(n=>N[n]); });
+  return o;
+}
+function P(id){const n=N[id]; return {x:n.x*W,y:n.y*H,id};}
+function hexA(h,a){const n=h.replace('#','');return `rgba(${parseInt(n.slice(0,2),16)},${parseInt(n.slice(2,4),16)},${parseInt(n.slice(4,6),16)},${a})`;}
+function live(id){
+  const map={oc:'openclaw'};
+  return (S&&S.nodes&&S.nodes[map[id]||id])||{};
+}
+function isWork(id){
+  const pulse=(S&&S.pulse)||[];
+  return !!(live(id).working || pulse.includes(id) || (id==='oc'&&pulse.includes('oc')));
+}
+function resize(){
+  const r=C.parentElement.getBoundingClientRect();
+  W=r.width; H=r.height;
+  C.width=W*devicePixelRatio; C.height=H*devicePixelRatio;
+  C.style.width=W+'px'; C.style.height=H+'px';
+  X.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+}
+function botFace(x,y,col,on){
+  const s=on?18:15;
+  X.save();
+  X.shadowColor=col; X.shadowBlur=on?18:6;
+  X.fillStyle=hexA('#0b1520',.95);
+  X.strokeStyle=col; X.lineWidth=on?2.2:1.4;
+  round(x-s,y-s,s*2,s*2,4); X.fill(); X.stroke();
+  X.shadowBlur=0;
+  X.fillStyle=col;
+  X.beginPath(); X.arc(x-5,y-3,2.1,0,Math.PI*2); X.arc(x+5,y-3,2.1,0,Math.PI*2); X.fill();
+  X.beginPath(); X.moveTo(x-5,y+5); X.quadraticCurveTo(x,y+(on?9:6),x+5,y+5);
+  X.strokeStyle=col; X.lineWidth=1.4; X.stroke();
+  X.restore();
+}
+function round(x,y,w,h,r){
+  X.beginPath();
+  X.moveTo(x+r,y); X.arcTo(x+w,y,x+w,y+h,r); X.arcTo(x+w,y+h,x,y+h,r);
+  X.arcTo(x,y+h,x,y,r); X.arcTo(x,y,x+w,y,r); X.closePath();
+}
+function drawWires(){
+  WIRES.forEach(([a,b])=>{
+    const A=P(a), B=P(b);
+    const on=isWork(a)||isWork(b);
+    X.beginPath();
+    const mx=(A.x+B.x)/2, my=(A.y+B.y)/2 + (A.y<H*.5?-18:18);
+    X.moveTo(A.x,A.y); X.quadraticCurveTo(mx, my, B.x, B.y);
+    X.setLineDash([3,6]);
+    X.strokeStyle=hexA(COL[a]||'#3ce7ff', on?.55:.18);
+    X.lineWidth=on?1.8:1.1; X.stroke(); X.setLineDash([]);
+  });
+}
+function along(path,t){
+  const segs=Math.max(1,path.length-1), f=Math.min(segs-.0001,Math.max(0,t)*segs), i=Math.floor(f), u=f-i;
+  const a=path[i], b=path[i+1]||path[i];
+  if(!N[a]||!N[b]) return {x:0,y:0};
+  const A=P(a), B=P(b);
+  return {x:A.x+(B.x-A.x)*u, y:A.y+(B.y-A.y)*u};
+}
+function drawJobs(){
+  jobs=jobs.filter(j=>!j.dead);
+  jobs.forEach(j=>{
+    j.t+=j.v; if(j.t>=1) j.dead=true;
+    const p=along(j.path,j.t);
+    X.beginPath(); X.arc(p.x,p.y,4.5,0,Math.PI*2);
+    X.fillStyle=j.col; X.shadowColor=j.col; X.shadowBlur=16; X.fill(); X.shadowBlur=0;
+  });
+}
+function drawIntake(x,y,col,on){
+  X.save();
+  X.shadowColor=col; X.shadowBlur=on?14:4;
+  X.beginPath();
+  X.moveTo(x-16,y); X.lineTo(x-4,y-12); X.lineTo(x-4,y-5); X.lineTo(x+14,y-5);
+  X.lineTo(x+14,y+5); X.lineTo(x-4,y+5); X.lineTo(x-4,y+12); X.closePath();
+  X.fillStyle=hexA('#0b1520',.95); X.fill();
+  X.strokeStyle=col; X.lineWidth=on?2:1.4; X.stroke();
+  X.restore();
+}
+function drawNodes(){
+  Object.keys(N).forEach(id=>{
+    const p=P(id), on=isWork(id), col=COL[id]||'#3ce7ff', kind=N[id].kind||'ai';
+    if(on){
+      X.beginPath(); X.arc(p.x,p.y,26+Math.sin(T*4)*3,0,Math.PI*2);
+      X.strokeStyle=hexA(col,.45); X.lineWidth=1.2; X.stroke();
+    }
+    if(kind==='in') drawIntake(p.x,p.y,col,on);
+    else botFace(p.x,p.y,col,on || id==='review');
+    X.font='600 10px Barlow Condensed,sans-serif';
+    X.textAlign='center'; X.textBaseline='top';
+    X.fillStyle=on?'#fff':hexA('#d7e6f5',.8);
+    X.fillText(N[id].label, p.x, p.y+18);
+  });
+}
+function frame(ts){
+  T=ts/1000;
+  X.clearRect(0,0,W,H);
+  drawWires(); drawJobs(); drawNodes();
+  requestAnimationFrame(frame);
+}
+function sinePath(tone){
+  const c=tone==='bad'?'#ff4d8d':tone==='hot'?'#ffb020':tone==='ok'?'#3ce7ff':'#4cc9ff';
+  let d='M0 10';
+  for(let x=0;x<=120;x+=4) d+=` L${x} ${10+Math.sin(x/9)*6}`;
+  return `<svg class="wave" viewBox="0 0 120 20" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${c}" stroke-width="1.6"/></svg>`;
+}
+function donut(p,c,label,sub){
+  return `<div class="donut" style="--p:${Math.max(0,Math.min(100,p))};--c:${c}"><em>${label}<s>${sub}</s></em></div>`;
+}
+function render(){
+  if(!S) return;
+  const nw=S.net_worth||{};
+  const g=S.gate||{};
+  const doing=S.doing||{};
+  const work=(S.room&&S.room.working)||[];
+  document.getElementById('kMaster').textContent=(S.master||[]).length;
+  document.getElementById('kEq').textContent=(nw.equity!=null)?nw.equity.toFixed(2):'—';
+  const ocList=(S.room&&S.room.oc_agents)||[];
+  document.getElementById('kAg').textContent=`OC ${ocList.length} · BOT ${(S.room&&S.room.bots)||0}`;
+  const build=doing.build||{};
+  document.getElementById('spineHero').innerHTML=`${work.length}<small>LIVE</small>`;
+  const packOk=(S.health&&S.health.probes||[]).find(p=>p.id==='pack');
+  const el=document.getElementById('spineDelta');
+  el.className='delta '+(packOk&&packOk.level==='ok'?'up':'dn');
+  el.textContent=(packOk&&packOk.label)||'';
+  const toks=(S.tokens&&S.tokens.models)||[];
+  const tokTotal=(S.tokens&&S.tokens.total)||0;
+  const fmtT=n=>{
+    n=Number(n)||0;
+    if(n>=1e6) return (n/1e6).toFixed(1)+'M';
+    if(n>=1e3) return (n/1e3).toFixed(1)+'k';
+    return String(n);
+  };
+  document.getElementById('tokstack').innerHTML=toks.map(m=>{
+    const w=tokTotal? Math.max(m.total?1.2:0, (m.total/tokTotal)*100) : 0;
+    return `<i style="width:${w}%;background:${m.color||'#3ce7ff'};opacity:${m.total?1:.25}" title="${m.label} ${fmtT(m.total)}"></i>`;
+  }).join('');
+  document.getElementById('tokleg').innerHTML=toks.map(m=>
+    `<span><i style="display:inline-block;width:8px;height:8px;background:${m.color};margin-right:5px"></i>${m.label} <b>${fmtT(m.total)}</b></span>`
+  ).join('') + `<span>Σ <b>${fmtT(tokTotal)}</b></span>`;
+  const mxT=Math.max(1,...toks.map(m=>m.total||0));
+  document.getElementById('spineBars').innerHTML=toks.map(m=>`
+    <div class="tokrow">
+      <b>${m.label}</b>
+      <div class="track"><i style="width:${(100*(m.total||0)/mxT)}%;background:${m.color}"></i></div>
+      <span>${fmtT(m.total)}</span>
+    </div>`).join('');
+  document.getElementById('dests').innerHTML=(S.dests||[]).slice(0,8).map(d=>`
+    <div class="ln">
+      <b>${d.name}</b>
+      ${sinePath(d.tone)}
+      <div class="pill ${d.tone}">${d.pill}</div>
+      <div class="pct ${d.tone==='bad'?'dn':d.tone==='hot'?'up':''}">${d.kind}</div>
+    </div>`).join('');
+  document.getElementById('gates').innerHTML=
+    donut(g.pack_pct||0,'#3ce7ff',(g.pack_pct||0)+'%','PACK')+
+    donut(g.review_pct||0,'#ffb020',(g.review_pct||0)+'%','REVIEW')+
+    donut(Math.min(100,(g.credit_pct||0)),'#3dffc7',Math.round(g.credit_pct||0)+'%','CREDIT');
+  document.getElementById('gmeta').innerHTML=`<span>${g.pack_label||'pack'}</span><span>${g.review_label||'no handoff'}</span><span>${g.block?'402 BLOCK':'402 clear'}</span>`;
+  const nBots=(S.room&&S.room.bots)||0;
+  const botLive=!!(S.room&&S.room.bot_live);
+  document.getElementById('roomHead').textContent=`OPENCLAW · ${ocList.length} SEATS`;
+  document.getElementById('ocseats').innerHTML=ocList.map(a=>{
+    const cls=a.silent?'silent':(a.working?'hot':'');
+    const pill=a.silent?'SILENT':(a.working?'HOT':'IDLE');
+    return `<div class="s ${cls}" title="${a.id} ${a.model}">
+      <b>${(a.id||'').toUpperCase()}</b>
+      <span class="m">${a.model||''}</span>
+      <span>${pill}</span>
+    </div>`;
+  }).join('');
+  const ops=['gemma','qwen','build','bot','oc','review','first','verify'];
+  let cells='';
+  ops.forEach(id=>{
+    const on=isWork(id);
+    cells+=`<b class="${on?'hot':''}" title="${id}"></b>`;
+  });
+  for(let i=0;i<nBots;i++) cells+=`<b class="bot ${botLive?'on':''}"></b>`;
+  document.getElementById('botHead').textContent=`${nBots} CLOUD`;
+  document.getElementById('room').innerHTML=cells;
+  const loop=S.loop||[];
+  document.getElementById('loop').innerHTML=loop.map((x,i)=>`<i class="${i===(S.loop_now||0)?'on':''}" title="${x}"></i>`).join('');
+  const feed=S.feed||[];
+  document.getElementById('feed').innerHTML=feed.slice(-16).reverse().map(r=>
+    `<div><span class="t">${r.t}</span><span class="tag ${r.tone}">${r.tag}</span>${r.line}</div>`
+  ).join('');
+  const pnl=nw.pnl||0;
+  const tn=document.getElementById('tonight');
+  tn.textContent=(pnl>=0?'+':'')+pnl.toFixed(2);
+  tn.style.color=pnl>=0?'#3dff9a':'#ff3864';
+  document.getElementById('tonightSub').textContent=`paper start ${nw.start||0} · ${nw.source||''}`;
+  const banner=document.getElementById('mbanner');
+  banner.textContent=`GROK AGENT MESH · ${work.length} WORKING · OPENCLAW ${ocList.length} · IMSG→OC · GEMMA › QWEN › BUILD › BOT`;
+  const calls=document.getElementById('calls');
+  calls.innerHTML='';
+  (S.callouts||[]).forEach(c=>{
+    if(!N[c.id]) return;
+    const p=P(c.id);
+    const el2=document.createElement('div');
+    el2.className='call';
+    el2.textContent=c.text;
+    el2.style.left=p.x+'px';
+    el2.style.top=p.y+'px';
+    calls.appendChild(el2);
+  });
+  const Pths=pathMap();
+  (S.events||[]).forEach(e=>{
+    if(!e||!e.id||seen.has(e.id)) return;
+    const key=e.path==='code'?'first':e.path;
+    const path=(Pths[key]||[]).filter(n=>N[n]);
+    if(path.length<2) return;
+    seen.add(e.id);
+    jobs.push({path, t:0, v:0.004, col:COL[path[1]]||'#3ce7ff'});
+  });
+}
+async function boot(){
+  try{
+    S=await (await fetch('state.json?t='+Date.now(),{cache:'no-store'})).json();
+    resize(); render();
+  }catch(e){}
+}
+function clock(){
+  const d=new Date();
+  const z=n=>String(n).padStart(2,'0');
+  document.getElementById('kClk').textContent=`${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+}
+addEventListener('resize', ()=>{ resize(); render(); });
+setInterval(boot, 4000);
+setInterval(clock, 1000);
+clock();
+resize();
+boot();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
