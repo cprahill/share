@@ -1,7 +1,7 @@
 import { sendEmpty, sendJson } from "./cors.js";
 import { clampInt, one, queryOf, readBody, shortText } from "./http.js";
 
-export const PLANETS = new Set(["mars", "moon", "earth"]);
+export const PLANETS = new Set(["mars", "moon", "earth", "europa", "titan"]);
 export const MODES = new Set(["raid", "trial", "tour", "hunt", "free"]);
 export const DIFFS = {
   easy: "EASY",

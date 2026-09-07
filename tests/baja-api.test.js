@@ -90,6 +90,9 @@ describe("cors", () => {
     assert.equal(allowOrigin("https://evil.example"), "");
     assert.equal(allowOrigin("https://localhost:8766"), "");
     assert.equal(allowOrigin("http://8.8.8.8:8766"), "");
+    assert.equal(allowOrigin("https://cyberbaja.vercel.app"), "https://cyberbaja.vercel.app");
+    assert.equal(allowOrigin("https://cyberbaja-abc.vercel.app"), "https://cyberbaja-abc.vercel.app");
+    assert.equal(allowOrigin("https://other.vercel.app"), "");
   });
 });
 
@@ -190,6 +193,19 @@ describe("GET/POST /api/board", () => {
     assert.equal(p.row.name, "OK");
     assert.equal(p.diff, "extra");
     assert.equal(p.row.diff, "XHARD");
+  });
+
+  it("accepts europa and titan lanes", async () => {
+    const kv = memoryKv();
+    const r = await call(handleBoard, kv, "POST", {
+      body: { planet: "europa", mode: "trial", diff: "medium", name: "ICE1", score: 10, coins: 1, time: 90000 }
+    });
+    assert.equal(r.statusCode, 200);
+    assert.equal(r.body.ok, true);
+    assert.equal(r.body.rows[0].planet, "europa");
+    const t = await call(handleBoard, kv, "GET", { query: { planet: "titan", mode: "tour", diff: "hard" } });
+    assert.equal(t.statusCode, 200);
+    assert.equal(t.body.ok, true);
   });
 });
 

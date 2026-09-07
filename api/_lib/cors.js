@@ -1,5 +1,6 @@
 const FIXED = new Set([
   "https://cprahill.github.io",
+  "https://cyberbaja.vercel.app",
   "http://127.0.0.1:8766",
   "http://localhost:8766",
   "http://100.92.162.78:8766"
@@ -20,8 +21,11 @@ export function allowOrigin(origin) {
   if (FIXED.has(origin)) return origin;
   try {
     const u = new URL(origin);
+    const host = u.hostname || "";
+    if (host === "cyberbaja.vercel.app") return origin;
+    if (host.endsWith(".vercel.app") && host.startsWith("cyberbaja-")) return origin;
     if (u.protocol !== "http:") return "";
-    if (isLoopback(u.hostname) || isTailscale(u.hostname)) return origin;
+    if (isLoopback(host) || isTailscale(host)) return origin;
     return "";
   } catch {
     return "";
