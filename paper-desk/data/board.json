@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-15T21:00:04-0500",
+  "updated_at": "2026-09-15T21:30:03-0500",
   "duel": {
     "ends_at": "2026-09-11T16:00:00-04:00",
     "metric": "return_pct",
@@ -176,12 +176,12 @@
     "label": "FADE",
     "mode": "PAPER",
     "starting_cash_usd": 400.0,
-    "cash_usd": 361.4516,
-    "equity_usd": 401.3164,
-    "day_pnl_usd": -0.1354,
-    "total_pnl_usd": 1.3164,
-    "return_pct": 0.3291,
-    "open_positions": 1,
+    "cash_usd": 401.547,
+    "equity_usd": 401.547,
+    "day_pnl_usd": 0.0,
+    "total_pnl_usd": 1.547,
+    "return_pct": 0.3867,
+    "open_positions": 0,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -189,9 +189,24 @@
     "confidence": {
       "score": 40,
       "live_ready": false,
-      "next": "FADE \u00b7 eq $401.3164 \u00b7 P&L $1.3164 \u00b7 LIVE DENY"
+      "next": "FADE \u00b7 eq $401.547 \u00b7 P&L $1.547 \u00b7 LIVE DENY"
     },
     "recent_fills": [
+      {
+        "id": "FD141",
+        "ts": "2026-09-15T21:30:02-0500",
+        "venue": "coinbase_paper",
+        "symbol": "BTC-USD",
+        "side": "sell",
+        "qty": 0.00052845,
+        "px": 75873.515,
+        "notional_usd": 40.0954,
+        "edge": "fade-target",
+        "url": "https://www.coinbase.com/price/bitcoin",
+        "urls": [
+          "https://www.coinbase.com/price/bitcoin"
+        ]
+      },
       {
         "id": "FD140",
         "ts": "2026-09-15T18:30:01-0500",
@@ -300,56 +315,25 @@
           "https://www.coinbase.com/price/ethereum",
           "https://finance.yahoo.com/"
         ]
-      },
-      {
-        "id": "FD133",
-        "ts": "2026-09-15T10:00:01-0500",
-        "venue": "coinbase_paper",
-        "symbol": "ETH-USD",
-        "side": "sell",
-        "qty": 0.01631994,
-        "px": 2406.395,
-        "notional_usd": 39.2722,
-        "edge": "fade-stop",
-        "url": "https://www.coinbase.com/price/ethereum",
-        "urls": [
-          "https://www.coinbase.com/price/ethereum",
-          "https://finance.yahoo.com/"
-        ]
       }
     ],
-    "open": [
-      {
-        "venue": "coinbase_paper",
-        "symbol": "BTC-USD",
-        "qty": 0.00052845,
-        "avg": 75693.355,
-        "mark": 75437.055,
-        "upnl": -0.1354,
-        "notional": 39.8647,
-        "edge": "fade-vwap",
-        "url": "https://www.coinbase.com/price/bitcoin",
-        "urls": [
-          "https://www.coinbase.com/price/bitcoin"
-        ]
-      }
-    ],
+    "open": [],
     "style": "vwap_fade",
     "parked": false,
     "last_scan": {
-      "at": "2026-09-15T21:00:03-0500",
+      "at": "2026-09-15T21:30:02-0500",
       "names": [
         {
           "symbol": "BTC-USD",
-          "px": 75437.055,
-          "vwap": 75812.99,
-          "dev_pct": -0.4959
+          "px": 75873.515,
+          "vwap": 75731.47,
+          "dev_pct": 0.1876
         },
         {
           "symbol": "ETH-USD",
-          "px": 2389.08,
-          "vwap": 2400.58,
-          "dev_pct": -0.4792
+          "px": 2399.535,
+          "vwap": 2397.61,
+          "dev_pct": 0.0801
         }
       ]
     }
@@ -612,7 +596,7 @@
   },
   "signals": {
     "main": "yellow",
-    "trade_dev": "yellow",
+    "trade_dev": "green",
     "swarm": "green",
     "grok": "green",
     "duel": "green"
