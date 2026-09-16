@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-15T20:30:02-0500",
+  "updated_at": "2026-09-15T21:00:04-0500",
   "duel": {
     "ends_at": "2026-09-11T16:00:00-04:00",
     "metric": "return_pct",
@@ -177,10 +177,10 @@
     "mode": "PAPER",
     "starting_cash_usd": 400.0,
     "cash_usd": 361.4516,
-    "equity_usd": 401.5369,
-    "day_pnl_usd": 0.0851,
-    "total_pnl_usd": 1.5369,
-    "return_pct": 0.3842,
+    "equity_usd": 401.3164,
+    "day_pnl_usd": -0.1354,
+    "total_pnl_usd": 1.3164,
+    "return_pct": 0.3291,
     "open_positions": 1,
     "live_wallets": false,
     "gate": {
@@ -189,7 +189,7 @@
     "confidence": {
       "score": 40,
       "live_ready": false,
-      "next": "FADE \u00b7 eq $401.5369 \u00b7 P&L $1.5369 \u00b7 LIVE DENY"
+      "next": "FADE \u00b7 eq $401.3164 \u00b7 P&L $1.3164 \u00b7 LIVE DENY"
     },
     "recent_fills": [
       {
@@ -324,9 +324,9 @@
         "symbol": "BTC-USD",
         "qty": 0.00052845,
         "avg": 75693.355,
-        "mark": 75854.365,
-        "upnl": 0.0851,
-        "notional": 40.0852,
+        "mark": 75437.055,
+        "upnl": -0.1354,
+        "notional": 39.8647,
         "edge": "fade-vwap",
         "url": "https://www.coinbase.com/price/bitcoin",
         "urls": [
@@ -337,19 +337,19 @@
     "style": "vwap_fade",
     "parked": false,
     "last_scan": {
-      "at": "2026-09-15T20:30:01-0500",
+      "at": "2026-09-15T21:00:03-0500",
       "names": [
         {
           "symbol": "BTC-USD",
-          "px": 75854.365,
-          "vwap": 75953.63,
-          "dev_pct": -0.1307
+          "px": 75437.055,
+          "vwap": 75812.99,
+          "dev_pct": -0.4959
         },
         {
           "symbol": "ETH-USD",
-          "px": 2403.445,
-          "vwap": 2403.67,
-          "dev_pct": -0.0094
+          "px": 2389.08,
+          "vwap": 2400.58,
+          "dev_pct": -0.4792
         }
       ]
     }
