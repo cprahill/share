@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-17T20:30:02-0500",
+  "updated_at": "2026-09-17T21:00:02-0500",
   "duel": {
     "ends_at": "2026-09-11T16:00:00-04:00",
     "metric": "return_pct",
@@ -176,12 +176,12 @@
     "label": "FADE",
     "mode": "PAPER",
     "starting_cash_usd": 400.0,
-    "cash_usd": 402.474,
+    "cash_usd": 362.474,
     "equity_usd": 402.474,
     "day_pnl_usd": 0.0,
     "total_pnl_usd": 2.474,
     "return_pct": 0.6185,
-    "open_positions": 0,
+    "open_positions": 1,
     "live_wallets": false,
     "gate": {
       "open": true
@@ -192,6 +192,22 @@
       "next": "FADE \u00b7 eq $402.474 \u00b7 P&L $2.474 \u00b7 LIVE DENY"
     },
     "recent_fills": [
+      {
+        "id": "FD168",
+        "ts": "2026-09-17T21:00:01-0500",
+        "venue": "coinbase_paper",
+        "symbol": "ETH-USD",
+        "side": "sell",
+        "qty": 0.01628502,
+        "px": 2456.245,
+        "notional_usd": 40.0,
+        "edge": "fade-vwap",
+        "url": "https://www.coinbase.com/price/ethereum",
+        "urls": [
+          "https://www.coinbase.com/price/ethereum",
+          "https://finance.yahoo.com/"
+        ]
+      },
       {
         "id": "FD167",
         "ts": "2026-09-17T20:30:01-0500",
@@ -303,16 +319,17 @@
           "https://www.coinbase.com/price/ethereum",
           "https://finance.yahoo.com/"
         ]
-      },
+      }
+    ],
+    "open": [
       {
-        "id": "FD160",
-        "ts": "2026-09-17T09:00:01-0500",
         "venue": "coinbase_paper",
         "symbol": "ETH-USD",
-        "side": "sell",
-        "qty": 0.01625465,
-        "px": 2460.835,
-        "notional_usd": 40.0,
+        "qty": 0.01628502,
+        "avg": 2456.245,
+        "mark": 2456.245,
+        "upnl": 0.0,
+        "notional": 40.0,
         "edge": "fade-vwap",
         "url": "https://www.coinbase.com/price/ethereum",
         "urls": [
@@ -321,23 +338,22 @@
         ]
       }
     ],
-    "open": [],
     "style": "vwap_fade",
     "parked": false,
     "last_scan": {
-      "at": "2026-09-17T20:30:01-0500",
+      "at": "2026-09-17T21:00:01-0500",
       "names": [
         {
           "symbol": "BTC-USD",
-          "px": 76531.655,
-          "vwap": 76490.28,
-          "dev_pct": 0.0541
+          "px": 76680.145,
+          "vwap": 76467.82,
+          "dev_pct": 0.2777
         },
         {
           "symbol": "ETH-USD",
-          "px": 2448.65,
-          "vwap": 2449.99,
-          "dev_pct": -0.0546
+          "px": 2456.245,
+          "vwap": 2448.11,
+          "dev_pct": 0.3323
         }
       ]
     }
@@ -600,7 +616,7 @@
   },
   "signals": {
     "main": "yellow",
-    "trade_dev": "green",
+    "trade_dev": "yellow",
     "swarm": "green",
     "grok": "green",
     "duel": "green"
